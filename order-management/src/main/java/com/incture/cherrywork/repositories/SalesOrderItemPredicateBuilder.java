@@ -1,19 +1,19 @@
 package com.incture.cherrywork.repositories;
-import com.incture.cherrywork.entitiesSalesOrderItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-public class SalesOrderItemPredicatesBuilder {
+public class SalesOrderItemPredicateBuilder {
 
 	private final List<SearchCriteria> params;
 
-	public SalesOrderItemPredicatesBuilder() {
+	public SalesOrderItemPredicateBuilder() {
 	params = new ArrayList<>();
 	}
-	public SalesOrderItemPredicatesBuilder with(final String key, final String operation, final Object value) {
+	public SalesOrderItemPredicateBuilder with(final String key, final String operation, final Object value) {
 		params.add(new SearchCriteria(key, operation, value));
 		return this;
 	}

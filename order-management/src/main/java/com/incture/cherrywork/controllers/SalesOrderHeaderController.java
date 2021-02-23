@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,5 +45,10 @@ public ResponseEntity<Object> update(@PathVariable String s4DocumentId, @Valid @
 @ApiOperation(value = "Delete SalesOrderHeader Dataset")
 public ResponseEntity<Object> delete(@PathVariable String s4DocumentId) { 
 		return salesOrderHeaderService.delete(s4DocumentId);
+}
+@GetMapping("/SalesOrderHeader")
+@ApiOperation(value = "List all SalesOrderHeader Datasets")
+public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
+		return salesOrderHeaderService.readAll(search);
 }
 }

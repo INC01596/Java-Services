@@ -1,4 +1,4 @@
-package com.incture.cherrywork.workobjects.dtos;
+package com.incture.cherrywork.repositories;
 
 import java.util.Collection;
 import java.util.List;

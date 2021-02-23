@@ -1,18 +1,26 @@
 package com.incture.cherrywork.services;
 
-import org.springframework.stereotype.Service;
-import com.incture.cherrywork.workobjects.dtos.ObjectMapperUtils;
-import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.incture.cherrywork.entities.SalesOrderItem;
-import com.incture.cherrywork.dtos.SalesOrderItemDto;
-import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
-import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
+import com.incture.cherrywork.entities.SalesOrderItem;
+import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
+import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
+import com.incture.cherrywork.repositories.SalesOrderItemPredicateBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
 @Transactional
@@ -66,5 +74,20 @@ return ResponseEntity.notFound().build();
 }
 salesOrderItemRepository.delete(optionalSalesOrderItem.get());
 return ResponseEntity.ok().body(null);
+}
+@Override
+public ResponseEntity<Object> readAll(String search) {
+SalesOrderItemPredicateBuilder builder = new SalesOrderItemPredicateBuilder();
+if (search != null) {
+Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+Matcher matcher = pattern.matcher(search + ",");
+while (matcher.find()) {
+builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+}
+}
+BooleanExpression exp = builder.build();
+List<SalesOrderItem> salesOrderItems = (List<SalesOrderItem>) salesOrderItemRepository.findAll(exp);
+Object t = ObjectMapperUtils.mapAll(salesOrderItems, SalesOrderItemDto.class);
+return ResponseEntity.ok().body(t);     
 }
 }

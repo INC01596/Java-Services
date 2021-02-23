@@ -8,5 +8,6 @@ public interface ISalesOrderItemService {
 	ResponseEntity<Object> read(String s4DocumentId, String salesItemId);
 	ResponseEntity<Object> update(String s4DocumentId, String salesItemId, SalesOrderItemDto salesOrderItemDto);
 	ResponseEntity<Object> delete(String s4DocumentId, String salesItemId);
+	ResponseEntity<Object> readAll(String search);
 
 }

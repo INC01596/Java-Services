@@ -1,16 +1,22 @@
 package com.incture.cherrywork.services;
 
 import org.springframework.stereotype.Service;
-import com.incture.cherrywork.workobjects.dtos.ObjectMapperUtils;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
+import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -53,5 +59,20 @@ return ResponseEntity.notFound().build();
 }
 salesOrderHeaderRepository.delete(optionalSalesOrderHeader.get());
 return ResponseEntity.ok().body(null);
+}
+@Override
+public ResponseEntity<Object> readAll(String search) {
+SalesOrderHeaderPredicateBuilder builder = new SalesOrderHeaderPredicateBuilder();
+if (search != null) {
+Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+Matcher matcher = pattern.matcher(search + ",");
+while (matcher.find()) {
+builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+}
+}
+BooleanExpression exp = builder.build();
+List<SalesOrderHeader> salesOrderHeaders = (List<SalesOrderHeader>) salesOrderHeaderRepository.findAll(exp);
+Object t = ObjectMapperUtils.mapAll(salesOrderHeaders, SalesOrderHeaderDto.class);
+return ResponseEntity.ok().body(t);     
 }
 }

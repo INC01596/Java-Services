@@ -21,7 +21,7 @@ import javax.persistence.Id;
 public class SalesOrderHeader{
 
 
-@Column(name = "ClientSpecific", precision = 3, sacle = 0)
+@Column(name = "ClientSpecific", precision = 3, scale = 0)
 private Integer clientSpecific;
 public Integer getClientSpecific(){
 	return clientSpecific;
@@ -157,7 +157,7 @@ public void setShippingType(String shippingType){
 	this.shippingType = shippingType;
 }
 
-@Column(name = "TotalSoQuantity", precision = 13, sacle = 3)
+@Column(name = "TotalSoQuantity", precision = 13, scale = 3)
 private BigDecimal totalSoQuantity;
 public BigDecimal getTotalSoQuantity(){
 	return totalSoQuantity;
@@ -166,7 +166,7 @@ public void setTotalSoQuantity(BigDecimal totalSoQuantity){
 	this.totalSoQuantity = totalSoQuantity;
 }
 
-@Column(name = "NetValue", precision = 13, sacle = 3)
+@Column(name = "NetValue", precision = 13, scale = 3)
 private BigDecimal netValue;
 public BigDecimal getNetValue(){
 	return netValue;
@@ -175,7 +175,7 @@ public void setNetValue(BigDecimal netValue){
 	this.netValue = netValue;
 }
 
-@Column(name = "DeliveredQuantity", precision = 13, sacle = 3)
+@Column(name = "DeliveredQuantity", precision = 13, scale = 3)
 private BigDecimal deliveredQuantity;
 public BigDecimal getDeliveredQuantity(){
 	return deliveredQuantity;

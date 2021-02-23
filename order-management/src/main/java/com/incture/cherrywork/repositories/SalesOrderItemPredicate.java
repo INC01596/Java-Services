@@ -1,5 +1,5 @@
 package com.incture.cherrywork.repositories;
-import com.incture.cherrywork.entitiesSalesOrderItem;
+import com.incture.cherrywork.entities.SalesOrderItem;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.PathBuilder;

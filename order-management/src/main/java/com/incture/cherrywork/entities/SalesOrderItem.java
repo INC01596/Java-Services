@@ -28,7 +28,7 @@ public void setSalesItemId(String salesItemId){
 	this.salesItemId = salesItemId;
 }
 
-@Column(name = "ClientSpecific", precision = 3, sacle = 0)
+@Column(name = "ClientSpecific", precision = 3, scale = 0)
 private Integer clientSpecific;
 public Integer getClientSpecific(){
 	return clientSpecific;
@@ -91,7 +91,7 @@ public void setPlant(String plant){
 	this.plant = plant;
 }
 
-@Column(name = "NetValue", precision = 13, sacle = 3)
+@Column(name = "NetValue", precision = 13, scale = 3)
 private BigDecimal netValue;
 public BigDecimal getNetValue(){
 	return netValue;
@@ -100,7 +100,7 @@ public void setNetValue(BigDecimal netValue){
 	this.netValue = netValue;
 }
 
-@Column(name = "AmountB4Vat", precision = 10, sacle = 3)
+@Column(name = "AmountB4Vat", precision = 10, scale = 3)
 private BigDecimal amountB4Vat;
 public BigDecimal getAmountB4Vat(){
 	return amountB4Vat;
@@ -109,7 +109,7 @@ public void setAmountB4Vat(BigDecimal amountB4Vat){
 	this.amountB4Vat = amountB4Vat;
 }
 
-@Column(name = "VatPercent", precision = 10, sacle = 3)
+@Column(name = "VatPercent", precision = 10, scale = 3)
 private BigDecimal vatPercent;
 public BigDecimal getVatPercent(){
 	return vatPercent;
@@ -118,7 +118,7 @@ public void setVatPercent(BigDecimal vatPercent){
 	this.vatPercent = vatPercent;
 }
 
-@Column(name = "VatAmount", precision = 10, sacle = 3)
+@Column(name = "VatAmount", precision = 10, scale = 3)
 private BigDecimal vatAmount;
 public BigDecimal getVatAmount(){
 	return vatAmount;
@@ -127,7 +127,7 @@ public void setVatAmount(BigDecimal vatAmount){
 	this.vatAmount = vatAmount;
 }
 
-@Column(name = "TotalAmountInclVat", precision = 10, sacle = 3)
+@Column(name = "TotalAmountInclVat", precision = 10, scale = 3)
 private BigDecimal totalAmountInclVat;
 public BigDecimal getTotalAmountInclVat(){
 	return totalAmountInclVat;
@@ -136,7 +136,7 @@ public void setTotalAmountInclVat(BigDecimal totalAmountInclVat){
 	this.totalAmountInclVat = totalAmountInclVat;
 }
 
-@Column(name = "DeliveredQuantity", precision = 13, sacle = 3)
+@Column(name = "DeliveredQuantity", precision = 13, scale = 3)
 private BigDecimal deliveredQuantity;
 public BigDecimal getDeliveredQuantity(){
 	return deliveredQuantity;
@@ -145,7 +145,7 @@ public void setDeliveredQuantity(BigDecimal deliveredQuantity){
 	this.deliveredQuantity = deliveredQuantity;
 }
 
-@Column(name = "DeliveredPieces", precision = 10, sacle = 0)
+@Column(name = "DeliveredPieces", precision = 10, scale = 0)
 private Integer deliveredPieces;
 public Integer getDeliveredPieces(){
 	return deliveredPieces;
@@ -163,7 +163,7 @@ public void setOutstandingQuantity(String outstandingQuantity){
 	this.outstandingQuantity = outstandingQuantity;
 }
 
-@Column(name = "OutstandingPieces", precision = 10, sacle = 0)
+@Column(name = "OutstandingPieces", precision = 10, scale = 0)
 private Integer outstandingPieces;
 public Integer getOutstandingPieces(){
 	return outstandingPieces;
@@ -199,7 +199,7 @@ public void setDeliveryStatus(String deliveryStatus){
 	this.deliveryStatus = deliveryStatus;
 }
 
-@Column(name = "OrderedPieces", precision = 10, sacle = 0)
+@Column(name = "OrderedPieces", precision = 10, scale = 0)
 private Integer orderedPieces;
 public Integer getOrderedPieces(){
 	return orderedPieces;
@@ -208,7 +208,7 @@ public void setOrderedPieces(Integer orderedPieces){
 	this.orderedPieces = orderedPieces;
 }
 
-@Column(name = "NoOfBundles", precision = 10, sacle = 0)
+@Column(name = "NoOfBundles", precision = 10, scale = 0)
 private Integer noOfBundles;
 public Integer getNoOfBundles(){
 	return noOfBundles;
@@ -217,7 +217,7 @@ public void setNoOfBundles(Integer noOfBundles){
 	this.noOfBundles = noOfBundles;
 }
 
-@Column(name = "BasePrice", precision = 10, sacle = 3)
+@Column(name = "BasePrice", precision = 10, scale = 3)
 private BigDecimal basePrice;
 public BigDecimal getBasePrice(){
 	return basePrice;
@@ -226,7 +226,7 @@ public void setBasePrice(BigDecimal basePrice){
 	this.basePrice = basePrice;
 }
 
-@Column(name = "Extras", precision = 10, sacle = 3)
+@Column(name = "Extras", precision = 10, scale = 3)
 private BigDecimal extras;
 public BigDecimal getExtras(){
 	return extras;
@@ -235,7 +235,7 @@ public void setExtras(BigDecimal extras){
 	this.extras = extras;
 }
 
-@Column(name = "QualityTestExtras", precision = 10, sacle = 3)
+@Column(name = "QualityTestExtras", precision = 10, scale = 3)
 private BigDecimal qualityTestExtras;
 public BigDecimal getQualityTestExtras(){
 	return qualityTestExtras;
@@ -244,7 +244,7 @@ public void setQualityTestExtras(BigDecimal qualityTestExtras){
 	this.qualityTestExtras = qualityTestExtras;
 }
 
-@Column(name = "Discount1", precision = 10, sacle = 3)
+@Column(name = "Discount1", precision = 10, scale = 3)
 private BigDecimal discount1;
 public BigDecimal getDiscount1(){
 	return discount1;
@@ -253,7 +253,7 @@ public void setDiscount1(BigDecimal discount1){
 	this.discount1 = discount1;
 }
 
-@Column(name = "EnteredOrdQuantity", precision = 10, sacle = 3)
+@Column(name = "EnteredOrdQuantity", precision = 10, scale = 3)
 private BigDecimal enteredOrdQuantity;
 public BigDecimal getEnteredOrdQuantity(){
 	return enteredOrdQuantity;
@@ -307,7 +307,7 @@ public void setSize(String size){
 	this.size = size;
 }
 
-@Column(name = "KgPerMeter", precision = 10, sacle = 3)
+@Column(name = "KgPerMeter", precision = 10, scale = 3)
 private BigDecimal kgPerMeter;
 public BigDecimal getKgPerMeter(){
 	return kgPerMeter;
@@ -316,7 +316,7 @@ public void setKgPerMeter(BigDecimal kgPerMeter){
 	this.kgPerMeter = kgPerMeter;
 }
 
-@Column(name = "Length", precision = 10, sacle = 3)
+@Column(name = "Length", precision = 10, scale = 3)
 private BigDecimal length;
 public BigDecimal getLength(){
 	return length;
@@ -325,7 +325,7 @@ public void setLength(BigDecimal length){
 	this.length = length;
 }
 
-@Column(name = "BarsPerBundle", precision = 10, sacle = 3)
+@Column(name = "BarsPerBundle", precision = 10, scale = 3)
 private BigDecimal barsPerBundle;
 public BigDecimal getBarsPerBundle(){
 	return barsPerBundle;
@@ -370,7 +370,7 @@ public void setSection(String section){
 	this.section = section;
 }
 
-@Column(name = "SizeGroup", precision = 10, sacle = 3)
+@Column(name = "SizeGroup", precision = 10, scale = 3)
 private BigDecimal sizeGroup;
 public BigDecimal getSizeGroup(){
 	return sizeGroup;
@@ -442,7 +442,7 @@ public void setGradePricingGroup(String gradePricingGroup){
 	this.gradePricingGroup = gradePricingGroup;
 }
 
-@Column(name = "TotalNoPieces", precision = 10, sacle = 3)
+@Column(name = "TotalNoPieces", precision = 10, scale = 3)
 private BigDecimal totalNoPieces;
 public BigDecimal getTotalNoPieces(){
 	return totalNoPieces;
@@ -451,7 +451,7 @@ public void setTotalNoPieces(BigDecimal totalNoPieces){
 	this.totalNoPieces = totalNoPieces;
 }
 
-@Column(name = "BundleWt", precision = 10, sacle = 3)
+@Column(name = "BundleWt", precision = 10, scale = 3)
 private BigDecimal bundleWt;
 public BigDecimal getBundleWt(){
 	return bundleWt;
