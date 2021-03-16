@@ -6,15 +6,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -56,9 +63,9 @@ public class HelperClass {
 		   .setDefaultCredentialsProvider(credsProvider) 
 		   .disableCookieManagement();
 		
-		CloseableHttpClient httpClient = clientBuilder.build();
+		HttpClient httpClient = clientBuilder.build();
 		HttpRequestBase httpRequestBase = null;
-		CloseableHttpResponse httpResponse = null;
+		HttpResponse httpResponse = null;
 		StringEntity input = null;
 		String json = null;
 		JSONObject obj = null;
@@ -80,6 +87,27 @@ public class HelperClass {
 				httpRequestBase.addHeader("sap-client", (String) destinationInfo.get("sap-client"));
 			}
 			httpRequestBase.addHeader("accept", "application/json");
+			
+			Header[] headers = getAccessToken((String) destinationInfo.get("URL") + "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet(Vbeln='80000329')", (String) destinationInfo.get("User"),
+					(String) destinationInfo.get("Password"),httpClient,  proxyHost, proxyPort,
+					(String) destinationInfo.get("sap-client"),jwToken);
+			String token = null;
+			if(headers.length != 0){
+			
+			List<String> cookies = new ArrayList<>();
+			for (Header header : headers) {
+
+				if (header.getName().equalsIgnoreCase("x-csrf-token")) {
+					token = header.getValue();
+					System.err.println("token --- " + token);
+				}
+
+				if (header.getName().equalsIgnoreCase("set-cookie")) {
+					cookies.add(header.getValue());
+				}
+
+			}
+			}
 
 			if (destinationInfo.get("User") != null && destinationInfo.get("Password") != null) {
 				String encoded = HelperClass.encodeUsernameAndPassword((String) destinationInfo.get("User"),
@@ -88,6 +116,9 @@ public class HelperClass {
 				httpRequestBase.setHeader("Proxy-Authorization","Bearer " +jwToken);
 				httpRequestBase.addHeader("SAP-Connectivity-SCC-Location_ID","incture");
 				
+			}
+			if (token != null) {
+				httpRequestBase.addHeader("X-CSRF-Token", token);
 			}
 //			if (tenantctx != null) {
 //				httpRequestBase.addHeader("SAP-Connectivity-ConsumerAccount",
@@ -127,14 +158,6 @@ public class HelperClass {
 						"Exception occured during json conversion" + e.getMessage() + " on " + e.getStackTrace()[4]);
 			}
 
-			try {
-				httpClient.close();
-			} catch (IOException e) {
-				System.err.print("Closing HttpClient Exception : " + e);
-
-				throw new IOException("Closing  due to HttpClient Exception : " + e);
-			}
-
 		}
 
 		System.err.print(" object returned from odata " + obj);
@@ -161,5 +184,37 @@ public class HelperClass {
 		}
 		inStream.close();
 		return dataBuffer.toString();
+	}
+	
+	
+	private static Header[] getAccessToken(String url, String username, String password, HttpClient client,
+			String proxyHost, int proxyPort, String sapClient,String token)
+			throws ClientProtocolException, IOException {
+
+		
+  
+		HttpGet httpGet = new HttpGet(url);
+		
+       String userpass = username + ":" + password;
+       
+       httpGet.setHeader("Proxy-Authorization","Bearer " +token);
+        httpGet.setHeader(HttpHeaders.AUTHORIZATION,
+                                        "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes()));
+		// Encoding username and password
+		httpGet.addHeader("X-CSRF-Token", "Fetch");
+		httpGet.addHeader("Content-Type", "application/json");
+		httpGet.addHeader("sap-client", sapClient);
+		httpGet.addHeader("SAP-Connectivity-SCC-Location_ID","incture");
+
+
+		HttpResponse response = client.execute(httpGet);
+		//HttpResponse response = client.execute( httpGet);
+		
+		System.err.println("313 response "+ response);
+
+		// HttpResponse response = client.execute(httpGet);
+
+		return response.getAllHeaders();
+
 	}
 }
