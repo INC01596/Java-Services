@@ -32,34 +32,34 @@ public class OutBoundOdataController {
 	@Autowired
 	private IOutBoundDeliveryService outBoundDeliveryService;
 	
-	@PostMapping("/OutBoundDeliveryCreate")
-	@ApiOperation(value = "Create a OutBoundDeliveryCreate Dataset")
+	@PostMapping("/OutBoundCreate")
+	@ApiOperation(value = "Create a OutBoundCreate Dataset")
 	public ResponseEntity<?> createOdata(@Valid @RequestBody OutBoundDeliveryDto inputDto) throws URISyntaxException, IOException {
 		return outBoundDeliveryService.createOutBoundDeliveryOnSubmit(inputDto);
-}
+    }
 	
-	@PostMapping("/OutBoundDelivery")
-	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
+	@PostMapping("/OutDelivery")
+    @ApiOperation(value = "Create a OutBoundCreate Dataset")
 	public ResponseEntity<Object> create(@Valid @RequestBody OutBoundDeliveryDto outBoundDeliveryDto) {
 			return outBoundDeliveryService.create(outBoundDeliveryDto);
 	}
-	@GetMapping("/OutBoundDelivery/{obdNumber}/")
-	@ApiOperation(value = "Read SalesOrderHeader Dataset")
+	@GetMapping("/OutDelivery/{obdNumber}/")
+	@ApiOperation(value = "Read OutBoundCreate Dataset")
 	public ResponseEntity<Object> read(@PathVariable String obdNumber) { 
 			return outBoundDeliveryService.read(obdNumber);
 	}
-	@PutMapping("/OutBoundDelivery/{obdNumber}/")
-	@ApiOperation(value = "Update SalesOrderHeader Dataset")
+	@PutMapping("/OutDelivery/{obdNumber}/")
+	@ApiOperation(value = "Update OutBoundCreate Dataset")
 	public ResponseEntity<Object> update(@PathVariable String obdNumber, @Valid @RequestBody OutBoundDeliveryDto outBoundDeliveryDto) { 
 			return outBoundDeliveryService.update(obdNumber, outBoundDeliveryDto);
 	}
-	@DeleteMapping("/OutBoundDelivery/{obdNumber}/")
-	@ApiOperation(value = "Delete SalesOrderHeader Dataset")
+	@DeleteMapping("/OutDelivery/{obdNumber}/")
+	@ApiOperation(value = "Delete OutBoundCreate Dataset")
 	public ResponseEntity<Object> delete(@PathVariable String obdNumber) { 
 			return outBoundDeliveryService.delete(obdNumber);
 	}
 	@GetMapping("/OutBoundDelivery")
-	@ApiOperation(value = "List all SalesOrderHeader Datasets")
+	@ApiOperation(value = "List all OutBoundCreate Datasets")
 	public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 			return outBoundDeliveryService.readAll(search);
 	}
