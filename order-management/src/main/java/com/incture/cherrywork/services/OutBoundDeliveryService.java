@@ -9,10 +9,13 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.transaction.Transactional;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
@@ -26,6 +29,8 @@ import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
+@Service
+@Transactional
 public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 	
 	@Autowired
