@@ -78,6 +78,8 @@ public class HelperClass {
 			} else if (method.equalsIgnoreCase("POST")) {
 				httpRequestBase = new HttpPost(url);
 				try {
+					
+					System.err.println("entity "+entity);
 					input = new StringEntity(entity);
 					input.setContentType("application/json");
 				} catch (UnsupportedEncodingException e) {
@@ -140,16 +142,20 @@ public class HelperClass {
 				httpResponse = httpClient.execute(httpRequestBase);
 				System.err.println(
 						"com.incture.utils.HelperClass ============" + Arrays.asList(httpResponse.getAllHeaders()));
+				System.err.println(
+						"com.incture.utils.HelperClass ============" + httpResponse);
 				System.err.println("STEP 4 com.incture.utils.HelperClass ============StatusCode from odata hit="
 						+ httpResponse.getStatusLine().getStatusCode());
 				if (httpResponse.getStatusLine().getStatusCode() == org.springframework.http.HttpStatus.OK.value()) {
 					json = httpResponse.getAllHeaders().toString();
 				} else {
-					String responseFromECC = httpResponse.toString();
+					String responseFromECC = httpResponse.getEntity().toString();
+					
+					System.err.println("responseFromEcc"+responseFromECC);
 					
 					JSONObject responseJson =  XML.toJSONObject(responseFromECC);
 					
-					new ResponseEntity<JSONObject>(responseJson,HttpStatus.BAD_REQUEST);
+					return new ResponseEntity<JSONObject>(responseJson,HttpStatus.BAD_REQUEST);
 				}
 
 				System.err.println("STEP 5 Result from odata hit ============" + json);

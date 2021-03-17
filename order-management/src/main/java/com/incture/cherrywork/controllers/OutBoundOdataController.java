@@ -58,7 +58,7 @@ public class OutBoundOdataController {
 	public ResponseEntity<Object> delete(@PathVariable String obdNumber) { 
 			return outBoundDeliveryService.delete(obdNumber);
 	}
-	@GetMapping("/OutBoundDelivery")
+	@GetMapping("/OutDelivery")
 	@ApiOperation(value = "List all OutBoundCreate Datasets")
 	public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 			return outBoundDeliveryService.readAll(search);

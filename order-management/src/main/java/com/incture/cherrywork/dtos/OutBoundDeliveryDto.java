@@ -1,18 +1,33 @@
 package com.incture.cherrywork.dtos;
 
-import javax.persistence.Column;
+import java.util.List;
 
 public class OutBoundDeliveryDto {
 	
 	private String obdNumber;
 	private String soNumber; //Vbeln 
-	 private String  soItemNumber;//Kunag
-	private String  deliveryQuantity; //Btgew
-	private String itemUnit; // Lgnum
+	private String deliveryDate;
+	private String shippingPoint;
+	private String netAmount;
 	private String ternr;// to check if ODB or PGI or INVOICE
-	private String documenStatus;
+	private List<OutBoundDeliveryItemDto> outboundDeliveryItemDto;
+	private String documentStatus;
 	private String responseMessage;
 	
+	
+	
+	public String getDeliveryDate() {
+		return deliveryDate;
+	}
+	public void setDeliveryDate(String deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+	public String getShippingPoint() {
+		return shippingPoint;
+	}
+	public void setShippingPoint(String shippingPoint) {
+		this.shippingPoint = shippingPoint;
+	}
 	public String getTernr() {
 		return ternr;
 	}
@@ -25,41 +40,35 @@ public class OutBoundDeliveryDto {
 	public void setSoNumber(String soNumber) {
 		this.soNumber = soNumber;
 	}
-	public String getSoItemNumber() {
-		return soItemNumber;
+	public String getObdNumber() {
+		return obdNumber;
 	}
-	public void setSoItemNumber(String soItemNumber) {
-		this.soItemNumber = soItemNumber;
+	public void setObdNumber(String obdNumber) {
+		this.obdNumber = obdNumber;
 	}
-	public String getDeliveryQuantity() {
-		return deliveryQuantity;
+	public List<OutBoundDeliveryItemDto> getOutboundDeliveryItemDto() {
+		return outboundDeliveryItemDto;
 	}
-	public void setDeliveryQuantity(String deliveryQuantity) {
-		this.deliveryQuantity = deliveryQuantity;
+	public void setOutboundDeliveryItemDto(List<OutBoundDeliveryItemDto> outboundDeliveryItemDto) {
+		this.outboundDeliveryItemDto = outboundDeliveryItemDto;
 	}
-	public String getItemUnit() {
-		return itemUnit;
+	public String getNetAmount() {
+		return netAmount;
 	}
-	public void setItemUnit(String itemUnit) {
-		this.itemUnit = itemUnit;
+	public void setNetAmount(String netAmount) {
+		this.netAmount = netAmount;
 	}
-	public String getDocumenStatus() {
-		return documenStatus;
+	public String getDocumentStatus() {
+		return documentStatus;
 	}
-	public void setDocumenStatus(String documenStatus) {
-		this.documenStatus = documenStatus;
+	public void setDocumentStatus(String documentStatus) {
+		this.documentStatus = documentStatus;
 	}
 	public String getResponseMessage() {
 		return responseMessage;
 	}
 	public void setResponseMessage(String responseMessage) {
 		this.responseMessage = responseMessage;
-	}
-	public String getObdNumber() {
-		return obdNumber;
-	}
-	public void setObdNumber(String obdNumber) {
-		this.obdNumber = obdNumber;
 	}
 
 

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
+import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
 import com.incture.cherrywork.entities.OutBoundDelivery;
 import com.incture.cherrywork.repositories.IOutBoundDeliveryRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
@@ -48,9 +50,17 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 				+ "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet";
 		// form payload into a string entity 
 		
-		
-		String entity = formInputEntityForOutBoundDeliveryDto(inputDto);
-		
+		String entity = null;
+		if(inputDto.getTernr().equals("1") ){
+		 entity = formInputEntityForOutBoundDeliveryDto(inputDto);
+		}
+		else if(inputDto.getTernr().equals("2"))
+		{
+		 entity = formInputEntityForOutBoundDeliveryPgiDto(inputDto);
+		}
+		else {
+			 entity = formInputEntityForInvoiceDto(inputDto);
+		}
 		// call odata method 
 		ResponseEntity<?> responseFromOdata = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
 		
@@ -60,25 +70,30 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		if(responseFromOdata.getStatusCodeValue()==200){
 			
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
+			outBoundDto.setDocumentStatus("Success");
+			outBoundDto.setResponseMessage("Created");
 			outBoundDto.setObdNumber("1");
-			outBoundDto.setResponseMessage("");
-			outBoundDto.setDeliveryQuantity(inputDto.getDeliveryQuantity());
-			outBoundDto.setDocumenStatus("Success");
-			outBoundDto.setItemUnit(inputDto.getItemUnit());
-			outBoundDto.setSoItemNumber(inputDto.getSoItemNumber());
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
+			outBoundDto.setNetAmount(inputDto.getNetAmount());
+			outBoundDto.setShippingPoint(inputDto.getShippingPoint());
+			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			outBoundDto.setOutboundDeliveryItemDto(inputDto.getOutboundDeliveryItemDto());
 			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
 			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
 			
 			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
 		}else {
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
-			outBoundDto.setResponseMessage("");
-			outBoundDto.setDeliveryQuantity(inputDto.getDeliveryQuantity());
-			outBoundDto.setDocumenStatus("Error");
-			outBoundDto.setItemUnit(inputDto.getItemUnit());
-			outBoundDto.setSoItemNumber(inputDto.getSoItemNumber());
+			outBoundDto.setDocumentStatus("Error");
+			outBoundDto.setResponseMessage("Failed");
+			outBoundDto.setObdNumber("1");
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
+			outBoundDto.setNetAmount(inputDto.getNetAmount());
+			outBoundDto.setShippingPoint(inputDto.getShippingPoint());
+			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			outBoundDto.setOutboundDeliveryItemDto(inputDto.getOutboundDeliveryItemDto());
 			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
 			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
 			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
@@ -92,13 +107,65 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		OdataOutBoudDeliveryInputDto  odataInputOutBound = new OdataOutBoudDeliveryInputDto();
 		
 		odataInputOutBound.setVbeln(inputDto.getSoNumber());
-		odataInputOutBound.setKunag(inputDto.getSoItemNumber());
-		odataInputOutBound.setBtgew(inputDto.getDeliveryQuantity());
-		odataInputOutBound.setLgnum(inputDto.getItemUnit());
+		
+		List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
+
+		for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+			
+		odataInputOutBound.setKunag(outBoundDeliveryItemList.get(i).getSoItemNumber());
+		odataInputOutBound.setBtgew(outBoundDeliveryItemList.get(i).getDeliveryQty());
+		odataInputOutBound.setLgnum(outBoundDeliveryItemList.get(i).getUnit());
+		}
 		odataInputOutBound.setTernr("1");
 		
 		return odataInputOutBound.toString();
 	}
+	   
+	   public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto){
+			
+			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
+			
+			odataInputOutBound.setVbeln(inputDto.getObdNumber());
+			List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				
+				odataInputOutBound.setBtgew(outBoundDeliveryItemList.get(i).getDeliveryQty());
+				odataInputOutBound.setGewei(outBoundDeliveryItemList.get(i).getSoItemNumber());
+				odataInputOutBound.setKunag(outBoundDeliveryItemList.get(i).getPickedQty());
+				odataInputOutBound.setLgnum(outBoundDeliveryItemList.get(i).getSloc());
+				odataInputOutBound.setNtgew(outBoundDeliveryItemList.get(i).getPickedQty());
+				odataInputOutBound.setTraid(outBoundDeliveryItemList.get(i).getMaterial());
+				odataInputOutBound.setWerks(outBoundDeliveryItemList.get(i).getPlant());
+			}
+			
+			/*private String Vbeln ;//– Delivery number
+			private String Kunag ;//– Item Number
+			private String Traid ;// – Material Number
+			private String Werks ;// – Plant Number
+			private String Btgew ;// – Delivered Quantity
+			private String Ntgew ;// – Picked Quantity
+			private String Gewei ;// – UOM
+			private String Lgnum ;// – Storage Location
+*/
+			
+			odataInputOutBound.setTernr("2");
+			
+			return odataInputOutBound.toString();
+		}
+	   
+	   public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto){
+			
+			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
+			
+			odataInputOutBound.setVbeln(inputDto.getObdNumber());
+			
+			odataInputOutBound.setTernr("3");
+			
+			return odataInputOutBound.toString();
+		}
+	   
+	   
+
 
 @Override
 public ResponseEntity<Object> create(OutBoundDeliveryDto outBoundDeliveryDto) {

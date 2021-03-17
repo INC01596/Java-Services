@@ -1,8 +1,13 @@
 package com.incture.cherrywork.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -33,6 +38,9 @@ public class OutBoundDelivery {
 	
 	@Column(name = "resonseMessage")
 	private String responseMessage;
+	
+	@OneToMany(mappedBy = "obdNumber" , cascade = CascadeType.ALL)
+	private List<OutBoundDeliveryItem> salesOrderItemList = new ArrayList<>();
 	
 	public String getTerner() {
 		return terner;
