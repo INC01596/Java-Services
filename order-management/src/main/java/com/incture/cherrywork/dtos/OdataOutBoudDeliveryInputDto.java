@@ -6,6 +6,7 @@ public class OdataOutBoudDeliveryInputDto {
 	private String Kunag ;//soItemNumber
 	private String Btgew;//Delivery Quantity
 	private String Lgnum;//Item Unit
+	private String Ternr;
 	public String getVbeln() {
 		return Vbeln;
 	}
@@ -30,5 +31,12 @@ public class OdataOutBoudDeliveryInputDto {
 	public void setLgnum(String lgnum) {
 		Lgnum = lgnum;
 	}
+	public String getTernr() {
+		return Ternr;
+	}
+	public void setTernr(String ternr) {
+		Ternr = ternr;
+	}
+	
 
 }

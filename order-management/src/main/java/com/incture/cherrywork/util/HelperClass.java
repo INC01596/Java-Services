@@ -35,11 +35,13 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class HelperClass {
 	
 	
-	public static JSONObject consumingOdataService(String url, String entity, String method,
+	public static ResponseEntity<?> consumingOdataService(String url, String entity, String method,
 			Map<String, Object> destinationInfo) throws IOException, URISyntaxException {
 
 
@@ -81,6 +83,7 @@ public class HelperClass {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
+				System.err.println("inputEntity "+ input);
 				((HttpPost) httpRequestBase).setEntity(input);
 			}
 			if (destinationInfo.get("sap-client") != null) {
@@ -140,10 +143,13 @@ public class HelperClass {
 				System.err.println("STEP 4 com.incture.utils.HelperClass ============StatusCode from odata hit="
 						+ httpResponse.getStatusLine().getStatusCode());
 				if (httpResponse.getStatusLine().getStatusCode() == org.springframework.http.HttpStatus.OK.value()) {
-					json = EntityUtils.toString(httpResponse.getEntity());
+					json = httpResponse.getAllHeaders().toString();
 				} else {
-					String responseFromECC = HelperClass.getDataFromStream(httpResponse.getEntity().getContent());
-					return XML.toJSONObject(responseFromECC);
+					String responseFromECC = httpResponse.toString();
+					
+					JSONObject responseJson =  XML.toJSONObject(responseFromECC);
+					
+					new ResponseEntity<JSONObject>(responseJson,HttpStatus.BAD_REQUEST);
 				}
 
 				System.err.println("STEP 5 Result from odata hit ============" + json);
@@ -167,7 +173,7 @@ public class HelperClass {
 		}
 
 		System.err.print(" object returned from odata " + obj);
-		return obj;
+		return new ResponseEntity<JSONObject>(obj,HttpStatus.OK);
 
 	}
 

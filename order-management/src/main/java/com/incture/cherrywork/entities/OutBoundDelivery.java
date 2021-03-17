@@ -24,6 +24,41 @@ public class OutBoundDelivery {
 	
 	@Column(name = "itemUnit")
 	private String itemUnit; // Lgnum
+	
+	@Column(name = "terner")
+	private String terner;
+	
+	@Column(name = "documentStatus")
+	private String documenStatus;
+	
+	@Column(name = "resonseMessage")
+	private String responseMessage;
+	
+	public String getTerner() {
+		return terner;
+	}
+
+	public void setTerner(String terner) {
+		this.terner = terner;
+	}
+
+	public String getDocumenStatus() {
+		return documenStatus;
+	}
+
+	public void setDocumenStatus(String documenStatus) {
+		this.documenStatus = documenStatus;
+	}
+
+	public String getResponseMessage() {
+		return responseMessage;
+	}
+
+	public void setResponseMessage(String responseMessage) {
+		this.responseMessage = responseMessage;
+	}
+
+	
 
 	public String getObdNumber() {
 		return obdNumber;

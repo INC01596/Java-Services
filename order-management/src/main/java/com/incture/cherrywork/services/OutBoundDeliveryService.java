@@ -48,17 +48,46 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 				+ "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet";
 		// form payload into a string entity 
 		
-		String entity = formInputEntity(inputDto);
+		
+		String entity = formInputEntityForOutBoundDeliveryDto(inputDto);
 		
 		// call odata method 
-		JSONObject json = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
+		ResponseEntity<?> responseFromOdata = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
 		
-		System.err.println("odata output "+ json);
+		System.err.println("odata output "+ responseFromOdata);
 		
-		return new ResponseEntity<String>(json.toString(),HttpStatus.OK);
+		
+		if(responseFromOdata.getStatusCodeValue()==200){
+			
+			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
+			outBoundDto.setObdNumber("1");
+			outBoundDto.setResponseMessage("");
+			outBoundDto.setDeliveryQuantity(inputDto.getDeliveryQuantity());
+			outBoundDto.setDocumenStatus("Success");
+			outBoundDto.setItemUnit(inputDto.getItemUnit());
+			outBoundDto.setSoItemNumber(inputDto.getSoItemNumber());
+			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
+			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
+			
+			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
+		}else {
+			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
+			outBoundDto.setResponseMessage("");
+			outBoundDto.setDeliveryQuantity(inputDto.getDeliveryQuantity());
+			outBoundDto.setDocumenStatus("Error");
+			outBoundDto.setItemUnit(inputDto.getItemUnit());
+			outBoundDto.setSoItemNumber(inputDto.getSoItemNumber());
+			outBoundDto.setSoNumber(inputDto.getSoNumber());
+			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
+			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
+			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
+		}
+		
+		
 	}
 	
-	   public String formInputEntity(OutBoundDeliveryDto inputDto){
+	   public String formInputEntityForOutBoundDeliveryDto(OutBoundDeliveryDto inputDto){
 		
 		OdataOutBoudDeliveryInputDto  odataInputOutBound = new OdataOutBoudDeliveryInputDto();
 		
@@ -66,6 +95,7 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		odataInputOutBound.setKunag(inputDto.getSoItemNumber());
 		odataInputOutBound.setBtgew(inputDto.getDeliveryQuantity());
 		odataInputOutBound.setLgnum(inputDto.getItemUnit());
+		odataInputOutBound.setTernr("1");
 		
 		return odataInputOutBound.toString();
 	}
