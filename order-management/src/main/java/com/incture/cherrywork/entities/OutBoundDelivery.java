@@ -42,13 +42,14 @@ public class OutBoundDelivery {
 	private String responseMessage;
 	
 	@OneToMany(mappedBy = "outBoundDelivery" , cascade = CascadeType.ALL)
-	private List<OutBoundDeliveryItemDto> outboundDeliveryItemDto = new ArrayList<>();
+	private List<OutBoundDeliveryItem> outboundDeliveryItemDto = new ArrayList<>();
 	
-	public List<OutBoundDeliveryItemDto> getOutboundDeliveryItemDto() {
+	
+	public List<OutBoundDeliveryItem> getOutboundDeliveryItemDto() {
 		return outboundDeliveryItemDto;
 	}
 
-	public void setOutboundDeliveryItemDto(List<OutBoundDeliveryItemDto> outboundDeliveryItemDto) {
+	public void setOutboundDeliveryItemDto(List<OutBoundDeliveryItem> outboundDeliveryItemDto) {
 		this.outboundDeliveryItemDto = outboundDeliveryItemDto;
 	}
 
