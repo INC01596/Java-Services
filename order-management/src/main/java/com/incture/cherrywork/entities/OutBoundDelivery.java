@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
+
 @Entity
 @Table(name = "OutBoundDelivery")
 public class OutBoundDelivery {
@@ -39,9 +41,17 @@ public class OutBoundDelivery {
 	@Column(name = "resonseMessage")
 	private String responseMessage;
 	
-	@OneToMany(mappedBy = "obdNumber" , cascade = CascadeType.ALL)
-	private List<OutBoundDeliveryItem> salesOrderItemList = new ArrayList<>();
+	@OneToMany(mappedBy = "outBoundDelivery" , cascade = CascadeType.ALL)
+	private List<OutBoundDeliveryItemDto> outboundDeliveryItemDto = new ArrayList<>();
 	
+	public List<OutBoundDeliveryItemDto> getOutboundDeliveryItemDto() {
+		return outboundDeliveryItemDto;
+	}
+
+	public void setOutboundDeliveryItemDto(List<OutBoundDeliveryItemDto> outboundDeliveryItemDto) {
+		this.outboundDeliveryItemDto = outboundDeliveryItemDto;
+	}
+
 	public String getTerner() {
 		return terner;
 	}
