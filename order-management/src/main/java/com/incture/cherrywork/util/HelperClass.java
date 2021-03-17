@@ -92,9 +92,9 @@ public class HelperClass {
 					(String) destinationInfo.get("Password"),httpClient,  proxyHost, proxyPort,
 					(String) destinationInfo.get("sap-client"),jwToken);
 			String token = null;
+			List<String> cookies = new ArrayList<>();
 			if(headers.length != 0){
 			
-			List<String> cookies = new ArrayList<>();
 			for (Header header : headers) {
 
 				if (header.getName().equalsIgnoreCase("x-csrf-token")) {
@@ -120,6 +120,12 @@ public class HelperClass {
 			if (token != null) {
 				httpRequestBase.addHeader("X-CSRF-Token", token);
 			}
+			if (!cookies.isEmpty()) {
+				for (String cookie : cookies) {
+					String tmp = cookie.split(";", 2)[0];
+					httpRequestBase.addHeader("Cookie", tmp);
+				}
+			}
 //			if (tenantctx != null) {
 //				httpRequestBase.addHeader("SAP-Connectivity-ConsumerAccount",
 //						tenantctx.getTenant().getAccount().getId());
@@ -128,7 +134,7 @@ public class HelperClass {
 				
 				
 				System.err.println("this is requestBase ============" + Arrays.asList(httpRequestBase));
-				httpResponse = httpClient.execute(new HttpHost(proxyHost, proxyPort), httpRequestBase);
+				httpResponse = httpClient.execute(httpRequestBase);
 				System.err.println(
 						"com.incture.utils.HelperClass ============" + Arrays.asList(httpResponse.getAllHeaders()));
 				System.err.println("STEP 4 com.incture.utils.HelperClass ============StatusCode from odata hit="
