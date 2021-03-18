@@ -1,8 +1,11 @@
 package com.incture.cherrywork.dtos;
 
+import java.util.UUID;
+
 public class OutBoundDeliveryItemDto {
 	
 	private String soItemNumber;
+	private String obdNumber;
 	private String material;
 	private String materialDesc;
 	private String plant;
@@ -11,6 +14,7 @@ public class OutBoundDeliveryItemDto {
 	private String unit;
 	private String pickedQty;
 	private String netPrice;
+
 	
 	public String getSoItemNumber() {
 		return soItemNumber;
@@ -65,6 +69,12 @@ public class OutBoundDeliveryItemDto {
 	}
 	public void setNetPrice(String netPrice) {
 		this.netPrice = netPrice;
+	}
+	public String getObdNumber() {
+		return obdNumber;
+	}
+	public void setObdNumber(String obdNumber) {
+		this.obdNumber = obdNumber;
 	}
 
 }

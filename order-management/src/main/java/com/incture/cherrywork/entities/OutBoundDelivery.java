@@ -1,60 +1,68 @@
 package com.incture.cherrywork.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
 
 @Entity
 @Table(name = "OutBoundDelivery")
 public class OutBoundDelivery {
 	
-	@Id
-	@Column(name = "obdNumber")
-	private String obdNumber;
 	
-	@Column(name = "soNumber")
-	private String soNumber; //Vbeln 
-	
-	@Column(name = "soItemNumber")
-	 private String  soItemNumber;//Kunag
-	 
-	@Column(name = "deliveryQuantity")
-	private String  deliveryQuantity; //Btgew
-	
-	@Column(name = "itemUnit")
-	private String itemUnit; // Lgnum
-	
-	@Column(name = "terner")
-	private String terner;
-	
-	@Column(name = "documentStatus")
-	private String documenStatus;
-	
-	@Column(name = "resonseMessage")
-	private String responseMessage;
-	
-	@Column(name = "pgiNumber")
-	private String pgiNumber;
-	
-	@OneToMany(mappedBy = "outBoundDelivery" , cascade = CascadeType.ALL)
-	private List<OutBoundDeliveryItem> outboundDeliveryItemDto = new ArrayList<>();
-	
-	
-	public List<OutBoundDeliveryItem> getOutboundDeliveryItemDto() {
-		return outboundDeliveryItemDto;
+	public String getSoNumberSeries() {
+		return soNumberSeries;
 	}
 
-	public void setOutboundDeliveryItemDto(List<OutBoundDeliveryItem> outboundDeliveryItemDto) {
-		this.outboundDeliveryItemDto = outboundDeliveryItemDto;
+	public void setSoNumberSeries(String soNumberSeries) {
+		this.soNumberSeries = soNumberSeries;
 	}
+
+	public String getPgiNumber() {
+		return pgiNumber;
+	}
+
+	public void setPgiNumber(String pgiNumber) {
+		this.pgiNumber = pgiNumber;
+	}
+
+	@Id
+	@Column(name = "SoNumberSeries")
+	private String soNumberSeries = UUID.randomUUID().toString();
+	
+	@Column(name = "ObdNumber")
+	private String obdNumber;
+	
+	@Column(name = "SoNumber")
+	private String soNumber; //Vbeln 
+	
+	@Column(name = "SoItemNumber")
+	 private String  soItemNumber;//Kunag
+	 
+	@Column(name = "DeliveryQuantity")
+	private String  deliveryQuantity; //Btgew
+	
+	@Column(name = "ItemUnit")
+	private String itemUnit; // Lgnum
+	
+	@Column(name = "Terner")
+	private String terner;
+	
+	@Column(name = "DocumentStatus")
+	private String documenStatus;
+	
+	@Column(name = "ResonseMessage")
+	private String responseMessage;
+	
+	@Column(name = "PgiNumber")
+	private String pgiNumber;
+	
+	
+	
+	
+	
 
 	public String getTerner() {
 		return terner;

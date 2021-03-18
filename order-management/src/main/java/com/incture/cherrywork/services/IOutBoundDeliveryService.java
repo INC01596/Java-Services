@@ -24,4 +24,6 @@ public ResponseEntity<Object> delete(String obdNumber);
 public ResponseEntity<Object> readAll(String search);
 
 ResponseEntity<List<OutBoundDelivery>> readAll();
+
+ResponseEntity<Object> readItemAndHeader(String obdNumber);
 }

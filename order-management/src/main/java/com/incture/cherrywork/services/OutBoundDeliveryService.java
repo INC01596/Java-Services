@@ -26,9 +26,11 @@ import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
+import com.incture.cherrywork.dtos.OutBoundDeliveryHeaderAndItemOutputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
 import com.incture.cherrywork.entities.OutBoundDelivery;
 import com.incture.cherrywork.entities.OutBoundDeliveryItem;
+import com.incture.cherrywork.repositories.IOutBoundDeliveryItemRepository;
 import com.incture.cherrywork.repositories.IOutBoundDeliveryRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.OutBoundDeliveryPredicateBuilder;
@@ -43,6 +45,9 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 	
 	@Autowired
 	private IOutBoundDeliveryRepository repo;
+	
+	@Autowired
+	private IOutBoundDeliveryItemRepository itemRepo;
 	
 	
 	
@@ -226,8 +231,10 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 public ResponseEntity<Object> create(OutBoundDeliveryDto outBoundDeliveryDto) {
 		OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDeliveryDto, OutBoundDelivery.class);
 		List<OutBoundDeliveryItem> outboundDeliveryItemDo =  ObjectMapperUtils.mapAll(outBoundDeliveryDto.getOutboundDeliveryItemDto(), OutBoundDeliveryItem.class);
-		outBoundDelivery.setOutboundDeliveryItemDto(outboundDeliveryItemDo);
 		OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
+		
+		                   itemRepo.saveAll(outboundDeliveryItemDo);
+		                                           
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 				return ResponseEntity.created(location).body(ObjectMapperUtils.map(savedOutBoundDelivery, OutBoundDeliveryDto.class));
 	}
@@ -240,6 +247,23 @@ public ResponseEntity<Object> read(String obdNumber) {
 		}
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(optionalOutBoundDelivery.get(),OutBoundDeliveryDto.class));
 	}
+@Override
+public ResponseEntity<Object> readItemAndHeader(String obdNumber) {
+	
+	OutBoundDeliveryHeaderAndItemOutputDto outputDto = new OutBoundDeliveryHeaderAndItemOutputDto();
+		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
+		if(!optionalOutBoundDelivery.isPresent()) { 
+		return ResponseEntity.notFound().build();
+		}
+		List<OutBoundDeliveryItem> optionalOutBoundDeliveryItem = itemRepo.findByObdNumber(obdNumber);
+		if(!optionalOutBoundDeliveryItem.isEmpty()) { 
+			return ResponseEntity.notFound().build();
+			}
+		outputDto.setOutboundDeliveryDto(ObjectMapperUtils.map(optionalOutBoundDelivery.get(),OutBoundDeliveryDto.class));
+		outputDto.setOutBoundDeliveryItemDto(ObjectMapperUtils.mapAll(optionalOutBoundDeliveryItem,OutBoundDeliveryItemDto.class));
+		return ResponseEntity.ok().body(outputDto);
+	}
+
 
 
 

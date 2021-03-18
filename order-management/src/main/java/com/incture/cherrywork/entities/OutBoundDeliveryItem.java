@@ -1,5 +1,7 @@
 package com.incture.cherrywork.entities;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +16,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "OutBoundDeliveryItem")
 public class OutBoundDeliveryItem {
 	
+	
 	@Id
+	@Column(name = "SoItemNumberSeries")
+	private String soItemNumberSeries = UUID.randomUUID().toString();
+	
+	public String getSoItemNumberSeries() {
+		return soItemNumberSeries;
+	}
+	public void setSoItemNumberSeries(String soItemNumberSeries) {
+		this.soItemNumberSeries = soItemNumberSeries;
+	}
+	public String getObdNumber() {
+		return obdNumber;
+	}
+	public void setObdNumber(String obdNumber) {
+		this.obdNumber = obdNumber;
+	}
 	@Column(name = "SoItemNumber", length = 30)
 	private String soItemNumber;
+	@Column(name = "ObdNumber")
+	private String obdNumber;
 	@Column(name = "Material")
 	private String material;
     @Column(name = "MaterialDesc")
@@ -33,16 +53,9 @@ public class OutBoundDeliveryItem {
 	private String pickedQty;
     @Column(name = "NetPrice")
 	private String netPrice;
-    @ManyToOne(fetch = FetchType.LAZY, optional=false)
-    @JoinColumn(name = "obdNumber")@JsonIgnore
-    private OutBoundDelivery outBoundDelivery;
     
-	public OutBoundDelivery getOutBoundDelivery() {
-		return outBoundDelivery;
-	}
-	public void setOutBoundDelivery(OutBoundDelivery outBoundDelivery) {
-		this.outBoundDelivery = outBoundDelivery;
-	}
+	
+	
 	public String getSoItemNumber() {
 		return soItemNumber;
 	}

@@ -14,7 +14,7 @@ public class OutBoundDeliveryDto {
 	private String documentStatus;
 	private String responseMessage;
 	private String pgiNumber;
-	
+
 	
 	
 	public String getDeliveryDate() {

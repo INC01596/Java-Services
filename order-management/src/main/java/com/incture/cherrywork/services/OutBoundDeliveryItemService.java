@@ -36,7 +36,6 @@ public class OutBoundDeliveryItemService implements IOutBoundDeliveryItemService
 		return ResponseEntity.notFound().build();
 		}
 		OutBoundDeliveryItem outBoundDeliveryItem = ObjectMapperUtils.map(outBoundDeliveryItemDto, OutBoundDeliveryItem.class);
-		outBoundDeliveryItem.setOutBoundDelivery(optionalOutBoundDelivery.get());
 		OutBoundDeliveryItem savedOutBoundDeliveryItem = repoItem.save(outBoundDeliveryItem);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 				return ResponseEntity.created(location).body(ObjectMapperUtils.map(savedOutBoundDeliveryItem, SalesOrderItemDto.class));
