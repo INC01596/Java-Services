@@ -148,7 +148,7 @@ public class HelperClass {
 						"com.incture.utils.HelperClass ============" + httpResponse);
 				System.err.println("STEP 4 com.incture.utils.HelperClass ============StatusCode from odata hit="
 						+ httpResponse.getStatusLine().getStatusCode());
-				if (httpResponse.getStatusLine().getStatusCode() == org.springframework.http.HttpStatus.OK.value()) {
+				if (httpResponse.getStatusLine().getStatusCode() == 201) {
 					json = httpResponse.getAllHeaders();
 					jsonResponse =  httpResponse.getHeaders("sap-message");
 				} else {
@@ -187,7 +187,7 @@ public class HelperClass {
 		}
 
 		System.err.print(" object returned from odata " + obj);
-		return new ResponseEntity<String>(objresult,HttpStatus.OK);
+		return new ResponseEntity<JSONObject>(obj,HttpStatus.OK);
 
 	}
 

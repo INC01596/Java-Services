@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.transaction.Transactional;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,12 +69,22 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		// call odata method 
 		ResponseEntity<?> responseFromOdata = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
 		System.err.println("odata output "+ responseFromOdata);
+		
+		JSONObject responseObject  = (JSONObject) responseFromOdata.getBody();
+		
+		 
 		if(responseFromOdata.getStatusCodeValue()==200){
+			String opdNumber = responseObject.get("message").toString();
+			String pgiNumber = responseObject.get("message").toString();
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
 			outBoundDto.setDocumentStatus("Success");
 			outBoundDto.setResponseMessage("Created");
-			outBoundDto.setObdNumber(inputDto.getObdNumber());
-			outBoundDto.setPgiNumber(inputDto.getPgiNumber());
+			if(inputDto.getTernr() == "1"){
+			outBoundDto.setObdNumber(opdNumber);
+			}
+			if(inputDto.getTernr() == "2"){
+			outBoundDto.setPgiNumber(pgiNumber);
+			}
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
 			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
 			outBoundDto.setNetAmount(inputDto.getNetAmount());
@@ -85,20 +96,8 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 			
 			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
 		}else {
-			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
-			outBoundDto.setDocumentStatus("Error");
-			outBoundDto.setResponseMessage("Failed");
-			outBoundDto.setObdNumber(inputDto.getObdNumber());
-			outBoundDto.setPgiNumber(inputDto.getPgiNumber());
-			outBoundDto.setSoNumber(inputDto.getSoNumber());
-			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
-			outBoundDto.setNetAmount(inputDto.getNetAmount());
-			outBoundDto.setShippingPoint(inputDto.getShippingPoint());
-			outBoundDto.setSoNumber(inputDto.getSoNumber());
-			outBoundDto.setOutboundDeliveryItemDto(inputDto.getOutboundDeliveryItemDto());
-			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
-			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
-			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
+		     
+			return new ResponseEntity<String>(responseFromOdata.toString(),HttpStatus.OK);
 		}
 		
 		
