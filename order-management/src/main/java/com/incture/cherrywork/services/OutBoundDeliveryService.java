@@ -138,6 +138,7 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		
 		odataInputOutBound.setTernr("1");
 		
+		odataInputOutBound.setVstel(inputDto.getShippingPoint());
 		
 		
 		return odataInputOutBound.toString();
