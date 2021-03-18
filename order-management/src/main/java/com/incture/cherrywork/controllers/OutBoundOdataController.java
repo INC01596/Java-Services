@@ -48,6 +48,11 @@ public class OutBoundOdataController {
 	public ResponseEntity<Object> read(@PathVariable String obdNumber) { 
 			return outBoundDeliveryService.read(obdNumber);
 	}
+	@GetMapping("/OutDeliveryItem/{obdNumber}/")
+	@ApiOperation(value = "Read OutBoundCreate Dataset")
+	public ResponseEntity<Object> readItemAndHeader(@PathVariable String obdNumber) { 
+			return outBoundDeliveryService.readItemAndHeader(obdNumber);
+	}
 	
 	@GetMapping("/OutDelivery/ReadAll")
 	@ApiOperation(value = "Read OutBoundCreate All Dataset")
