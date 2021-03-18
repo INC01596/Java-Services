@@ -37,6 +37,13 @@ public class OdataOutBoudDeliveryInputDto {
 	public void setTernr(String ternr) {
 		Ternr = ternr;
 	}
+	@Override
+	public String toString() {
+		return "OdataOutBoudDeliveryInputDto [Vbeln=" + Vbeln + ", Kunag=" + Kunag + ", Btgew=" + Btgew + ", Lgnum="
+				+ Lgnum + ", Ternr=" + Ternr + "]";
+	}
+	
+	
 	
 
 }

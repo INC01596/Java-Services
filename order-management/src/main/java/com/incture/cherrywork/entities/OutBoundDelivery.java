@@ -41,6 +41,9 @@ public class OutBoundDelivery {
 	@Column(name = "resonseMessage")
 	private String responseMessage;
 	
+	@Column(name = "pgiNumber")
+	private String pgiNumber;
+	
 	@OneToMany(mappedBy = "outBoundDelivery" , cascade = CascadeType.ALL)
 	private List<OutBoundDeliveryItem> outboundDeliveryItemDto = new ArrayList<>();
 	

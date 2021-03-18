@@ -13,6 +13,7 @@ public class OutBoundDeliveryDto {
 	private List<OutBoundDeliveryItemDto> outboundDeliveryItemDto;
 	private String documentStatus;
 	private String responseMessage;
+	private String pgiNumber;
 	
 	
 	
@@ -69,6 +70,12 @@ public class OutBoundDeliveryDto {
 	}
 	public void setResponseMessage(String responseMessage) {
 		this.responseMessage = responseMessage;
+	}
+	public String getPgiNumber() {
+		return pgiNumber;
+	}
+	public void setPgiNumber(String pgiNumber) {
+		this.pgiNumber = pgiNumber;
 	}
 
 

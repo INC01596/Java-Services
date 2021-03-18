@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
@@ -49,29 +53,26 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 				+ "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet";
 		// form payload into a string entity 
 		
-		String entity = null;
+		String  entity  = null;
 		if(inputDto.getTernr().equals("1") ){
-		 entity = formInputEntityForOutBoundDeliveryDto(inputDto);
+			  entity = formInputEntityForOutBoundDeliveryDto(inputDto);
 		}
 		else if(inputDto.getTernr().equals("2"))
 		{
-		 entity = formInputEntityForOutBoundDeliveryPgiDto(inputDto);
+		      entity = formInputEntityForOutBoundDeliveryPgiDto(inputDto);
 		}
 		else {
-			 entity = formInputEntityForInvoiceDto(inputDto);
+			  entity = formInputEntityForInvoiceDto(inputDto);
 		}
 		// call odata method 
 		ResponseEntity<?> responseFromOdata = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
-		
 		System.err.println("odata output "+ responseFromOdata);
-		
-		
 		if(responseFromOdata.getStatusCodeValue()==200){
-			
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
 			outBoundDto.setDocumentStatus("Success");
 			outBoundDto.setResponseMessage("Created");
-			outBoundDto.setObdNumber("1");
+			outBoundDto.setObdNumber(inputDto.getObdNumber());
+			outBoundDto.setPgiNumber(inputDto.getPgiNumber());
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
 			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
 			outBoundDto.setNetAmount(inputDto.getNetAmount());
@@ -86,7 +87,8 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
 			outBoundDto.setDocumentStatus("Error");
 			outBoundDto.setResponseMessage("Failed");
-			outBoundDto.setObdNumber("1");
+			outBoundDto.setObdNumber(inputDto.getObdNumber());
+			outBoundDto.setPgiNumber(inputDto.getPgiNumber());
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
 			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
 			outBoundDto.setNetAmount(inputDto.getNetAmount());
@@ -101,41 +103,92 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		
 	}
 	
-	   public String formInputEntityForOutBoundDeliveryDto(OutBoundDeliveryDto inputDto){
+	   public String formInputEntityForOutBoundDeliveryDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
+		   
+		   
 		
 		OdataOutBoudDeliveryInputDto  odataInputOutBound = new OdataOutBoudDeliveryInputDto();
 		
 		odataInputOutBound.setVbeln(inputDto.getSoNumber());
 		
 		List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
-
+		StringJoiner joiner = new StringJoiner("/:/");
 		for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
 			
-		odataInputOutBound.setKunag(outBoundDeliveryItemList.get(i).getSoItemNumber());
-		odataInputOutBound.setBtgew(outBoundDeliveryItemList.get(i).getDeliveryQty());
-		odataInputOutBound.setLgnum(outBoundDeliveryItemList.get(i).getUnit());
+			
+				joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
+		
 		}
+		odataInputOutBound.setBtgew(joiner.toString());
+		
+		joiner = new StringJoiner("/:/");
+		for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+			
+			joiner.add(outBoundDeliveryItemList.get(i).getSoItemNumber());
+		}
+		odataInputOutBound.setKunag(joiner.toString());
+		joiner = new StringJoiner("/:/");
+        for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+			
+			joiner.add(outBoundDeliveryItemList.get(i).getUnit());
+		}
+		odataInputOutBound.setLgnum(joiner.toString());
+		
+		
 		odataInputOutBound.setTernr("1");
 		
-		return odataInputOutBound.toString();
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(odataInputOutBound);
+		
+		return json;
 	}
 	   
-	   public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto){
+	   public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
 			
 			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
 			
 			odataInputOutBound.setVbeln(inputDto.getObdNumber());
+			
 			List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				
-				odataInputOutBound.setBtgew(outBoundDeliveryItemList.get(i).getDeliveryQty());
-				odataInputOutBound.setGewei(outBoundDeliveryItemList.get(i).getSoItemNumber());
-				odataInputOutBound.setKunag(outBoundDeliveryItemList.get(i).getPickedQty());
-				odataInputOutBound.setLgnum(outBoundDeliveryItemList.get(i).getSloc());
-				odataInputOutBound.setNtgew(outBoundDeliveryItemList.get(i).getPickedQty());
-				odataInputOutBound.setTraid(outBoundDeliveryItemList.get(i).getMaterial());
-				odataInputOutBound.setWerks(outBoundDeliveryItemList.get(i).getPlant());
+			StringJoiner joiner = new StringJoiner("/:/");
+				for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+					joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
 			}
+			odataInputOutBound.setBtgew(joiner.toString());
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getUnit());
+			}
+			odataInputOutBound.setGewei(joiner.toString());
+			
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getSoItemNumber());
+			}
+			odataInputOutBound.setKunag(joiner.toString());
+			
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getSloc());
+			}
+			odataInputOutBound.setLgnum(joiner.toString());
+			
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getPickedQty());
+			}
+			odataInputOutBound.setNtgew(joiner.toString());
+			
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getMaterial());
+			}
+			odataInputOutBound.setTraid(joiner.toString());
+			joiner = new StringJoiner("/:/");
+			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
+				joiner.add(outBoundDeliveryItemList.get(i).getPlant());
+			}
+			odataInputOutBound.setWerks(joiner.toString());
 			
 			/*private String Vbeln ;//– Delivery number
 			private String Kunag ;//– Item Number
@@ -146,21 +199,24 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 			private String Gewei ;// – UOM
 			private String Lgnum ;// – Storage Location
 */
-			
 			odataInputOutBound.setTernr("2");
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String json = ow.writeValueAsString(odataInputOutBound);
 			
-			return odataInputOutBound.toString();
+			return json;
 		}
 	   
-	   public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto){
+	   public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
 			
 			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
 			
 			odataInputOutBound.setVbeln(inputDto.getObdNumber());
 			
 			odataInputOutBound.setTernr("3");
+			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+			String json = ow.writeValueAsString(odataInputOutBound);
 			
-			return odataInputOutBound.toString();
+			return json;
 		}
 	   
 	   
