@@ -50,6 +50,8 @@ public class HelperClass {
 		String proxyHost = "connectivityproxy.internal.cf.eu10.hana.ondemand.com";
 		System.err.println("proxyHost-- " + proxyHost);
 		int proxyPort = 20003;
+		Header[] jsonResponse = null;
+		String objresult = null;
 		
 		JSONObject jsonObj = new JSONObject(System.getenv("VCAP_SERVICES"));
 		
@@ -69,7 +71,7 @@ public class HelperClass {
 		HttpRequestBase httpRequestBase = null;
 		HttpResponse httpResponse = null;
 		StringEntity input = null;
-		String json = null;
+		Header [] json = null;
 		JSONObject obj = null;
 		 String jwToken = DestinationReaderUtil.getConectivityProxy();
 		if (url != null) {
@@ -147,15 +149,15 @@ public class HelperClass {
 				System.err.println("STEP 4 com.incture.utils.HelperClass ============StatusCode from odata hit="
 						+ httpResponse.getStatusLine().getStatusCode());
 				if (httpResponse.getStatusLine().getStatusCode() == org.springframework.http.HttpStatus.OK.value()) {
-					json = httpResponse.getAllHeaders().toString();
+					json = httpResponse.getAllHeaders();
+					jsonResponse =  httpResponse.getHeaders("sap-message");
 				} else {
 					String responseFromECC = httpResponse.getEntity().toString();
 					
 					System.err.println("responseFromEcc"+responseFromECC);
 					
-					JSONObject responseJson =  XML.toJSONObject(responseFromECC);
 					
-					return new ResponseEntity<JSONObject>(responseJson,HttpStatus.BAD_REQUEST);
+					return new ResponseEntity<String>("Failed to create , OutBound already created",HttpStatus.BAD_REQUEST);
 				}
 
 				System.err.println("STEP 5 Result from odata hit ============" + json);
@@ -167,8 +169,14 @@ public class HelperClass {
 			}
 
 			try {
+				
+				System.err.println("jsonOutput"+json);
 
-				obj = new JSONObject(json);
+				System.err.println("jsonHeaderResponse"+jsonResponse);
+				obj = new JSONObject(jsonResponse);
+				 objresult  = obj.toString();
+				
+				
 			} catch (JSONException e) {
 				System.err.print("JSONException : check " + e + "JSON Object : " + json);
 				
@@ -179,7 +187,7 @@ public class HelperClass {
 		}
 
 		System.err.print(" object returned from odata " + obj);
-		return new ResponseEntity<JSONObject>(obj,HttpStatus.OK);
+		return new ResponseEntity<String>(objresult,HttpStatus.OK);
 
 	}
 

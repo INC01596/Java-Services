@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
@@ -137,10 +138,9 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 		
 		odataInputOutBound.setTernr("1");
 		
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = ow.writeValueAsString(odataInputOutBound);
 		
-		return json;
+		
+		return odataInputOutBound.toString();
 	}
 	   
 	   public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
@@ -208,15 +208,14 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 	   
 	   public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
 			
-			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
+			OdataOutBoudDeliveryInvoiceInputDto  odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
 			
 			odataInputOutBound.setVbeln(inputDto.getObdNumber());
 			
 			odataInputOutBound.setTernr("3");
-			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-			String json = ow.writeValueAsString(odataInputOutBound);
 			
-			return json;
+			
+			return odataInputOutBound.toString();
 		}
 	   
 	   
@@ -238,6 +237,19 @@ public ResponseEntity<Object> read(String obdNumber) {
 		}
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(optionalOutBoundDelivery.get(),OutBoundDeliveryDto.class));
 	}
+
+
+
+
+@Override
+public ResponseEntity<List<OutBoundDelivery>> readAll() {
+		List<OutBoundDelivery> optionalOutBoundDelivery = repo.findAll();
+		if(optionalOutBoundDelivery.isEmpty()) { 
+		return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok().body(optionalOutBoundDelivery);
+	}
+
 
 @Override
 public ResponseEntity<Object> update(String obdNumber, OutBoundDeliveryDto outBoundDeliveryDto) {

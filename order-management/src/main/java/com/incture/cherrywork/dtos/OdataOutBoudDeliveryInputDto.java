@@ -7,6 +7,7 @@ public class OdataOutBoudDeliveryInputDto {
 	private String Btgew;//Delivery Quantity
 	private String Lgnum;//Item Unit
 	private String Ternr;
+	private String Vstel;
 	public String getVbeln() {
 		return Vbeln;
 	}
@@ -39,11 +40,13 @@ public class OdataOutBoudDeliveryInputDto {
 	}
 	@Override
 	public String toString() {
-		return "OdataOutBoudDeliveryInputDto [Vbeln=" + Vbeln + ", Kunag=" + Kunag + ", Btgew=" + Btgew + ", Lgnum="
-				+ Lgnum + ", Ternr=" + Ternr + "]";
+		return "{"+" \"Vbeln\":"+"\""+ Vbeln +"\""+",\"Kunag\"" +":\""+ Kunag +"\"" + ",\"Btgew\":" +"\""+ Btgew +"\""+ ",\"Lgnum\":"
+				+"\""+ Lgnum +"\"" +",\"Ternr\":" +"\""+ Ternr +"\""+",\"Vstel\":" +"\""+ Vstel +"\""+ "}";
 	}
-	
-	
-	
-
+	public String getVstel() {
+		return Vstel;
+	}
+	public void setVstel(String vstel) {
+		Vstel = vstel;
+	}
 }

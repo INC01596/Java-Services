@@ -66,6 +66,13 @@ public class OdataOutBoudDeliveryPgiInputDto {
 	public void setTernr(String ternr) {
 		Ternr = ternr;
 	}
+	@Override
+	public String toString() {
+		return "{"+" \"Vbeln\":"+"\""+ Vbeln +"\""+",\"Kunag\":" +"\""+ Kunag +"\""+",\"Traid\":" +"\""+ Traid +"\""+",\"Werks\""  
+				+":\""+ Werks +"\""  + ",\"Btgew\":" +"\""+ Btgew +"\""+ ",\"Ntgew\":" +"\""+ Ntgew +"\"" + ",\"Gewei\":" +"\""+ Gewei +"\""+",\"Lgnum\":" + "\""+ Lgnum +"\"" + ",\"Ternr\":" 
+				+ "\""+ Ternr +"\"" + "}";
+		
+	}
 
 	
 	

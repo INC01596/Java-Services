@@ -50,6 +50,20 @@ public class OutBoundDeliveryItemService implements IOutBoundDeliveryItemService
 		}
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(optionalOutBoundDeliveryItem.get(),OutBoundDeliveryItemDto.class));	}
 
+	
+	/*@Override
+	public ResponseEntity<Object> readItemAndHeader(String obdNumber, String soItemNumber) {
+		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
+		if(!optionalOutBoundDelivery.isPresent()) { 
+		return ResponseEntity.notFound().build();
+		}
+		                             
+		Optional<OutBoundDeliveryItem> optionalOutBoundDeliveryItem = repoItem.findById(soItemNumber);
+		if(!optionalOutBoundDeliveryItem.isPresent()) { 
+		return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok().body(ObjectMapperUtils.map(optionalOutBoundDeliveryItem.get(),OutBoundDeliveryItemDto.class));	}
+*/
 	@Override
 	public ResponseEntity<Object> update(String obdNumber, String soItemNumber,
 			OutBoundDeliveryItemDto outBoundDeliveryItemDto) {
