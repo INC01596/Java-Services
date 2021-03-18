@@ -11,5 +11,6 @@ public interface IOutBoundDeliveryItemService {
 	ResponseEntity<Object> update(String obdNumber, String soItemNumber, OutBoundDeliveryItemDto outBoundDeliveryItemDto);
 	ResponseEntity<Object> delete(String obdNumber, String soItemNumber);
 	ResponseEntity<Object> readAll(String search);
+	ResponseEntity<Object> readItemAndHeader(String obdNumber, String soItemNumber);
 
 }

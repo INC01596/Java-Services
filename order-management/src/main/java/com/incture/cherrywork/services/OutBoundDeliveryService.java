@@ -28,6 +28,7 @@ import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
 import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
 import com.incture.cherrywork.entities.OutBoundDelivery;
+import com.incture.cherrywork.entities.OutBoundDeliveryItem;
 import com.incture.cherrywork.repositories.IOutBoundDeliveryRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.OutBoundDeliveryPredicateBuilder;
@@ -224,6 +225,8 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 @Override
 public ResponseEntity<Object> create(OutBoundDeliveryDto outBoundDeliveryDto) {
 		OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDeliveryDto, OutBoundDelivery.class);
+		List<OutBoundDeliveryItem> outboundDeliveryItemDo =  ObjectMapperUtils.mapAll(outBoundDeliveryDto.getOutboundDeliveryItemDto(), OutBoundDeliveryItem.class);
+		outBoundDelivery.setOutboundDeliveryItemDto(outboundDeliveryItemDo);
 		OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 				return ResponseEntity.created(location).body(ObjectMapperUtils.map(savedOutBoundDelivery, OutBoundDeliveryDto.class));
