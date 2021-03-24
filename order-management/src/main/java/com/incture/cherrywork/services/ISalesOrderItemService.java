@@ -9,5 +9,6 @@ public interface ISalesOrderItemService {
 	ResponseEntity<Object> update(String s4DocumentId, String salesItemId, SalesOrderItemDto salesOrderItemDto);
 	ResponseEntity<Object> delete(String s4DocumentId, String salesItemId);
 	ResponseEntity<Object> readAll(String search);
-
+	//ResponseEntity<Object> deleteDraftedVersion(String s4DocumentId, String salesItemId);
+  
 }

@@ -90,4 +90,15 @@ List<SalesOrderItem> salesOrderItems = (List<SalesOrderItem>) salesOrderItemRepo
 Object t = ObjectMapperUtils.mapAll(salesOrderItems, SalesOrderItemDto.class);
 return ResponseEntity.ok().body(t);     
 }
+
+//@Override
+//public ResponseEntity<Object> deleteDraftedVersion(String s4DocumentId, String salesItemId){
+//Optional<SalesOrderItem> optionalSalesOrderItem = salesOrderItemRepository.findById(salesItemId);
+//if (!optionalSalesOrderItem.isPresent()) {
+//return ResponseEntity.notFound().build();
+//}
+//salesOrderItemRepository.delete(optionalSalesOrderItem.get());
+//return ResponseEntity.ok().body(null);
+//}
+
 }

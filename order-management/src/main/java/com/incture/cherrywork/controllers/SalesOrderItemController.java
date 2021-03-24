@@ -1,4 +1,4 @@
-package com.incture.cherrywork.controllers;
+ package com.incture.cherrywork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import com.incture.cherrywork.services.ISalesOrderItemService;
 public class SalesOrderItemController {
 
 @Autowired
-private ISalesOrderItemService salesOrderItemService;
+private ISalesOrderItemService salesOrderItemService; 
 
 @PostMapping("/SalesOrderItem")
 @ApiOperation(value = "Create a SalesOrderItem Dataset")
@@ -51,4 +51,10 @@ public ResponseEntity<Object> delete(@PathVariable String s4DocumentId, @PathVar
 public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 		return salesOrderItemService.readAll(search);
 }
+
+//@GetMapping("/SalesOrderItem/{salesItemId}/")
+//@ApiOperation(value = "Delete SalesOrderHeader drafted version Dataset")
+//public ResponseEntity<Object> deleteDraftedVersion(@PathVariable String s4DocumentId, @PathVariable String salesItemId){
+//	return salesOrderItemService.deleteDraftedVersion(s4DocumentId, salesItemId);
+//}
 }
