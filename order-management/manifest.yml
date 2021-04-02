@@ -1,0 +1,9 @@
+applications:
+-  name: order-management
+   memory: 1G
+   path: target/order-management-1.0.0.jar
+   random-route: false
+   buildpacks: 
+   - sap_java_buildpack
+   services:
+   - COM
