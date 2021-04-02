@@ -42,54 +42,48 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 @Service
 @Transactional
 public class OutBoundDeliveryService implements IOutBoundDeliveryService {
-	
+
 	@Autowired
 	private IOutBoundDeliveryRepository repo;
-	
+
 	@Autowired
 	private IOutBoundDeliveryItemRepository itemRepo;
-	
-	
-	
+
 	@Override
-	public ResponseEntity<?> createOutBoundDeliveryOnSubmit(OutBoundDeliveryDto inputDto) throws URISyntaxException, IOException{
-		// call destination 
+	public ResponseEntity<?> createOutBoundDeliveryOnSubmit(OutBoundDeliveryDto inputDto)
+			throws URISyntaxException, IOException {
+		// call destination
 		Map<String, Object> destinationInfo = DestinationReaderUtil
 				.getDestination(ComConstants.ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME);
-		//set Url
-		String url = destinationInfo.get("URL")
-				+ "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet";
-		// form payload into a string entity 
-		
-		String  entity  = null;
-		if(inputDto.getTernr().equals("1") ){
-			  entity = formInputEntityForOutBoundDeliveryDto(inputDto);
+		// set Url
+		String url = destinationInfo.get("URL") + "/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/likpSet";
+		// form payload into a string entity
+
+		String entity = null;
+		if (inputDto.getTernr().equals("1")) {
+			entity = formInputEntityForOutBoundDeliveryDto(inputDto);
+		} else if (inputDto.getTernr().equals("2")) {
+			entity = formInputEntityForOutBoundDeliveryPgiDto(inputDto);
+		} else {
+			entity = formInputEntityForInvoiceDto(inputDto);
 		}
-		else if(inputDto.getTernr().equals("2"))
-		{
-		      entity = formInputEntityForOutBoundDeliveryPgiDto(inputDto);
-		}
-		else {
-			  entity = formInputEntityForInvoiceDto(inputDto);
-		}
-		// call odata method 
+		// call odata method
 		ResponseEntity<?> responseFromOdata = HelperClass.consumingOdataService(url, entity, "POST", destinationInfo);
-		System.err.println("odata output "+ responseFromOdata);
-		
-		JSONObject responseObject  = (JSONObject) responseFromOdata.getBody();
-		
-		 
-		if(responseFromOdata.getStatusCodeValue()==200){
+		System.err.println("odata output " + responseFromOdata);
+
+		JSONObject responseObject = (JSONObject) responseFromOdata.getBody();
+
+		if (responseFromOdata.getStatusCodeValue() == 200) {
 			String opdNumber = responseObject.get("message").toString();
 			String pgiNumber = responseObject.get("message").toString();
 			OutBoundDeliveryDto outBoundDto = new OutBoundDeliveryDto();
 			outBoundDto.setDocumentStatus("Success");
 			outBoundDto.setResponseMessage("Created");
-			if(inputDto.getTernr() == "1"){
-			outBoundDto.setObdNumber(opdNumber);
+			if (inputDto.getTernr() == "1") {
+				outBoundDto.setObdNumber(opdNumber);
 			}
-			if(inputDto.getTernr() == "2"){
-			outBoundDto.setPgiNumber(pgiNumber);
+			if (inputDto.getTernr() == "2") {
+				outBoundDto.setPgiNumber(pgiNumber);
 			}
 			outBoundDto.setSoNumber(inputDto.getSoNumber());
 			outBoundDto.setDeliveryDate(inputDto.getDeliveryDate());
@@ -99,223 +93,212 @@ public class OutBoundDeliveryService implements IOutBoundDeliveryService {
 			outBoundDto.setOutboundDeliveryItemDto(inputDto.getOutboundDeliveryItemDto());
 			OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDto, OutBoundDelivery.class);
 			OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
-			
-			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery,HttpStatus.OK);
-		}else {
-		     
-			return new ResponseEntity<String>(responseFromOdata.toString(),HttpStatus.OK);
+
+			return new ResponseEntity<OutBoundDelivery>(savedOutBoundDelivery, HttpStatus.OK);
+		} else {
+
+			return new ResponseEntity<String>(responseFromOdata.toString(), HttpStatus.OK);
 		}
-		
-		
+
 	}
-	
-	   public String formInputEntityForOutBoundDeliveryDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
-		   
-		   
-		
-		OdataOutBoudDeliveryInputDto  odataInputOutBound = new OdataOutBoudDeliveryInputDto();
-		
+
+	public String formInputEntityForOutBoundDeliveryDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException {
+
+		OdataOutBoudDeliveryInputDto odataInputOutBound = new OdataOutBoudDeliveryInputDto();
+
 		odataInputOutBound.setVbeln(inputDto.getSoNumber());
-		
+
 		List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
 		StringJoiner joiner = new StringJoiner("/:/");
-		for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-			
-			
-				joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
-		
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
+			joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
+
 		}
 		odataInputOutBound.setBtgew(joiner.toString());
-		
+
 		joiner = new StringJoiner("/:/");
-		for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-			
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
 			joiner.add(outBoundDeliveryItemList.get(i).getSoItemNumber());
 		}
 		odataInputOutBound.setKunag(joiner.toString());
 		joiner = new StringJoiner("/:/");
-        for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-			
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
 			joiner.add(outBoundDeliveryItemList.get(i).getUnit());
 		}
 		odataInputOutBound.setLgnum(joiner.toString());
-		
-		
+
 		odataInputOutBound.setTernr("1");
-		
+
 		odataInputOutBound.setVstel(inputDto.getShippingPoint());
-		
-		
+
 		return odataInputOutBound.toString();
 	}
-	   
-	   public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
-			
-			OdataOutBoudDeliveryPgiInputDto  odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
-			
-			odataInputOutBound.setVbeln(inputDto.getObdNumber());
-			
-			List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
-			StringJoiner joiner = new StringJoiner("/:/");
-				for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-					joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
-			}
-			odataInputOutBound.setBtgew(joiner.toString());
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getUnit());
-			}
-			odataInputOutBound.setGewei(joiner.toString());
-			
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getSoItemNumber());
-			}
-			odataInputOutBound.setKunag(joiner.toString());
-			
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getSloc());
-			}
-			odataInputOutBound.setLgnum(joiner.toString());
-			
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getPickedQty());
-			}
-			odataInputOutBound.setNtgew(joiner.toString());
-			
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getMaterial());
-			}
-			odataInputOutBound.setTraid(joiner.toString());
-			joiner = new StringJoiner("/:/");
-			for(int i =0 ; i<outBoundDeliveryItemList.size();i++){
-				joiner.add(outBoundDeliveryItemList.get(i).getPlant());
-			}
-			odataInputOutBound.setWerks(joiner.toString());
-			
-			/*private String Vbeln ;//– Delivery number
-			private String Kunag ;//– Item Number
-			private String Traid ;// – Material Number
-			private String Werks ;// – Plant Number
-			private String Btgew ;// – Delivered Quantity
-			private String Ntgew ;// – Picked Quantity
-			private String Gewei ;// – UOM
-			private String Lgnum ;// – Storage Location
-*/
-			odataInputOutBound.setTernr("2");
-			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-			String json = ow.writeValueAsString(odataInputOutBound);
-			
-			return json;
-		}
-	   
-	   public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException{
-			
-			OdataOutBoudDeliveryInvoiceInputDto  odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
-			
-			odataInputOutBound.setVbeln(inputDto.getObdNumber());
-			
-			odataInputOutBound.setTernr("3");
-			
-			
-			return odataInputOutBound.toString();
-		}
-	   
-	   
 
+	public String formInputEntityForOutBoundDeliveryPgiDto(OutBoundDeliveryDto inputDto)
+			throws JsonProcessingException {
 
-@Override
-public ResponseEntity<Object> create(OutBoundDeliveryDto outBoundDeliveryDto) {
+		OdataOutBoudDeliveryPgiInputDto odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
+
+		odataInputOutBound.setVbeln(inputDto.getObdNumber());
+
+		List<OutBoundDeliveryItemDto> outBoundDeliveryItemList = inputDto.getOutboundDeliveryItemDto();
+		StringJoiner joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getDeliveryQty());
+		}
+		odataInputOutBound.setBtgew(joiner.toString());
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getUnit());
+		}
+		odataInputOutBound.setGewei(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getSoItemNumber());
+		}
+		odataInputOutBound.setKunag(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getSloc());
+		}
+		odataInputOutBound.setLgnum(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQty());
+		}
+		odataInputOutBound.setNtgew(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getMaterial());
+		}
+		odataInputOutBound.setTraid(joiner.toString());
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getPlant());
+		}
+		odataInputOutBound.setWerks(joiner.toString());
+
+		/*
+		 * private String Vbeln ;//– Delivery number private String Kunag ;//–
+		 * Item Number private String Traid ;// – Material Number private String
+		 * Werks ;// – Plant Number private String Btgew ;// – Delivered
+		 * Quantity private String Ntgew ;// – Picked Quantity private String
+		 * Gewei ;// – UOM private String Lgnum ;// – Storage Location
+		 */
+		odataInputOutBound.setTernr("2");
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = ow.writeValueAsString(odataInputOutBound);
+
+		return json;
+	}
+
+	public String formInputEntityForInvoiceDto(OutBoundDeliveryDto inputDto) throws JsonProcessingException {
+
+		OdataOutBoudDeliveryInvoiceInputDto odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
+
+		odataInputOutBound.setVbeln(inputDto.getObdNumber());
+
+		odataInputOutBound.setTernr("3");
+
+		return odataInputOutBound.toString();
+	}
+
+	@Override
+	public ResponseEntity<Object> create(OutBoundDeliveryDto outBoundDeliveryDto) {
 		OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDeliveryDto, OutBoundDelivery.class);
-		List<OutBoundDeliveryItem> outboundDeliveryItemDo =  ObjectMapperUtils.mapAll(outBoundDeliveryDto.getOutboundDeliveryItemDto(), OutBoundDeliveryItem.class);
+		List<OutBoundDeliveryItem> outboundDeliveryItemDo = ObjectMapperUtils
+				.mapAll(outBoundDeliveryDto.getOutboundDeliveryItemDto(), OutBoundDeliveryItem.class);
 		OutBoundDelivery savedOutBoundDelivery = repo.save(outBoundDelivery);
-		
-		                   itemRepo.saveAll(outboundDeliveryItemDo);
-		                                           
+
+		itemRepo.saveAll(outboundDeliveryItemDo);
+
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-				return ResponseEntity.created(location).body(ObjectMapperUtils.map(savedOutBoundDelivery, OutBoundDeliveryDto.class));
+		return ResponseEntity.created(location)
+				.body(ObjectMapperUtils.map(savedOutBoundDelivery, OutBoundDeliveryDto.class));
 	}
 
-@Override
-public ResponseEntity<Object> read(String obdNumber) {
+	@Override
+	public ResponseEntity<Object> read(String obdNumber) {
 		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
-		if(!optionalOutBoundDelivery.isPresent()) { 
-		return ResponseEntity.notFound().build();
+		if (!optionalOutBoundDelivery.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.ok().body(ObjectMapperUtils.map(optionalOutBoundDelivery.get(),OutBoundDeliveryDto.class));
+		return ResponseEntity.ok()
+				.body(ObjectMapperUtils.map(optionalOutBoundDelivery.get(), OutBoundDeliveryDto.class));
 	}
-@Override
-public ResponseEntity<Object> readItemAndHeader(String obdNumber) {
-	
-	OutBoundDeliveryHeaderAndItemOutputDto outputDto = new OutBoundDeliveryHeaderAndItemOutputDto();
+
+	@Override
+	public ResponseEntity<Object> readItemAndHeader(String obdNumber) {
+
+		OutBoundDeliveryHeaderAndItemOutputDto outputDto = new OutBoundDeliveryHeaderAndItemOutputDto();
 		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
-		if(!optionalOutBoundDelivery.isPresent()) { 
-		return ResponseEntity.notFound().build();
+		if (!optionalOutBoundDelivery.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
 		List<OutBoundDeliveryItem> optionalOutBoundDeliveryItem = itemRepo.findByObdNumber(obdNumber);
-		if(!optionalOutBoundDeliveryItem.isEmpty()) { 
+		if (!optionalOutBoundDeliveryItem.isEmpty()) {
 			return ResponseEntity.notFound().build();
-			}
-		outputDto.setOutboundDeliveryDto(ObjectMapperUtils.map(optionalOutBoundDelivery.get(),OutBoundDeliveryDto.class));
-		outputDto.setOutBoundDeliveryItemDto(ObjectMapperUtils.mapAll(optionalOutBoundDeliveryItem,OutBoundDeliveryItemDto.class));
+		}
+		outputDto.setOutboundDeliveryDto(
+				ObjectMapperUtils.map(optionalOutBoundDelivery.get(), OutBoundDeliveryDto.class));
+		outputDto.setOutBoundDeliveryItemDto(
+				ObjectMapperUtils.mapAll(optionalOutBoundDeliveryItem, OutBoundDeliveryItemDto.class));
 		return ResponseEntity.ok().body(outputDto);
 	}
 
-
-
-
-
-@Override
-public ResponseEntity<List<OutBoundDelivery>> readAll() {
+	@Override
+	public ResponseEntity<List<OutBoundDelivery>> readAll() {
 		List<OutBoundDelivery> optionalOutBoundDelivery = repo.findAll();
-		if(optionalOutBoundDelivery.isEmpty()) { 
-		return ResponseEntity.notFound().build();
+		if (optionalOutBoundDelivery.isEmpty()) {
+			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok().body(optionalOutBoundDelivery);
 	}
 
-
-@Override
-public ResponseEntity<Object> update(String obdNumber, OutBoundDeliveryDto outBoundDeliveryDto) {
+	@Override
+	public ResponseEntity<Object> update(String obdNumber, OutBoundDeliveryDto outBoundDeliveryDto) {
 		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
-		if(!optionalOutBoundDelivery.isPresent()) { 
-		return ResponseEntity.notFound().build();
+		if (!optionalOutBoundDelivery.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
 		OutBoundDelivery outBoundDelivery = ObjectMapperUtils.map(outBoundDeliveryDto, OutBoundDelivery.class);
 		outBoundDelivery.setObdNumber(optionalOutBoundDelivery.get().getObdNumber());
 		OutBoundDelivery updatedOutBoundDelivery = repo.save(outBoundDelivery);
-				return ResponseEntity.ok().body(ObjectMapperUtils.map(updatedOutBoundDelivery, OutBoundDeliveryDto.class));
+		return ResponseEntity.ok().body(ObjectMapperUtils.map(updatedOutBoundDelivery, OutBoundDeliveryDto.class));
 	}
 
-@Override
-public ResponseEntity<Object> delete(String obdNumber) {
+	@Override
+	public ResponseEntity<Object> delete(String obdNumber) {
 		Optional<OutBoundDelivery> optionalOutBoundDelivery = repo.findById(obdNumber);
-		if(!optionalOutBoundDelivery.isPresent()) { 
-		return ResponseEntity.notFound().build();
+		if (!optionalOutBoundDelivery.isPresent()) {
+			return ResponseEntity.notFound().build();
 		}
 		repo.delete(optionalOutBoundDelivery.get());
-		return ResponseEntity.ok().body(null);	}
+		return ResponseEntity.ok().body(null);
+	}
 
-@Override
-public ResponseEntity<Object> readAll(String search) {
-		
+	@Override
+	public ResponseEntity<Object> readAll(String search) {
 
-OutBoundDeliveryPredicateBuilder builder = new OutBoundDeliveryPredicateBuilder();
-if (search != null) {
-Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
-Matcher matcher = pattern.matcher(search + ",");
-while (matcher.find()) {
-builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
-}
-}
-BooleanExpression exp = builder.build();
-List<OutBoundDelivery> outBoundDelivery = (List<OutBoundDelivery>) repo.findAll(exp);
-Object t = ObjectMapperUtils.mapAll(outBoundDelivery, OutBoundDeliveryDto.class);
-return ResponseEntity.ok().body(t);     
-}
-	
-	
+		OutBoundDeliveryPredicateBuilder builder = new OutBoundDeliveryPredicateBuilder();
+		if (search != null) {
+			Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+			Matcher matcher = pattern.matcher(search + ",");
+			while (matcher.find()) {
+				builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+			}
+		}
+		BooleanExpression exp = builder.build();
+		List<OutBoundDelivery> outBoundDelivery = (List<OutBoundDelivery>) repo.findAll(exp);
+		Object t = ObjectMapperUtils.mapAll(outBoundDelivery, OutBoundDeliveryDto.class);
+		return ResponseEntity.ok().body(t);
+	}
+
 }

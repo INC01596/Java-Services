@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 
 @RestController
@@ -27,6 +28,7 @@ public class SalesOrderHeaderController {
 
 	@Autowired
 	private ISalesOrderHeaderService salesOrderHeaderService;
+	
 	
 	@GetMapping("/test")
 	public String test() {
@@ -87,4 +89,29 @@ public class SalesOrderHeaderController {
 //	public ResponseEntity<Object> getReferenceList(@RequestBody HeaderDetailUIDto dto) {
 //		return salesOrderHeaderService.getReferenceList(dto);
 //	}
+	
+	/*---------------AWADHESH KUMAR---------------------------*/
+	
+	@PostMapping("/submit")
+	@ApiOperation(value = "Submit The Enquiry")
+	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderDto dto) {
+		return salesOrderHeaderService.submitSalesOrder(dto);
+	}
+	
+	@GetMapping("/getSearchDropDown")
+	@ApiOperation(value = "List Of Search Drop Down values")
+	public ResponseEntity<Object> getSearchDropDown(@RequestBody SalesOrderSearchHeaderDto dto)
+	{
+		return salesOrderHeaderService.getSearchDropDown(dto); 
+	}
+	
+	@GetMapping("/manualSearchResult")
+	@ApiOperation(value = "Mannual Search Result")
+	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto)
+	{
+		return salesOrderHeaderService.getMannualSearch(searchDto);
+	}
+
+	
+	
 }

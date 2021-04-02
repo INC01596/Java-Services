@@ -1,450 +1,724 @@
 package com.incture.cherrywork.dtos;
+
 import java.util.Date;
+import java.util.List;
+
+import com.incture.cherrywork.entities.SalesOrderHeader;
+
 import java.math.BigDecimal;
-public class SalesOrderItemDto{
 
+public class SalesOrderItemDto {
 
-private String salesItemId;
-public String getSalesItemId(){
-	return salesItemId;
-}
-public void setSalesItemId(String salesItemId){
-	this.salesItemId = salesItemId;
-}
+	private String salesItemId;
 
-private Integer clientSpecific;
-public Integer getClientSpecific(){
-	return clientSpecific;
-}
-public void setClientSpecific(Integer clientSpecific){
-	this.clientSpecific = clientSpecific;
-}
+	public String getSalesItemId() {
+		return salesItemId;
+	}
 
-private String lineItemNumber;
-public String getLineItemNumber(){
-	return lineItemNumber;
-}
-public void setLineItemNumber(String lineItemNumber){
-	this.lineItemNumber = lineItemNumber;
-}
+	public void setSalesItemId(String salesItemId) {
+		this.salesItemId = salesItemId;
+	}
 
-private String material;
-public String getMaterial(){
-	return material;
-}
-public void setMaterial(String material){
-	this.material = material;
-}
+	private Integer clientSpecific;
 
-private String materialDesc;
-public String getMaterialDesc(){
-	return materialDesc;
-}
-public void setMaterialDesc(String materialDesc){
-	this.materialDesc = materialDesc;
-}
+	public Integer getClientSpecific() {
+		return clientSpecific;
+	}
 
-private String cumConfirmedQty;
-public String getCumConfirmedQty(){
-	return cumConfirmedQty;
-}
-public void setCumConfirmedQty(String cumConfirmedQty){
-	this.cumConfirmedQty = cumConfirmedQty;
-}
+	public void setClientSpecific(Integer clientSpecific) {
+		this.clientSpecific = clientSpecific;
+	}
 
-private String itemCategory;
-public String getItemCategory(){
-	return itemCategory;
-}
-public void setItemCategory(String itemCategory){
-	this.itemCategory = itemCategory;
-}
+	private String lineItemNumber;
 
-private String plant;
-public String getPlant(){
-	return plant;
-}
-public void setPlant(String plant){
-	this.plant = plant;
-}
+	public String getLineItemNumber() {
+		return lineItemNumber;
+	}
 
-private BigDecimal netValue;
-public BigDecimal getNetValue(){
-	return netValue;
-}
-public void setNetValue(BigDecimal netValue){
-	this.netValue = netValue;
-}
+	public void setLineItemNumber(String lineItemNumber) {
+		this.lineItemNumber = lineItemNumber;
+	}
 
-private BigDecimal amountB4Vat;
-public BigDecimal getAmountB4Vat(){
-	return amountB4Vat;
-}
-public void setAmountB4Vat(BigDecimal amountB4Vat){
-	this.amountB4Vat = amountB4Vat;
-}
+	private String material;
 
-private BigDecimal vatPercent;
-public BigDecimal getVatPercent(){
-	return vatPercent;
-}
-public void setVatPercent(BigDecimal vatPercent){
-	this.vatPercent = vatPercent;
-}
+	public String getMaterial() {
+		return material;
+	}
 
-private BigDecimal vatAmount;
-public BigDecimal getVatAmount(){
-	return vatAmount;
-}
-public void setVatAmount(BigDecimal vatAmount){
-	this.vatAmount = vatAmount;
-}
+	public void setMaterial(String material) {
+		this.material = material;
+	}
 
-private BigDecimal totalAmountInclVat;
-public BigDecimal getTotalAmountInclVat(){
-	return totalAmountInclVat;
-}
-public void setTotalAmountInclVat(BigDecimal totalAmountInclVat){
-	this.totalAmountInclVat = totalAmountInclVat;
-}
+	private String materialDesc;
 
-private BigDecimal deliveredQuantity;
-public BigDecimal getDeliveredQuantity(){
-	return deliveredQuantity;
-}
-public void setDeliveredQuantity(BigDecimal deliveredQuantity){
-	this.deliveredQuantity = deliveredQuantity;
-}
+	public String getMaterialDesc() {
+		return materialDesc;
+	}
 
-private Integer deliveredPieces;
-public Integer getDeliveredPieces(){
-	return deliveredPieces;
-}
-public void setDeliveredPieces(Integer deliveredPieces){
-	this.deliveredPieces = deliveredPieces;
-}
+	public void setMaterialDesc(String materialDesc) {
+		this.materialDesc = materialDesc;
+	}
 
-private String outstandingQuantity;
-public String getOutstandingQuantity(){
-	return outstandingQuantity;
-}
-public void setOutstandingQuantity(String outstandingQuantity){
-	this.outstandingQuantity = outstandingQuantity;
-}
+	private String cumConfirmedQty;
 
-private Integer outstandingPieces;
-public Integer getOutstandingPieces(){
-	return outstandingPieces;
-}
-public void setOutstandingPieces(Integer outstandingPieces){
-	this.outstandingPieces = outstandingPieces;
-}
+	public String getCumConfirmedQty() {
+		return cumConfirmedQty;
+	}
 
-private String availabilityStatus;
-public String getAvailabilityStatus(){
-	return availabilityStatus;
-}
-public void setAvailabilityStatus(String availabilityStatus){
-	this.availabilityStatus = availabilityStatus;
-}
+	public void setCumConfirmedQty(String cumConfirmedQty) {
+		this.cumConfirmedQty = cumConfirmedQty;
+	}
 
-private String paymentChqDetail;
-public String getPaymentChqDetail(){
-	return paymentChqDetail;
-}
-public void setPaymentChqDetail(String paymentChqDetail){
-	this.paymentChqDetail = paymentChqDetail;
-}
+	private String itemCategory;
 
-private String deliveryStatus;
-public String getDeliveryStatus(){
-	return deliveryStatus;
-}
-public void setDeliveryStatus(String deliveryStatus){
-	this.deliveryStatus = deliveryStatus;
-}
+	public String getItemCategory() {
+		return itemCategory;
+	}
 
-private Integer orderedPieces;
-public Integer getOrderedPieces(){
-	return orderedPieces;
-}
-public void setOrderedPieces(Integer orderedPieces){
-	this.orderedPieces = orderedPieces;
-}
+	public void setItemCategory(String itemCategory) {
+		this.itemCategory = itemCategory;
+	}
 
-private Integer noOfBundles;
-public Integer getNoOfBundles(){
-	return noOfBundles;
-}
-public void setNoOfBundles(Integer noOfBundles){
-	this.noOfBundles = noOfBundles;
-}
+	private String plant;
 
-private BigDecimal basePrice;
-public BigDecimal getBasePrice(){
-	return basePrice;
-}
-public void setBasePrice(BigDecimal basePrice){
-	this.basePrice = basePrice;
-}
+	public String getPlant() {
+		return plant;
+	}
 
-private BigDecimal extras;
-public BigDecimal getExtras(){
-	return extras;
-}
-public void setExtras(BigDecimal extras){
-	this.extras = extras;
-}
+	public void setPlant(String plant) {
+		this.plant = plant;
+	}
 
-private BigDecimal qualityTestExtras;
-public BigDecimal getQualityTestExtras(){
-	return qualityTestExtras;
-}
-public void setQualityTestExtras(BigDecimal qualityTestExtras){
-	this.qualityTestExtras = qualityTestExtras;
-}
+	private BigDecimal netValue;
 
-private BigDecimal discount1;
-public BigDecimal getDiscount1(){
-	return discount1;
-}
-public void setDiscount1(BigDecimal discount1){
-	this.discount1 = discount1;
-}
+	public BigDecimal getNetValue() {
+		return netValue;
+	}
 
-private BigDecimal enteredOrdQuantity;
-public BigDecimal getEnteredOrdQuantity(){
-	return enteredOrdQuantity;
-}
-public void setEnteredOrdQuantity(BigDecimal enteredOrdQuantity){
-	this.enteredOrdQuantity = enteredOrdQuantity;
-}
+	public void setNetValue(BigDecimal netValue) {
+		this.netValue = netValue;
+	}
 
-private String standard;
-public String getStandard(){
-	return standard;
-}
-public void setStandard(String standard){
-	this.standard = standard;
-}
+	private BigDecimal amountB4Vat;
 
-private String standardDesc;
-public String getStandardDesc(){
-	return standardDesc;
-}
-public void setStandardDesc(String standardDesc){
-	this.standardDesc = standardDesc;
-}
+	public BigDecimal getAmountB4Vat() {
+		return amountB4Vat;
+	}
 
-private String sectionGrade;
-public String getSectionGrade(){
-	return sectionGrade;
-}
-public void setSectionGrade(String sectionGrade){
-	this.sectionGrade = sectionGrade;
-}
+	public void setAmountB4Vat(BigDecimal amountB4Vat) {
+		this.amountB4Vat = amountB4Vat;
+	}
 
-private String sectionGradeDesc;
-public String getSectionGradeDesc(){
-	return sectionGradeDesc;
-}
-public void setSectionGradeDesc(String sectionGradeDesc){
-	this.sectionGradeDesc = sectionGradeDesc;
-}
+	private BigDecimal vatPercent;
 
-private String size;
-public String getSize(){
-	return size;
-}
-public void setSize(String size){
-	this.size = size;
-}
+	public BigDecimal getVatPercent() {
+		return vatPercent;
+	}
 
-private BigDecimal kgPerMeter;
-public BigDecimal getKgPerMeter(){
-	return kgPerMeter;
-}
-public void setKgPerMeter(BigDecimal kgPerMeter){
-	this.kgPerMeter = kgPerMeter;
-}
+	public void setVatPercent(BigDecimal vatPercent) {
+		this.vatPercent = vatPercent;
+	}
 
-private BigDecimal length;
-public BigDecimal getLength(){
-	return length;
-}
-public void setLength(BigDecimal length){
-	this.length = length;
-}
+	private BigDecimal vatAmount;
 
-private BigDecimal barsPerBundle;
-public BigDecimal getBarsPerBundle(){
-	return barsPerBundle;
-}
-public void setBarsPerBundle(BigDecimal barsPerBundle){
-	this.barsPerBundle = barsPerBundle;
-}
+	public BigDecimal getVatAmount() {
+		return vatAmount;
+	}
 
-private String sectionGroup;
-public String getSectionGroup(){
-	return sectionGroup;
-}
-public void setSectionGroup(String sectionGroup){
-	this.sectionGroup = sectionGroup;
-}
+	public void setVatAmount(BigDecimal vatAmount) {
+		this.vatAmount = vatAmount;
+	}
 
-private String level2Id;
-public String getLevel2Id(){
-	return level2Id;
-}
-public void setLevel2Id(String level2Id){
-	this.level2Id = level2Id;
-}
+	private BigDecimal totalAmountInclVat;
 
-private String ceLogo;
-public String getCeLogo(){
-	return ceLogo;
-}
-public void setCeLogo(String ceLogo){
-	this.ceLogo = ceLogo;
-}
+	public BigDecimal getTotalAmountInclVat() {
+		return totalAmountInclVat;
+	}
 
-private String section;
-public String getSection(){
-	return section;
-}
-public void setSection(String section){
-	this.section = section;
-}
+	public void setTotalAmountInclVat(BigDecimal totalAmountInclVat) {
+		this.totalAmountInclVat = totalAmountInclVat;
+	}
 
-private BigDecimal sizeGroup;
-public BigDecimal getSizeGroup(){
-	return sizeGroup;
-}
-public void setSizeGroup(BigDecimal sizeGroup){
-	this.sizeGroup = sizeGroup;
-}
+	private BigDecimal deliveredQuantity;
 
-private String isiLogo;
-public String getIsiLogo(){
-	return isiLogo;
-}
-public void setIsiLogo(String isiLogo){
-	this.isiLogo = isiLogo;
-}
+	public BigDecimal getDeliveredQuantity() {
+		return deliveredQuantity;
+	}
 
-private Boolean impactTest;
-public Boolean getImpactTest(){
-	return impactTest;
-}
-public void setImpactTest(Boolean impactTest){
-	this.impactTest = impactTest;
-}
+	public void setDeliveredQuantity(BigDecimal deliveredQuantity) {
+		this.deliveredQuantity = deliveredQuantity;
+	}
 
-private Boolean bendTest;
-public Boolean getBendTest(){
-	return bendTest;
-}
-public void setBendTest(Boolean bendTest){
-	this.bendTest = bendTest;
-}
+	private Integer deliveredPieces;
 
-private Boolean ultralightTest;
-public Boolean getUltralightTest(){
-	return ultralightTest;
-}
-public void setUltralightTest(Boolean ultralightTest){
-	this.ultralightTest = ultralightTest;
-}
+	public Integer getDeliveredPieces() {
+		return deliveredPieces;
+	}
 
-private Boolean inspection;
-public Boolean getInspection(){
-	return inspection;
-}
-public void setInspection(Boolean inspection){
-	this.inspection = inspection;
-}
+	public void setDeliveredPieces(Integer deliveredPieces) {
+		this.deliveredPieces = deliveredPieces;
+	}
 
-private Boolean ultrasonoicTest;
-public Boolean getUltrasonoicTest(){
-	return ultrasonoicTest;
-}
-public void setUltrasonoicTest(Boolean ultrasonoicTest){
-	this.ultrasonoicTest = ultrasonoicTest;
-}
+	private String outstandingQuantity;
 
-private String gradePricingGroup;
-public String getGradePricingGroup(){
-	return gradePricingGroup;
-}
-public void setGradePricingGroup(String gradePricingGroup){
-	this.gradePricingGroup = gradePricingGroup;
-}
+	public String getOutstandingQuantity() {
+		return outstandingQuantity;
+	}
 
-private BigDecimal totalNoPieces;
-public BigDecimal getTotalNoPieces(){
-	return totalNoPieces;
-}
-public void setTotalNoPieces(BigDecimal totalNoPieces){
-	this.totalNoPieces = totalNoPieces;
-}
+	public void setOutstandingQuantity(String outstandingQuantity) {
+		this.outstandingQuantity = outstandingQuantity;
+	}
 
-private BigDecimal bundleWt;
-public BigDecimal getBundleWt(){
-	return bundleWt;
-}
-public void setBundleWt(BigDecimal bundleWt){
-	this.bundleWt = bundleWt;
-}
+	private Integer outstandingPieces;
 
-private String updateIndicator;
-public String getUpdateIndicator(){
-	return updateIndicator;
-}
-public void setUpdateIndicator(String updateIndicator){
-	this.updateIndicator = updateIndicator;
-}
+	public Integer getOutstandingPieces() {
+		return outstandingPieces;
+	}
 
-private Date changedOn;
-public Date getChangedOn(){
-	return changedOn;
-}
-public void setChangedOn(Date changedOn){
-	this.changedOn = changedOn;
-}
+	public void setOutstandingPieces(Integer outstandingPieces) {
+		this.outstandingPieces = outstandingPieces;
+	}
 
-private Date syncStatus;
-public Date getSyncStatus(){
-	return syncStatus;
-}
-public void setSyncStatus(Date syncStatus){
-	this.syncStatus = syncStatus;
-}
-private String createdBy;
-public String getCreatedBy() {
-	return createdBy;
-}
-public void setCreatedBy(String createdBy) {
-	this.createdBy = createdBy;
-}
-private Date createdOn;
-public Date getCreatedOn() {
-	return createdOn;
-}
-public void setCreatedOn(Date createdOn) {
-	this.createdOn = createdOn;
-}
-private String lastChangedBy;
-public String getLastChangedBy() {
-	return lastChangedBy;
-}
-public void setLastChangedBy(String lastChangedBy) {
-	this.lastChangedBy = lastChangedBy;
-}
-private Date lastChangedOn;
-public Date getLastChangedOn() {
-	return lastChangedOn;
-}
-public void setLastChangedOn(Date lastChangedOn) {
-	this.lastChangedOn = lastChangedOn;
-}
+	private String availabilityStatus;
+
+	public String getAvailabilityStatus() {
+		return availabilityStatus;
+	}
+
+	public void setAvailabilityStatus(String availabilityStatus) {
+		this.availabilityStatus = availabilityStatus;
+	}
+
+	private String paymentChqDetail;
+
+	public String getPaymentChqDetail() {
+		return paymentChqDetail;
+	}
+
+	public void setPaymentChqDetail(String paymentChqDetail) {
+		this.paymentChqDetail = paymentChqDetail;
+	}
+
+	private String deliveryStatus;
+
+	public String getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(String deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
+	}
+
+	private Integer orderedPieces;
+
+	public Integer getOrderedPieces() {
+		return orderedPieces;
+	}
+
+	public void setOrderedPieces(Integer orderedPieces) {
+		this.orderedPieces = orderedPieces;
+	}
+
+	private Integer noOfBundles;
+
+	public Integer getNoOfBundles() {
+		return noOfBundles;
+	}
+
+	public void setNoOfBundles(Integer noOfBundles) {
+		this.noOfBundles = noOfBundles;
+	}
+
+	private BigDecimal basePrice;
+
+	public BigDecimal getBasePrice() {
+		return basePrice;
+	}
+
+	public void setBasePrice(BigDecimal basePrice) {
+		this.basePrice = basePrice;
+	}
+
+	private BigDecimal extras;
+
+	public BigDecimal getExtras() {
+		return extras;
+	}
+
+	public void setExtras(BigDecimal extras) {
+		this.extras = extras;
+	}
+
+	private BigDecimal qualityTestExtras;
+
+	public BigDecimal getQualityTestExtras() {
+		return qualityTestExtras;
+	}
+
+	public void setQualityTestExtras(BigDecimal qualityTestExtras) {
+		this.qualityTestExtras = qualityTestExtras;
+	}
+
+	private BigDecimal discount1;
+
+	public BigDecimal getDiscount1() {
+		return discount1;
+	}
+
+	public void setDiscount1(BigDecimal discount1) {
+		this.discount1 = discount1;
+	}
+
+	private BigDecimal enteredOrdQuantity;
+
+	public BigDecimal getEnteredOrdQuantity() {
+		return enteredOrdQuantity;
+	}
+
+	public void setEnteredOrdQuantity(BigDecimal enteredOrdQuantity) {
+		this.enteredOrdQuantity = enteredOrdQuantity;
+	}
+
+	private String standard;
+
+	public String getStandard() {
+		return standard;
+	}
+
+	public void setStandard(String standard) {
+		this.standard = standard;
+	}
+
+	private String standardDesc;
+
+	public String getStandardDesc() {
+		return standardDesc;
+	}
+
+	public void setStandardDesc(String standardDesc) {
+		this.standardDesc = standardDesc;
+	}
+
+	private String sectionGrade;
+
+	public String getSectionGrade() {
+		return sectionGrade;
+	}
+
+	public void setSectionGrade(String sectionGrade) {
+		this.sectionGrade = sectionGrade;
+	}
+
+	private String sectionGradeDesc;
+
+	public String getSectionGradeDesc() {
+		return sectionGradeDesc;
+	}
+
+	public void setSectionGradeDesc(String sectionGradeDesc) {
+		this.sectionGradeDesc = sectionGradeDesc;
+	}
+
+	private String size;
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	private BigDecimal kgPerMeter;
+
+	public BigDecimal getKgPerMeter() {
+		return kgPerMeter;
+	}
+
+	public void setKgPerMeter(BigDecimal kgPerMeter) {
+		this.kgPerMeter = kgPerMeter;
+	}
+
+	private BigDecimal length;
+
+	public BigDecimal getLength() {
+		return length;
+	}
+
+	public void setLength(BigDecimal length) {
+		this.length = length;
+	}
+
+	private BigDecimal barsPerBundle;
+
+	public BigDecimal getBarsPerBundle() {
+		return barsPerBundle;
+	}
+
+	public void setBarsPerBundle(BigDecimal barsPerBundle) {
+		this.barsPerBundle = barsPerBundle;
+	}
+
+	private String sectionGroup;
+
+	public String getSectionGroup() {
+		return sectionGroup;
+	}
+
+	public void setSectionGroup(String sectionGroup) {
+		this.sectionGroup = sectionGroup;
+	}
+
+	private String level2Id;
+
+	public String getLevel2Id() {
+		return level2Id;
+	}
+
+	public void setLevel2Id(String level2Id) {
+		this.level2Id = level2Id;
+	}
+
+	private String ceLogo;
+
+	public String getCeLogo() {
+		return ceLogo;
+	}
+
+	public void setCeLogo(String ceLogo) {
+		this.ceLogo = ceLogo;
+	}
+
+	private String section;
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	private BigDecimal sizeGroup;
+
+	public BigDecimal getSizeGroup() {
+		return sizeGroup;
+	}
+
+	public void setSizeGroup(BigDecimal sizeGroup) {
+		this.sizeGroup = sizeGroup;
+	}
+
+	private String isiLogo;
+
+	public String getIsiLogo() {
+		return isiLogo;
+	}
+
+	public void setIsiLogo(String isiLogo) {
+		this.isiLogo = isiLogo;
+	}
+
+	private Boolean impactTest;
+
+	public Boolean getImpactTest() {
+		return impactTest;
+	}
+
+	public void setImpactTest(Boolean impactTest) {
+		this.impactTest = impactTest;
+	}
+
+	private Boolean bendTest;
+
+	public Boolean getBendTest() {
+		return bendTest;
+	}
+
+	public void setBendTest(Boolean bendTest) {
+		this.bendTest = bendTest;
+	}
+
+	private Boolean ultralightTest;
+
+	public Boolean getUltralightTest() {
+		return ultralightTest;
+	}
+
+	public void setUltralightTest(Boolean ultralightTest) {
+		this.ultralightTest = ultralightTest;
+	}
+
+	private Boolean inspection;
+
+	public Boolean getInspection() {
+		return inspection;
+	}
+
+	public void setInspection(Boolean inspection) {
+		this.inspection = inspection;
+	}
+
+	private Boolean ultrasonoicTest;
+
+	public Boolean getUltrasonoicTest() {
+		return ultrasonoicTest;
+	}
+
+	public void setUltrasonoicTest(Boolean ultrasonoicTest) {
+		this.ultrasonoicTest = ultrasonoicTest;
+	}
+
+	private String gradePricingGroup;
+
+	public String getGradePricingGroup() {
+		return gradePricingGroup;
+	}
+
+	public void setGradePricingGroup(String gradePricingGroup) {
+		this.gradePricingGroup = gradePricingGroup;
+	}
+
+	private BigDecimal totalNoPieces;
+
+	public BigDecimal getTotalNoPieces() {
+		return totalNoPieces;
+	}
+
+	public void setTotalNoPieces(BigDecimal totalNoPieces) {
+		this.totalNoPieces = totalNoPieces;
+	}
+
+	private BigDecimal bundleWt;
+
+	public BigDecimal getBundleWt() {
+		return bundleWt;
+	}
+
+	public void setBundleWt(BigDecimal bundleWt) {
+		this.bundleWt = bundleWt;
+	}
+
+	private String updateIndicator;
+
+	public String getUpdateIndicator() {
+		return updateIndicator;
+	}
+
+	public void setUpdateIndicator(String updateIndicator) {
+		this.updateIndicator = updateIndicator;
+	}
+
+	private Date changedOn;
+
+	public Date getChangedOn() {
+		return changedOn;
+	}
+
+	public void setChangedOn(Date changedOn) {
+		this.changedOn = changedOn;
+	}
+
+	private Date syncStatus;
+
+	public Date getSyncStatus() {
+		return syncStatus;
+	}
+
+	public void setSyncStatus(Date syncStatus) {
+		this.syncStatus = syncStatus;
+	}
+
+	private String createdBy;
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	private Date createdOn;
+
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	private String lastChangedBy;
+
+	public String getLastChangedBy() {
+		return lastChangedBy;
+	}
+
+	public void setLastChangedBy(String lastChangedBy) {
+		this.lastChangedBy = lastChangedBy;
+	}
+
+	private Date lastChangedOn;
+
+	public Date getLastChangedOn() {
+		return lastChangedOn;
+	}
+
+	public void setLastChangedOn(Date lastChangedOn) {
+		this.lastChangedOn = lastChangedOn;
+	}
+	
+	//Awadhesh Kumar ---------------------------------------------------------------------------------------------
+	
+		private BigDecimal orderQuantity;
+
+		public BigDecimal getOrderQuantity() {
+			return orderQuantity;
+		}
+
+		public void setOrderQuantity(BigDecimal orderQuantity) {
+			this.orderQuantity = orderQuantity;
+		}
+		
+		private String documentCurrency;
+
+		public String getDocumentCurrency() {
+			return documentCurrency;
+		}
+
+		public void setDocumentCurrency(String documentCurrency) {
+			this.documentCurrency = documentCurrency;
+		}
+		
+		private String baseUnitOfMeasure;
+
+		public String getBaseUnitOfMeasure() {
+			return baseUnitOfMeasure;
+		}
+
+		public void setBaseUnitOfMeasure(String baseUnitOfMeasure) {
+			this.baseUnitOfMeasure = baseUnitOfMeasure;
+		}
+		
+		private String flag;
+
+		public String getFlag() {
+			return flag;
+		}
+
+		public void setFlag(String flag) {
+			this.flag = flag;
+		}
+		
+		private Boolean hardnessTest;
+
+		public Boolean getHardnessTest() {
+			return hardnessTest;
+		}
+
+		public void setHardnessTest(Boolean hardnessTest) {
+			this.hardnessTest = hardnessTest;
+		}
+		
+		private Boolean isElementBoronRequired;
+
+		public Boolean getIsElementBoronRequired() {
+			return isElementBoronRequired;
+		}
+
+		public void setIsElementBoronRequired(Boolean isElementBoronRequired) {
+			this.isElementBoronRequired = isElementBoronRequired;
+		}
+		
+		private String referenceDocument;
+
+		public String getReferenceDocument() {
+			return referenceDocument;
+		}
+
+		public void setReferenceDocument(String referenceDocument) {
+			this.referenceDocument = referenceDocument;
+		}
+		
+		private String s4DocumentId;
+
+		public String getS4DocumentId() {
+			return s4DocumentId;
+		}
+
+		public void setS4DocumentId(String s4DocumentId) {
+			this.s4DocumentId = s4DocumentId;
+		}
+		
+		private String qualityTest;
+		
+		
+		
+		public String getQualityTest() {
+			return qualityTest;
+		}
+
+		public void setQualityTest(String qualityTest) {
+			this.qualityTest = qualityTest;
+		}
+		
+		private String defaultQualityTest;
+		
+		
+		
+		public String getDefaultQualityTest() {
+			return defaultQualityTest;
+		}
+
+		public void setDefaultQualityTest(String defaultQualityTest) {
+			this.defaultQualityTest = defaultQualityTest;
+		}
+
+		private List<String> defaultQualityTestList;
+		
+		
+		public List<String> getDefaultQualityTestList() {
+			return defaultQualityTestList;
+		}
+
+		public void setDefaultQualityTestList(List<String> defaultQualityTestList) {
+			this.defaultQualityTestList = defaultQualityTestList;
+		}
+
+		private List<String> qualityTestList;
+
+		public List<String> getQualityTestList() {
+			return qualityTestList;
+		}
+
+		public void setQualityTestList(List<String> qualityTestList) {
+			this.qualityTestList = qualityTestList;
+		}
+		
+		private Boolean ultraSonicTest;
+
+		
+		public Boolean getUltraSonicTest() {
+			return ultraSonicTest;
+		}
+
+		public void setUltraSonicTest(Boolean ultraSonicTest) {
+			this.ultraSonicTest = ultraSonicTest;
+		}
+
+		private SalesOrderHeader salesOrderHeader;
+
+		public SalesOrderHeader getSalesOrderHeader() {
+			return salesOrderHeader;
+		}
+
+		public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
+			this.salesOrderHeader = salesOrderHeader;
+		}
+		
+		
+		
+
+	
 }

@@ -6,5 +6,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import com.incture.cherrywork.entities.SalesOrderItem;
 
 public interface ISalesOrderItemRepository extends JpaRepository<SalesOrderItem, String>,
-QuerydslPredicateExecutor<SalesOrderItem>{
-    }
+		QuerydslPredicateExecutor<SalesOrderItem>, ISalesOrderItemCustomRepository {
+}

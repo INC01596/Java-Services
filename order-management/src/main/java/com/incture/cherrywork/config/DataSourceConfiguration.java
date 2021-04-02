@@ -2,7 +2,9 @@ package com.incture.cherrywork.config;
 
 import javax.sql.DataSource;
 
+import org.h2.server.web.WebServlet;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.cloud.config.java.ServiceScan;
 import org.springframework.context.annotation.Bean;
@@ -30,4 +32,11 @@ public class DataSourceConfiguration extends AbstractCloudConfig {
 				.driverClassName(com.sap.db.jdbc.Driver.class.getName()).url(cfCredentials.getUri())
 				.username(cfCredentials.getUsername()).password(cfCredentials.getPassword()).build();
 	}
+	
+//    @Bean
+//    ServletRegistrationBean h2servletRegistration(){
+//        ServletRegistrationBean registrationBean = new ServletRegistrationBean( new WebServlet());
+//        registrationBean.addUrlMappings("/console/*");
+//        return registrationBean;
+//    }
 }

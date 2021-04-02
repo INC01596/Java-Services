@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 @Repository
 public interface ISalesOrderHeaderService {
 
@@ -16,4 +17,16 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto);
 	//ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto);
 	//ResponseEntity<Object> deleteDraftedVersion(String s4DocumentId);
+	
+	/*-----------------AWADHESH KUMAR---------------*/
+	
+	ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto);
+	ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderDto dto);
+	
+	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
+	
+	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
+
+	
+	
 }

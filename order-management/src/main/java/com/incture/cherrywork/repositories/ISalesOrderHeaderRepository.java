@@ -5,10 +5,9 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.entities.SalesOrderHeader;
+
 @Repository
 public interface ISalesOrderHeaderRepository extends JpaRepository<SalesOrderHeader, String>,
-QuerydslPredicateExecutor<SalesOrderHeader>{
+		QuerydslPredicateExecutor<SalesOrderHeader>, ISalesOrderHeaderCustomRepository {
 
-	
-  
-	}
+}
