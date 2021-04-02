@@ -16,6 +16,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,13 +30,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.gson.Gson;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
+import com.incture.cherrywork.dtos.HeaderIdDto;
+
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
+import com.incture.cherrywork.repositories.ISalesOrderHeaderRepositoryNew;
 import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
@@ -58,6 +63,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Autowired
+	private ISalesOrderHeaderRepositoryNew repo;
 	
 	@Override
 	public ResponseEntity<Object> create(SalesOrderHeaderDto salesOrderHeaderDto) {
@@ -115,54 +123,126 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		Object t = ObjectMapperUtils.mapAll(salesOrderHeaders, SalesOrderHeaderDto.class);
 		return ResponseEntity.ok().body(t);
 	}
+	// Sandeep
+	 @Override
+		public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
+	    try{
+			      SalesOrderHeaderItemDto result=repo.getHeaderById(dto);
+			     return ResponseEntity.ok().body(result);
+			}catch(Exception e)   {
+			  e.printStackTrace();
+			  return ResponseEntity.badRequest().build();
+		    }
+		 }
+	 
+		  @Override
+		public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
+		try{
+			List<SalesOrderHeader> l=repo.getManageService(dto);
+			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
+			return ResponseEntity.ok().body(t);
+		}catch(Exception e){
+	 		e.printStackTrace();
+	 		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
+	 }
+	  }
+		  
+	      @Override
+			public ResponseEntity<Object> deleteDraftedVersion(String val) {
+			try{
+		    		List<Integer> l = repo.deleteDraftedVersion(val);
+			    	return new ResponseEntity<>(l,HttpStatus.OK);
+		      } catch(Exception e){
+		    		e.printStackTrace();
+		    		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
+		    }
+		  }
 
-	// ----------------------------------------------------1
-	@SuppressWarnings("unchecked")
-	@Override
-	public ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto) {
-		String jpql = " where s.documentType='" + dto.getDocumentType()
-				+ "' and s.documentProcessStatus='" + dto.getDocumentProcessStatus() + "' ";
-		if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
-			jpql = jpql + " and s.createdBy='" + dto.getCreatedBy() + "' ";
-		if (!ServicesUtil.isEmpty(dto.getStpId())) {
-			String STP = ServicesUtil.listToString(dto.getStpId());
-			jpql = jpql + " and  s.soldToParty in (" + STP + ")";
+		@Override
+		public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
+			try{List<String> data = repo.getReferenceList(dto);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		 } catch(Exception e){
+	 		e.printStackTrace();
+	 		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
+	 }
 		}
-		if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
-			jpql = jpql + " and s.salesGroup='" + dto.getSalesGroup() + "' ";
-		ArrayList<SalesOrderHeader> list = null;
-	      Query q=entityManager.createQuery(jpql);
-	      System.out.println(jpql);
-		try {
-			list = (ArrayList<SalesOrderHeader>) q.getResultList();
-		} catch (Exception e) {
-		}
-		return ResponseEntity.ok().body(ObjectMapperUtils.map(list, ArrayList.class));
+		@Override
+		public ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto) {
+			try{
+				List<SalesOrderHeaderItemDto> t=repo.getDraftedVersion(dto);
+				return ResponseEntity.ok().body(t);
+			}catch(Exception e){
+	    		e.printStackTrace();
+	    		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+
+
 	}
 
-	// -------------------------------------------------2
-	// @Override
-	// public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
-	// String jsql = "";
-	//
-	// List<SalesOrderHeader> l = salesOrderHeaderRepository.findAll(jsql);
-	// return ResponseEntity.ok().body(ObjectMapperUtils.map(l,
-	// ArrayList.class));
-	//
-	// }
-	//
-	// // ------------------------------------------------------3
+		
+		
 
-	// @Override
-	// public ResponseEntity<Object> deleteDraftedVersion(String s4DocumentId) {
-	// Optional<SalesOrderHeader> optionalSalesOrderHeader =
-	// salesOrderHeaderRepository.findById(s4DocumentId);
-	// if (!optionalSalesOrderHeader.isPresent()) {
-	// return ResponseEntity.notFound().build();
-	// }
-	// salesOrderHeaderRepository.delete(optionalSalesOrderHeader.get());
-	// return ResponseEntity.ok().body(null);
-	// }
+		@Override
+		public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
+		/*
+		          try {
+		        	  Session s = data.getSessionFactory().getCurrentSession();
+		        	  System.err.print(s);
+		          } catch(Exception e) {
+		        	  e.printStackTrace();
+		          }
+			
+			
+			
+	            if (!ServicesUtil.isEmpty(dto)) {
+				if (!ServicesUtil.isEmpty(dto.getDocumentType())) {
+					if (dto.getDocumentType().equals("IN")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+							String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, s);
+							System.err.println("tempId" + tempEnquiryId);
+							dto.setSalesHeaderId(tempEnquiryId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8,s);
+						System.err.println("tempQuotationId" + tempQuotationId);
+							dto.setSalesHeaderId(tempQuotationId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+							String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, s);
+							System.err.println("tempOrderId" + tempOrderId);
+							dto.setSalesHeaderId(tempOrderId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					}
+				}
+				} 
+	            SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+	    		SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+	    		return ResponseEntity.ok()
+	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
+	    				*/
+			return null;
+			
+		}
+
+
+	
 	
 	/*---------------AWADHESH KUMAR----------------------*/
 	

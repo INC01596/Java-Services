@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
+import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
@@ -65,30 +66,32 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 		return salesOrderHeaderService.readAll(search);
 	}
+// SAndeep Kumar
+	
 
+	
+	@PostMapping("/getHeaderById")
+	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
+		return salesOrderHeaderService.getHeaderById(dto);
+	}
 	@PostMapping("/getDraftedVersion")
-	@ApiOperation(value = "List all SalesOrderHeader Datasets/getDraftedVersion")
 	public ResponseEntity<Object> getDraftedVersion(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getDraftedVersion(dto);
-
 	}
-	
-//	@GetMapping("/deleteDraftedVersion/{s4DocumentId}")
-//	@ApiOperation(value = "Delete SalesOrderHeader drafted version Dataset")
-//	public ResponseEntity<Object> deleteDraftedVersion(@PathVariable String s4DocumentId){
-//		return salesOrderHeaderService.deleteDraftedVersion(s4DocumentId);
-//	}
-	
-	
-//	@PostMapping("/getDraftedVersion")
-//	public Response getDraftedVersion(@RequestBody HeaderDetailUIDto dto) {
-//		return salesHeaderServices.getDraftedVersion(dto);
-//	
-//	@PostMapping("/getReferenceList")
-//	@ApiOperation(value = "List all SalesOrderHeader Datasets/getReferenceList")
-//	public ResponseEntity<Object> getReferenceList(@RequestBody HeaderDetailUIDto dto) {
-//		return salesOrderHeaderService.getReferenceList(dto);
-//	}
+	@PostMapping("/getManageService")
+	public ResponseEntity<Object> getManageService(@RequestBody HeaderDetailUIDto dto) {
+		return salesOrderHeaderService.getManageService(dto);
+	}
+	@PostMapping("/getReferenceList")
+	public ResponseEntity<Object> getReferenceList(@RequestBody HeaderDetailUIDto dto)
+	{
+	return salesOrderHeaderService.getReferenceList(dto);
+	}
+	@PostMapping("/deleteDraftedVersion")
+	public ResponseEntity<Object> deleteDraftedVersion(@RequestParam String salesHeaderId) {
+		
+		return salesOrderHeaderService.deleteDraftedVersion(salesHeaderId);
+	}
 	
 	/*---------------AWADHESH KUMAR---------------------------*/
 	

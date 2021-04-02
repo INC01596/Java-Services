@@ -3,8 +3,8 @@ package com.incture.cherrywork.dtos;
 import java.math.BigDecimal;
 
 import com.incture.cherrywork.exceptions.InvalidInputFault;
-import com.incture.cherrywork.repositories.EnOperation;
 import com.incture.cherrywork.repositories.ServicesUtils;
+import com.incture.cherrywork.sales.constants.EnOperation;
 
 
 public abstract class BaseDto {

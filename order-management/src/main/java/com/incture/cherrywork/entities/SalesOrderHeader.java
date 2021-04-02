@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+
 import java.util.Date;
 import java.math.BigDecimal;
 import javax.persistence.Id;
@@ -516,6 +519,15 @@ public class SalesOrderHeader {
 		this.salesHeaderId = salesHeaderId;
 	}
 	
-	
+	//sandeep
+	@Column(name = "DOCUMENT_PROCESS_STATUS")
+	private EnOrderActionStatus documentProcessStatus;
+
+	public EnOrderActionStatus getDocumentProcessStatus() {
+		return documentProcessStatus;
+	}
+	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
+		this.documentProcessStatus = documentProcessStatus;
+	}
 
 }

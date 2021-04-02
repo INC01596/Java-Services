@@ -1,6 +1,9 @@
 package com.incture.cherrywork.dtos;
 
 import java.util.List;
+
+import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -692,7 +695,15 @@ public class SalesOrderHeaderDto {
 			this.postingStatus = postingStatus;
 		}
 		
-		
+	//sandeep
+		private EnOrderActionStatus documentProcessStatus;
+
+		public EnOrderActionStatus getDocumentProcessStatus() {
+			return documentProcessStatus;
+		}
+		public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
+			this.documentProcessStatus = documentProcessStatus;
+		}
 
 	
 }

@@ -1,4 +1,4 @@
-package com.incture.cherrywork.repositories;
+package com.incture.cherrywork.sales.constants;
 
 public enum EnOperation {
 
