@@ -183,19 +183,19 @@ public class SalesOrderOdataServices {
 //		return response;
 //	}
 //	
-//	public String pricingSet(String request){
-//		logger.debug("[OdataUtilService][priceingSet] Started");
-//		String response = null;
-//		String URL = OdataConstants.BASE_URL+"getPriceSet";
-//		try {
-//			response = OdataUtilService.callOdata(URL, "POST", request, null);
-//			logger.debug("[OdataUtilService][priceingSet] Response : " + response);
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][priceingSet] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return response;
-//	}
+	public String pricingSet(String request){
+		
+		String response = null;
+		String URL = SalesOrderOdataConstants.BASE_URL+"getPriceSet";
+		try {
+			response = SalesOrderOdataUtilService.callOdata(URL, "POST", request, null);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return response;
+	}
 //	
 //	public String usersByEmail(String email){
 //		logger.debug("[OdataUtilService][usersByEmail] Started");

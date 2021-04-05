@@ -66,7 +66,10 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 		return salesOrderHeaderService.readAll(search);
 	}
-// SAndeep Kumar
+	
+	
+	
+//   <-----------------------Sandeep Kumar---------------------------------------->
 	
 
 	
@@ -92,6 +95,7 @@ public class SalesOrderHeaderController {
 		
 		return salesOrderHeaderService.deleteDraftedVersion(salesHeaderId);
 	}
+	
 	
 	/*---------------AWADHESH KUMAR---------------------------*/
 	
