@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 
 import java.util.Date;
@@ -448,6 +449,7 @@ public class SalesOrderHeader {
 	}
 
 	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<SalesOrderItem> salesOrderItemList = new ArrayList<>();
 
 	public List<SalesOrderItem> getSalesOrderItemList() {
@@ -518,6 +520,18 @@ public class SalesOrderHeader {
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
+	
+	@Column(name = "Plant", length = 5)
+	private String plant;
+
+	public String getPlant() {
+		return plant;
+	}
+
+	public void setPlant(String plant) {
+		this.plant = plant;
+	}
+
 	
 	//sandeep
 	@Column(name = "DOCUMENT_PROCESS_STATUS")
