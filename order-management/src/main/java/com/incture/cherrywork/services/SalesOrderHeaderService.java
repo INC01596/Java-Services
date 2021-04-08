@@ -45,6 +45,7 @@ import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
+import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.ServicesUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -221,12 +222,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 							String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, s);
 							System.err.println("tempOrderId" + tempOrderId);
 							dto.setSalesHeaderId(tempOrderId);
-							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+							
 						}
 					}
 				}
 				} */
 		
+			dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+			
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
 				List<SalesOrderItemDto> l=new ArrayList<>();

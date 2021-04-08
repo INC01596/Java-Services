@@ -3,6 +3,7 @@ package com.incture.cherrywork.dtos;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 
 import java.math.BigDecimal;
@@ -736,7 +737,8 @@ public class SalesOrderItemDto {
 		public void setUltraSonicTest(Boolean ultraSonicTest) {
 			this.ultraSonicTest = ultraSonicTest;
 		}
-
+       
+		@JsonIgnore
 		private SalesOrderHeader salesOrderHeader;
 
 		public SalesOrderHeader getSalesOrderHeader() {
