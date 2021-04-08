@@ -222,7 +222,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				if (!ServicesUtils.isEmpty(dto.getKgPerMeter()))
 					query.append(" m.KG_PER_METER = \'" + dto.getKgPerMeter() + "\' and");
 				if (!ServicesUtils.isEmpty(dto.getLength())) {
-					if (dto.getLength().equals("other") && !ServicesUtils.isEmpty(dto.getOtherLength())) {
+					if (dto.getLength() != null && dto.getLength().equals("other") && !ServicesUtils.isEmpty(dto.getOtherLength())) {
 						query.append(" m.LENGTH = (select top 1 l.LENGTH from MATERIAL l where l.LENGTH <= "
 								+ dto.getOtherLength() + " ");
 						if (!ServicesUtils.isEmpty(dto.getMaterial()))
@@ -259,10 +259,12 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public SalesOrderOdataHeaderDto getOdataReqPayload(String salesHeaderId) {
+	public SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderDto dto) {
 		// logger.debug("[SalesHeaderDao][getOdataReqPayload] Started : " +
 		// salesHeaderId);
 		// SalesItemDetailsDao salesItemDetailsDao = new SalesItemDetailsDao();
+		System.err.println("salesHeaderId in reqpayload: "+dto.getSalesHeaderId());
+		String salesHeaderId = dto.getSalesHeaderId();
 		SalesOrderOdataHeaderDto odataHeaderDto = new SalesOrderOdataHeaderDto();
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
 		List<SalesOrderItem> lineItemListDo = new ArrayList<>();
@@ -271,23 +273,42 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			Query hq = entityManager.createQuery(headerQuery);
 			hq.setParameter("salesHeaderId", salesHeaderId);
 			headerEntityList = hq.getResultList();
-			for (SalesOrderHeader entity : headerEntityList) {
+			System.err.println("headerEntityList in reqpayload: "+headerEntityList.toString());
+			for (SalesOrderHeader entity : headerEntityList){
 				SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
 				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
 				List<SalesOrderItemDto> lineItemListDto = new ArrayList<>();
 				headerDto = ObjectMapperUtils.map(entity, SalesOrderHeaderDto.class);
+				headerDto.setPaymentTerms(dto.getPaymentTerms());
+				headerDto.setTotalSalesOrderQuantity(dto.getTotalSalesOrderQuantity());
+				headerDto.setPaymentTerms(dto.getPaymentTerms());
+				headerDto.setIncoTerms1(dto.getIncoTerms1());
+				headerDto.setIncoTerms2(dto.getIncoTerms2());
+				headerDto.setWeight(dto.getWeight());
+				headerDto.setNetValueSA(dto.getNetValueSA());
+				headerDto.setTotalSalesOrderQuantitySA(dto.getTotalSalesOrderQuantitySA());
+				headerDto.setOverDeliveryTolerance(dto.getOverDeliveryTolerance());
+				headerDto.setPlant(dto.getPlant());
+				headerDto.setCustomerPODate(dto.getCustomerPODate());
+				System.out.println("in [reqpayload] ovdeltol: "+dto.getOverDeliveryTolerance());
+				headerDto.setUnderDeliveryTolerance(dto.getUnderDeliveryTolerance());
+				System.err.println("headerEntityList in reqpayload: "+headerDto.toString());
 				salesHeaderItemDto.setHeaderDto(headerDto);
 				String itemQuery = "select s from SalesOrderItem s where s.salesHeaderId=:salesHeaderId";
 				Query iq = entityManager.createQuery(itemQuery);
 				iq.setParameter("salesHeaderId", salesHeaderId);
 				lineItemListDo = iq.getResultList();
+				System.err.println("lineItemListDo in reqpayload: "+lineItemListDo.toString());
 				for (SalesOrderItem item : lineItemListDo) {
 					SalesOrderItemDto itemDto = new SalesOrderItemDto();
 					itemDto = ObjectMapperUtils.map(item, SalesOrderItemDto.class);
 					lineItemListDto.add(itemDto);
 				}
+				System.err.println("lineItemListDto in reqpayload"+lineItemListDo);
 				salesHeaderItemDto.setLineItemList(lineItemListDto);
-				odataHeaderDto = ObjectMapperUtils.map(salesHeaderItemDto, SalesOrderOdataHeaderDto.class);
+				odataHeaderDto = convertToOdataReq(salesHeaderItemDto);
+				System.err.println("salesHeaderItemDto "+salesHeaderItemDto.toString());
+				System.err.println("odataHeaderDto: "+odataHeaderDto);
 				// logger.debug("[SalesHeaderDao][getOdataReqPayload] end : " +
 				// odataHeaderDto);
 			}
@@ -333,12 +354,315 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			Query query = entityManager.createQuery(strQuery);
 			query.setParameter("key", key);
 			List<String >values = query.getResultList();
-			value = values.get(0);
+			if(values.size()>0)
+				value = values.get(0);
 		} catch (Exception e) {
 			//logger.error("[LookUpDao][getLookupValue] Exception :" + e.getMessage());
 			e.printStackTrace();
 		}
 		return value;
 	}
+	
+	public SalesOrderOdataHeaderDto convertToOdataReq(SalesOrderHeaderItemDto dto) {
+		//logger.debug("[SalesHeaderDao][convertToOdataReq] Stated : " + dto);
+		System.out.println("[SalesHeaderDao][convertToOdataReq] Stated : " + dto);
+		SalesOrderOdataHeaderDto headerDto = new SalesOrderOdataHeaderDto();
+		List<SalesOrderOdataLineItemDto> odataItemList = new ArrayList<>();
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getSalesHeaderId()))
+			headerDto.setTemp_id(dto.getHeaderDto().getSalesHeaderId());
+		else
+			headerDto.setTemp_id("");
+
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getS4DocumentId())) {
+			if ((dto.getHeaderDto().getPlant() != null) && dto.getHeaderDto().getPlant().equals("CODD")) {
+				headerDto.setDocID_6("");
+				headerDto.setDocID_2(dto.getHeaderDto().getS4DocumentId());
+			} else if (dto.getHeaderDto().getPlant() != null && dto.getHeaderDto().getPlant().equals("4321")) {
+				headerDto.setDocID_6(dto.getHeaderDto().getS4DocumentId());
+				headerDto.setDocID_2("");
+			}
+		} else {
+			headerDto.setDocID_6("");
+			headerDto.setDocID_2("");
+		}
+
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getReferenceDocument()))
+			headerDto.setRef_Doc(dto.getHeaderDto().getReferenceDocument());
+		else
+			headerDto.setRef_Doc("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCreatedBy()))
+			headerDto.setCreated_by(dto.getHeaderDto().getCreatedBy());
+		else
+			headerDto.setCreated_by("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()))
+			headerDto.setDocType(dto.getHeaderDto().getDocumentType());
+		else
+			headerDto.setDocType("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentCurrencySA()))
+			headerDto.setDoc_Curr_SA(dto.getHeaderDto().getDocumentCurrencySA());
+		else
+			headerDto.setDoc_Curr_SA("");
+		headerDto.setOrdType("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getSoldToParty()))
+			headerDto.setSoldToParty(dto.getHeaderDto().getSoldToParty());
+		else
+			headerDto.setSoldToParty("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getShipToParty()))
+			headerDto.setShipToParty(dto.getHeaderDto().getShipToParty());
+		else
+			headerDto.setShipToParty("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getName()))
+			headerDto.setName(dto.getHeaderDto().getName());
+		else
+			headerDto.setName("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getEmailId()))
+			headerDto.setEmailID(dto.getHeaderDto().getEmailId());
+		else
+			headerDto.setEmailID("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCity()))
+			headerDto.setCity(dto.getHeaderDto().getCity());
+		else
+			headerDto.setCity("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDestCountry()))
+			headerDto.setDestCountry(dto.getHeaderDto().getDestCountry());
+		else
+			headerDto.setDestCountry("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getContactNo()))
+			headerDto.setContactNo(dto.getHeaderDto().getContactNo());
+		else
+			headerDto.setContactNo("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPONum()))
+			headerDto.setReference(dto.getHeaderDto().getCustomerPONum());
+		else
+			headerDto.setReference("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDistributionChannel()))
+			headerDto.setDistChannel(dto.getHeaderDto().getDistributionChannel());
+		else
+			headerDto.setDistChannel("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getPaymentTerms()))
+		{
+			headerDto.setPayment(dto.getHeaderDto().getPaymentTerms());
+			System.out.println("in [converttoodata] paymentterms "+dto.getHeaderDto().getPaymentTerms());
+		}
+		else
+			headerDto.setPayment("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getRequestDeliveryDate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getRequestDeliveryDate());
+			headerDto.setREQ_DATE(date.substring(0, 10) + 'T' + date.substring(11));
+		} else
+			headerDto.setREQ_DATE("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCreatedDate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCreatedDate());
+			headerDto.setVALID_F(date.substring(0, 10) + 'T' + date.substring(11));
+		} else
+			headerDto.setVALID_F("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCreatedDate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCreatedDate());
+			headerDto.setVALID_T(date.substring(0, 10) + 'T' + date.substring(11));
+		} else
+			headerDto.setVALID_T("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getIncoTerms1()))
+			headerDto.setInco1(dto.getHeaderDto().getIncoTerms1());
+		else
+			headerDto.setInco1("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getIncoTerms2()))
+			headerDto.setInco2(dto.getHeaderDto().getIncoTerms2());
+		else
+			headerDto.setInco2("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getWeight()))
+			headerDto.setWeight(dto.getHeaderDto().getWeight());
+		else
+			headerDto.setWeight("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCountry()))
+			headerDto.setCountry(dto.getHeaderDto().getCountry());
+		else
+			headerDto.setCountry("");
+		// if (!ServicesUtils.isEmpty(dto.getHeaderDto().getSalesGroup()))
+		// headerDto.setSalesG(dto.getHeaderDto().getSalesGroup());
+		// else
+		headerDto.setSalesG("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getOrderReason()))
+			headerDto.setReason(dto.getHeaderDto().getOrderReason());
+		else
+			headerDto.setReason("");
+
+		headerDto.setCountryText("");
+		headerDto.setSalesText("");
+		headerDto.setReasonText("");
+		headerDto.setPaymentText("");
+		headerDto.setWFStatus("");
+		headerDto.setWFMessage(false);
+		headerDto.setDistChannelText("");
+		headerDto.setInco1Text("");
+
+		if (dto.getHeaderDto().getPlant() != null && dto.getHeaderDto().getPlant().equals("4321")) {
+			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getTotalSalesOrderQuantity())
+					&& !ServicesUtils.isEmpty(dto.getHeaderDto().getNetValue())) {
+				MathContext mc = new MathContext(3);
+				BigDecimal netValue = new BigDecimal(dto.getHeaderDto().getNetValue());
+				BigDecimal val = netValue.divide(dto.getHeaderDto().getTotalSalesOrderQuantity(), 3,
+						RoundingMode.HALF_UP);
+				System.out.println("in[converttoodata] netval: "+netValue+" val "+val+" val in string "+val.toString());
+				headerDto.setWeightAVG(val.toString());
+			} else {
+				BigDecimal val = new BigDecimal(0);
+				headerDto.setWeightAVG(val.toString());
+			}
+		} else if (dto.getHeaderDto().getPlant() != null && dto.getHeaderDto().getPlant().equals("CODD")) {
+			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getTotalSalesOrderQuantitySA())
+					&& !ServicesUtils.isEmpty(dto.getHeaderDto().getNetValueSA())) {
+				MathContext mc = new MathContext(3);
+				BigDecimal netValue = new BigDecimal(dto.getHeaderDto().getNetValueSA());
+				BigDecimal val = netValue.divide(dto.getHeaderDto().getTotalSalesOrderQuantitySA(), 0,
+						RoundingMode.HALF_UP);
+				headerDto.setWeightAVG(val.toString());
+			} else {
+				BigDecimal val = new BigDecimal(0);
+				headerDto.setWeightAVG(val.toString());
+			}
+		}
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPODate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCustomerPODate());
+			headerDto.setBSTKD_E(date.substring(0, 10) + 'T' + date.substring(11));
+		} else
+			headerDto.setBSTKD_E("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getOverDeliveryTolerance())) {
+			String ot = getLookupValue(dto.getHeaderDto().getOverDeliveryTolerance());
+			System.err.println("in [converttoodata]"+ot);
+			headerDto.setOvdelTol(ot.substring(0, ot.length()));
+		} else
+			headerDto.setOvdelTol("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getUnderDeliveryTolerance())) {
+			String ut = getLookupValue(dto.getHeaderDto().getUnderDeliveryTolerance());
+			headerDto.setUndelTol(ut.substring(0, ut.length()));
+		} else
+			headerDto.setUndelTol("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getColorCodingDetails()))
+			headerDto.setColorcoding(dto.getHeaderDto().getColorCodingDetails());
+		else
+			headerDto.setColorcoding("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getComments()))
+			headerDto.setOtherRemark(dto.getHeaderDto().getComments());
+		else
+			headerDto.setOtherRemark("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getProjectName()))
+			headerDto.setProject(dto.getHeaderDto().getProjectName());
+		else
+			headerDto.setProject("");
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getShippingType()))
+			headerDto.setShType(dto.getHeaderDto().getShippingType());
+		else
+			headerDto.setShType("");
+		// int count = 0;
+		for (SalesOrderItemDto itemDto : dto.getLineItemList()) {
+			SalesOrderOdataLineItemDto odataLine = new SalesOrderOdataLineItemDto();
+			odataLine.setTemp_id("");
+			// count += 1;
+			
+			// odataLine.setItem(Integer.toString(count));
+			odataLine.setItem(itemDto.getLineItemNumber().toString());
+			if (!ServicesUtils.isEmpty(itemDto.getItemCategory()))
+				odataLine.setItemcat(itemDto.getItemCategory());
+			else
+				odataLine.setItemcat("");
+			if (!ServicesUtils.isEmpty(itemDto.getMaterial()))
+				odataLine.setMaterial(itemDto.getMaterial());
+			else
+				odataLine.setMaterial("");
+			if (!ServicesUtils.isEmpty(itemDto.getEnteredOrdQuantity()))
+				odataLine.setQuantity(itemDto.getEnteredOrdQuantity().toString());
+			else
+				odataLine.setQuantity("");
+			if (!ServicesUtils.isEmpty(itemDto.getBasePrice()))
+				odataLine.setPrice(itemDto.getBasePrice().toString());
+			else
+				odataLine.setPrice("");
+			if (!ServicesUtils.isEmpty(itemDto.getPlant()))
+				odataLine.setPlant(itemDto.getPlant());
+			else
+				odataLine.setPlant("");
+			if (!ServicesUtils.isEmpty(itemDto.getDocumentCurrency()))
+				odataLine.setCurrency(itemDto.getDocumentCurrency());
+			else
+				odataLine.setCurrency("");
+			if (!ServicesUtils.isEmpty(itemDto.getBaseUnitOfMeasure()))
+				odataLine.setQUnit(itemDto.getBaseUnitOfMeasure());
+			else
+				odataLine.setQUnit("");
+			if (!ServicesUtils.isEmpty(itemDto.getFlag()))
+				odataLine.setFlag(itemDto.getFlag());
+			else
+				odataLine.setFlag("");
+
+			odataLine.setStatus("");
+			if (!ServicesUtils.isEmpty(itemDto.getStandard()))
+				odataLine.setStd(itemDto.getStandard());
+			else
+				odataLine.setStd("");
+			if (!ServicesUtils.isEmpty(itemDto.getSectionGrade()))
+				odataLine.setGrade(itemDto.getSectionGrade());
+			else
+				odataLine.setGrade("");
+			if (!ServicesUtils.isEmpty(itemDto.getSize()))
+				odataLine.setSize(itemDto.getSize());
+			else
+				odataLine.setSize("");
+			if (!ServicesUtils.isEmpty(itemDto.getLength()))
+				odataLine.setLength(itemDto.getLength().toString());
+			else
+				odataLine.setLength("");
+			if (!ServicesUtils.isEmpty(itemDto.getKgPerMeter()))
+				odataLine.setKgperm(itemDto.getKgPerMeter().toString());
+			else
+				odataLine.setKgperm("");
+			if (!ServicesUtils.isEmpty(itemDto.getEnteredOrdQuantity()))
+				odataLine.setCu_ord_qty(itemDto.getEnteredOrdQuantity().toString());
+			else
+				odataLine.setCu_ord_qty("");
+			if (!ServicesUtils.isEmpty(itemDto.getInspection()) && itemDto.getInspection() == true)
+				odataLine.setInsp32("Y");
+			else
+				odataLine.setInsp32("N");
+			if (!ServicesUtils.isEmpty(itemDto.getImpactTest()) && itemDto.getImpactTest() == true)
+				odataLine.setImpactTest("Y");
+			else
+				odataLine.setImpactTest("N");
+			if (!ServicesUtils.isEmpty(itemDto.getBendTest()) && itemDto.getBendTest() == true)
+				odataLine.setBendTest("Y");
+			else
+				odataLine.setBendTest("N");
+			if (!ServicesUtils.isEmpty(itemDto.getUltraSonicTest()) && itemDto.getUltraSonicTest())
+				odataLine.setUltrsonic("Y");
+			else
+				odataLine.setUltrsonic("N");
+			if (!ServicesUtils.isEmpty(itemDto.getHardnessTest()) && itemDto.getHardnessTest())
+				odataLine.setHardness("Y");
+			else
+				odataLine.setHardness("N");
+			if (!ServicesUtils.isEmpty(itemDto.getIsElementBoronRequired())
+					&& itemDto.getIsElementBoronRequired() == true)
+				odataLine.setBoron_req("Y");
+			else
+				odataLine.setBoron_req("N");
+			if (!ServicesUtils.isEmpty(itemDto.getNetValue()))
+				odataLine.setRate(itemDto.getNetValue());
+			else
+				odataLine.setRate("");
+			if (!ServicesUtils.isEmpty(itemDto.getReferenceDocument()))
+				odataLine.setRef_Doc_it(itemDto.getReferenceDocument());
+			else
+				odataLine.setRef_Doc_it("");
+			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getReferenceDocument()))
+				odataLine.setRef_Doc(dto.getHeaderDto().getReferenceDocument());
+			else
+				odataLine.setRef_Doc("");
+			odataItemList.add(odataLine);
+		}
+		headerDto.setSotoLi(odataItemList);
+		//logger.debug("[SalesHeaderDao][convertToOdataReq] end : " + headerDto);
+		System.err.println("[SalesHeader][convertToOdataReq] end : " + headerDto);
+		return headerDto;
+	}
+
 
 }

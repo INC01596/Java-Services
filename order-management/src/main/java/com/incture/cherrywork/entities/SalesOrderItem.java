@@ -14,11 +14,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Id;
 
 @Entity
-@Table(name = "SalesOrderItem")
+@Table(name = "SALES_ORDER_ITEM")
 public class SalesOrderItem {
 
 	@Id
-	@Column(name = "SalesItemId", length = 10)
+	@Column(name = "SALES_ITEM_ID", length = 10)
 	private String salesItemId;
 
 	public String getSalesItemId() {
@@ -40,7 +40,7 @@ public class SalesOrderItem {
 		this.clientSpecific = clientSpecific;
 	}
 
-	@Column(name = "LineItemNumber", length = 10)
+	@Column(name = "LINE_ITEM_NUMBER", length = 10)
 	private String lineItemNumber;
 
 	public String getLineItemNumber() {
@@ -337,7 +337,7 @@ public class SalesOrderItem {
 		this.standardDesc = standardDesc;
 	}
 
-	@Column(name = "SectionGrade", length = 2)
+	@Column(name = "SectionGrade", length = 15)
 	private String sectionGrade;
 
 	public String getSectionGrade() {
@@ -594,7 +594,7 @@ public class SalesOrderItem {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)                    //Add optional = false
 	@JoinColumn(name = "s4DocumentId")
-	@JsonIgnore
+	@JsonIgnore 
 	private SalesOrderHeader salesOrderHeader;
 
 	public SalesOrderHeader getSalesOrderHeader() {

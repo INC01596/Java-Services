@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 @Repository
 public interface ISalesOrderHeaderService {
@@ -27,6 +29,7 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 	
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
+	
 	
 	//sandeep
 	ResponseEntity<Object> getHeaderById(HeaderIdDto dto);

@@ -41,6 +41,7 @@ public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCusto
 			List<LookUp> listLookUp = query.getResultList();
 			List<SalesOrderLookUpDto> listSalesOrderLookUpDto = new ArrayList<SalesOrderLookUpDto>();
 			for(LookUp lookUp:listLookUp){
+				lookUp.setLookupType(EnLookUp.PAYMENT);
 				listSalesOrderLookUpDto.add(ObjectMapperUtils.map(lookUp, SalesOrderLookUpDto.class));
 			}
 			//logger.debug("Lookup query- " + strQuery);
@@ -61,6 +62,7 @@ public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCusto
 			List<LookUp> listLookUp = query.getResultList();
 			List<SalesOrderLookUpDto> listSalesOrderLookUpDto = new ArrayList<SalesOrderLookUpDto>();
 			for(LookUp lookUp:listLookUp){
+				lookUp.setLookupType(EnLookUp.INCOTERMS);
 				listSalesOrderLookUpDto.add(ObjectMapperUtils.map(lookUp, SalesOrderLookUpDto.class));
 			}
 			//logger.debug("Lookup query- " + strQuery);
@@ -80,6 +82,7 @@ public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCusto
 			List<LookUp> listLookUp = query.getResultList();
 			List<SalesOrderLookUpDto> listSalesOrderLookUpDto = new ArrayList<SalesOrderLookUpDto>();
 			for(LookUp lookUp:listLookUp){
+				lookUp.setLookupType(EnLookUp.QUALITYTEST);
 				listSalesOrderLookUpDto.add(ObjectMapperUtils.map(lookUp, SalesOrderLookUpDto.class));
 			}
 			//logger.debug("Lookup query- " + strQuery);
@@ -99,6 +102,7 @@ public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCusto
 			List<LookUp> listLookUp = query.getResultList();
 			List<SalesOrderLookUpDto> listSalesOrderLookUpDto = new ArrayList<SalesOrderLookUpDto>();
 			for(LookUp lookUp:listLookUp){
+				lookUp.setLookupType(EnLookUp.DELIVERYTOLERANCE);
 				listSalesOrderLookUpDto.add(ObjectMapperUtils.map(lookUp, SalesOrderLookUpDto.class));
 			}
 			//logger.debug("Lookup query- " + strQuery);
@@ -118,6 +122,7 @@ public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCusto
 			List<LookUp> listLookUp = query.getResultList();
 			List<SalesOrderLookUpDto> listSalesOrderLookUpDto = new ArrayList<SalesOrderLookUpDto>();
 			for(LookUp lookUp:listLookUp){
+				lookUp.setLookupType(EnLookUp.DISTRIBUTIONCHANNEL);
 				listSalesOrderLookUpDto.add(ObjectMapperUtils.map(lookUp, SalesOrderLookUpDto.class));
 			}
 			//logger.debug("Lookup query- " + strQuery);

@@ -3,14 +3,28 @@ package com.incture.cherrywork.services;
 
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
+import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
+import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
+import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
 
 
@@ -18,23 +32,31 @@ import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
 public class SalesOrderOdataServices {
 
 	//private Logger logger = LoggerFactory.getLogger(OdataServices.class);
+	
 
 	@Async
 	public String postData(SalesOrderOdataHeaderDto headerDto) {
 		//logger.debug("[OdataServices][postData] Started : " + headerDto.toString());
+		System.err.println("[OdataServices][postData] Started : " + headerDto.toString());
 		String response = null;
 		try {
 			String requestURL = SalesOrderOdataConstants.BASE_URL+"salesDocumentSet";
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			String reqPayload = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(headerDto);
 			//logger.debug("[OdataServices][postData] reqPayload : "+reqPayload);
+			System.err.println("[OdataServices][postData] reqPayload : "+reqPayload);
 			response = SalesOrderOdataUtilService.callOdata(requestURL, "POST", reqPayload, null);
 		//	logger.debug("[OdataServices][postData] Response : "+response);
+			System.err.println("[OdataServices][postData] Response : "+response);
 		} catch (Exception e) {
 			//logger.error("[OdataServices][postData] Exception : " + e.getMessage());
+			System.err.println("[OdataServices][postData] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
 		//logger.debug("[OdataServices][postData] Done");
+		System.err.println("[OdataServices][postData] Done");
 		
 		return response;
 	}
@@ -47,7 +69,7 @@ public class SalesOrderOdataServices {
 //		try {
 //			odataResponse = OdataUtilService.callOdata(URL, "GET", null, "fetch");
 //			logger.debug("[OdataUtilService][acknowledge] Response : " + odataResponse);
-//			if (!ServicesUtil.isEmpty(odataResponse)) {
+//			if (!ServicesUtils.isEmpty(odataResponse)) {
 //				response.setMessage("Acknowledged Order Successfully");
 //				response.setStatus(HttpStatus.OK.getReasonPhrase());
 //				response.setStatusCode(HttpStatus.OK.value());
@@ -230,4 +252,7 @@ public class SalesOrderOdataServices {
 //		String a = s.toLowerCase();
 //		System.out.println(a);
 //	}
+	
+	
+	
 }
