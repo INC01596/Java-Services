@@ -2,6 +2,7 @@ package com.incture.cherrywork.dtos;
 
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class OutBoundDeliveryItemDto {
 	
 	private String soItemNumber;

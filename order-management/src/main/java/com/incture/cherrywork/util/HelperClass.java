@@ -38,6 +38,7 @@ import org.json.XML;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@SuppressWarnings("unused")
 public class HelperClass {
 	
 	

@@ -128,6 +128,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
 	    try{
 			      SalesOrderHeaderItemDto result=repo.getHeaderById(dto);
+			     
 			     return ResponseEntity.ok().body(result);
 			}catch(Exception e)   {
 			  e.printStackTrace();
@@ -187,13 +188,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		@Override
 		public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 		/*
-		          try {
-		        	  Session s = data.getSessionFactory().getCurrentSession();
-		        	  System.err.print(s);
-		          } catch(Exception e) {
-		        	  e.printStackTrace();
-		          }
-			
+		         
 			
 			
 	            if (!ServicesUtil.isEmpty(dto)) {
@@ -230,21 +225,35 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						}
 					}
 				}
-				} 
-	            SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
-	    		SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+				} */
+		
+			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+				List<SalesOrderItemDto> l=new ArrayList<>();
+				l= dto.getSalesOrderItemDtoList(); 
+				for(SalesOrderItemDto d:l)
+					
+				{
+                   d.setSalesOrderHeader(savedSalesOrderHeader);
+					SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
+					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+					salesOrderItemRepository.save(salesOrderItem);
+				}
+				
+				
+	    		
 	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 	    		return ResponseEntity.ok()
 	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
-	    				*/
-			return null;
+	    			
+			
 			
 		}
 
 
 	
 	
-	/*---------------AWADHESH KUMAR----------------------*/
+	        /*---------------AWADHESH KUMAR----------------------*/
 	
 	
 	@Override
@@ -303,7 +312,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				netPrice = dto.getNetValue();
 				totalQuantity = dto.getTotalSalesOrderQuantity();
 				dto.setNetValue(null);
-				dto.setTotalSalesOrderQuantity(null);
+				dto.setTotalSalesOrderQuantity(null); 
 			}
 			if ((dto.getDocumentType() != null) && dto.getDocumentType().equals("OR"))
 				dto.setIsOpen(true);

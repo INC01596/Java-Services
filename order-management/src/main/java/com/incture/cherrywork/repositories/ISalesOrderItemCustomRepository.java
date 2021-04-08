@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderLookUpDto;
 
+@SuppressWarnings("unused")
 @Repository
 public interface ISalesOrderItemCustomRepository {
 	List<SalesOrderLookUpDto> getPaymentTerms();

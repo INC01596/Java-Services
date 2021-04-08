@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 
 import java.util.Date;
@@ -20,6 +21,8 @@ import javax.persistence.Id;
 @Entity
 @Table(name = "SalesOrderHeader")
 public class SalesOrderHeader {
+
+	
 
 	@Column(name = "ClientSpecific", precision = 3, scale = 0)
 	private Integer clientSpecific;
@@ -448,6 +451,7 @@ public class SalesOrderHeader {
 	}
 
 	@OneToMany(mappedBy = "salesOrderHeader", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<SalesOrderItem> salesOrderItemList = new ArrayList<>();
 
 	public List<SalesOrderItem> getSalesOrderItemList() {

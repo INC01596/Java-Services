@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.entities.MaterialMaster;
 import com.incture.cherrywork.util.ServicesUtil;
+import com.incture.cherrywork.dtos.MaterialContainerDto;
 import com.incture.cherrywork.dtos.MaterialPlantDto;
 import com.incture.cherrywork.dtos.SalesOrderMaterialMasterDto;
 
@@ -88,6 +89,77 @@ public class IMaterialMasterRepositoryNew {
 		}
 		
 	}
+public List<SalesOrderMaterialMasterDto> getMaterialByDesc(MaterialContainerDto materialContainerDto) {
+		
+		List<SalesOrderMaterialMasterDto> listDto = new ArrayList<>();
+		List<MaterialMaster> listEntity;
+		String plant = listToString(materialContainerDto.getPlant());
+		try {
+			// String query = "select m from MaterialMasterDo m where
+			// LOWER(m.materialDescription) like \'%"
+			// + materialDescription.toLowerCase() + "%\'";
+			
+			StringBuffer query = new StringBuffer("Select m from MaterialMaster m where  m.materialDescription=:materialDescription and m.container=:container" + " and plant in (" + plant + ") order by materialDescription ASC");
+				
+			/*StringBuffer query = new StringBuffer(
+					"select  materialMasterId, barsPerBundle,bendTest, bundleWeight,catalogKey, ceLogo, changedBy, changedOn,"
+							+ " clientSpecific,createdBy, createdOn, gradePricingGroup, impactTest, isiLogo, key, kgPerMeter, kgpermPricingGroup,"
+							+ " length, lengthMapKey, lengthPricingGroup, level2Id, material,materialDescription, plant,section, sectionGrade, sectionGradeDescription,"
+							+ " sectionGroup, sectionPricingGroup, size, sizeGroup, sizePricingGroup,standard,standardDescription, syncStatus, ultraLightTest, updateIndicator,rollingPlanFlag"
+							+ " from MaterialMaster m where lower(m.searchField) like lower('%"
+							+ materialContainerDto.getMaterialDescription().toLowerCase().replace("*", "%")
+							+ "%') and container = " + materialContainerDto.getContainer() + " and plant in (" + plant
+							+ ")order by materialDescription ASC");*/
+			Query q =entityManager.createQuery(query.toString());
+			 q.setParameter("materialDescription",materialContainerDto.getMaterialDescription() );
+			 q.setParameter("container",materialContainerDto.getContainer() );
+			
+			
+			@SuppressWarnings("unchecked")
+			List<MaterialMaster> objList = q.getResultList();
+			System.err.println(q.getResultList());
+			
+			if (!ServicesUtil.isEmpty(objList)) {
+				for (MaterialMaster obj : objList) {
+					SalesOrderMaterialMasterDto materialDto = new SalesOrderMaterialMasterDto();
+					materialDto=ObjectMapperUtils.map(obj, SalesOrderMaterialMasterDto.class);
+					if (!ServicesUtil.isEmpty(setQualityTest(materialDto))) 
+					{
+						materialDto.setQualityTestList(setQualityTest(materialDto));
+						materialDto.setDefaultQualityTestList(setQualityTest(materialDto));
+					} 
+					else 
+					{
+						materialDto.setQualityTestList(new ArrayList<String>());
+						materialDto.setDefaultQualityTestList(new ArrayList<String>());
+					}
+					listDto.add(materialDto);
+				}return listDto; 
+			}
+			System.err.println("Null return exception");
+			return null; 
+			
+		} catch (Exception e) {
+			System.err.println("try found exception");
+			e.printStackTrace();
+			
+		}
+		return listDto;
+	}
+	
+public static String listToString(List<String> list) {
+	String response = "";
+	try {
+		for (String s : list) {
+			response = "'" + s + "', " + response;
+		}
+		response = response.substring(0, response.length() - 2);
+	} catch (Exception e) {
+		System.err.println("[SalesHeaderDao][listToString] Exception : " + e.getMessage());
+		e.printStackTrace();
+	}
+	return response;
+}
 	
 	
 	
