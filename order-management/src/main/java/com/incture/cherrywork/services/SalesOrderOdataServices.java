@@ -3,6 +3,7 @@ package com.incture.cherrywork.services;
 
 
 
+<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -20,6 +21,20 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
+=======
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
@@ -205,19 +220,23 @@ public class SalesOrderOdataServices {
 //		return response;
 //	}
 //	
-//	public String pricingSet(String request){
-//		logger.debug("[OdataUtilService][priceingSet] Started");
-//		String response = null;
-//		String URL = OdataConstants.BASE_URL+"getPriceSet";
-//		try {
-//			response = OdataUtilService.callOdata(URL, "POST", request, null);
-//			logger.debug("[OdataUtilService][priceingSet] Response : " + response);
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][priceingSet] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return response;
-//	}
+	public String pricingSet(String request){
+		
+		
+		
+	String response = null;
+		String URL = SalesOrderOdataConstants.BASE_URL+"getPriceSet";
+		try {
+			response = SalesOrderOdataUtilService.callOdata(URL, "POST", request, null);
+			
+
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return response;
+		
+	}
 //	
 //	public String usersByEmail(String email){
 //		logger.debug("[OdataUtilService][usersByEmail] Started");

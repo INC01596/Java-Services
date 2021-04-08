@@ -129,6 +129,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	// Sandeep
+<<<<<<< HEAD
 	@Override
 	public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
 		try {
@@ -144,6 +145,24 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 		try {
 			List<SalesOrderHeader> l = repo.getManageService(dto);
+=======
+	 @Override
+		public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
+	    try{
+			      SalesOrderHeaderItemDto result=repo.getHeaderById(dto);
+			     
+			     return ResponseEntity.ok().body(result);
+			}catch(Exception e)   {
+			  e.printStackTrace();
+			  return ResponseEntity.badRequest().build();
+		    }
+		 }
+	 
+		  @Override
+		public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
+		try{
+			List<SalesOrderHeader> l=repo.getManageService(dto);
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
 			return ResponseEntity.ok().body(t);
 		} catch (Exception e) {
@@ -189,6 +208,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 		/*
+<<<<<<< HEAD
 		 * try { Session s = data.getSessionFactory().getCurrentSession();
 		 * System.err.print(s); } catch(Exception e) { e.printStackTrace(); }
 		 * 
@@ -232,11 +252,82 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		 * SalesOrderHeaderDto.class));
 		 */
 		return null;
+=======
+		         
+			
+			
+	            if (!ServicesUtil.isEmpty(dto)) {
+				if (!ServicesUtil.isEmpty(dto.getDocumentType())) {
+					if (dto.getDocumentType().equals("IN")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+							String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, s);
+							System.err.println("tempId" + tempEnquiryId);
+							dto.setSalesHeaderId(tempEnquiryId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8,s);
+						System.err.println("tempQuotationId" + tempQuotationId);
+							dto.setSalesHeaderId(tempQuotationId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
+						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+							sequenceNumberGen= SequenceNumberGen.getInstance();
+							Session s=aSession.getSessionFactory().getCurrentSession();
+							System.err.println("session : "+ s);
+							String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, s);
+							System.err.println("tempOrderId" + tempOrderId);
+							dto.setSalesHeaderId(tempOrderId);
+							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						}
+					}
+				}
+				} */
+		
+			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+				List<SalesOrderItemDto> l=new ArrayList<>();
+				l= dto.getSalesOrderItemDtoList(); 
+				for(SalesOrderItemDto d:l)
+					
+				{
+                   d.setSalesOrderHeader(savedSalesOrderHeader);
+					SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
+					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+					salesOrderItemRepository.save(salesOrderItem);
+				}
+				
+				
+	    		
+	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+	    		return ResponseEntity.ok()
+	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
+	    			
+			
+			
+		}
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 
 	}
 
+<<<<<<< HEAD
 	/*---------------AWADHESH KUMAR----------------------*/
 
+=======
+	
+	
+	        /*---------------AWADHESH KUMAR----------------------*/
+	
+	
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto) {
 
@@ -293,7 +384,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				netPrice = dto.getNetValue();
 				totalQuantity = dto.getTotalSalesOrderQuantity();
 				dto.setNetValue(null);
-				dto.setTotalSalesOrderQuantity(null);
+				dto.setTotalSalesOrderQuantity(null); 
 			}
 			if ((dto.getDocumentType() != null) && dto.getDocumentType().equals("OR")) {
 				dto.setIsOpen(true);

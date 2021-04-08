@@ -2,9 +2,9 @@ package com.incture.cherrywork.config;
 
 import javax.sql.DataSource;
 
-import org.h2.server.web.WebServlet;
+
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
+
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.cloud.config.java.ServiceScan;
 import org.springframework.context.annotation.Bean;

@@ -1,27 +1,30 @@
 package com.incture.cherrywork.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 import com.incture.cherrywork.dtos.SalesOrderDropDownDto;
-import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.services.ISalesOrderItemService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(value = "Sales Order Item", tags = { "Sales Order Item" })
@@ -31,13 +34,8 @@ public class SalesOrderItemController {
 
 	@Autowired
 	private ISalesOrderItemService salesOrderItemService;
+
 	
-	
-	
-	@GetMapping("/msg")
-	public String message(){
-		return "Hi, Welcome to SalesOrderItem Controller!";
-	}
 
 	@PostMapping("/SalesOrderItem/create")
 	@ApiOperation(value = "Create a SalesOrderItem Dataset")
@@ -78,25 +76,25 @@ public class SalesOrderItemController {
 	// return salesOrderItemService.deleteDraftedVersion(s4DocumentId,
 	// salesItemId);
 	// }
-	
+
 	@PostMapping("/add")
 	@ApiOperation(value = "Add Item with or without specification")
-	public ResponseEntity<Object> addLineItem(@PathVariable String s4DocumentId, @Valid @RequestBody List<SalesOrderItemDto> dto){
+	public ResponseEntity<Object> addLineItem(@PathVariable String s4DocumentId,
+			@Valid @RequestBody List<SalesOrderItemDto> dto) {
 		System.out.println("Calling addLineItem.. ");
 		return salesOrderItemService.addLineItem(s4DocumentId, dto);
 	}
-	
+
 	@PostMapping("/update")
 	@ApiOperation(value = "Update the Enq or Quot or Ord")
 	public ResponseEntity<Object> updateLineItem(@RequestBody List<SalesOrderItemDto> dto) {
 		return salesOrderItemService.updateLineItem(dto);
 	}
-	
+
 	@GetMapping("/dropdown")
 	@ApiOperation(value = "Get LookUp DropDown")
-	public SalesOrderDropDownDto getLookUpValues(){
+	public SalesOrderDropDownDto getLookUpValues() {
 		return salesOrderItemService.getLookUpValues();
 	}
-	
-	
+
 }

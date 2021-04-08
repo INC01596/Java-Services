@@ -43,6 +43,7 @@ import com.incture.cherrywork.services.SalesOrderHeaderService;
 import com.incture.cherrywork.services.SalesOrderItemService;
 import com.incture.cherrywork.services.SalesOrderOdataServices;
 
+@SuppressWarnings("unused")
 @Transactional
 @Repository
 public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderCustomRepository {

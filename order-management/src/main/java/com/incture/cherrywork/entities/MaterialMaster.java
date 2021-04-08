@@ -148,6 +148,17 @@ public class MaterialMaster implements Serializable {
 
 	@Column(name = "UPDATE_INDICATOR")
 	private EnUpdateIndicator updateIndicator;
+	
+	@Column(name="ITEM_NUMBER")
+	private String itemNo;
+
+	public String getItemNo() {
+		return itemNo;
+	}
+
+	public void setItemNo(String itemNo) {
+		this.itemNo = itemNo;
+	}
 
 	public String getMaterialMasterId() {
 		return materialMasterId;
@@ -471,7 +482,7 @@ public class MaterialMaster implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MaterialMasterDo [materialMasterId=" + materialMasterId + ", barsPerBundle=" + barsPerBundle
+		return "MaterialMaster [materialMasterId=" + materialMasterId + ", barsPerBundle=" + barsPerBundle
 				+ ", bendTest=" + bendTest + ", bundleWeight=" + bundleWeight + ", catalogKey=" + catalogKey
 				+ ", ceLogo=" + ceLogo + ", changedBy=" + changedBy + ", changedOn=" + changedOn + ", clientSpecific="
 				+ clientSpecific + ", container=" + container + ", createdBy=" + createdBy + ", createdOn=" + createdOn
@@ -485,7 +496,7 @@ public class MaterialMaster implements Serializable {
 				+ sectionPricingGroup + ", size=" + size + ", sizeGroup=" + sizeGroup + ", sizePricingGroup="
 				+ sizePricingGroup + ", standard=" + standard + ", standardDescription=" + standardDescription
 				+ ", syncStatus=" + syncStatus + ", ultraLightTest=" + ultraLightTest + ", updateIndicator="
-				+ updateIndicator + "]";
+				+ updateIndicator + ", itemNo=" + itemNo + "]";
 	}
 }
 

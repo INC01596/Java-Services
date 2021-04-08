@@ -1,4 +1,5 @@
 package com.incture.cherrywork.dtos;
+//<----------Sandeep Kumar---------------------------------->
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class HeaderDetailUIDto {
 	private Boolean isOpen;
 	private List<String> stpId;
 	private Boolean isCustomer;
-	private List<String> plant;
+	//private List<String> plant;
 	private String salesGroup;
 	
 	public String getDocumentType() {
@@ -53,12 +54,12 @@ public class HeaderDetailUIDto {
 	public void setIsCustomer(Boolean isCustomer) {
 		this.isCustomer = isCustomer;
 	}
-	public List<String> getPlant() {
+	/*public List<String> getPlant() {
 		return plant;
 	}
 	public void setPlant(List<String> plant) {
 		this.plant = plant;
-	}
+	}*/
 	public String getSalesGroup() {
 		return salesGroup;
 	}
@@ -69,7 +70,7 @@ public class HeaderDetailUIDto {
 	public String toString() {
 		return "HeaderDetailUIDto [documentType=" + documentType + ", documentProcessStatus=" + documentProcessStatus
 				+ ", createdBy=" + createdBy + ", isOpen=" + isOpen + ", stpId=" + stpId + ", isCustomer=" + isCustomer
-				+ ", plant=" + plant + ", salesGroup=" + salesGroup + "]";
+				+ ", salesGroup=" + salesGroup + "]";
 	}
 }
 

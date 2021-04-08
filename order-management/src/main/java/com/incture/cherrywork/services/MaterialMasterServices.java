@@ -31,8 +31,7 @@ import com.incture.cherrywork.dtos.MaterialPlantDto;
 @Service("MaterialMasterServices")
 @Transactional
 public class MaterialMasterServices implements IMaterialMasterServices {
-	@Autowired
-	private ISalesOrderHeaderRepositoryNew repo;
+	
 	
 	@Autowired
 	private IMaterialMasterRepositoryNew mrepo;
@@ -43,7 +42,7 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 	@Override
 	public ResponseEntity<Object> getMaterialByDesc(MaterialContainerDto dto) {
 		try{
-		List<SalesOrderMaterialMasterDto> listDto=repo.getMaterialByDesc(dto);
+		List<SalesOrderMaterialMasterDto> listDto=mrepo.getMaterialByDesc(dto);
 		return ResponseEntity.ok(listDto);
 	   }catch (Exception e) {
 		System.err.println("try found exception");

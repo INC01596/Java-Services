@@ -2,6 +2,10 @@ package com.incture.cherrywork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +33,9 @@ public class SalesOrderHeaderController {
 
 	@Autowired
 	private ISalesOrderHeaderService salesOrderHeaderService;
+
 	
-	
+
 	@GetMapping("/test")
 	public String test() {
 		return "Hello";
@@ -66,55 +71,59 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> readAll(@RequestParam(value = "search") String search) {
 		return salesOrderHeaderService.readAll(search);
 	}
-// SAndeep Kumar
-	
 
-	
+	// <-----------------------Sandeep
+	// Kumar---------------------------------------->
+
 	@PostMapping("/getHeaderById")
 	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
 		return salesOrderHeaderService.getHeaderById(dto);
 	}
+
 	@PostMapping("/getDraftedVersion")
 	public ResponseEntity<Object> getDraftedVersion(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getDraftedVersion(dto);
 	}
+
 	@PostMapping("/getManageService")
 	public ResponseEntity<Object> getManageService(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getManageService(dto);
 	}
+
 	@PostMapping("/getReferenceList")
-	public ResponseEntity<Object> getReferenceList(@RequestBody HeaderDetailUIDto dto)
-	{
-	return salesOrderHeaderService.getReferenceList(dto);
+	public ResponseEntity<Object> getReferenceList(@RequestBody HeaderDetailUIDto dto) {
+		return salesOrderHeaderService.getReferenceList(dto);
 	}
+
 	@PostMapping("/deleteDraftedVersion")
 	public ResponseEntity<Object> deleteDraftedVersion(@RequestParam String salesHeaderId) {
-		
+
 		return salesOrderHeaderService.deleteDraftedVersion(salesHeaderId);
 	}
-	
+	@PostMapping("/SalesOrderHeader/save")
+	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
+	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
+			return salesOrderHeaderService.save(salesOrderHeaderDto);
+	}
+
 	/*---------------AWADHESH KUMAR---------------------------*/
-	
+
 	@PostMapping("/submit")
 	@ApiOperation(value = "Submit The Enquiry")
 	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderDto dto) {
 		return salesOrderHeaderService.submitSalesOrder(dto);
 	}
-	
+
 	@GetMapping("/getSearchDropDown")
 	@ApiOperation(value = "List Of Search Drop Down values")
-	public ResponseEntity<Object> getSearchDropDown(@RequestBody SalesOrderSearchHeaderDto dto)
-	{
-		return salesOrderHeaderService.getSearchDropDown(dto); 
+	public ResponseEntity<Object> getSearchDropDown(@RequestBody SalesOrderSearchHeaderDto dto) {
+		return salesOrderHeaderService.getSearchDropDown(dto);
 	}
-	
+
 	@GetMapping("/manualSearchResult")
 	@ApiOperation(value = "Mannual Search Result")
-	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto)
-	{
+	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto) {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
 	}
 
-	
-	
 }

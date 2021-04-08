@@ -23,6 +23,7 @@ import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.sales.constants.EnLookUp;
 
+@SuppressWarnings("unused")
 @Transactional
 @Repository
 public class ISalesOrderItemCustomRepositoryImpl implements ISalesOrderItemCustomRepository {

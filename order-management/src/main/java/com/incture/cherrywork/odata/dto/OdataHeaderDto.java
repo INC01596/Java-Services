@@ -1,145 +1,187 @@
-package com.incture.cherrywork.dtos;
+package com.incture.cherrywork.odata.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-//import com.google.gson.annotations.Expose;
-//import com.google.gson.annotations.SerializedName;
+public class OdataHeaderDto {
 
-public class SalesOrderOdataHeaderDto {
-
-	@JsonProperty("temp_id")
+	@Expose
+	@SerializedName("temp_id")
 	private String temp_id;
-
-	@JsonProperty("DocID_6")
+	
+	@Expose
+	@SerializedName("DocID_6")
 	private String DocID_6;
-
-	@JsonProperty("DocID_2")
+	
+	@Expose
+	@SerializedName("DocID_2")
 	private String DocID_2;
-
-	@JsonProperty("Ref_Doc")
+	
+	@Expose
+	@SerializedName("Ref_Doc")
 	private String Ref_Doc;
-
-	@JsonProperty("Created_by")
+	
+	@Expose
+	@SerializedName("Created_by")
 	private String Created_by;
-
-	@JsonProperty("DocType")
+	
+	@Expose
+	@SerializedName("DocType")
 	private String DocType;
-
-	@JsonProperty("Doc_Curr_SA")
+	
+	@Expose
+	@SerializedName("Doc_Curr_SA")
 	private String Doc_Curr_SA;
-
-	@JsonProperty("OrdType")
+	
+	@Expose
+	@SerializedName("OrdType")
 	private String OrdType;
-
-	@JsonProperty("SoldToParty")
+	
+	@Expose
+	@SerializedName("SoldToParty")
 	private String SoldToParty;
-
-	@JsonProperty("ShipToParty")
+	
+	@Expose
+	@SerializedName("ShipToParty")
 	private String ShipToParty;
-
-	@JsonProperty("Name")
+	
+	@Expose
+	@SerializedName("Name")
 	private String Name;
-
-	@JsonProperty("EmailID")
+	
+	@Expose
+	@SerializedName("EmailID")
 	private String EmailID;
-
-	@JsonProperty("City")
+	
+	@Expose
+	@SerializedName("City")
 	private String City;
-
-	@JsonProperty("DestCountry")
+	
+	@Expose
+	@SerializedName("DestCountry")
 	private String DestCountry;
-
-	@JsonProperty("ContactNo")
+	
+	@Expose
+	@SerializedName("ContactNo")
 	private String ContactNo;
-
-	@JsonProperty("Reference")
+	
+	@Expose
+	@SerializedName("Reference")
 	private String Reference;
-
-	@JsonProperty("DistChannel")
+	
+	@Expose
+	@SerializedName("DistChannel")
 	private String DistChannel;
-
-	@JsonProperty("Payment")
+	
+	@Expose
+	@SerializedName("Payment")
 	private String Payment;
-
-	@JsonProperty("REQ_DATE")
+	
+	@Expose
+	@SerializedName("REQ_DATE")
 	private String REQ_DATE;
-
-	@JsonProperty("VALID_F")
+	
+	@Expose
+	@SerializedName("VALID_F")
 	private String VALID_F;
-
-	@JsonProperty("VALID_T")
+	
+	@Expose
+	@SerializedName("VALID_T")
 	private String VALID_T;
-
-	@JsonProperty("Inco1")
+	
+	@Expose
+	@SerializedName("Inco1")
 	private String Inco1;
-
-	@JsonProperty("Inco2")
+	
+	@Expose
+	@SerializedName("Inco2")
 	private String Inco2;
-
-	@JsonProperty("Weight")
+	
+	@Expose
+	@SerializedName("Weight")
 	private String Weight;
-
-	@JsonProperty("country")
+	
+	@Expose
+	@SerializedName("country")
 	private String country;
-
-	@JsonProperty("salesG")
+	
+	@Expose
+	@SerializedName("salesG")
 	private String salesG;
-
-	@JsonProperty("reason")
+	
+	@Expose
+	@SerializedName("reason")
 	private String reason;
-
-	@JsonProperty("countryText")
+	
+	@Expose
+	@SerializedName("countryText")
 	private String countryText;
-
-	@JsonProperty("salesText")
+	
+	@Expose
+	@SerializedName("salesText")
 	private String salesText;
-
-	@JsonProperty("reasonText")
+	
+	@Expose
+	@SerializedName("reasonText")
 	private String reasonText;
-
-	@JsonProperty("PaymentText")
+	
+	@Expose
+	@SerializedName("PaymentText")
 	private String PaymentText;
-
-	@JsonProperty("WFStatus")
+	
+	@Expose
+	@SerializedName("WFStatus")
 	private String WFStatus;
-
-	@JsonProperty("WFMessage")
+	
+	@Expose
+	@SerializedName("WFMessage")
 	private boolean WFMessage;
-
-	@JsonProperty("DistChannelText")
+	
+	@Expose
+	@SerializedName("DistChannelText")
 	private String DistChannelText;
-
-	@JsonProperty("Inco1Text")
+	
+	@Expose
+	@SerializedName("Inco1Text")
 	private String Inco1Text;
-
-	@JsonProperty("weightAVG")
+	
+	@Expose
+	@SerializedName("weightAVG")
 	private String weightAVG;
-
-	@JsonProperty("BSTKD_E")
+	
+	@Expose
+	@SerializedName("BSTKD_E")
 	private String BSTKD_E;
-
-	@JsonProperty("OvdelTol")
+	
+	@Expose
+	@SerializedName("OvdelTol")
 	private String OvdelTol;
-
-	@JsonProperty("UndelTol")
+	
+	@Expose
+	@SerializedName("UndelTol")
 	private String UndelTol;
-
-	@JsonProperty("Colorcoding")
+	
+	@Expose
+	@SerializedName("Colorcoding")
 	private String Colorcoding;
-
-	@JsonProperty("OtherRemark")
+	
+	@Expose
+	@SerializedName("OtherRemark")
 	private String OtherRemark;
-
-	@JsonProperty("Project")
+	
+	@Expose
+	@SerializedName("Project")
 	private String Project;
-
-	@JsonProperty("ShType")
+	
+	@Expose
+	@SerializedName("ShType")
 	private String ShType;
-
-	@JsonProperty("SotoLi")
-	private List<SalesOrderOdataLineItemDto> SotoLi;
+	
+	@Expose
+	@SerializedName("SotoLi")
+	private List<OdataLineItemDto> SotoLi;
 
 	public String getTemp_id() {
 		return temp_id;
@@ -196,7 +238,7 @@ public class SalesOrderOdataHeaderDto {
 	public void setDocType(String docType) {
 		DocType = docType;
 	}
-
+	
 	public String getOrdType() {
 		return OrdType;
 	}
@@ -485,11 +527,11 @@ public class SalesOrderOdataHeaderDto {
 		ShType = shType;
 	}
 
-	public List<SalesOrderOdataLineItemDto> getSotoLi() {
+	public List<OdataLineItemDto> getSotoLi() {
 		return SotoLi;
 	}
 
-	public void setSotoLi(List<SalesOrderOdataLineItemDto> sotoLi) {
+	public void setSotoLi(List<OdataLineItemDto> sotoLi) {
 		SotoLi = sotoLi;
 	}
 
@@ -510,3 +552,4 @@ public class SalesOrderOdataHeaderDto {
 				+ ", SotoLi=" + SotoLi + "]";
 	}
 }
+

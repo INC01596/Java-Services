@@ -50,8 +50,7 @@ public class SalesOrderItemService implements ISalesOrderItemService {
 		salesOrderItem.setSalesOrderHeader(optionalSalesOrderHeader.get());
 		SalesOrderItem savedSalesOrderItem = salesOrderItemRepository.save(salesOrderItem);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-		return ResponseEntity.created(location)
-				.body(ObjectMapperUtils.map(savedSalesOrderItem, SalesOrderItemDto.class));
+		return ResponseEntity.created(location).body(ObjectMapperUtils.map(savedSalesOrderItem, SalesOrderItemDto.class));
 	}
 
 	@Override

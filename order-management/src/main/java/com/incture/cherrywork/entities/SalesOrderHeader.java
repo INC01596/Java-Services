@@ -22,6 +22,8 @@ import javax.persistence.Id;
 @Table(name = "SalesOrderHeader")
 public class SalesOrderHeader {
 
+	
+
 	@Column(name = "ClientSpecific", precision = 3, scale = 0)
 	private Integer clientSpecific;
 

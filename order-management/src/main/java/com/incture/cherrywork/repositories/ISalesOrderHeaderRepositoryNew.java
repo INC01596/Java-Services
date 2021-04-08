@@ -54,6 +54,8 @@ public class ISalesOrderHeaderRepositoryNew {
 			Query header = entityManager.createQuery("delete from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId");
 			header.setParameter("salesHeaderId", val);
 			int result2=header.executeUpdate();
+			if(result2!=0)
+				result2=1;
 			l.add(result2);
 		   } catch(Exception e) {
 			System.err.println("try found exception");
@@ -90,39 +92,45 @@ public class ISalesOrderHeaderRepositoryNew {
 		
 }
 	
-	//Sandeep Kumar
+	//Sandeep Kumar<--------To get EnquiryList-------------->
 	@SuppressWarnings("unchecked")
 	public List<SalesOrderHeader> getManageService(HeaderDetailUIDto dto) {
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
-		String plant = listToString(dto.getPlant());
+		
 		try {
 			StringBuffer headerQuery = new StringBuffer(
 					"select s from SalesOrderHeader s where s.documentType=:documentType");
+			System.err.println("**********1*****8");
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				headerQuery.append(" and s.createdBy=:createdBy");
-			if (dto.getDocumentProcessStatus() == null)
+			if (dto.getDocumentProcessStatus() == null){
 				headerQuery.append(" and s.documentProcessStatus in (" + EnOrderActionStatus.CREATED.ordinal() + ","
-						+ EnOrderActionStatus.CANCELLED.ordinal() + "," + EnOrderActionStatus.OPEN.ordinal() + ")");
+						+ EnOrderActionStatus.CANCELLED.ordinal() + ","+ EnOrderActionStatus.DRAFTED.ordinal() + ","+ EnOrderActionStatus.OPEN.ordinal() + ")");
+			}
 			else
 				headerQuery.append(" and s.documentProcessStatus = " + dto.getDocumentProcessStatus().ordinal() + "");
-			if (dto.getDocumentType().equals("OR")) {
+			System.err.println("**********2*****8");
+			if (dto.getDocumentType()=="OR") {
 				if (dto.getIsOpen() == true)
 					headerQuery.append(" and isOpen=true");
 				else {
 					headerQuery.append(" and isOpen=false");
-					if (!ServicesUtil.isEmpty(dto.getIsCustomer()) && dto.getIsCustomer() == true) {
+					
+				if (!ServicesUtil.isEmpty(dto.getIsCustomer()) && dto.getIsCustomer() == true) {
 						headerQuery.append(" and s.createdDate >= ADD_MONTHS(CURRENT_DATE,-6)");
 					}
+				
 				}
 			}
+			System.err.println("**********2*****8");
 			if (!ServicesUtil.isEmpty(dto.getStpId())) {
 				String STP = listToString(dto.getStpId());
 				headerQuery.append(" and s.soldToParty in (" + STP + ")");
 			}
+			
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				headerQuery.append(" and s.salesGroup=:salesGroup");
-			if (!ServicesUtil.isEmpty(dto.getPlant()))
-				headerQuery.append(" and s.plant in (" + plant + ")");
+			
 			headerQuery.append(" order by s.createdDate desc");
 			Query hq = entityManager.createQuery(headerQuery.toString());
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
@@ -130,10 +138,11 @@ public class ISalesOrderHeaderRepositoryNew {
 			hq.setParameter("documentType", dto.getDocumentType());
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
+			System.err.println(headerQuery);
 			headerEntityList = hq.getResultList();	
-			
-	  } catch(Exception e) {
-		System.err.println("try found exception");
+			System.err.println(headerEntityList.toString());
+	  }catch(Exception e) {
+		System.err.println("tError");
 		e.printStackTrace();
 	}
 		
@@ -212,8 +221,9 @@ public class ISalesOrderHeaderRepositoryNew {
 	@SuppressWarnings("unchecked")
 	public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto)
 	{
+		
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
-	List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
+	   List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
 	try {
 		StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where ");
 		if (!ServicesUtil.isEmpty(dto.gets4DocumentId()))
@@ -235,13 +245,17 @@ public class ISalesOrderHeaderRepositoryNew {
 		if (!ServicesUtil.isEmpty(dto.getsalesHeaderId()))
 			hq.setParameter("salesHeaderId", dto.getsalesHeaderId());
 		headerEntityList = hq.getResultList();
-		System.err.println("try found exception");
+		
+	;
 		for (SalesOrderHeader headerEntity : headerEntityList) {
 			SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
 			List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
 			SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
 			headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
+
 			salesHeaderItemDto.setHeaderDto(headerDto);
+			
+			System.err.println(salesHeaderItemDto.toString());
 			try {
 				System.err.println("try found exception");
 				StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where ");
@@ -250,8 +264,11 @@ public class ISalesOrderHeaderRepositoryNew {
 				else
 					lineItemQuery.append("i.salesHeaderId=:salesHeaderId");
 				System.err.println("try found exception 3");
-				lineItemQuery.append(" and i.updateIndicator <>:" + EnUpdateIndicator.DELETE.ordinal()
-						+ " order by i.lineItemNumber asc");
+				/*lineItemQuery.append(" and i.updateIndicator !=" + EnUpdateIndicator.DELETE.ordinal()
+						+ " order by i.lineItemNumber asc");*/
+				
+	
+				System.err.println(lineItemQuery.toString());
 				Query iq =entityManager.createQuery(lineItemQuery.toString());
 				if (!ServicesUtil.isEmpty(headerDto.getS4DocumentId())){
 					
@@ -264,130 +281,49 @@ public class ISalesOrderHeaderRepositoryNew {
 				}
 				
 				lineItemEntityList = iq.getResultList();
+				System.err.println(lineItemEntityList.toString());
 				for (SalesOrderItem lineItemEntity : lineItemEntityList) {
 					SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
+					System.out.println("***1**");
 					lineItemDto =ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-					if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
+					System.out.println("***2**");
+					/*if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
 						lineItemDto.setQualityTestList(setQualityTest(lineItemDto.getQualityTest()));
 					else
 						lineItemDto.setQualityTestList(new ArrayList<String>());
 					if (!ServicesUtil.isEmpty(lineItemDto.getDefaultQualityTest()))
 						lineItemDto.setDefaultQualityTestList(setQualityTest(lineItemDto.getDefaultQualityTest()));
 					else
-						lineItemDto.setDefaultQualityTestList(new ArrayList<String>());
+						lineItemDto.setDefaultQualityTestList(new ArrayList<String>());*/
 					lineItemDtoList.add(lineItemDto);
+					
+					
+					System.out.println("***3**");
 				}
+				
 				salesHeaderItemDto.setLineItemList(lineItemDtoList);
+				System.out.println("***5**");
 			}catch(Exception e) {
 					System.err.println("try found exception123");
 					e.printStackTrace();
 			}
+			System.err.println(salesHeaderItemDto.toString());
 			return salesHeaderItemDto;
 		}
-	}catch(Exception e) {
+	}catch(Exception e)
+	{
 			System.err.println("try found exception");
 			e.printStackTrace();
+			return null;
 	}
-	
-		return null;
+	 return null;
+		
 	}
 	// Sandeep Kumar
-	public List<SalesOrderMaterialMasterDto> getMaterialByDesc(MaterialContainerDto materialContainerDto) {
-		
-		List<SalesOrderMaterialMasterDto> listDto = new ArrayList<>();
-		List<MaterialMaster> listEntity;
-		String plant = listToString(materialContainerDto.getPlant());
-		try {
-			// String query = "select m from MaterialMasterDo m where
-			// LOWER(m.materialDescription) like \'%"
-			// + materialDescription.toLowerCase() + "%\'";
-			
-			StringBuffer query = new StringBuffer("Select m from MaterialMaster m where  m.materialDescription=:materialDescription and m.container=:container" + " and plant in (" + plant + ") order by materialDescription ASC");
-				
-			/*StringBuffer query = new StringBuffer(
-					"select  materialMasterId, barsPerBundle,bendTest, bundleWeight,catalogKey, ceLogo, changedBy, changedOn,"
-							+ " clientSpecific,createdBy, createdOn, gradePricingGroup, impactTest, isiLogo, key, kgPerMeter, kgpermPricingGroup,"
-							+ " length, lengthMapKey, lengthPricingGroup, level2Id, material,materialDescription, plant,section, sectionGrade, sectionGradeDescription,"
-							+ " sectionGroup, sectionPricingGroup, size, sizeGroup, sizePricingGroup,standard,standardDescription, syncStatus, ultraLightTest, updateIndicator,rollingPlanFlag"
-							+ " from MaterialMaster m where lower(m.searchField) like lower('%"
-							+ materialContainerDto.getMaterialDescription().toLowerCase().replace("*", "%")
-							+ "%') and container = " + materialContainerDto.getContainer() + " and plant in (" + plant
-							+ ")order by materialDescription ASC");*/
-			Query q =entityManager.createQuery(query.toString());
-			 q.setParameter("materialDescription",materialContainerDto.getMaterialDescription() );
-			 q.setParameter("container",materialContainerDto.getContainer() );
-			
-			
-			@SuppressWarnings("unchecked")
-			List<MaterialMaster> objList = q.getResultList();
-			System.err.println(q.getResultList());
-			
-			if (!ServicesUtil.isEmpty(objList)) {
-				for (MaterialMaster obj : objList) {
-					SalesOrderMaterialMasterDto materialDto = new SalesOrderMaterialMasterDto();
-					materialDto=ObjectMapperUtils.map(obj, SalesOrderMaterialMasterDto.class);
-					if (!ServicesUtil.isEmpty(setQualityTest(materialDto))) 
-					{
-						materialDto.setQualityTestList(setQualityTest(materialDto));
-						materialDto.setDefaultQualityTestList(setQualityTest(materialDto));
-					} 
-					else 
-					{
-						materialDto.setQualityTestList(new ArrayList<String>());
-						materialDto.setDefaultQualityTestList(new ArrayList<String>());
-					}
-					listDto.add(materialDto);
-				}return listDto; 
-			}
-			System.err.println("Null return exception");
-			return null; 
-			
-		} catch (Exception e) {
-			System.err.println("try found exception");
-			e.printStackTrace();
-			
-		}
-		return listDto;
-	}
 	
 	
 	
-	/*@SuppressWarnings("unchecked")
-	public List<MaterialMasterDto>  getMaterialByName(String material) {
-	List<MaterialMasterDto> listDto = new ArrayList<>();
-	List<MaterialMaster> listEntity;
-	try {
-		String query = "select m from MaterialMaster m where m.material=:material";
-		System.err.println("Null return exception");
-		Query q = entityManager.createQuery(query);
-		q.setParameter("material", material.toLowerCase());
-		listEntity = q.getResultList();
-		if (!ServicesUtil.isEmpty(listEntity)) {
-			for (MaterialMaster entity : listEntity) {
-				System.err.println("exception");
-				MaterialMasterDto dto = new MaterialMasterDto();
-				dto =ObjectMapperUtils.map(entity, MaterialMasterDto.class);
-				System.err.println(dto!= null ? dto.toString() :"blank");
-				if (!ServicesUtil.isEmpty(setQualityTest(dto))) {
-					dto.setQualityTestList(setQualityTest(dto));
-					dto.setDefaultQualityTestList(setQualityTest(dto));
-				} else {
-					dto.setQualityTestList(new ArrayList<String>());
-					dto.setDefaultQualityTestList(new ArrayList<String>());
-				}
-				listDto.add(dto);
-			}
-			System.out.println("4444");
-			return listDto;
-		} else
-			return null;
-		
-	} catch (Exception e) {
-	e.printStackTrace();
-		
-	}
-	return listDto;
-}*/
+	
 
 	//Sandeep KUmar
 	public static String listToString(List<String> list) {

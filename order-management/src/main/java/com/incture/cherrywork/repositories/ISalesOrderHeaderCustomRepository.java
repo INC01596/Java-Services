@@ -11,8 +11,9 @@ import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 public interface ISalesOrderHeaderCustomRepository {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto searchDto);
-	SalesOrderOdataHeaderDto getOdataReqPayload(String salesHeaderId);
+	SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderDto dto);
 	String updateError(String temp_id, String value);
+	String getLookupValue(String key);
 	
 
 }
