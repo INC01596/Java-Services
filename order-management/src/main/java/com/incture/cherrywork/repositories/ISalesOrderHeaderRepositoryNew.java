@@ -110,19 +110,8 @@ public class ISalesOrderHeaderRepositoryNew {
 			else
 				headerQuery.append(" and s.documentProcessStatus = " + dto.getDocumentProcessStatus().ordinal() + "");
 			System.err.println("**********2*****8");
-			if (dto.getDocumentType()=="OR") {
-				if (dto.getIsOpen() == true)
-					headerQuery.append(" and isOpen=true");
-				else {
-					headerQuery.append(" and isOpen=false");
-					
-				if (!ServicesUtil.isEmpty(dto.getIsCustomer()) && dto.getIsCustomer() == true) {
-						headerQuery.append(" and s.createdDate >= ADD_MONTHS(CURRENT_DATE,-6)");
-					}
-				
-				}
-			}
-			System.err.println("**********2*****8");
+			
+			System.err.println(dto.getDocumentType());
 			if (!ServicesUtil.isEmpty(dto.getStpId())) {
 				String STP = listToString(dto.getStpId());
 				headerQuery.append(" and s.soldToParty in (" + STP + ")");
@@ -170,9 +159,10 @@ public class ISalesOrderHeaderRepositoryNew {
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				hq.setParameter("createdBy", dto.getCreatedBy());
 			hq.setParameter("documentType", dto.getDocumentType());
-			hq.setParameter("documentProcessStatus", dto.getDocumentProcessStatus());
+			hq.setParameter("documentProcessStatus",EnOrderActionStatus.DRAFTED);
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
+			
 			headerEntityList = hq.getResultList();
 			for (SalesOrderHeader headerEntity : headerEntityList) {
 				SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();

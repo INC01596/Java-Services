@@ -4,10 +4,14 @@ package com.incture.cherrywork.dtos;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 public class SalesOrderHeaderItemDto {
 
 	private SalesOrderHeaderDto headerDto;
+	
+	
 	private List<SalesOrderItemDto> lineItemList;
 	public SalesOrderHeaderDto getHeaderDto() {
 		return headerDto;
