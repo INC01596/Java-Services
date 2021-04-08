@@ -1,7 +1,5 @@
 package com.incture.cherrywork.dtos;
 
-
-
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,179 +9,135 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SalesOrderOdataHeaderDto {
 
-	
 	@JsonProperty("temp_id")
 	private String temp_id;
-	
-	
+
 	@JsonProperty("DocID_6")
 	private String DocID_6;
-	
-	
+
 	@JsonProperty("DocID_2")
 	private String DocID_2;
-	
-	
+
 	@JsonProperty("Ref_Doc")
 	private String Ref_Doc;
-	
-	
+
 	@JsonProperty("Created_by")
 	private String Created_by;
-	
-	
+
 	@JsonProperty("DocType")
 	private String DocType;
-	
-	
+
 	@JsonProperty("Doc_Curr_SA")
 	private String Doc_Curr_SA;
-	
-	
+
 	@JsonProperty("OrdType")
 	private String OrdType;
-	
-	
+
 	@JsonProperty("SoldToParty")
 	private String SoldToParty;
-	
-	
+
 	@JsonProperty("ShipToParty")
 	private String ShipToParty;
-	
-	
+
 	@JsonProperty("Name")
 	private String Name;
-	
-	
+
 	@JsonProperty("EmailID")
 	private String EmailID;
-	
-	
+
 	@JsonProperty("City")
 	private String City;
-	
-	
+
 	@JsonProperty("DestCountry")
 	private String DestCountry;
-	
-	
+
 	@JsonProperty("ContactNo")
 	private String ContactNo;
-	
-	
+
 	@JsonProperty("Reference")
 	private String Reference;
-	
-	
+
 	@JsonProperty("DistChannel")
 	private String DistChannel;
-	
-	
+
 	@JsonProperty("Payment")
 	private String Payment;
-	
-	
+
 	@JsonProperty("REQ_DATE")
 	private String REQ_DATE;
-	
-	
+
 	@JsonProperty("VALID_F")
 	private String VALID_F;
-	
-	
+
 	@JsonProperty("VALID_T")
 	private String VALID_T;
-	
-	
+
 	@JsonProperty("Inco1")
 	private String Inco1;
-	
-	
+
 	@JsonProperty("Inco2")
 	private String Inco2;
-	
-	
+
 	@JsonProperty("Weight")
 	private String Weight;
-	
-	
+
 	@JsonProperty("country")
 	private String country;
-	
-	
+
 	@JsonProperty("salesG")
 	private String salesG;
-	
-	
+
 	@JsonProperty("reason")
 	private String reason;
-	
-	
+
 	@JsonProperty("countryText")
 	private String countryText;
-	
-	
+
 	@JsonProperty("salesText")
 	private String salesText;
-	
-	
+
 	@JsonProperty("reasonText")
 	private String reasonText;
-	
-	
+
 	@JsonProperty("PaymentText")
 	private String PaymentText;
-	
-	
+
 	@JsonProperty("WFStatus")
 	private String WFStatus;
-	
-	
+
 	@JsonProperty("WFMessage")
 	private boolean WFMessage;
-	
-	
+
 	@JsonProperty("DistChannelText")
 	private String DistChannelText;
-	
-	
+
 	@JsonProperty("Inco1Text")
 	private String Inco1Text;
-	
-	
+
 	@JsonProperty("weightAVG")
 	private String weightAVG;
-	
-	
+
 	@JsonProperty("BSTKD_E")
 	private String BSTKD_E;
-	
-	
+
 	@JsonProperty("OvdelTol")
 	private String OvdelTol;
-	
-	
+
 	@JsonProperty("UndelTol")
 	private String UndelTol;
-	
-	
+
 	@JsonProperty("Colorcoding")
 	private String Colorcoding;
-	
-	
+
 	@JsonProperty("OtherRemark")
 	private String OtherRemark;
-	
-	
+
 	@JsonProperty("Project")
 	private String Project;
-	
-	
+
 	@JsonProperty("ShType")
 	private String ShType;
-	
-	
+
 	@JsonProperty("SotoLi")
 	private List<SalesOrderOdataLineItemDto> SotoLi;
 
@@ -242,7 +196,7 @@ public class SalesOrderOdataHeaderDto {
 	public void setDocType(String docType) {
 		DocType = docType;
 	}
-	
+
 	public String getOrdType() {
 		return OrdType;
 	}

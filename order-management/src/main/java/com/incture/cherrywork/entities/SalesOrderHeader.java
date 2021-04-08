@@ -523,6 +523,18 @@ public class SalesOrderHeader {
 		this.salesHeaderId = salesHeaderId;
 	}
 	
+	@Column(name = "Plant", length = 5)
+	private String plant;
+
+	public String getPlant() {
+		return plant;
+	}
+
+	public void setPlant(String plant) {
+		this.plant = plant;
+	}
+
+	
 	//sandeep
 	@Column(name = "DOCUMENT_PROCESS_STATUS")
 	private EnOrderActionStatus documentProcessStatus;

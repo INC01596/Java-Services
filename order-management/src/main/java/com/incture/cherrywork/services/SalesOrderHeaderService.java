@@ -1,6 +1,8 @@
 package com.incture.cherrywork.services;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +38,7 @@ import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
@@ -55,24 +58,25 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public static final Logger logger = LoggerFactory.getLogger(SalesOrderHeaderService.class);
 	@Autowired
 	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
-	
+
 	@Autowired
 	private ISalesOrderItemRepository salesOrderItemRepository;
-	
+
 	@Autowired
 	private SalesOrderOdataServices odataServices;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-	
+
 	@Override
 	public ResponseEntity<Object> create(SalesOrderHeaderDto salesOrderHeaderDto) {
 		SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(salesOrderHeaderDto, SalesOrderHeader.class);
 		SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+		System.err.println("Hi");
 		return ResponseEntity.created(location)
 				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 	}
@@ -124,7 +128,25 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		Object t = ObjectMapperUtils.mapAll(salesOrderHeaders, SalesOrderHeaderDto.class);
 		return ResponseEntity.ok().body(t);
 	}
+
 	// Sandeep
+<<<<<<< HEAD
+	@Override
+	public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
+		try {
+			SalesOrderHeaderItemDto result = repo.getHeaderById(dto);
+			return ResponseEntity.ok().body(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@Override
+	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
+		try {
+			List<SalesOrderHeader> l = repo.getManageService(dto);
+=======
 	 @Override
 		public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
 	    try{
@@ -141,54 +163,97 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 		try{
 			List<SalesOrderHeader> l=repo.getManageService(dto);
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
 			return ResponseEntity.ok().body(t);
-		}catch(Exception e){
-	 		e.printStackTrace();
-	 		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
-	 }
-	  }
-		  
-	      @Override
-			public ResponseEntity<Object> deleteDraftedVersion(String val) {
-			try{
-		    		List<Integer> l = repo.deleteDraftedVersion(val);
-			    	return new ResponseEntity<>(l,HttpStatus.OK);
-		      } catch(Exception e){
-		    		e.printStackTrace();
-		    		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
-		    }
-		  }
-
-		@Override
-		public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
-			try{List<String> data = repo.getReferenceList(dto);
-			return new ResponseEntity<>(data,HttpStatus.OK);
-		 } catch(Exception e){
-	 		e.printStackTrace();
-	 		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
-	 }
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		@Override
-		public ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto) {
-			try{
-				List<SalesOrderHeaderItemDto> t=repo.getDraftedVersion(dto);
-				return ResponseEntity.ok().body(t);
-			}catch(Exception e){
-	    		e.printStackTrace();
-	    		return new ResponseEntity<>("EXCEPTION FOUND",HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-			
+	}
 
+	@Override
+	public ResponseEntity<Object> deleteDraftedVersion(String val) {
+		try {
+			List<Integer> l = repo.deleteDraftedVersion(val);
+			return new ResponseEntity<>(l, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
+		try {
+			List<String> data = repo.getReferenceList(dto);
+			return new ResponseEntity<>(data, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto) {
+		try {
+			List<SalesOrderHeaderItemDto> t = repo.getDraftedVersion(dto);
+			return ResponseEntity.ok().body(t);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 	}
 
-		
-		
-
-		@Override
-		public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
+	@Override
+	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 		/*
+<<<<<<< HEAD
+		 * try { Session s = data.getSessionFactory().getCurrentSession();
+		 * System.err.print(s); } catch(Exception e) { e.printStackTrace(); }
+		 * 
+		 * 
+		 * 
+		 * if (!ServicesUtil.isEmpty(dto)) { if
+		 * (!ServicesUtil.isEmpty(dto.getDocumentType())) { if
+		 * (dto.getDocumentType().equals("IN")) { if
+		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
+		 * SequenceNumberGen.getInstance(); Session
+		 * s=aSession.getSessionFactory().getCurrentSession();
+		 * System.err.println("session : "+ s); String tempEnquiryId =
+		 * sequenceNumberGen.getNextSeqNumber("IN", 8, s);
+		 * System.err.println("tempId" + tempEnquiryId);
+		 * dto.setSalesHeaderId(tempEnquiryId);
+		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } else
+		 * if (dto.getDocumentType().equalsIgnoreCase("QT")) { if
+		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
+		 * SequenceNumberGen.getInstance(); Session
+		 * s=aSession.getSessionFactory().getCurrentSession();
+		 * System.err.println("session : "+ s); String tempQuotationId =
+		 * sequenceNumberGen.getNextSeqNumber("QT", 8,s);
+		 * System.err.println("tempQuotationId" + tempQuotationId);
+		 * dto.setSalesHeaderId(tempQuotationId);
+		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } else
+		 * if (dto.getDocumentType().equalsIgnoreCase("OR")) { if
+		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
+		 * SequenceNumberGen.getInstance(); Session
+		 * s=aSession.getSessionFactory().getCurrentSession();
+		 * System.err.println("session : "+ s); String tempOrderId =
+		 * sequenceNumberGen.getNextSeqNumber("OR", 8, s);
+		 * System.err.println("tempOrderId" + tempOrderId);
+		 * dto.setSalesHeaderId(tempOrderId);
+		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } } }
+		 * SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto,
+		 * SalesOrderHeader.class); SalesOrderHeader savedSalesOrderHeader =
+		 * salesOrderHeaderRepository.save(salesOrderHeader); URI location =
+		 * ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
+		 * buildAndExpand("id").toUri(); return ResponseEntity.ok()
+		 * .body(ObjectMapperUtils.map(savedSalesOrderHeader,
+		 * SalesOrderHeaderDto.class));
+		 */
+		return null;
+=======
 		         
 			
 			
@@ -252,45 +317,51 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			
 			
 		}
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 
+	}
 
+<<<<<<< HEAD
+	/*---------------AWADHESH KUMAR----------------------*/
+
+=======
 	
 	
 	        /*---------------AWADHESH KUMAR----------------------*/
 	
 	
+>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto) {
-		
+
 		ResponseEntity<Object> res = submitSalesOrder1(dto);
-		if(res.getStatusCode().equals(HttpStatus.OK)){
-			
-		// if (response.getStatus().equals(HttpStatus.OK.getReasonPhrase())) {
-		// System.err.println("[submitSalesOrder][odata] if case");
-		 SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto.getSalesHeaderId());
-		 submitOdata(odataHeaderDto);
+		if (res.getStatusCode().equals(HttpStatus.OK)) {
+
+			// if (response.getStatus().equals(HttpStatus.OK.getReasonPhrase()))
+			// {
+			System.err.println("[submitSalesOrder][odata] if case " + dto.getSalesHeaderId());
+			SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository
+					.getOdataReqPayload(dto);
+			submitOdata(odataHeaderDto);
 		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-		return ResponseEntity.created(location)
-				.body(null);
+		return ResponseEntity.created(location).body(null);
 	}
 
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {
 
 		return salesOrderHeaderRepository.getSearchDropDown(dto);
 	}
-	
-	public ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto){
-		
+
+	public ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto) {
+
 		return salesOrderHeaderRepository.getMannualSearch(dto);
 	}
 
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderDto dto) {
-		System.err.println(dto.toString());
+		System.err.println("sso1 started " + dto.toString());
 		// logger.debug("[SalesHeaderDao][submitSalesOrder] Started : " +
 		// dto.toString());
 		// Response response = new Response();
@@ -301,12 +372,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("salesHeaderId", dto.getSalesHeaderId());
 			List<String> plantIds = query.getResultList();
-			if(plantIds.size() != 0)
+			System.out.println("plant id in sso1 " + plantIds);
+			if (plantIds.size() != 0)
 				dto.setPlant(plantIds.get(0));
 			String netPrice = null;
 			String currency = dto.getDocumentCurrencySA();
 			BigDecimal totalQuantity = new BigDecimal(0);
-			if((dto.getPlant() != null) && (dto.getPlant().equals("4321"))) {
+			if ((dto.getPlant() != null) && (dto.getPlant().equals("4321"))) {
 				netPrice = dto.getNetValueSA();
 				totalQuantity = dto.getTotalSalesOrderQuantitySA();
 				dto.setNetValueSA(null);
@@ -317,8 +389,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				dto.setNetValue(null);
 				dto.setTotalSalesOrderQuantity(null); 
 			}
-			if ((dto.getDocumentType() != null) && dto.getDocumentType().equals("OR"))
+			if ((dto.getDocumentType() != null) && dto.getDocumentType().equals("OR")) {
 				dto.setIsOpen(true);
+				System.out.println("Document type OR");
+			}
 
 			salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto, SalesOrderHeader.class));
 			if (plantIds.size() > 1) {
@@ -351,8 +425,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				int i = 1;
 				for (String item : listItem) {
 
-					String updateQ = "update SalesOrderItem set LineItemNumber=" + i + " where SalesItemId='" + item
-							+ "'";
+					String updateQ = "update SALES_ORDER_ITEM set LINE_ITEM_NUMBER=" + i + " where SALES_ITEM_ID='"
+							+ item + "'";
 					Query query2 = entityManager.createNativeQuery(updateQ);
 					query2.executeUpdate();
 
@@ -364,7 +438,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// logger.error("[SalesHeaderDao][submitSalesOrder] Exception : " +
 			// e.getMessage());
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message", "Error Submitting In HANA DB").body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.header("Message", "Error Submitting In HANA DB").body(null);
 		}
 
 		try {
@@ -408,21 +483,24 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// }
 			// }
 			// }
-	
+
 		} catch (Exception e) {
 			// logger.error("[SalesHeaderDao][submitSalesOrder] Exception in
 			// Notification : " + e.getMessage());
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message", "Error Submitting In HANA DB").body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.header("Message", "Error Submitting In HANA DB").body(null);
 		}
+		System.out.println("before returning from sales order1 " + dto.toString());
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Submitted in HANA DB Successfully!!").body(dto);
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public void updateRecord(String temp_id, String docID_6, String docID_2) {
 		// logger.debug("[SalesHeaderDao][updateRecord] Start : " + temp_id + "
 		// : " + docID_6 + " : " + docID_2);
+
+		System.out.println("Inside Update Record!");
 
 		try {
 			if (!ServicesUtils.isEmpty(docID_6)) {
@@ -432,13 +510,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				Query hq = entityManager.createQuery(hString);
 				List<SalesOrderHeader> listSalesHeaderDo = hq.getResultList();
 				SalesOrderHeader salesHeader = null;
-				if(listSalesHeaderDo.size() != 0)
+				if (listSalesHeaderDo.size() != 0)
 					salesHeader = listSalesHeaderDo.get(0);
 				SalesOrderHeaderDto salesHeaderDto = ObjectMapperUtils.map(salesHeader, SalesOrderHeaderDto.class);
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR")) // Apply
-																	// logic for
-																	// open
-																	// orders
+					// logic for
+					// open
+					// orders
 					salesHeaderDto.setIsOpen(true);
 				salesHeaderDto.setS4DocumentId(docID_6);
 				// salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
@@ -521,7 +599,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// }
 					// }
 					// }
-	
+
 				} catch (Exception e) {
 					// logger.error("[SalesHeaderDao][updateRecord] Exception in
 					// Notification : " + e.getMessage());
@@ -567,9 +645,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 				// session = sessionFactory.openSession();
 				// tx = session.beginTransaction();
-				
+
 				SalesOrderHeader salesHeader = null;
-				if(listSalesHeaderDo.size() != 0)
+				if (listSalesHeaderDo.size() != 0)
 					salesHeader = listSalesHeaderDo.get(0);
 				SalesOrderHeaderDto salesHeaderDto = ObjectMapperUtils.map(salesHeader, SalesOrderHeaderDto.class);
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
@@ -585,7 +663,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// Posting error update
 				// Date d = new Date();
 				// long t = d.getTime();
-	
+
 				salesHeaderDto.setPostingDate(new Date());
 				salesHeaderDto.setPostingError(null);
 				salesHeaderDto.setPostingStatus(true);
@@ -602,9 +680,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					String notificationTypeId = "";
 					if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("IN"))
 						notificationTypeId = "N01";
-					else if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("QT"))
+					else if ((salesHeaderDto.getDocumentType() != null)
+							&& salesHeaderDto.getDocumentType().equals("QT"))
 						notificationTypeId = "N02";
-					else if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
+					else if ((salesHeaderDto.getDocumentType() != null)
+							&& salesHeaderDto.getDocumentType().equals("OR"))
 						notificationTypeId = "N03";
 					// String odataResponse1 =
 					// odataServices.usersBySoldToParty(salesHeaderDto.getSoldToParty());
@@ -662,7 +742,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// }
 					// }
 					// }
-				
+
 				} catch (Exception e) {
 					// logger.error("[SalesHeaderDao][updateRecord] Exception in
 					// Notification : " + e.getMessage());
@@ -700,14 +780,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 	}
 
-	
 	@Async
 	public ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto) {
+
 		System.err.println("[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString());
 		// Response response = new Response();
 		String odataResponse = null;
 		try {
 			odataResponse = odataServices.postData(odataHeaderDto);
+			System.out.println("odataresponse: " + odataResponse);
 			JSONObject json = new JSONObject((odataResponse));
 			System.err.println("[submitSalesOrder][submitOdata] json : " + json.toString());
 			if (!json.isNull("d")) {
@@ -727,11 +808,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				JSONObject error = json.getJSONObject("error");
 				// logger.debug("[submitSalesOrder][submitOdata] error : " +
 				// json.toString());
+				System.err.println("[submitSalesOrder][submitOdata] error : " + json.toString());
 				JSONObject message = error.getJSONObject("message");
 				String value = message.getString("value");
 				// logger.debug("[submitSalesOrder][submitOdata] error value : "
 				// + value);
+				System.err.println("[submitSalesOrder][submitOdata] error value : " + value);
 				salesOrderHeaderRepository.updateError(odataHeaderDto.getTemp_id(), value);
+				System.out.println("After Update Error! in submit odata in else" + error);
 			}
 			// response.setMessage("Odata Submitted Successfully");
 			// response.setStatus(HttpStatus.OK.getReasonPhrase());
@@ -746,12 +830,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("Message", "Error in submitting odata for id: " + odataHeaderDto.getTemp_id()).body(null);
 		}
-		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully").body(null);
+		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully")
+				.body(odataResponse);
 		// return response;
 	}
-
-
-	
-	
 
 }

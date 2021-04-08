@@ -120,13 +120,14 @@ public class SalesOrderItemDto {
 		this.plant = plant;
 	}
 
-	private BigDecimal netValue;
+	private String netValue;
 
-	public BigDecimal getNetValue() {
+	
+	public String getNetValue() {
 		return netValue;
 	}
 
-	public void setNetValue(BigDecimal netValue) {
+	public void setNetValue(String netValue) {
 		this.netValue = netValue;
 	}
 
@@ -602,15 +603,7 @@ public class SalesOrderItemDto {
 	
 	//Awadhesh Kumar ---------------------------------------------------------------------------------------------
 	
-		private BigDecimal orderQuantity;
-
-		public BigDecimal getOrderQuantity() {
-			return orderQuantity;
-		}
-
-		public void setOrderQuantity(BigDecimal orderQuantity) {
-			this.orderQuantity = orderQuantity;
-		}
+		
 		
 		private String documentCurrency;
 
@@ -749,7 +742,16 @@ public class SalesOrderItemDto {
 			this.salesOrderHeader = salesOrderHeader;
 		}
 		
-		
+		private String salesHeaderId;
+
+		public String getSalesHeaderId() {
+			return salesHeaderId;
+		}
+
+		public void setSalesHeaderId(String salesHeaderId) {
+			this.salesHeaderId = salesHeaderId;
+		}
+
 		
 
 	
