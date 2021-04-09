@@ -130,7 +130,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	// Sandeep
-<<<<<<< HEAD
+
 	@Override
 	public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
 		try {
@@ -141,29 +141,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-
-	@Override
-	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
-		try {
-			List<SalesOrderHeader> l = repo.getManageService(dto);
-=======
-	 @Override
-		public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
-	    try{
-			      SalesOrderHeaderItemDto result=repo.getHeaderById(dto);
-			     
-			     return ResponseEntity.ok().body(result);
-			}catch(Exception e)   {
-			  e.printStackTrace();
-			  return ResponseEntity.badRequest().build();
-		    }
-		 }
 	 
 		  @Override
 		public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 		try{
 			List<SalesOrderHeader> l=repo.getManageService(dto);
->>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
+
 			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
 			return ResponseEntity.ok().body(t);
 		} catch (Exception e) {
@@ -251,9 +234,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		 * buildAndExpand("id").toUri(); return ResponseEntity.ok()
 		 * .body(ObjectMapperUtils.map(savedSalesOrderHeader,
 		 * SalesOrderHeaderDto.class));
-		 */
-		return null;
-=======
+		 
+		
 		         
 			
 			
@@ -293,8 +275,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 				} */
 		
-			dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-			
+			String s4=UUID.randomUUID().toString().replace("-", "");
+			s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
+		    dto.setS4DocumentId(s4);
+		    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
 				List<SalesOrderItemDto> l=new ArrayList<>();
@@ -302,6 +286,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				for(SalesOrderItemDto d:l)
 					
 				{
+					String s=UUID.randomUUID().toString().replace("-", "");
+					s = s.length() > 10 ? s.substring(0, 9) : s;
+					d.setSalesItemId(s);
                    d.setSalesOrderHeader(savedSalesOrderHeader);
 					SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
 					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
@@ -317,20 +304,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			
 			
 		}
->>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
 
-	}
 
-<<<<<<< HEAD
+	
+
 	/*---------------AWADHESH KUMAR----------------------*/
 
-=======
-	
-	
-	        /*---------------AWADHESH KUMAR----------------------*/
-	
-	
->>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
+
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto) {
 

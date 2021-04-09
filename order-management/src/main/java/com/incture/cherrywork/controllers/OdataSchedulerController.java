@@ -34,7 +34,14 @@ public class OdataSchedulerController {
 	public String pricingSet(@RequestBody String request) {
 		
 	return salesOrderodataServices.pricingSet(request);
+	}
+	
+
+	@PostMapping("/user")
+	public String usersBySoldToParty(@RequestBody String soldToParty) {
 		
+	return salesOrderodataServices.usersBySoldToParty(soldToParty);
+	
 		
 	}
 

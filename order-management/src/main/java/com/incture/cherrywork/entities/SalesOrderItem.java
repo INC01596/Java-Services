@@ -652,12 +652,12 @@ public class SalesOrderItem {
 	}
 	
 	
-	//Awadhesh Kumar
+//Awadhesh Kumar
 	
-		@Column(name = "SALES_HEADER_ID", length = 10) 
-		private String salesHeaderId;
+@Column(name = "SALES_HEADER_ID", length = 10) 
+private String salesHeaderId;
 
-		public String getSalesHeaderId() {
+public String getSalesHeaderId() {
 			return salesHeaderId;
 		}
 
