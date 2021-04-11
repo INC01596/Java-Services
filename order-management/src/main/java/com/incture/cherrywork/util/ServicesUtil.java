@@ -3,13 +3,17 @@ package com.incture.cherrywork.util;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -569,5 +573,22 @@ public class ServicesUtil {
 		}
 		return response;
 	}
+	
+	public static String randomId() {
+		
+		Base64.Encoder encoder = Base64.getUrlEncoder();  
+
+        // Create random UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Create byte[] for base64 from uuid
+        byte[] src = ByteBuffer.wrap(new byte[16])
+                .putLong(uuid.getMostSignificantBits())
+                .putLong(uuid.getLeastSignificantBits())
+                .array();
+
+        // Encode to Base64 and remove trailing ==
+        return encoder.encodeToString(src).substring(0, 10);
+    }
 }
 

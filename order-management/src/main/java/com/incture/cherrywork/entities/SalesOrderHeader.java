@@ -36,7 +36,7 @@ public class SalesOrderHeader {
 	}
 
 	@Id
-	@Column(name = "S4DocumentId", length = 10)
+	@Column(name = "S4DocumentId", length = 255)
 	private String s4DocumentId;
 
 	public String getS4DocumentId() {
@@ -512,7 +512,7 @@ public class SalesOrderHeader {
 		this.postingStatus = postingStatus;
 	}
 	
-	@Column(name = "SALES_HEADER_ID")
+	@Column(name = "SALES_HEADER_ID", length=255)
 	private String salesHeaderId;
 
 	public String getSalesHeaderId() {

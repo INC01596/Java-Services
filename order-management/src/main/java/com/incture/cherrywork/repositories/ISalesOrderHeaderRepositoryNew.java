@@ -170,7 +170,7 @@ public class ISalesOrderHeaderRepositoryNew {
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				hq.setParameter("createdBy", dto.getCreatedBy());
 			hq.setParameter("documentType", dto.getDocumentType());
-			hq.setParameter("documentProcessStatus", dto.getDocumentProcessStatus());
+			hq.setParameter("documentProcessStatus", EnOrderActionStatus.DRAFTED);
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
 			headerEntityList = hq.getResultList();

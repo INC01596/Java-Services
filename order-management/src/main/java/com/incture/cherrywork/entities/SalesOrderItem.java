@@ -18,7 +18,7 @@ import javax.persistence.Id;
 public class SalesOrderItem {
 
 	@Id
-	@Column(name = "SALES_ITEM_ID", length = 10)
+	@Column(name = "SALES_ITEM_ID", length = 255)
 	private String salesItemId;
 
 	public String getSalesItemId() {
@@ -654,7 +654,7 @@ public class SalesOrderItem {
 	
 	//Awadhesh Kumar
 	
-		@Column(name = "SALES_HEADER_ID", length = 10) 
+		@Column(name = "SALES_HEADER_ID", length = 255) 
 		private String salesHeaderId;
 
 		public String getSalesHeaderId() {
