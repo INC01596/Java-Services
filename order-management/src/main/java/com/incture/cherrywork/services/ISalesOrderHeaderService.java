@@ -23,8 +23,8 @@ public interface ISalesOrderHeaderService {
 	
 	/*-----------------AWADHESH KUMAR---------------*/
 	
-	ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto);
-	ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderDto dto);
+	ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto);
+	ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderItemDto dto);
 	
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 	
@@ -35,7 +35,11 @@ public interface ISalesOrderHeaderService {
 	//sandeep
 
 	//<-----------------sandeep-------------------->
+<<<<<<< HEAD
+//>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
+=======
 
+>>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
 	ResponseEntity<Object> getHeaderById(HeaderIdDto dto);
 	ResponseEntity<Object> getManageService(HeaderDetailUIDto dto);
 	ResponseEntity<Object> deleteDraftedVersion(String val);

@@ -260,10 +260,13 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderDto dto) {
+	public SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderItemDto dto) {
 		// logger.debug("[SalesHeaderDao][getOdataReqPayload] Started : " +
 		// salesHeaderId);
 		// SalesItemDetailsDao salesItemDetailsDao = new SalesItemDetailsDao();
+		
+		
+		
 		System.err.println("salesHeaderId in reqpayload: "+dto.getSalesHeaderId());
 		String salesHeaderId = dto.getSalesHeaderId();
 		SalesOrderOdataHeaderDto odataHeaderDto = new SalesOrderOdataHeaderDto();
@@ -282,15 +285,14 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto = ObjectMapperUtils.map(entity, SalesOrderHeaderDto.class);
 				headerDto.setPaymentTerms(dto.getPaymentTerms());
 				headerDto.setTotalSalesOrderQuantity(dto.getTotalSalesOrderQuantity());
-				headerDto.setPaymentTerms(dto.getPaymentTerms());
 				headerDto.setIncoTerms1(dto.getIncoTerms1());
 				headerDto.setIncoTerms2(dto.getIncoTerms2());
 				headerDto.setWeight(dto.getWeight());
 				headerDto.setNetValueSA(dto.getNetValueSA());
 				headerDto.setTotalSalesOrderQuantitySA(dto.getTotalSalesOrderQuantitySA());
 				headerDto.setOverDeliveryTolerance(dto.getOverDeliveryTolerance());
-				headerDto.setPlant(dto.getPlant());
-				headerDto.setCustomerPODate(dto.getCustomerPODate());
+				headerDto.setPlant(dto.getHeaderDto().getPlant());
+				headerDto.setCustomerPODate(dto.getHeaderDto().getCustomerPODate());
 				System.out.println("in [reqpayload] ovdeltol: "+dto.getOverDeliveryTolerance());
 				headerDto.setUnderDeliveryTolerance(dto.getUnderDeliveryTolerance());
 				System.err.println("headerEntityList in reqpayload: "+headerDto.toString());
@@ -303,7 +305,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				for (SalesOrderItem item : lineItemListDo) {
 					SalesOrderItemDto itemDto = new SalesOrderItemDto();
 					itemDto = ObjectMapperUtils.map(item, SalesOrderItemDto.class);
-					lineItemListDto.add(itemDto);
+					lineItemListDto.add(itemDto);  
 				}
 				System.err.println("lineItemListDto in reqpayload"+lineItemListDo);
 				salesHeaderItemDto.setLineItemList(lineItemListDto);
@@ -554,14 +556,15 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setShType(dto.getHeaderDto().getShippingType());
 		else
 			headerDto.setShType("");
-		// int count = 0;
+		   int count = 0;
 		for (SalesOrderItemDto itemDto : dto.getLineItemList()) {
 			SalesOrderOdataLineItemDto odataLine = new SalesOrderOdataLineItemDto();
 			odataLine.setTemp_id("");
-			// count += 1;
+			 count += 1;
 			
-			// odataLine.setItem(Integer.toString(count));
-			odataLine.setItem(itemDto.getLineItemNumber().toString());
+			odataLine.setItem(Integer.toString(count));
+//			System.out.println("line item number in ctodta"+itemDto.getLineItemNumber());
+//			odataLine.setItem(itemDto.getLineItemNumber());
 			if (!ServicesUtils.isEmpty(itemDto.getItemCategory()))
 				odataLine.setItemcat(itemDto.getItemCategory());
 			else

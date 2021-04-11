@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
+import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 
@@ -33,8 +34,6 @@ public class SalesOrderHeaderController {
 
 	@Autowired
 	private ISalesOrderHeaderService salesOrderHeaderService;
-
-	
 
 	@GetMapping("/test")
 	public String test() {
@@ -73,7 +72,7 @@ public class SalesOrderHeaderController {
 	}
 
 	// <-----------------------Sandeep
-	// Kumar---------------------------------------->
+	// Kumar------------------------------git status---------->
 
 	@PostMapping("/getHeaderById")
 	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
@@ -100,17 +99,18 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(salesHeaderId);
 	}
+
 	@PostMapping("/SalesOrderHeader/save")
 	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
 	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
-			return salesOrderHeaderService.save(salesOrderHeaderDto);
+		return salesOrderHeaderService.save(salesOrderHeaderDto);
 	}
 
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")
 	@ApiOperation(value = "Submit The Enquiry")
-	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderDto dto) {
+	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderItemDto dto) {
 		return salesOrderHeaderService.submitSalesOrder(dto);
 	}
 

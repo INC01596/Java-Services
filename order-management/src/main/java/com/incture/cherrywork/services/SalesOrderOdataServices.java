@@ -46,6 +46,7 @@ import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
 
 
+@SuppressWarnings("unused")
 @Service("OdataServices")
 public class SalesOrderOdataServices {
 

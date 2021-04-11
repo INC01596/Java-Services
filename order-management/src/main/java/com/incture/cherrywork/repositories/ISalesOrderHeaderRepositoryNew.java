@@ -159,7 +159,11 @@ public class ISalesOrderHeaderRepositoryNew {
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				hq.setParameter("createdBy", dto.getCreatedBy());
 			hq.setParameter("documentType", dto.getDocumentType());
+<<<<<<< HEAD
+			hq.setParameter("documentProcessStatus", EnOrderActionStatus.DRAFTED);
+=======
 			hq.setParameter("documentProcessStatus",EnOrderActionStatus.DRAFTED);
+>>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
 			
