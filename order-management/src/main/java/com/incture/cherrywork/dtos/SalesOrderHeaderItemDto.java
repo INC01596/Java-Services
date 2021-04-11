@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class SalesOrderHeaderItemDto {
 
 	private SalesOrderHeaderDto headerDto;
+	
+	
 	private List<SalesOrderItemDto> lineItemList;
 	
 //  Awadhesh Kumar

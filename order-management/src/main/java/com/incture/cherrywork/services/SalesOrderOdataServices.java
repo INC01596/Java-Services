@@ -32,11 +32,14 @@ import org.springframework.stereotype.Service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
+import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ServicesUtils;
@@ -101,21 +104,21 @@ public class SalesOrderOdataServices {
 //		return response;
 //	}
 //	
-//	public OdataMaterialStartDto materialScheduler(){
-//		logger.debug("[OdataUtilService][materialScheduler] Started");
-//		OdataMaterialStartDto odataMaterialStartDto = new OdataMaterialStartDto();
-//		String URL = OdataConstants.BASE_URL+"getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
-//		try {
-//			String response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
-//			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//			odataMaterialStartDto = gson.fromJson(response.toString(), OdataMaterialStartDto.class);
-//			logger.debug("[OdataUtilService][materialScheduler] OdataMaterialDto : " + odataMaterialStartDto.toString());
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][materialScheduler] Exception in JSON : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return odataMaterialStartDto;
-//	}
+	public OdataMaterialStartDto materialScheduler(){
+		
+		OdataMaterialStartDto odataMaterialStartDto = new OdataMaterialStartDto();
+		String URL = SalesOrderOdataConstants.BASE_URL+"getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
+		try {
+			String response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			odataMaterialStartDto = gson.fromJson(response.toString(), OdataMaterialStartDto.class);
+		
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return odataMaterialStartDto;
+	}
 //	
 //	public String materialAckScheduler(){
 //		logger.debug("[OdataUtilService][materialAckScheduler] Started");
@@ -253,19 +256,19 @@ public class SalesOrderOdataServices {
 //		return response;
 //	}
 //	
-//	public String usersBySoldToParty(String soldToParty){
-//		logger.debug("[OdataUtilService][usersBySoldToParty] Started");
-//		String response = null;
-//		String URL = OdataConstants.BASE_URL+"searchHelpSet/?$filter=Path%20eq%20'EMAIL'%20and%20Key%20eq%20'"+soldToParty+"'";
-//		try {
-//			response = OdataUtilService.callOdata(URL, "GET", null, null);
-//			logger.debug("[OdataUtilService][usersBySoldToParty] Response : " + response);
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][usersBySoldToParty] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return response;
-//	}
+	public String usersBySoldToParty(String soldToParty){
+		
+		String response = null;
+		String URL = SalesOrderOdataConstants.BASE_URL+"searchHelpSet/?$filter=Path%20eq%20'EMAIL'%20and%20Key%20eq%20'"+soldToParty+"'";
+		try {
+			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, null);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return response;
+	}
 	
 //	public static void main(String[] args){
 //		String s = "MAYANK.PATEL@FOULATH.COM.BH";
