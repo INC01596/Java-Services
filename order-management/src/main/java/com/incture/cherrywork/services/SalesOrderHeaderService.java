@@ -278,6 +278,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			String s4=UUID.randomUUID().toString().replace("-", "");
 			s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
 		    dto.setS4DocumentId(s4);
+		    String s2=UUID.randomUUID().toString().replace("-", "");
+			s2 = s2.length() > 10 ? s2.substring(0, 9) : s2;
+		    dto.setSalesHeaderId(s2);
 		    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
