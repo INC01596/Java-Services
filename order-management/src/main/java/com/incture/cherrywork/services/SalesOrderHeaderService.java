@@ -53,10 +53,8 @@ import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
-<<<<<<< HEAD
 import com.incture.cherrywork.util.SequenceNumberGen;
-=======
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+
 import com.incture.cherrywork.util.ServicesUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -152,20 +150,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-<<<<<<< HEAD
 
-	@Override
-	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
-		try {
-			List<SalesOrderHeader> l = repo.getManageService(dto);
-=======
+
+	
 	 
 		  @Override
 		public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 		try{
 			List<SalesOrderHeader> l=repo.getManageService(dto);
 
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+
 			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
 			return ResponseEntity.ok().body(t);
 		} catch (Exception e) {
@@ -314,83 +308,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 		if ((dto.getHeaderDto() != null) && dto.getHeaderDto().getS4DocumentId() == null) {
 
-=======
-		 * SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto,
-		 * SalesOrderHeader.class); SalesOrderHeader savedSalesOrderHeader =
-		 * salesOrderHeaderRepository.save(salesOrderHeader); URI location =
-		 * ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
-		 * buildAndExpand("id").toUri(); return ResponseEntity.ok()
-		 * .body(ObjectMapperUtils.map(savedSalesOrderHeader,
-		 * SalesOrderHeaderDto.class));
-		 
+
 		
-		         
-			
-			
-	            if (!ServicesUtil.isEmpty(dto)) {
-				if (!ServicesUtil.isEmpty(dto.getDocumentType())) {
-					if (dto.getDocumentType().equals("IN")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-							String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, s);
-							System.err.println("tempId" + tempEnquiryId);
-							dto.setSalesHeaderId(tempEnquiryId);
-							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-						}
-					} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8,s);
-						System.err.println("tempQuotationId" + tempQuotationId);
-							dto.setSalesHeaderId(tempQuotationId);
-							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-						}
-					} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-							String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, s);
-							System.err.println("tempOrderId" + tempOrderId);
-							dto.setSalesHeaderId(tempOrderId);
-							
-						}
-					}
-				}
-				} */
-		
-			String s4=UUID.randomUUID().toString().replace("-", "");
-			s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
-		    dto.setS4DocumentId(s4);
-		    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
-	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
-				List<SalesOrderItemDto> l=new ArrayList<>();
-				l= dto.getSalesOrderItemDtoList(); 
-				for(SalesOrderItemDto d:l)
-					
-				{
-					String s=UUID.randomUUID().toString().replace("-", "");
-					s = s.length() > 10 ? s.substring(0, 9) : s;
-					d.setSalesItemId(s);
-                   d.setSalesOrderHeader(savedSalesOrderHeader);
-					SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
-					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
-					salesOrderItemRepository.save(salesOrderItem);
-				}
-				
-				
-	    		
-	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-	    		return ResponseEntity.ok()
-	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
-	    			
-			
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
 			
 			s4DocumentId = ServicesUtil.randomId();
 //			UUID uuid = UUID.randomUUID();
@@ -401,7 +320,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 		}
 
-<<<<<<< HEAD
 		if(dto.getSalesHeaderId() == null && dto.getHeaderDto().getSalesHeaderId() == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message", "Not a proper doc").body(null);
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
@@ -423,16 +341,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
 			salesOrderItemRepository.save(Item);
 		}
-=======
-
-	
-
-	/*---------------AWADHESH KUMAR----------------------*/
-
-
-	@Override
-	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderDto dto) {
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
 
 		Collections.sort(dto.getLineItemList());
 		int i=1;
@@ -931,6 +839,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				System.err.println("[submitSalesOrder][submitOdata] error value : " + value);
 				salesOrderHeaderRepository.updateError(odataHeaderDto.getTemp_id(), value);
 				System.out.println("After Update Error! in submit odata in else" + error);
+				
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.header("Message", "Error in submitting odata for id: " + odataHeaderDto.getTemp_id()).body(error);
 			}
 			// response.setMessage("Odata Submitted Successfully");
 			// response.setStatus(HttpStatus.OK.getReasonPhrase());
