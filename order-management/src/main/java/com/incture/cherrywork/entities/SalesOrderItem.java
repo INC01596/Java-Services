@@ -654,13 +654,9 @@ public class SalesOrderItem {
 	
 //Awadhesh Kumar
 	
-<<<<<<< HEAD
-		@Column(name = "SALES_HEADER_ID", length = 255) 
-		private String salesHeaderId;
-=======
 @Column(name = "SALES_HEADER_ID", length = 10) 
 private String salesHeaderId;
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+
 
 public String getSalesHeaderId() {
 			return salesHeaderId;

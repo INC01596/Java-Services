@@ -310,6 +310,40 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 
 		
+<<<<<<< HEAD
+=======
+			String s4=UUID.randomUUID().toString().replace("-", "");
+			s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
+		    dto.setS4DocumentId(s4);
+		    String s2=UUID.randomUUID().toString().replace("-", "");
+			s2 = s2.length() > 10 ? s2.substring(0, 9) : s2;
+		    dto.setSalesHeaderId(s2);
+		    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+				List<SalesOrderItemDto> l=new ArrayList<>();
+				l= dto.getSalesOrderItemDtoList(); 
+				for(SalesOrderItemDto d:l)
+					
+				{
+					String s=UUID.randomUUID().toString().replace("-", "");
+					s = s.length() > 10 ? s.substring(0, 9) : s;
+					d.setSalesItemId(s);
+                   d.setSalesOrderHeader(savedSalesOrderHeader);
+					SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
+					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+					salesOrderItemRepository.save(salesOrderItem);
+				}
+				
+				
+	    		
+	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+	    		return ResponseEntity.ok()
+	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
+	    			
+			
+>>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+>>>>>>> 3677a3cd200c223eb37e1894a3a725b92305f677
 			
 			s4DocumentId = ServicesUtil.randomId();
 //			UUID uuid = UUID.randomUUID();
