@@ -609,8 +609,24 @@ public class SalesOrderHeader {
 
 	
 
-	
+	public String getEmailId() {
+		return emailId;
+	}
 
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
+	}
+
+	@Column(name="PAYMENT_TERMS",length=20)
+	private String paymentTerms;
 	
 	
 	
