@@ -53,6 +53,7 @@ import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+import com.incture.cherrywork.util.SequenceNumberGen;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 
@@ -75,6 +76,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
+	
+	private SequenceNumberGen sequenceNumberGen;
 
 	
 
@@ -205,38 +208,48 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 
-		/*
-		 * if (!ServicesUtil.isEmpty(dto)) { if
-		 * (!ServicesUtil.isEmpty(dto.getDocumentType())) { if
-		 * (dto.getDocumentType().equals("IN")) { if
-		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
-		 * SequenceNumberGen.getInstance(); Session
-		 * s=aSession.getSessionFactory().getCurrentSession();
-		 * System.err.println("session : "+ s); String tempEnquiryId =
-		 * sequenceNumberGen.getNextSeqNumber("IN", 8, s);
-		 * System.err.println("tempId" + tempEnquiryId);
-		 * dto.setSalesHeaderId(tempEnquiryId);
-		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } else
-		 * if (dto.getDocumentType().equalsIgnoreCase("QT")) { if
-		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
-		 * SequenceNumberGen.getInstance(); Session
-		 * s=aSession.getSessionFactory().getCurrentSession();
-		 * System.err.println("session : "+ s); String tempQuotationId =
-		 * sequenceNumberGen.getNextSeqNumber("QT", 8,s);
-		 * System.err.println("tempQuotationId" + tempQuotationId);
-		 * dto.setSalesHeaderId(tempQuotationId);
-		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } else
-		 * if (dto.getDocumentType().equalsIgnoreCase("OR")) { if
-		 * (ServicesUtil.isEmpty(dto.getSalesHeaderId())) { sequenceNumberGen=
-		 * SequenceNumberGen.getInstance(); Session
-		 * s=aSession.getSessionFactory().getCurrentSession();
-		 * System.err.println("session : "+ s); String tempOrderId =
-		 * sequenceNumberGen.getNextSeqNumber("OR", 8, s);
-		 * System.err.println("tempOrderId" + tempOrderId);
-		 * dto.setSalesHeaderId(tempOrderId);
-		 * dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED); } } } }
-<<<<<<< HEAD
-		 */
+		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
+			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
+				if (dto.getDocumentType().equals("IN")) {
+					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+						sequenceNumberGen = SequenceNumberGen.getInstance();
+						Session session = entityManager.unwrap(Session.class);
+						System.err.println("session : " + session);
+						String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						System.err.println("tempId" + tempEnquiryId);
+						dto.setSalesHeaderId(tempEnquiryId);
+						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+						
+					}
+				} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
+					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+						sequenceNumberGen = SequenceNumberGen.getInstance();
+						Session session = entityManager.unwrap(Session.class);
+						System.err.println("session : " + session);
+						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						System.err.println("tempQuotationId" + tempQuotationId);
+						dto.setSalesHeaderId(tempQuotationId);
+						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+						
+					}
+				} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
+					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+						sequenceNumberGen = SequenceNumberGen.getInstance();
+						Session session = entityManager.unwrap(Session.class);
+						System.err.println("session : " + session);
+						String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						System.err.println("tempOrderId" + tempOrderId);
+						dto.setSalesHeaderId(tempOrderId);
+						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+						
+					}
+				}
+			}
+		}
+
 
 		
 
@@ -244,51 +257,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 		
 		
-		      /*   
-			
-			
-	            if (!ServicesUtil.isEmpty(dto)) {
-				if (!ServicesUtil.isEmpty(dto.getDocumentType())) {
-					if (dto.getDocumentType().equals("IN")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-							String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, s);
-							System.err.println("tempId" + tempEnquiryId);
-							dto.setSalesHeaderId(tempEnquiryId);
-							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-						}
-					} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8,s);
-						System.err.println("tempQuotationId" + tempQuotationId);
-							dto.setSalesHeaderId(tempQuotationId);
-							dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-						}
-					} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
-						if (ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-							sequenceNumberGen= SequenceNumberGen.getInstance();
-							Session s=aSession.getSessionFactory().getCurrentSession();
-							System.err.println("session : "+ s);
-							String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, s);
-							System.err.println("tempOrderId" + tempOrderId);
-							dto.setSalesHeaderId(tempOrderId);
-							
-						}
-					}
-				}
-				} */
+		      
 		
 			String s4=UUID.randomUUID().toString().replace("-", "");
 			s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
 		    dto.setS4DocumentId(s4);
-		    String s2=UUID.randomUUID().toString().replace("-", "");
-			s2 = s2.length() > 10 ? s2.substring(0, 9) : s2;
-		    dto.setSalesHeaderId(s2);
 		    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
@@ -312,7 +285,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 @Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
-	/*	
+	
 		if (!ServicesUtils.isEmpty(dto) && dto.getHeaderDto().getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())) {
 				if (dto.getHeaderDto().getDocumentType().equals("IN")) {
@@ -354,17 +327,17 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 			}
 		}
-
+		/*	
 		String s4DocumentId = null;
 
 		if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
-		if ((dto.getHeaderDto() != null) && dto.getHeaderDto().getS4DocumentId() == null) {
+		if ((dto!= null) && dto.getS4DocumentId() == null) {
 
 
-
-				
+         SalesOrderHeader salesOrderHeader=ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+			SalesOrderHeader savedsalesOrder=repo	
 	    		
 	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 	    		return ResponseEntity.ok()
@@ -390,13 +363,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message", "Not a proper doc").body(null);
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-
-		
-
-	
-
-	/*---------------AWADHESH KUMAR----------------------*/
-
 
 	
 /*
