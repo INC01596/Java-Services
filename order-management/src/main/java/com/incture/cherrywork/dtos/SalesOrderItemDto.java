@@ -8,41 +8,12 @@ import com.incture.cherrywork.entities.SalesOrderHeader;
 
 import java.math.BigDecimal;
 
-<<<<<<< HEAD
-public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
-=======
-public class SalesOrderItemDto {
 
-	@Override
-	public String toString() {
-		return "SalesOrderItemDto [salesItemId=" + salesItemId + ", clientSpecific=" + clientSpecific
-				+ ", lineItemNumber=" + lineItemNumber + ", material=" + material + ", materialDesc=" + materialDesc
-				+ ", cumConfirmedQty=" + cumConfirmedQty + ", itemCategory=" + itemCategory + ", plant=" + plant
-				+ ", netValue=" + netValue + ", amountB4Vat=" + amountB4Vat + ", vatPercent=" + vatPercent
-				+ ", vatAmount=" + vatAmount + ", totalAmountInclVat=" + totalAmountInclVat + ", deliveredQuantity="
-				+ deliveredQuantity + ", deliveredPieces=" + deliveredPieces + ", outstandingQuantity="
-				+ outstandingQuantity + ", outstandingPieces=" + outstandingPieces + ", availabilityStatus="
-				+ availabilityStatus + ", paymentChqDetail=" + paymentChqDetail + ", deliveryStatus=" + deliveryStatus
-				+ ", orderedPieces=" + orderedPieces + ", noOfBundles=" + noOfBundles + ", basePrice=" + basePrice
-				+ ", extras=" + extras + ", qualityTestExtras=" + qualityTestExtras + ", discount1=" + discount1
-				+ ", enteredOrdQuantity=" + enteredOrdQuantity + ", standard=" + standard + ", standardDesc="
-				+ standardDesc + ", sectionGrade=" + sectionGrade + ", sectionGradeDesc=" + sectionGradeDesc + ", size="
-				+ size + ", kgPerMeter=" + kgPerMeter + ", length=" + length + ", barsPerBundle=" + barsPerBundle
-				+ ", sectionGroup=" + sectionGroup + ", level2Id=" + level2Id + ", ceLogo=" + ceLogo + ", section="
-				+ section + ", sizeGroup=" + sizeGroup + ", isiLogo=" + isiLogo + ", impactTest=" + impactTest
-				+ ", bendTest=" + bendTest + ", ultralightTest=" + ultralightTest + ", inspection=" + inspection
-				+ ", ultrasonoicTest=" + ultrasonoicTest + ", gradePricingGroup=" + gradePricingGroup
-				+ ", totalNoPieces=" + totalNoPieces + ", bundleWt=" + bundleWt + ", updateIndicator=" + updateIndicator
-				+ ", changedOn=" + changedOn + ", syncStatus=" + syncStatus + ", createdBy=" + createdBy
-				+ ", createdOn=" + createdOn + ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn
-				+ /*", orderQuantity=" + orderQuantity + */", documentCurrency=" + documentCurrency + ", baseUnitOfMeasure="
-				+ baseUnitOfMeasure + ", flag=" + flag + ", hardnessTest=" + hardnessTest + ", isElementBoronRequired="
-				+ isElementBoronRequired + ", referenceDocument=" + referenceDocument + ", s4DocumentId=" + s4DocumentId
-				+ ", qualityTest=" + qualityTest + ", defaultQualityTest=" + defaultQualityTest
-				+ ", defaultQualityTestList=" + defaultQualityTestList + ", qualityTestList=" + qualityTestList
-				+ ", ultraSonicTest=" + ultraSonicTest + ", salesOrderHeader=" + salesOrderHeader + "]";
-	}
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
+
+
+
+	
 
 	
 	private String salesItemId;
@@ -735,11 +706,7 @@ public class SalesOrderItemDto {
 		public void setUltraSonicTest(Boolean ultraSonicTest) {
 			this.ultraSonicTest = ultraSonicTest;
 		}
-<<<<<<< HEAD
 
-=======
-       
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
 		@JsonIgnore
 		private SalesOrderHeader salesOrderHeader;
 

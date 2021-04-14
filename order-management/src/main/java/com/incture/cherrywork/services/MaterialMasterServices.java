@@ -66,6 +66,7 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 				.body(ObjectMapperUtils.map(savedmaterialMaster,SalesOrderMaterialMasterDto.class));
 	}
 
+	@Override
 	public ResponseEntity<Object> getMaterialNames() {
 		try{
 			List<MaterialPlantDto> materialList=mrepo.getMaterialNames();
@@ -77,6 +78,8 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 			}
 			
 	}
+
+	
 	
 	/*
 	public Response manualSearchResult(SearchHeaderDto searchDto) {
@@ -92,9 +95,18 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 		OdataMaterialStartDto odataMaterialStartDto = odataServices.materialScheduler();
 		
 	}
-	
-	public Response materialScheduler(){
-		return materialMasterDao.materialScheduler();
-	}*/
+	*/
+	@Override
+	public ResponseEntity<Object> materialScheduler(){
+		try{
+		
+			return (mrepo.materialscheduler());
+		   }catch (Exception e) {
+			System.err.println("try found exception");
+			e.printStackTrace();
+			return null;
+			}
+		
+	}
 }
 

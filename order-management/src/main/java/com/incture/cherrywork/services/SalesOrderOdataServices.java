@@ -104,7 +104,7 @@ public class SalesOrderOdataServices {
 //		return response;
 //	}
 //	
-	public OdataMaterialStartDto materialScheduler(){
+	public static  OdataMaterialStartDto materialScheduler(){
 		
 		OdataMaterialStartDto odataMaterialStartDto = new OdataMaterialStartDto();
 		String URL = SalesOrderOdataConstants.BASE_URL+"getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
@@ -120,19 +120,19 @@ public class SalesOrderOdataServices {
 		return odataMaterialStartDto;
 	}
 //	
-//	public String materialAckScheduler(){
-//		logger.debug("[OdataUtilService][materialAckScheduler] Started");
-//		String response = null;
-//		String URL = OdataConstants.BASE_URL+"getMaterialTabSet?$filter=Zzkey%20eq%20'ACK'";
-//		try {
-//			response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
-//			logger.debug("[OdataUtilService][materialAckScheduler] Response : " + response);
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][materialAckScheduler] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return response;
-//	}
+	public static  String materialAckScheduler(){
+		
+		String response = null;
+		String URL = SalesOrderOdataConstants.BASE_URL+"getMaterialTabSet?$filter=Zzkey%20eq%20'ACK'";
+		try {
+			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return response;
+	}
 //	
 //	public OdataSchHeaderStartDto headerScheduler(){
 //		logger.debug("[OdataUtilService][headerScheduler] Started");

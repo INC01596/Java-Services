@@ -105,6 +105,10 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
 		return salesOrderHeaderService.save(salesOrderHeaderDto);
 	}
+	/*@GetMapping("/getUserDetailsBySTP/{stpId}")
+	public ResponseEntity<Object> getUserDetailsBySTP(@PathVariable("stpId") String stpId) {
+		return salesOrderHeaderService.getUserDetailsBySTP(stpId);
+	}*/
 
 	/*---------------AWADHESH KUMAR---------------------------*/
 

@@ -14,5 +14,6 @@ public interface IMaterialMasterServices {
 	ResponseEntity<Object> getMaterialByName(String material);
 	ResponseEntity<Object> create(SalesOrderMaterialMasterDto  Dto);
 	ResponseEntity<Object> getMaterialNames();
+    ResponseEntity<Object> materialScheduler();
 }
 

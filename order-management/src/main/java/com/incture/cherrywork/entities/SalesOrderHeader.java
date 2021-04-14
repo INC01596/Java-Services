@@ -36,12 +36,8 @@ public class SalesOrderHeader {
 	}
 
 	@Id
-<<<<<<< HEAD
-	@Column(name = "S4DocumentId", length = 255)
-=======
-	@Column(name = "S4DocumentId", length = 50)
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
-	private String s4DocumentId;
+    @Column(name = "S4DocumentId", length = 50)
+     private String s4DocumentId;
 
 	public String getS4DocumentId() {
 		return s4DocumentId;

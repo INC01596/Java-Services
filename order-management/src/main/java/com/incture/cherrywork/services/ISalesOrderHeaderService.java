@@ -35,18 +35,18 @@ public interface ISalesOrderHeaderService {
 	//sandeep
 
 	//<-----------------sandeep-------------------->
-<<<<<<< HEAD
-//>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
-=======
 
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+//>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
+
+
 	ResponseEntity<Object> getHeaderById(HeaderIdDto dto);
 	ResponseEntity<Object> getManageService(HeaderDetailUIDto dto);
 	ResponseEntity<Object> deleteDraftedVersion(String val);
 	ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto);
 	ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto);
 	ResponseEntity<Object> save(SalesOrderHeaderDto dto);
-
+	//ResponseEntity<Object> getUserDetailsBySTP(String stpId);
+	
 	
 	
 }

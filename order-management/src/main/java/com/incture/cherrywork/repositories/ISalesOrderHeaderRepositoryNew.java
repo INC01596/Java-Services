@@ -70,7 +70,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		
 		List<String> list = new ArrayList<>();
 		StringBuffer query = new StringBuffer(
-				"select distinct(s.s4DocumentId) from SalesOrderHeader s where s.documentType=:documentType and s.documentProcessStatus="
+				"select s.salesHeaderId from SalesOrderHeader s where s.documentType=:documentType and s.documentProcessStatus="
 						+ EnOrderActionStatus.CREATED.ordinal() + " ");
 		if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 			query.append("and s.createdBy=:createdBy ");
@@ -119,7 +119,6 @@ public class ISalesOrderHeaderRepositoryNew {
 			
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				headerQuery.append(" and s.salesGroup=:salesGroup");
-			
 			headerQuery.append(" order by s.createdDate desc");
 			Query hq = entityManager.createQuery(headerQuery.toString());
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
@@ -159,11 +158,10 @@ public class ISalesOrderHeaderRepositoryNew {
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				hq.setParameter("createdBy", dto.getCreatedBy());
 			hq.setParameter("documentType", dto.getDocumentType());
-<<<<<<< HEAD
+
 			hq.setParameter("documentProcessStatus", EnOrderActionStatus.DRAFTED);
-=======
-			hq.setParameter("documentProcessStatus",EnOrderActionStatus.DRAFTED);
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
+
+
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
 			
@@ -347,7 +345,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		return qualityTestList;
 	}
 	
-	//Sandeep KUmar
+	//Sandeep KUmar NULL value is not compared to boolean give exceptions.
 	public static List<String> setQualityTest(SalesOrderMaterialMasterDto dto) {
 		ArrayList<String> qualityTestList = new ArrayList<>();
 		if (dto.getBendTest()!=null && dto.getBendTest()== true)
@@ -356,8 +354,6 @@ public class ISalesOrderHeaderRepositoryNew {
 			qualityTestList.add("IT");
 		if (dto.getUltraLightTest()!=null && dto.getUltraLightTest() == true)
 			qualityTestList.add("UL");
-		
-		
 		return qualityTestList;
 	}
 

@@ -709,9 +709,9 @@ public class SalesOrderHeaderDto {
 		
 		//UPDATE THE toString METHOD AFTER EACH UPDATION OF FIELDS
 		
-<<<<<<< HEAD
+
 		@Override
-		public String toString() {
+		public String toString(){
 			return "SalesOrderHeaderDto [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
 					+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
 					+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
@@ -740,7 +740,7 @@ public class SalesOrderHeaderDto {
 					+ ", postingError=" + postingError + ", postingStatus=" + postingStatus + ", documentProcessStatus="
 					+ documentProcessStatus + "]";
 		}
-=======
+
 //		@Override
 //		public String toString() {
 //			return "SalesOrderHeaderDto [tableKey=" + tableKey + /*", actualDeliveryDate=" + actualDeliveryDate
@@ -783,6 +783,5 @@ public class SalesOrderHeaderDto {
 //		}
 //
 
->>>>>>> eede3b2ce1522fe85ef378dc78fcc6ecbef34528
-	
+
 }

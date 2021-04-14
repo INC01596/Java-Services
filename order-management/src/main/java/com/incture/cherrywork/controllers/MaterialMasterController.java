@@ -64,11 +64,12 @@ public class MaterialMasterController {
 	public Response getSearchDropdown(@RequestBody SearchHeaderDto searchDto) {
 		return materialMasterServices.getSearchDropdown(searchDto);
 	}
+	*/
 	
 	@GetMapping("/scheduler")
-	public Response materialScheduler(){
+	public ResponseEntity<Object> materialScheduler(){
 		return materialMasterServices.materialScheduler();
-	}*/
+	}
 }
 
 
