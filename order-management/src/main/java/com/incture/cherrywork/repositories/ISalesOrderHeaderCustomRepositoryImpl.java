@@ -294,7 +294,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto.setTotalSalesOrderQuantitySA(dto.getHeaderDto().getTotalSalesOrderQuantitySA());
 				headerDto.setOverDeliveryTolerance(dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setPlant(dto.getHeaderDto().getPlant());
-				headerDto.setCustomerPODate(dto.getHeaderDto().getCustomerPODate());
+				headerDto.setCustomerPoDate(dto.getHeaderDto().getCustomerPoDate());
 				System.out.println("in [reqpayload] ovdeltol: "+dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setUnderDeliveryTolerance(dto.getHeaderDto().getUnderDeliveryTolerance());
 				System.err.println("headerEntityList in reqpayload: "+headerDto.toString());
@@ -438,8 +438,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setContactNo(dto.getHeaderDto().getContactNo());
 		else
 			headerDto.setContactNo("");
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPONum()))
-			headerDto.setReference(dto.getHeaderDto().getCustomerPONum());
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPoNum()))
+			headerDto.setReference(dto.getHeaderDto().getCustomerPoNum());
 		else
 			headerDto.setReference("");
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDistributionChannel()))
@@ -528,8 +528,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto.setWeightAVG(val.toString());
 			}
 		}
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPODate())) {
-			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCustomerPODate());
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPoDate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCustomerPoDate());
 			headerDto.setBSTKD_E(date.substring(0, 10) + 'T' + date.substring(11));
 		} else
 			headerDto.setBSTKD_E("");

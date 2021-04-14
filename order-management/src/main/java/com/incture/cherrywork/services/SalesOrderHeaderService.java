@@ -54,7 +54,13 @@ import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
+<<<<<<< HEAD
 import com.incture.cherrywork.util.ServicesUtil;
+=======
+
+import com.incture.cherrywork.util.ServicesUtil;
+
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
@@ -76,7 +82,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
 
-	private SequenceNumberGen sequenceNumberGen;
+	
 
 	@Override
 	public ResponseEntity<Object> create(SalesOrderHeaderDto salesOrderHeaderDto) {
@@ -201,6 +207,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
@@ -243,6 +253,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 		}
 
+<<<<<<< HEAD
 		String s4 = UUID.randomUUID().toString().replace("-", "");
 		s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
 		dto.setS4DocumentId(s4);
@@ -262,9 +273,69 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
 			salesOrderItemRepository.save(salesOrderItem);
 		}
+=======
+
+		
+
+
+
+	
+
+		SalesOrderHeader savedSalesOrderHeader =new SalesOrderHeader();
+		
+		      if(dto.getS4DocumentId()==null || dto.getS4DocumentId().equals("")==true)
+		      {
+		    	    String s4=UUID.randomUUID().toString().replace("-", "");
+					s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
+				    dto.setS4DocumentId(s4);  
+				    dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+					 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+			         savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+						List<SalesOrderItemDto> l=new ArrayList<>();
+						l= dto.getSalesOrderItemDtoList(); 
+						for(SalesOrderItemDto d:l)
+							
+						{
+							String s=UUID.randomUUID().toString().replace("-", "");
+							s = s.length() > 10 ? s.substring(0, 9) : s;
+							d.setSalesItemId(s);
+		                    d.setSalesOrderHeader(savedSalesOrderHeader);
+							SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
+							salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+							salesOrderItemRepository.save(salesOrderItem);
+						}
+
+		     }else{
+		    
+		
+			
+		     
+			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+	         savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+				List<SalesOrderItemDto> l=new ArrayList<>();
+				l= dto.getSalesOrderItemDtoList(); 
+				
+				for(SalesOrderItemDto d:l)
+					{
+					if(d.getSalesItemId()==null){
+					String s=UUID.randomUUID().toString().replace("-", "");
+					s = s.length() > 10 ? s.substring(0, 9) : s;
+					d.setSalesItemId(s);
+					}
+				
+                   d.setSalesOrderHeader(savedSalesOrderHeader);
+                    SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
+					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+					salesOrderItemRepository.save(salesOrderItem);
+				}
+		     }
+		     
+
+
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
-
+		     
 	}
 
 	@Override
@@ -314,6 +385,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 			}
 		}
+<<<<<<< HEAD
 
 		String s4DocumentId = null;
 
@@ -324,6 +396,20 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 			s4DocumentId = ServicesUtil.randomId(); // UUID uuid =
 													// UUID.randomUUID(); //
+=======
+			
+		
+
+		String s4DocumentId = null;
+
+		 if (dto.getHeaderDto().getSalesHeaderId() == null)
+		dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
+		
+
+
+			s4DocumentId = ServicesUtil.randomId();
+			// UUID uuid = UUID.randomUUID();
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
 			// //
 			// s4DocumentId.replaceAll("-", ""); // s4DocumentId =
@@ -331,11 +417,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// =
 			// UUID.randomUUID().toString().replaceAll("-", "");
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
-		}
 
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
