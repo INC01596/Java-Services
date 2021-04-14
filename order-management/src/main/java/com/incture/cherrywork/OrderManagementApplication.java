@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @SuppressWarnings("deprecation")
 @EnableAuthorizationServer
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.incture.cherrywork.*"})
 public class OrderManagementApplication {
 
 	public static void main(String[] args) {
