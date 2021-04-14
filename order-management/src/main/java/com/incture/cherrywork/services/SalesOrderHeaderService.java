@@ -53,8 +53,6 @@ import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
-import com.incture.cherrywork.util.SequenceNumberGen;
-import com.incture.cherrywork.util.ServicesUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 
@@ -77,9 +75,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-	
-	@Autowired
-	private SequenceNumberGen sequenceNumberGen;
 
 	
 
@@ -315,9 +310,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	}
 
-	@Override
+@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
-
+	/*	
 		if (!ServicesUtils.isEmpty(dto) && dto.getHeaderDto().getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())) {
 				if (dto.getHeaderDto().getDocumentType().equals("IN")) {
@@ -372,7 +367,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				
 	    		
 	    		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-	    		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
+	    		return ResponseEntity.ok()
+	    				.body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 	    			
 			
 
@@ -403,7 +399,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 
 	
-
+/*
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
@@ -443,7 +439,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.created(location).body("Submitted to hana and ECC both!");
 		else 
 			return ResponseEntity.created(location).body("Submitted to hana!");
-	}
+	}*/
+	return null;
+}
 
 
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {

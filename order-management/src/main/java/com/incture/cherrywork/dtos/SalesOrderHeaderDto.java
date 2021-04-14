@@ -705,6 +705,9 @@ public class SalesOrderHeaderDto {
 		public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 			this.documentProcessStatus = documentProcessStatus;
 		}
+	
+	
+
 		
 		
 		//UPDATE THE toString METHOD AFTER EACH UPDATION OF FIELDS
