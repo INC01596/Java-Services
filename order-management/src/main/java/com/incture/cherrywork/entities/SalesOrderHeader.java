@@ -22,8 +22,6 @@ import javax.persistence.Id;
 @Table(name = "SalesOrderHeader")
 public class SalesOrderHeader {
 
-	
-
 	@Column(name = "ClientSpecific", precision = 3, scale = 0)
 	private Integer clientSpecific;
 
@@ -36,8 +34,13 @@ public class SalesOrderHeader {
 	}
 
 	@Id
+<<<<<<< HEAD
     @Column(name = "S4DocumentId", length = 50)
      private String s4DocumentId;
+=======
+	@Column(name = "S4DocumentId", length = 10)
+	private String s4DocumentId;
+>>>>>>> refs/remotes/origin/master
 
 	public String getS4DocumentId() {
 		return s4DocumentId;
@@ -464,9 +467,9 @@ public class SalesOrderHeader {
 			a.setSalesOrderHeader(this);
 		}
 	}
-	
-/*--------------------AWADHESH KUMAR------------------------------*/
-	
+
+	/*--------------------AWADHESH KUMAR------------------------------*/
+
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "POSTING_DATE", length = 8)
 	private java.util.Date postingDate;
@@ -511,8 +514,8 @@ public class SalesOrderHeader {
 	public void setPostingStatus(Boolean postingStatus) {
 		this.postingStatus = postingStatus;
 	}
-	
-	@Column(name = "SALES_HEADER_ID", length=255)
+
+	@Column(name = "SALES_HEADER_ID", length = 255)
 	private String salesHeaderId;
 
 	public String getSalesHeaderId() {
@@ -522,7 +525,7 @@ public class SalesOrderHeader {
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
-	
+
 	@Column(name = "Plant", length = 5)
 	private String plant;
 
@@ -534,14 +537,14 @@ public class SalesOrderHeader {
 		this.plant = plant;
 	}
 
-	
-	//sandeep
+	// sandeep
 	@Column(name = "DOCUMENT_PROCESS_STATUS")
 	private EnOrderActionStatus documentProcessStatus;
 
 	public EnOrderActionStatus getDocumentProcessStatus() {
 		return documentProcessStatus;
 	}
+
 	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
 	}

@@ -740,6 +740,7 @@ public class SalesOrderHeaderDto {
 					+ ", postingError=" + postingError + ", postingStatus=" + postingStatus + ", documentProcessStatus="
 					+ documentProcessStatus + "]";
 		}
+<<<<<<< HEAD
 
 //		@Override
 //		public String toString() {
@@ -784,4 +785,7 @@ public class SalesOrderHeaderDto {
 //
 
 
+=======
+	
+>>>>>>> refs/remotes/origin/master
 }
