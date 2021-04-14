@@ -34,13 +34,12 @@ public class SalesOrderHeader {
 	}
 
 	@Id
-<<<<<<< HEAD
+
     @Column(name = "S4DocumentId", length = 50)
      private String s4DocumentId;
-=======
-	@Column(name = "S4DocumentId", length = 10)
-	private String s4DocumentId;
->>>>>>> refs/remotes/origin/master
+
+	
+
 
 	public String getS4DocumentId() {
 		return s4DocumentId;

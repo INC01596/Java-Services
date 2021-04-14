@@ -160,11 +160,6 @@ public class ISalesOrderHeaderRepositoryNew {
 			hq.setParameter("documentType", dto.getDocumentType());
 
 			hq.setParameter("documentProcessStatus", EnOrderActionStatus.DRAFTED);
-<<<<<<< HEAD
-
-
-=======
->>>>>>> refs/remotes/origin/master
 			if (!ServicesUtil.isEmpty(dto.getSalesGroup()))
 				hq.setParameter("salesGroup", dto.getSalesGroup());
 			

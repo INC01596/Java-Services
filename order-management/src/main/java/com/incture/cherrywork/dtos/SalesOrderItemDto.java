@@ -10,14 +10,7 @@ import java.math.BigDecimal;
 
 
 public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
-<<<<<<< HEAD
 
-
-
-	
-
-=======
->>>>>>> refs/remotes/origin/master
 	
 		
 	private String salesItemId;
@@ -710,11 +703,7 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
 		public void setUltraSonicTest(Boolean ultraSonicTest) {
 			this.ultraSonicTest = ultraSonicTest;
 		}
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> refs/remotes/origin/master
 		@JsonIgnore
 		private SalesOrderHeader salesOrderHeader;
 

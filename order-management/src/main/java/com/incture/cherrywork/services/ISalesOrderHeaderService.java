@@ -35,13 +35,7 @@ public interface ISalesOrderHeaderService {
 	//sandeep
 
 	//<-----------------sandeep-------------------->
-<<<<<<< HEAD
 
-//>>>>>>> d6f70bb107c0c3902d534e2883b7555f64d5faf0
-
-
-=======
->>>>>>> refs/remotes/origin/master
 	ResponseEntity<Object> getHeaderById(HeaderIdDto dto);
 	ResponseEntity<Object> getManageService(HeaderDetailUIDto dto);
 	ResponseEntity<Object> deleteDraftedVersion(String val);

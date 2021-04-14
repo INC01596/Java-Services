@@ -654,12 +654,7 @@ public class SalesOrderItem {
 	
 //Awadhesh Kumar
 	
-<<<<<<< HEAD
 
-		
-
-=======
->>>>>>> refs/remotes/origin/master
 @Column(name = "SALES_HEADER_ID", length = 10) 
 private String salesHeaderId;
 
