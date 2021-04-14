@@ -263,9 +263,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	}
 
-	@Override
+@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
-
+	
 		if (!ServicesUtils.isEmpty(dto) && dto.getHeaderDto().getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())) {
 				if (dto.getHeaderDto().getDocumentType().equals("IN")) {
@@ -333,7 +333,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
 
+		
 
+	
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 

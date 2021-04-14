@@ -384,7 +384,7 @@ public static String listToString(List<String> list) {
 			
 		
 			String ackResponse = SalesOrderOdataServices.materialAckScheduler();
-			return ResponseEntity.ok().body(list);
+	        return ResponseEntity.ok().body(list);
 			
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating");
@@ -392,9 +392,10 @@ public static String listToString(List<String> list) {
 			
 	
 	
-
+		
 
 }
+	
 }
 	
 		

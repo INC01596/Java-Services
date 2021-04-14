@@ -13,6 +13,7 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
 
 import java.util.Date;
 import java.math.BigDecimal;
@@ -547,5 +548,109 @@ public class SalesOrderHeader {
 	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
 	}
+	
+	@Column(name = "OVER_DELIVERY_TOLERANCE", length = 50)
+	private String overDeliveryTolerance;
+	
+	public String getOverDeliveryTolerance() {
+		return overDeliveryTolerance;
+	}
+
+	public void setOverDeliveryTolerance(String overDeliveryTolerance) {
+		this.overDeliveryTolerance = overDeliveryTolerance;
+	}
+	@Column(name = "UNDER_DELIVERY_TOLERANCE", length = 50)
+	private String underDeliveryTolerance;
+
+	public String getUnderDeliveryTolerance() {
+		return underDeliveryTolerance;
+	}
+
+	public void setUnderDeliveryTolerance(String underDeliveryTolerance) {
+		this.underDeliveryTolerance = underDeliveryTolerance;
+	}
+
+	@Column(name = "EMAIL_ID", length = 100)
+	private String emailId;
+	
+	@Column(name = "INCO_TERMS1", length = 20)
+	private String incoTerms1;
+
+	@Column(name = "INCO_TERMS2", length = 70)
+	private String incoTerms2;
+
+	
+
+	
+
+	public String getIncoTerms1() {
+		return incoTerms1;
+	}
+
+	public void setIncoTerms1(String incoTerms1) {
+		this.incoTerms1 = incoTerms1;
+	}
+
+	public String getIncoTerms2() {
+		return incoTerms2;
+	}
+
+	public void setIncoTerms2(String incoTerms2) {
+		this.incoTerms2 = incoTerms2;
+	}
+
+	
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+	
+
+	
+
+	
+
+	
+
+
+	
+
+	
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public String getWorkflowID() {
+		return workflowID;
+	}
+
+	public void setWorkflowID(String workflowID) {
+		this.workflowID = workflowID;
+	}
+
+	
+	
+	@Column(name = "WEIGHT", length = 2)
+	private String weight;
+
+	@Column(name = "WORKFLOW_ID", length = 10) // check the data type in future
+	private String workflowID;
+
+
+
 
 }
