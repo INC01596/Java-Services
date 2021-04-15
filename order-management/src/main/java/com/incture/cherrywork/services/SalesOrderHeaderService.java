@@ -206,7 +206,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 
 
-		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
+		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
+				{
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -255,7 +256,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	
 
-		SalesOrderHeader savedSalesOrderHeader =new SalesOrderHeader();
+		       SalesOrderHeader savedSalesOrderHeader =new SalesOrderHeader();
 		
 		      if(dto.getS4DocumentId()==null || dto.getS4DocumentId().equals("")==true)
 		      {
@@ -279,11 +280,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 							salesOrderItemRepository.save(salesOrderItem);
 						}
 
-		     }else{
+		     }else
+		     {
 		    
 		
-			
-		     
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
 				List<SalesOrderItemDto> l=new ArrayList<>();
@@ -297,7 +297,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					d.setSalesItemId(s);
 					}
 				
-                   d.setSalesOrderHeader(savedSalesOrderHeader);
+                     d.setSalesOrderHeader(savedSalesOrderHeader);
                     SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
 					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
 					salesOrderItemRepository.save(salesOrderItem);
@@ -309,7 +309,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 		     
-	}
+	} 
 
 @Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
