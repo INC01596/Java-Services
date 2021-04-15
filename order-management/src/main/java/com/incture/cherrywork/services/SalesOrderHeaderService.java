@@ -206,7 +206,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 //		if(dto.getSalesHeaderId() != null && dto.getS4DocumentId() == null)
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message", "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null").body(dto);
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+<<<<<<< HEAD
+		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
+				{
+=======
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
+>>>>>>> 0d6da5bcc056d20ccc856c58e129e07c39e72463
 		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
+>>>>>>> refs/remotes/origin/master
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -276,7 +288,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	
 
-		SalesOrderHeader savedSalesOrderHeader =new SalesOrderHeader();
+		       SalesOrderHeader savedSalesOrderHeader =new SalesOrderHeader();
 		
 		      if(dto.getS4DocumentId()==null || dto.getS4DocumentId().equals("")==true)
 		      {
@@ -300,11 +312,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 							salesOrderItemRepository.save(salesOrderItem);
 						}
 
-		     }else{
+		     }else
+		     {
 		    
 		
-			
-		     
 			 SalesOrderHeader  salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
 	         savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
 				List<SalesOrderItemDto> l=new ArrayList<>();
@@ -318,7 +329,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					d.setSalesItemId(s);
 					}
 				
-                   d.setSalesOrderHeader(savedSalesOrderHeader);
+                     d.setSalesOrderHeader(savedSalesOrderHeader);
                     SalesOrderItem salesOrderItem=ObjectMapperUtils.map(d, SalesOrderItem.class);
 					salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
 					salesOrderItemRepository.save(salesOrderItem);
@@ -331,7 +342,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 		     
-	}
+	} 
 
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
