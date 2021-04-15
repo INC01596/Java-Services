@@ -206,19 +206,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 //		if(dto.getSalesHeaderId() != null && dto.getS4DocumentId() == null)
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message", "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null").body(dto);
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
-<<<<<<< HEAD
 		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
 				{
-=======
->>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
->>>>>>> 0d6da5bcc056d20ccc856c58e129e07c39e72463
-		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
->>>>>>> refs/remotes/origin/master
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
