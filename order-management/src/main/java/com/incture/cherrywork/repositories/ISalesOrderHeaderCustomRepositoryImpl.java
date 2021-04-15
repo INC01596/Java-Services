@@ -294,7 +294,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto.setTotalSalesOrderQuantitySA(dto.getHeaderDto().getTotalSalesOrderQuantitySA());
 				headerDto.setOverDeliveryTolerance(dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setPlant(dto.getHeaderDto().getPlant());
-				headerDto.setCustomerPoDate(dto.getHeaderDto().getCustomerPoDate());
+				headerDto.setCustomerPODate(dto.getHeaderDto().getCustomerPODate());
 				System.out.println("in [reqpayload] ovdeltol: "+dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setUnderDeliveryTolerance(dto.getHeaderDto().getUnderDeliveryTolerance());
 				System.err.println("headerEntityList in reqpayload: "+headerDto.toString());
@@ -335,8 +335,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			Date d = new Date();
 			long t = d.getTime();
 			value = value.replaceAll("'", "");
-			String hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= '" + EnOrderActionStatus.DRAFTED
-					+ "', POSTING_ERROR='" + value
+			String hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
 					+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='" + temp_id
 					+ "'";
 			Query hq = entityManager.createNativeQuery(hString);
@@ -528,8 +527,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto.setWeightAVG(val.toString());
 			}
 		}
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPoDate())) {
-			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCustomerPoDate());
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getCustomerPODate())) {
+			String date = ServicesUtils.DateToString(dto.getHeaderDto().getCustomerPODate());
 			headerDto.setBSTKD_E(date.substring(0, 10) + 'T' + date.substring(11));
 		} else
 			headerDto.setBSTKD_E("");

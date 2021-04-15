@@ -55,6 +55,7 @@ import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
+<<<<<<< HEAD
 
 import com.incture.cherrywork.util.ServicesUtil;
 
@@ -62,6 +63,9 @@ import com.incture.cherrywork.util.ServicesUtil;
 import com.incture.cherrywork.util.ServicesUtil;
 
 
+=======
+import com.incture.cherrywork.util.ServicesUtil;
+>>>>>>> refs/remotes/origin/master
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
@@ -82,8 +86,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
+<<<<<<< HEAD
     
 	private SequenceNumberGen sequenceNumberGen;
+=======
+	
+	private SequenceNumberGen sequenceNumberGen;
+
+>>>>>>> refs/remotes/origin/master
 	
 
 	@Override
@@ -208,14 +218,22 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
+//		if(dto.getSalesHeaderId() != null && dto.getS4DocumentId() == null)
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message", "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null").body(dto);
+
+<<<<<<< HEAD
 
 
-
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
 				{
+<<<<<<< HEAD
 
 		
 
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -223,7 +241,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						Session session = entityManager.unwrap(Session.class);
 						System.err.println("session : " + session);
 						String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
 						System.err.println("tempId" + tempEnquiryId);
 						dto.setSalesHeaderId(tempEnquiryId);
 						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
@@ -235,7 +253,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						Session session = entityManager.unwrap(Session.class);
 						System.err.println("session : " + session);
 						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
 						System.err.println("tempQuotationId" + tempQuotationId);
 						dto.setSalesHeaderId(tempQuotationId);
 						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
@@ -247,7 +265,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						Session session = entityManager.unwrap(Session.class);
 						System.err.println("session : " + session);
 						String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
+						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
 						System.err.println("tempOrderId" + tempOrderId);
 						dto.setSalesHeaderId(tempOrderId);
 						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
@@ -258,7 +276,30 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 
 
+<<<<<<< HEAD
 		
+=======
+//		String s4 = UUID.randomUUID().toString().replace("-", "");
+//		s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
+//		dto.setS4DocumentId(s4);
+//		dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+//		SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+//		SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+//		List<SalesOrderItemDto> l = new ArrayList<>();
+//		l = dto.getSalesOrderItemDtoList();
+//		for (SalesOrderItemDto d : l)
+//
+//		{
+//			String s = UUID.randomUUID().toString().replace("-", "");
+//			s = s.length() > 10 ? s.substring(0, 9) : s;
+//			d.setSalesItemId(s);
+//			d.setSalesOrderHeader(savedSalesOrderHeader);
+//			SalesOrderItem salesOrderItem = ObjectMapperUtils.map(d, SalesOrderItem.class);
+//			salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+//			salesOrderItemRepository.save(salesOrderItem);
+//		}
+//
+>>>>>>> refs/remotes/origin/master
 
 		
 
@@ -316,6 +357,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		     
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 		     
@@ -324,6 +369,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
+		if(dto.getHeaderDto().getSalesHeaderId() != null && dto.getHeaderDto().getS4DocumentId() == null)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.header("Message", "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null")
+					.body("Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null");
+
+		if(dto.getHeaderDto().getSalesHeaderId() == null && dto.getHeaderDto().getS4DocumentId() != null)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.header("Message", "Wrong Input! salesHeaderId can't be null with s4DocumentId as non-null")
+					.body("Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null");
 
 		if (!ServicesUtils.isEmpty(dto) && dto.getHeaderDto().getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())) {
@@ -337,6 +391,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						dto.setSalesHeaderId(tempEnquiryId);
 						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 						dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+						//sequenceNumberGen.updateRecord(new SequenceNumber(dto.getHeaderDto().getDocumentType(),Integer.valueOf(tempEnquiryId).subString(tempEnquiryId.length()-2,tempEnquiryId.length)),session);
 					}
 				} else if (dto.getHeaderDto().getDocumentType().equalsIgnoreCase("QT")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -369,6 +424,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 			}
 		}
+<<<<<<< HEAD
 
 
 		String s4DocumentId = null;
@@ -381,6 +437,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			s4DocumentId = ServicesUtil.randomId(); // UUID uuid =
 													// UUID.randomUUID(); //
 
+=======
+>>>>>>> refs/remotes/origin/master
 			
 		
 
@@ -390,7 +448,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 			s4DocumentId = ServicesUtil.randomId();
 			// UUID uuid = UUID.randomUUID();
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
 			// //
 			// s4DocumentId.replaceAll("-", ""); // s4DocumentId =
@@ -402,10 +463,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
@@ -442,7 +506,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
-			return ResponseEntity.created(location).body("Submitted to hana and ECC both!");
+			return ResponseEntity.created(location).body("Submitted to hana and ECC both! odata response:  "+res1.getBody());
 		else
 			return ResponseEntity.created(location).body("Submitted to hana!");
 	}
