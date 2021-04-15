@@ -389,7 +389,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
-		if ((dto != null) && dto.getHeaderDto().getS4DocumentId() == null) {
+		System.out.println("s4docid: "+dto.getHeaderDto().getS4DocumentId());
+		if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
 
 			s4DocumentId = ServicesUtil.randomId();
 			// UUID uuid = UUID.randomUUID();
@@ -405,9 +406,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 				dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
 
+			System.out.println("net Value in Header: "+dto.getHeaderDto().getNetValue());
 			SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 			System.out.println("header Do: " + header.toString());
-
+			
+			System.out.println("net Value in Header Do: "+header.getNetValue());
 			salesOrderHeaderRepository.save(header);
 
 			for (SalesOrderItemDto item : dto.getLineItemList()) {
@@ -442,10 +445,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 			if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
-				return ResponseEntity.created(location)
-						.body("Submitted to hana and ECC both! with id:  " + dto.getHeaderDto().getSalesHeaderId());
+				return ResponseEntity.status(HttpStatus.OK).header("message", "Record submitted successfully. This is under review and you should get notified on this soon.").body(res1.getBody());
 			else
-				return ResponseEntity.created(location).body("Submitted to hana!");
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Technical Error in Submitting").body(res1.getBody());
 		}
 
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {
@@ -620,7 +622,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// open
 					// orders
 					salesHeaderDto.setIsOpen(true);
-				salesHeaderDto.setS4DocumentId(docID_6);
+				if(salesHeader != null)
+					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
+				salesHeaderDto.setSalesHeaderId(docID_6);
 				// salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
 
 				// Posting error update
@@ -724,7 +728,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				for (SalesOrderItem salesItemDetailsDo : listSalesOrderItem) {
 					SalesOrderItemDto salesItemDetailsDto = new SalesOrderItemDto();
 					salesItemDetailsDto = ObjectMapperUtils.map(salesItemDetailsDo, SalesOrderItemDto.class);
-					salesItemDetailsDto.setS4DocumentId(docID_6);
+					salesItemDetailsDto.setS4DocumentId(salesItemDetailsDo.getSalesOrderHeader().getS4DocumentId());
+					salesItemDetailsDto.setSalesHeaderId(docID_6);
 					// session = sessionFactory.openSession();
 					// tx = session.beginTransaction();
 					salesOrderItemRepository.save(ObjectMapperUtils.map(salesItemDetailsDto, SalesOrderItem.class));
@@ -755,7 +760,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				SalesOrderHeaderDto salesHeaderDto = ObjectMapperUtils.map(salesHeader, SalesOrderHeaderDto.class);
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
 					salesHeaderDto.setIsOpen(true);
-				salesHeaderDto.setS4DocumentId(docID_2);
+				if(salesHeader != null)
+					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
+				salesHeaderDto.setSalesHeaderId(docID_2);
 
 				/*
 				 * Awadhesh Kumar Enum has to be created
@@ -869,7 +876,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				for (SalesOrderItem salesItemDetails : listSalesItemDetails) {
 					SalesOrderItemDto salesItemDetailsDto = new SalesOrderItemDto();
 					salesItemDetailsDto = ObjectMapperUtils.map(salesItemDetails, SalesOrderItemDto.class);
-					salesItemDetailsDto.setS4DocumentId(docID_2);
+					salesItemDetailsDto.setS4DocumentId(salesItemDetails.getSalesOrderHeader().getS4DocumentId());
+					salesItemDetailsDto.setSalesHeaderId(docID_2);
 					// session = sessionFactory.openSession();
 					// tx = session.beginTransaction();
 					salesOrderItemRepository.save(ObjectMapperUtils.map(salesItemDetailsDto, SalesOrderItem.class));

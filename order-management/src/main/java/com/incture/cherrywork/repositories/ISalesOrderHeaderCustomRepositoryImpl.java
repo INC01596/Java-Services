@@ -382,9 +382,9 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getS4DocumentId())) {
 			if ((dto.getHeaderDto().getPlant() != null) && dto.getHeaderDto().getPlant().equals("CODD")) {
 				headerDto.setDocID_6("");
-				headerDto.setDocID_2(dto.getHeaderDto().getS4DocumentId());
+				headerDto.setDocID_2(/*dto.getHeaderDto().getS4DocumentId()*/"");
 			} else if (dto.getHeaderDto().getPlant() != null && dto.getHeaderDto().getPlant().equals("4321")) {
-				headerDto.setDocID_6(dto.getHeaderDto().getS4DocumentId());
+				headerDto.setDocID_6(/*dto.getHeaderDto().getS4DocumentId()*/"");
 				headerDto.setDocID_2("");
 			}
 		} else {
