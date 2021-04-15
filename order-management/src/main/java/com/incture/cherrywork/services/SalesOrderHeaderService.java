@@ -449,7 +449,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
-			return ResponseEntity.created(location).body("Submitted to hana and ECC both!");
+			return ResponseEntity.created(location).body("Submitted to hana and ECC both! odata response:  "+res1.getBody());
 		else
 			return ResponseEntity.created(location).body("Submitted to hana!");
 	}
