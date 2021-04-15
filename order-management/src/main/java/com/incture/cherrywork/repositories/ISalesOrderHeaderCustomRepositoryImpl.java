@@ -38,6 +38,8 @@ import com.incture.cherrywork.dtos.SalesOrderSizeListDto;
 import com.incture.cherrywork.dtos.SalesOrderStandardListDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
+import com.incture.cherrywork.sales.constants.EnOperation;
+import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 import com.incture.cherrywork.services.SalesOrderHeaderService;
 import com.incture.cherrywork.services.SalesOrderItemService;
@@ -267,8 +269,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		
 		
 		
-		System.err.println("salesHeaderId in reqpayload: "+dto.getSalesHeaderId());
-		String salesHeaderId = dto.getSalesHeaderId();
+		System.err.println("salesHeaderId in reqpayload: "+dto.getHeaderDto().getSalesHeaderId());
+		String salesHeaderId = dto.getHeaderDto().getSalesHeaderId();
 		SalesOrderOdataHeaderDto odataHeaderDto = new SalesOrderOdataHeaderDto();
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
 		List<SalesOrderItem> lineItemListDo = new ArrayList<>();
@@ -333,12 +335,14 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			Date d = new Date();
 			long t = d.getTime();
 			value = value.replaceAll("'", "");
-			String hString = "update SALES_ORDER_HEADER set POSTING_ERROR='" + value
+			String hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= '" + EnOrderActionStatus.DRAFTED
+					+ "', POSTING_ERROR='" + value
 					+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='" + temp_id
 					+ "'";
 			Query hq = entityManager.createNativeQuery(hString);
 			hq.executeUpdate();
 			msg = "Success";
+			
 		} catch (Exception e) {
 			msg = "Faliure";
 			// logger.error("[SalesHeaderDao][updateError] Exception : " +

@@ -54,9 +54,13 @@ import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
+<<<<<<< HEAD
+import com.incture.cherrywork.util.ServicesUtil;
+=======
 
 import com.incture.cherrywork.util.ServicesUtil;
 
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
@@ -77,8 +81,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-	
-	private SequenceNumberGen sequenceNumberGen;
 
 	
 
@@ -205,9 +207,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
 
+<<<<<<< HEAD
+=======
 
+<<<<<<< HEAD
 		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
 				{
+=======
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
+		if (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null) {
+>>>>>>> refs/remotes/origin/master
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -218,8 +227,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
 						System.err.println("tempId" + tempEnquiryId);
 						dto.setSalesHeaderId(tempEnquiryId);
-						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
-						
+						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+
 					}
 				} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -230,8 +239,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
 						System.err.println("tempQuotationId" + tempQuotationId);
 						dto.setSalesHeaderId(tempQuotationId);
-						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
-						
+						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+
 					}
 				} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -242,13 +251,34 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 15, session);
 						System.err.println("tempOrderId" + tempOrderId);
 						dto.setSalesHeaderId(tempOrderId);
-						//dto.getHeaderDto().setS4DocumentId(s4DocumentId);
-						
+						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+
 					}
 				}
 			}
 		}
 
+<<<<<<< HEAD
+		String s4 = UUID.randomUUID().toString().replace("-", "");
+		s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
+		dto.setS4DocumentId(s4);
+		dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
+		SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto, SalesOrderHeader.class);
+		SalesOrderHeader savedSalesOrderHeader = salesOrderHeaderRepository.save(salesOrderHeader);
+		List<SalesOrderItemDto> l = new ArrayList<>();
+		l = dto.getSalesOrderItemDtoList();
+		for (SalesOrderItemDto d : l)
+
+		{
+			String s = UUID.randomUUID().toString().replace("-", "");
+			s = s.length() > 10 ? s.substring(0, 9) : s;
+			d.setSalesItemId(s);
+			d.setSalesOrderHeader(savedSalesOrderHeader);
+			SalesOrderItem salesOrderItem = ObjectMapperUtils.map(d, SalesOrderItem.class);
+			salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
+			salesOrderItemRepository.save(salesOrderItem);
+		}
+=======
 
 		
 
@@ -306,14 +336,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		     
 
 
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 		     
 	} 
 
-@Override
+	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
-	
+
 		if (!ServicesUtils.isEmpty(dto) && dto.getHeaderDto().getSalesHeaderId() == null) {
 			if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())) {
 				if (dto.getHeaderDto().getDocumentType().equals("IN")) {
@@ -358,6 +389,18 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 			}
 		}
+<<<<<<< HEAD
+
+		String s4DocumentId = null;
+
+		if (dto.getHeaderDto().getSalesHeaderId() == null)
+			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
+
+		if ((dto != null) && dto.getHeaderDto().getS4DocumentId() == null) {
+
+			s4DocumentId = ServicesUtil.randomId(); // UUID uuid =
+													// UUID.randomUUID(); //
+=======
 			
 		
 
@@ -370,19 +413,22 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 			s4DocumentId = ServicesUtil.randomId();
 			// UUID uuid = UUID.randomUUID();
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
-			// s4DocumentId.replaceAll("-", "");
-			// s4DocumentId = s4DocumentId.substring(1,s4DocumentId.length());
-			// s4DocumentId = UUID.randomUUID().toString().replaceAll("-", "");
+			// //
+			// s4DocumentId.replaceAll("-", ""); // s4DocumentId =
+			// s4DocumentId.substring(1,s4DocumentId.length()); // s4DocumentId
+			// =
+			// UUID.randomUUID().toString().replaceAll("-", "");
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 
-		if (dto.getSalesHeaderId() == null && dto.getHeaderDto().getSalesHeaderId() == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message", "Not a proper doc")
-					.body(null);
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 31c63587e7882389c09b177445f9b2662fbde088
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
@@ -393,9 +439,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
 				item.setSalesItemId(salesItemId);
 			}
-			item.setSalesHeaderId(dto.getSalesHeaderId());
-			item.setS4DocumentId(s4DocumentId);
-			item.setSalesOrderHeader(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
+			item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
+			item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
+			item.setSalesOrderHeader(header);
 			SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
 			salesOrderItemRepository.save(Item);
 		}
@@ -412,8 +458,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		if (res.getStatusCode().equals(HttpStatus.OK)) {
 
 			// if (response.getStatus().equals(HttpStatus.OK.getReasonPhrase()))
-			// {
-			System.err.println("[submitSalesOrder][odata] if case " + dto.getSalesHeaderId());
+			// { System.err.println("[submitSalesOrder][odata] if case "
+			// +dto.getSalesHeaderId());
 			SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto);
 			res1 = submitOdata(odataHeaderDto);
 		}
@@ -435,13 +481,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	@SuppressWarnings("unchecked")
+
 	@Override
 	public ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderItemDto dto) {
-		System.err.println("sso1 started " + dto.toString());
-		// logger.debug("[SalesHeaderDao][submitSalesOrder] Started : " +
-		// dto.toString());
+		System.err.println("sso1 started " + dto.toString()); //
+		logger.debug("[SalesHeaderDao][submitSalesOrder] Started : " + //
+				dto.toString());
 		// Response response = new Response();
-		// Session session = null;
+		// Sessionsession = null;
 		// Transaction tx = null;
 		try {
 			String queryString = "select distinct(i.plant) from SalesOrderItem i where i.salesHeaderId=:salesHeaderId";
@@ -519,7 +566,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("Message", "Error Submitting In HANA DB").body(null);
 		}
-
 		try {
 			String notificationTypeId = "";
 			if (dto.getHeaderDto().getDocumentType().equals("IN"))
@@ -529,13 +575,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			else if (dto.getHeaderDto().getDocumentType().equals("OR"))
 				notificationTypeId = "N03";
 			// String userResponse =
-			// odataServices.usersBySoldToParty((dto.getSoldToParty()));
-			// List<String> listUser = getUserDetailsBySTP((userResponse));
-			// for (String email : listUser) {
-			/*
-			 * if (notificationConfigDao.checkAlertForUser(dto.getCreatedBy(),
-			 * notificationTypeId)) {
-			 */ // Dependency oon notification
+			// //odataServices.usersBySoldToParty((dto.getSoldToParty()));
+			// List<String>listUser = getUserDetailsBySTP((userResponse));
+			// for (String email :listUser)
+			// { if
+			// (notificationConfigDao.checkAlertForUser(dto.getCreatedBy(),
+			// notificationTypeId)) {
+			// Dependency oon notification
 			// String odataResponse = odataServices.usersByEmail(email);
 			// List<UserDto> listUserDto =
 			// getUserDetailsByEmail(odataResponse);
@@ -546,9 +592,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// if (userDto.getUserId().equals(dto.getSoldToParty()))
 			/*
 			 * notificationDetailService.saveNotification(dto.getCreatedBy(),
-			 * dto.getSoldToParty(), null, "01", "01",
-			 */ // Dependency oon notification
-			/* notificationTypeId, "Start", true); */
+			 * dto.getSoldToParty(), null, "01", "01", // Dependency oon
+			 * notification /* notificationTypeId, "Start", true);
+			 */
 			// } else {
 			// notificationDetailService.saveNotification(userDto,
 			// dto.getSoldToParty(), null,
