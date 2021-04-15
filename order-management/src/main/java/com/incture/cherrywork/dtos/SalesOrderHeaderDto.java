@@ -132,14 +132,15 @@ public class SalesOrderHeaderDto {
 		this.customerPoNum = customerPoNum;
 	}
 
-	private Date customerPoDate;
+	private Date customerPODate;
 
-	public Date getCustomerPoDate() {
-		return customerPoDate;
+	
+	public Date getCustomerPODate() {
+		return customerPODate;
 	}
 
-	public void setCustomerPoDate(Date customerPoDate) {
-		this.customerPoDate = customerPoDate;
+	public void setCustomerPODate(Date customerPODate) {
+		this.customerPODate = customerPODate;
 	}
 
 	private Date requestDeliveryDate;
@@ -698,8 +699,8 @@ public class SalesOrderHeaderDto {
 					+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg="
 					+ salesOrg + ", distributionChannel=" + distributionChannel + ", division=" + division
 					+ ", salesOffice=" + salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty
-					+ ", shipToParty=" + shipToParty + ", customerPoNum=" + customerPoNum + ", customerPoDate="
-					+ customerPoDate + ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
+					+ ", shipToParty=" + shipToParty + ", customerPoNum=" + customerPoNum + ", customerPODate="
+					+ customerPODate + ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
 					+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
 					+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate="
 					+ createdDate + ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus="
