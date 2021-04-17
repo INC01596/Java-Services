@@ -622,6 +622,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// open
 					// orders
 					salesHeaderDto.setIsOpen(true);
+				
+				
+				if(salesHeaderDto.getDocumentType() == "IN")
+					docID_6 = "IN"+docID_6;
+				if(salesHeaderDto.getDocumentType() == "OR")
+					docID_6 = "OR"+docID_6;
+				if(salesHeaderDto.getDocumentType() == "QT")
+					docID_6 = "QT"+docID_6;
+				
 				if(salesHeader != null)
 					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
 				salesHeaderDto.setSalesHeaderId(docID_6);
@@ -636,6 +645,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
 				// End
 
+				
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(salesHeaderDto, SalesOrderHeader.class));
 
 				// Notification for id and acknowledgement
@@ -760,6 +770,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				SalesOrderHeaderDto salesHeaderDto = ObjectMapperUtils.map(salesHeader, SalesOrderHeaderDto.class);
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
 					salesHeaderDto.setIsOpen(true);
+				
+				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("IN"))
+					docID_6 = "IN"+docID_2;
+				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
+					docID_6 = "OR"+docID_2;
+				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("QT"))
+					docID_6 = "QT"+docID_2;
+				
+				
 				if(salesHeader != null)
 					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
 				salesHeaderDto.setSalesHeaderId(docID_2);
