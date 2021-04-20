@@ -405,13 +405,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
         if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
-<<<<<<< HEAD
-		System.out.println("s4docid: " + dto.getHeaderDto().getS4DocumentId());
-=======
-	s4DocumentId = ServicesUtil.randomId();
-
-		System.out.println("s4docid: "+dto.getHeaderDto().getS4DocumentId());
->>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 		if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
 
 			s4DocumentId = ServicesUtil.randomId();
@@ -431,22 +424,11 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 		}
 
-<<<<<<< HEAD
-		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
-			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-=======
-
-		
-
-			if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
-				dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
->>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 
 		System.out.println("net Value in Header: " + dto.getHeaderDto().getNetValue());
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
-<<<<<<< HEAD
 		System.out.println("net Value in Header Do: " + header.getNetValue());
 		
 		
@@ -463,19 +445,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			}
 			if (item.getQualityTestList().contains("BEND TEST")) {
 				item.setBendTest(true);
-=======
-			for (SalesOrderItemDto item : dto.getLineItemList()) {
-				if (item.getSalesItemId() == null) {
-					String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
-					item.setSalesItemId(salesItemId);
-				}
-				item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
-				item.setSalesOrderHeader(header);
-				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
-				salesOrderItemRepository.save(Item);
-
->>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 			}
 			if (item.getQualityTestList().contains("IMPACT TEST")) {
 				item.setImpactTest(true);
