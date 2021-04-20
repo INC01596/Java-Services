@@ -42,29 +42,58 @@ public class ISalesOrderHeaderRepositoryNew {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getHeader(String stp)
+	{
+		System.err.println(stp);
+		List<String> l=new ArrayList<>();
+		Query header = entityManager.createQuery("Select s.salesHeaderId from SalesOrderHeader s where s.soldToParty=:sold");
+		header.setParameter("sold", stp);
+		l=header.getResultList();
+		System.err.println(l);
+		return l;
+		
+	}
 	//Sandeep Kumar
-	public List<Integer> deleteDraftedVersion(String val) {
+	public List<Integer> deleteDraftedVersion(HeaderIdDto d) {
 		List<Integer> l=new ArrayList<>();
 		try{
+			if(d.getsalesHeaderId()==null){
+				Query header1 = entityManager.createQuery("delete from SalesOrderItem s where s.salesOrderHeader.s4DocumentId=:salesHeaderId");
+				header1.setParameter("salesHeaderId", d.gets4DocumentId());
+				int result1=header1.executeUpdate();
+				l.add(result1);
+				
+				Query header = entityManager.createQuery("delete from SalesOrderHeader s where s.s4DocumentId=:salesHeaderId");
+				header.setParameter("salesHeaderId",d.gets4DocumentId());
+				int result2=header.executeUpdate();
+				if(result2!=0)
+					result2=1;
+				l.add(result2);
+			}
+			else
+			{
 			Query header1 = entityManager.createQuery("delete from SalesOrderItem s where s.salesHeaderId=:salesHeaderId");
-			header1.setParameter("salesHeaderId", val);
+			header1.setParameter("salesHeaderId", d.getsalesHeaderId());
 			int result1=header1.executeUpdate();
 			l.add(result1);
 			
 			Query header = entityManager.createQuery("delete from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId");
-			header.setParameter("salesHeaderId", val);
+			header.setParameter("salesHeaderId", d.getsalesHeaderId());
 			int result2=header.executeUpdate();
 			if(result2!=0)
 				result2=1;
 			l.add(result2);
-		   } catch(Exception e) {
+		   }
+		}catch(Exception e) {
 			System.err.println("try found exception");
 			e.printStackTrace();
 		}
 		
 		return l;
 	}
-	//Sandeep Kumar
+	//Sandeep Kumar   Get  Created Enquiry or Quotation
 	@SuppressWarnings("unchecked")
 	public List<String> getReferenceList(HeaderDetailUIDto dto) {
 		
@@ -92,7 +121,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		
 }
 	
-	//Sandeep Kumar<--------To get EnquiryList-------------->
+	//Sandeep Kumar<--------To get List of all Orders ,quotation,enquiry--------------------------------->
 	@SuppressWarnings("unchecked")
 	public List<SalesOrderHeader> getManageService(HeaderDetailUIDto dto) {
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
@@ -137,7 +166,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		return headerEntityList;
 	}
 	
-	//Sandeep Kumar
+	//Sandeep Kumar  get a already drafted enquiry,quotation,sales order
 	@SuppressWarnings("unchecked")
 	public List<SalesOrderHeaderItemDto> getDraftedVersion(HeaderDetailUIDto dto) {
 		List<SalesOrderHeaderItemDto> responseList = new ArrayList<>(); 
@@ -207,7 +236,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		return responseList;
 	}
 	
-	//Sandeep Kumar
+	//Sandeep Kumar Get Sales Header Details of saved one
 	@SuppressWarnings("unchecked")
 	public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto)
 	{

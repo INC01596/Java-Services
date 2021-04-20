@@ -6,6 +6,15 @@ public class MaterialPlantDto {
 	private String materialDescription;
 	
 	private String plant;
+	private String itemNo;
+
+	public String getItemNo() {
+		return itemNo;
+	}
+
+	public void setItemNo(String itemNo) {
+		this.itemNo = itemNo;
+	}
 
 	public String getMaterialDescription() {
 		return materialDescription;
@@ -25,7 +34,8 @@ public class MaterialPlantDto {
 
 	@Override
 	public String toString() {
-		return "MaterialPlantDto [materialDescription=" + materialDescription + ", plant=" + plant + "]";
+		return "MaterialPlantDto [materialDescription=" + materialDescription + ", plant=" + plant + ", itemNo="
+				+ itemNo + "]";
 	}
 }
 

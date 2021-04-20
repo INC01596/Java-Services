@@ -55,23 +55,24 @@ import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
-<<<<<<< HEAD
-
-import com.incture.cherrywork.util.ServicesUtil;
 
 
 import com.incture.cherrywork.util.ServicesUtil;
 
 
-=======
 import com.incture.cherrywork.util.ServicesUtil;
->>>>>>> refs/remotes/origin/master
+
+
+
+import com.incture.cherrywork.util.ServicesUtil;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
 @Transactional
 public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public static final Logger logger = LoggerFactory.getLogger(SalesOrderHeaderService.class);
+	
 	@Autowired
 	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
 
@@ -86,14 +87,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-<<<<<<< HEAD
+
     
 	private SequenceNumberGen sequenceNumberGen;
-=======
-	
-	private SequenceNumberGen sequenceNumberGen;
 
->>>>>>> refs/remotes/origin/master
+
+
 	
 
 	@Override
@@ -181,11 +180,29 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Override
+	public ResponseEntity<Object> getHeader(String stp) {
+		
+		try {
+			List<String> l = repo.getHeader(stp);
+			HeaderIdDto dto=new HeaderIdDto();
+			for(String d:l)
+			{
+				dto.setsalesHeaderId(d);
+				repo.deleteDraftedVersion(dto);
+			}
+			return new ResponseEntity<>(l, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Override
-	public ResponseEntity<Object> deleteDraftedVersion(String val) {
+	public ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d) {
 		try {
-			List<Integer> l = repo.deleteDraftedVersion(val);
+			List<Integer> l = repo.deleteDraftedVersion(d);
 			return new ResponseEntity<>(l, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -221,19 +238,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 //		if(dto.getSalesHeaderId() != null && dto.getS4DocumentId() == null)
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message", "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as null").body(dto);
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> refs/remotes/origin/master
+
 		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
 				{
-<<<<<<< HEAD
 
-		
-
-=======
->>>>>>> refs/remotes/origin/master
 			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
@@ -276,9 +286,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 
 
-<<<<<<< HEAD
+
 		
-=======
+
 //		String s4 = UUID.randomUUID().toString().replace("-", "");
 //		s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
 //		dto.setS4DocumentId(s4);
@@ -299,7 +309,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 //			salesOrderItemRepository.save(salesOrderItem);
 //		}
 //
->>>>>>> refs/remotes/origin/master
+
 
 		
 
@@ -357,10 +367,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		     
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> refs/remotes/origin/master
+
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 		     
@@ -424,34 +432,18 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				}
 			}
 		}
-<<<<<<< HEAD
+
 
 
 		String s4DocumentId = null;
-
-		if (dto.getHeaderDto().getSalesHeaderId() == null)
+        if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
-		if ((dto != null) && dto.getHeaderDto().getS4DocumentId() == null) {
-
-			s4DocumentId = ServicesUtil.randomId(); // UUID uuid =
-													// UUID.randomUUID(); //
-
-=======
->>>>>>> refs/remotes/origin/master
-			
-		
-
-		
-		
-
-
-			s4DocumentId = ServicesUtil.randomId();
+	s4DocumentId = ServicesUtil.randomId();
 			// UUID uuid = UUID.randomUUID();
-<<<<<<< HEAD
 
-=======
->>>>>>> refs/remotes/origin/master
+
+
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
 			// //
 			// s4DocumentId.replaceAll("-", ""); // s4DocumentId =
@@ -462,14 +454,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> refs/remotes/origin/master
+		
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
