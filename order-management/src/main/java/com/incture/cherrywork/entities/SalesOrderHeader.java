@@ -629,30 +629,28 @@ public class SalesOrderHeader {
 		this.workflowID = workflowID;
 	}
 	
-<<<<<<< HEAD
+
 	@Column(name="CUSTOMER_NAME")
 	private String customerName;
-=======
+
 	@Column(name="REFERENCE_DOCUMENT")
 	private String referenceDocument;
 	
->>>>>>> refs/remotes/origin/master
 
-<<<<<<< HEAD
 	public String getCustomerName() {
 		return customerName;
 	}
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
-=======
+	}
 	public String getReferenceDocument() {
 		return referenceDocument;
 	}
 
 	public void setReferenceDocument(String referenceDocument) {
 		this.referenceDocument = referenceDocument;
->>>>>>> refs/remotes/origin/master
+
 	}
 
 	@Column(name = "WEIGHT", length = 2)
@@ -660,7 +658,7 @@ public class SalesOrderHeader {
 
 	@Column(name = "WORKFLOW_ID", length = 10) // check the data type in future
 	private String workflowID;
-<<<<<<< HEAD
+
 
 	
 	@Override
@@ -691,7 +689,6 @@ public class SalesOrderHeader {
 	
 
 
-=======
->>>>>>> refs/remotes/origin/master
+
 
 }
