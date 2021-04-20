@@ -629,16 +629,28 @@ public class SalesOrderHeader {
 		this.workflowID = workflowID;
 	}
 	
+
+	@Column(name="CUSTOMER_NAME")
+	private String customerName;
+
 	@Column(name="REFERENCE_DOCUMENT")
 	private String referenceDocument;
 	
 
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 	public String getReferenceDocument() {
 		return referenceDocument;
 	}
 
 	public void setReferenceDocument(String referenceDocument) {
 		this.referenceDocument = referenceDocument;
+
 	}
 
 	@Column(name = "WEIGHT", length = 2)
@@ -646,5 +658,37 @@ public class SalesOrderHeader {
 
 	@Column(name = "WORKFLOW_ID", length = 10) // check the data type in future
 	private String workflowID;
+
+
+	
+	@Override
+	public String toString() {
+		return "SalesOrderHeader [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
+				+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
+				+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
+				+ salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty + ", shipToParty="
+				+ shipToParty + ", customerPoNum=" + customerPoNum + ", customerPoDate=" + customerPoDate
+				+ ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
+				+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
+				+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate=" + createdDate
+				+ ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus=" + overallDocumentStatus
+				+ ", deliveryStatus=" + deliveryStatus + ", deliveryTolerance=" + deliveryTolerance + ", colorCoding="
+				+ colorCoding + ", comments=" + comments + ", bankName=" + bankName + ", projectName=" + projectName
+				+ ", poTypeField=" + poTypeField + ", pieceGuarantee=" + pieceGuarantee + ", acknowledgementStatus="
+				+ acknowledgementStatus + ", updateIndicator=" + updateIndicator + ", lastUpdatedOn=" + lastUpdatedOn
+				+ ", syncStatus=" + syncStatus + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+				+ ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn + ", salesOrderItemList="
+				+ salesOrderItemList + ", postingDate=" + postingDate + ", postingError=" + postingError
+				+ ", postedFrom=" + postedFrom + ", postingStatus=" + postingStatus + ", salesHeaderId=" + salesHeaderId
+				+ ", plant=" + plant + ", documentProcessStatus=" + documentProcessStatus + ", overDeliveryTolerance="
+				+ overDeliveryTolerance + ", underDeliveryTolerance=" + underDeliveryTolerance + ", emailId=" + emailId
+				+ ", incoTerms1=" + incoTerms1 + ", incoTerms2=" + incoTerms2 + ", paymentTerms=" + paymentTerms
+				+ ", customerName=" + customerName + ", weight=" + weight + ", workflowID=" + workflowID + "]";
+	}
+
+	
+
+
+
 
 }

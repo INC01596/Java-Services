@@ -56,7 +56,17 @@ import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
 
+
 import com.incture.cherrywork.util.ServicesUtil;
+
+
+
+import com.incture.cherrywork.util.ServicesUtil;
+
+
+
+import com.incture.cherrywork.util.ServicesUtil;
+
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -64,6 +74,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 @Transactional
 public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public static final Logger logger = LoggerFactory.getLogger(SalesOrderHeaderService.class);
+	
 	@Autowired
 	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
 
@@ -79,7 +90,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
 
+
+    
+	
 	private SequenceNumberGen sequenceNumberGen;
+
 
 	@Override
 	public ResponseEntity<Object> create(SalesOrderHeaderDto salesOrderHeaderDto) {
@@ -166,11 +181,29 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Override
+	public ResponseEntity<Object> getHeader(String stp) {
+		
+		try {
+			List<String> l = repo.getHeader(stp);
+			HeaderIdDto dto=new HeaderIdDto();
+			for(String d:l)
+			{
+				dto.setsalesHeaderId(d);
+				repo.deleteDraftedVersion(dto);
+			}
+			return new ResponseEntity<>(l, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@Override
-	public ResponseEntity<Object> deleteDraftedVersion(String val) {
+	public ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d) {
 		try {
-			List<Integer> l = repo.deleteDraftedVersion(val);
+			List<Integer> l = repo.deleteDraftedVersion(d);
 			return new ResponseEntity<>(l, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,15 +236,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
-		// if(dto.getSalesHeaderId() != null && dto.getS4DocumentId() == null)
-		// return
-		// ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message",
-		// "Wrong Input! salesHeaderId can't be non-null with s4DocumentId as
-		// null").body(dto);
+		
 
-		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)
-				|| (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("") == true)) {
-			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
+if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
+				{
+
 				if (dto.getDocumentType().equals("IN")) {
 					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
 						sequenceNumberGen = SequenceNumberGen.getInstance();
@@ -250,33 +279,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					}
 				}
 			}
-		}
+		
 
-		// String s4 = UUID.randomUUID().toString().replace("-", "");
-		// s4 = s4.length() > 10 ? s4.substring(0, 9) : s4;
-		// dto.setS4DocumentId(s4);
-		// dto.setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-		// SalesOrderHeader salesOrderHeader = ObjectMapperUtils.map(dto,
-		// SalesOrderHeader.class);
-		// SalesOrderHeader savedSalesOrderHeader =
-		// salesOrderHeaderRepository.save(salesOrderHeader);
-		// List<SalesOrderItemDto> l = new ArrayList<>();
-		// l = dto.getSalesOrderItemDtoList();
-		// for (SalesOrderItemDto d : l)
-		//
-		// {
-		// String s = UUID.randomUUID().toString().replace("-", "");
-		// s = s.length() > 10 ? s.substring(0, 9) : s;
-		// d.setSalesItemId(s);
-		// d.setSalesOrderHeader(savedSalesOrderHeader);
-		// SalesOrderItem salesOrderItem = ObjectMapperUtils.map(d,
-		// SalesOrderItem.class);
-		// salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
-		// salesOrderItemRepository.save(salesOrderItem);
-		// }
-		//
+		
+		
+
+
+
 
 		SalesOrderHeader savedSalesOrderHeader = new SalesOrderHeader();
+
 
 		if (dto.getS4DocumentId() == null || dto.getS4DocumentId().equals("") == true) {
 			String s4 = UUID.randomUUID().toString().replace("-", "");
@@ -319,6 +331,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				salesOrderItemRepository.save(salesOrderItem);
 			}
 		}
+
+
+
+
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
@@ -384,16 +400,28 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 		}
 
-		String s4DocumentId = null;
 
-		if (dto.getHeaderDto().getSalesHeaderId() == null)
+		String s4DocumentId = null;
+        if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
+<<<<<<< HEAD
 		System.out.println("s4docid: " + dto.getHeaderDto().getS4DocumentId());
+=======
+	s4DocumentId = ServicesUtil.randomId();
+
+		System.out.println("s4docid: "+dto.getHeaderDto().getS4DocumentId());
+>>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 		if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
 
 			s4DocumentId = ServicesUtil.randomId();
+
 			// UUID uuid = UUID.randomUUID();
+
+
+
+
+
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
 			// //
 			// s4DocumentId.replaceAll("-", ""); // s4DocumentId =
@@ -403,13 +431,22 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 		}
 
+<<<<<<< HEAD
 		if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
 			dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
+=======
+
+		
+
+			if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
+				dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
+>>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 
 		System.out.println("net Value in Header: " + dto.getHeaderDto().getNetValue());
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
+<<<<<<< HEAD
 		System.out.println("net Value in Header Do: " + header.getNetValue());
 		
 		
@@ -426,6 +463,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 			if (item.getQualityTestList().contains("BEND TEST")) {
 				item.setBendTest(true);
+=======
+			for (SalesOrderItemDto item : dto.getLineItemList()) {
+				if (item.getSalesItemId() == null) {
+					String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
+					item.setSalesItemId(salesItemId);
+				}
+				item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
+				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
+				item.setSalesOrderHeader(header);
+				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
+				salesOrderItemRepository.save(Item);
+
+>>>>>>> 16d7d596389e4df0238680be8cd2a0074828ec35
 			}
 			if (item.getQualityTestList().contains("IMPACT TEST")) {
 				item.setImpactTest(true);
@@ -450,6 +500,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			salesOrderItemRepository.save(Item);
 
 		}
+		
 
 		Collections.sort(dto.getLineItemList());
 		int i = 1;
