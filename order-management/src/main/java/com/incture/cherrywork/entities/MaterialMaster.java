@@ -1,8 +1,5 @@
 package com.incture.cherrywork.entities;
 
-
-
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -14,15 +11,12 @@ import javax.persistence.Temporal;
 
 import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
 
-
-
 @Entity
 @Table(name = "MATERIAL")
 public class MaterialMaster implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	
 	public Object getPrimaryKey() {
 		return materialMasterId;
 	}
@@ -55,7 +49,7 @@ public class MaterialMaster implements Serializable {
 
 	@Column(name = "CLIENT_SPECIFIC")
 	private Integer clientSpecific;
-	
+
 	@Column(name = "CONTAINER")
 	private Boolean container;
 
@@ -103,10 +97,10 @@ public class MaterialMaster implements Serializable {
 
 	@Column(name = "PLANT", length = 4)
 	private String plant;
-	
+
 	@Column(name = "ROLLING_PLAN_FLAG")
 	private Boolean rollingPlanFlag;
-	
+
 	@Column(name = "SEARCH_FIELD", length = 180)
 	private String searchField;
 
@@ -148,16 +142,16 @@ public class MaterialMaster implements Serializable {
 
 	@Column(name = "UPDATE_INDICATOR")
 	private EnUpdateIndicator updateIndicator;
-	
-	@Column(name="ITEM_NUMBER")
-	private String itemNo;
 
-	public String getItemNo() {
-		return itemNo;
+	@Column(name = "ITEM_NUMBER")
+	private String itemNumber;
+
+	public String getItemNumber() {
+		return itemNumber;
 	}
 
-	public void setItemNo(String itemNo) {
-		this.itemNo = itemNo;
+	public void setItemNumber(String itemNumber) {
+		this.itemNumber = itemNumber;
 	}
 
 	public String getMaterialMasterId() {
@@ -231,7 +225,7 @@ public class MaterialMaster implements Serializable {
 	public void setClientSpecific(Integer clientSpecific) {
 		this.clientSpecific = clientSpecific;
 	}
-	
+
 	public Boolean getContainer() {
 		return container;
 	}
@@ -279,7 +273,7 @@ public class MaterialMaster implements Serializable {
 	public void setIsiLogo(Boolean isiLogo) {
 		this.isiLogo = isiLogo;
 	}
-	
+
 	public String getKey() {
 		return key;
 	}
@@ -496,9 +490,6 @@ public class MaterialMaster implements Serializable {
 				+ sectionPricingGroup + ", size=" + size + ", sizeGroup=" + sizeGroup + ", sizePricingGroup="
 				+ sizePricingGroup + ", standard=" + standard + ", standardDescription=" + standardDescription
 				+ ", syncStatus=" + syncStatus + ", ultraLightTest=" + ultraLightTest + ", updateIndicator="
-				+ updateIndicator + ", itemNo=" + itemNo + "]";
+				+ updateIndicator + ", itemNo=" + itemNumber + "]";
 	}
 }
-
-
-

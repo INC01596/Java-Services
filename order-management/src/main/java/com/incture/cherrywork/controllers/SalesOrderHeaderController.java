@@ -95,15 +95,21 @@ public class SalesOrderHeaderController {
 	}
 
 	@PostMapping("/deleteDraftedVersion")
-	public ResponseEntity<Object> deleteDraftedVersion(@RequestParam String salesHeaderId) {
+	public ResponseEntity<Object> deleteDraftedVersion(@RequestBody HeaderIdDto d) {
 
-		return salesOrderHeaderService.deleteDraftedVersion(salesHeaderId);
+		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
 
 	@PostMapping("/SalesOrderHeader/save")
 	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
 	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
 		return salesOrderHeaderService.save(salesOrderHeaderDto);
+	}
+	
+	@PostMapping("/get1")
+	public ResponseEntity<Object> getHeader(@RequestParam String stp)
+	{
+		return salesOrderHeaderService.getHeader(stp);
 	}
 	/*@GetMapping("/getUserDetailsBySTP/{stpId}")
 	public ResponseEntity<Object> getUserDetailsBySTP(@PathVariable("stpId") String stpId) {

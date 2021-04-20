@@ -38,11 +38,13 @@ public interface ISalesOrderHeaderService {
 
 	ResponseEntity<Object> getHeaderById(HeaderIdDto dto);
 	ResponseEntity<Object> getManageService(HeaderDetailUIDto dto);
-	ResponseEntity<Object> deleteDraftedVersion(String val);
+	
 	ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto);
 	ResponseEntity<Object> getDraftedVersion(HeaderDetailUIDto dto);
 	ResponseEntity<Object> save(SalesOrderHeaderDto dto);
 	//ResponseEntity<Object> getUserDetailsBySTP(String stpId);
+	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
+	ResponseEntity<Object> getHeader(String stp);
 	
 	
 	
