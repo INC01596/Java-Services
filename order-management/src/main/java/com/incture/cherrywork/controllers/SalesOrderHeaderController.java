@@ -113,7 +113,7 @@ public class SalesOrderHeaderController {
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")
-	@ApiOperation(value = "Submit The Enquiry")
+	@ApiOperation(value = "Submit The Enquiry, Quotation and Order")
 	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderItemDto dto) {
 		return salesOrderHeaderService.submitSalesOrder(dto);
 	}
