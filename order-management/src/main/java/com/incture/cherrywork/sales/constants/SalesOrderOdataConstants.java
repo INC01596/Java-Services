@@ -10,7 +10,7 @@ public interface SalesOrderOdataConstants {
 //	String BASE_URL = "http://sbsrgwprd1.sulb.com.bh:8000/sap/opu/odata/sap/Z_SD_SO_CREATE_SRV/";
 //	String USER_ID = "BGRFC";
 //	String PASSWORD = "Nothing2017#";
-	String BASE_URL = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_SO_CREATE_SRV/";
+	String BASE_URL = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_CREATE_SALESORDER_COM_SRV/";
 	String USER_ID = "BOPF1";
 	String PASSWORD = "Dec@200";
 //	

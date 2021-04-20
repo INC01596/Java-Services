@@ -36,11 +36,8 @@ public class SalesOrderHeader {
 
 	@Id
 
-    @Column(name = "S4DocumentId", length = 50)
-     private String s4DocumentId;
-
-	
-
+	@Column(name = "S4DocumentId", length = 50)
+	private String s4DocumentId;
 
 	public String getS4DocumentId() {
 		return s4DocumentId;
@@ -206,14 +203,15 @@ public class SalesOrderHeader {
 		this.totalSoQuantity = totalSoQuantity;
 	}
 
-	@Column(name = "NetValue", precision = 13, scale = 3)
-	private BigDecimal netValue;
+	@Column(name = "NetValue")
+	private String netValue;
 
-	public BigDecimal getNetValue() {
+	
+	public String getNetValue() {
 		return netValue;
 	}
 
-	public void setNetValue(BigDecimal netValue) {
+	public void setNetValue(String netValue) {
 		this.netValue = netValue;
 	}
 
@@ -548,10 +546,10 @@ public class SalesOrderHeader {
 	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
 	}
-	
+
 	@Column(name = "OVER_DELIVERY_TOLERANCE", length = 50)
 	private String overDeliveryTolerance;
-	
+
 	public String getOverDeliveryTolerance() {
 		return overDeliveryTolerance;
 	}
@@ -559,6 +557,7 @@ public class SalesOrderHeader {
 	public void setOverDeliveryTolerance(String overDeliveryTolerance) {
 		this.overDeliveryTolerance = overDeliveryTolerance;
 	}
+
 	@Column(name = "UNDER_DELIVERY_TOLERANCE", length = 50)
 	private String underDeliveryTolerance;
 
@@ -572,16 +571,12 @@ public class SalesOrderHeader {
 
 	@Column(name = "EMAIL_ID", length = 100)
 	private String emailId;
-	
+
 	@Column(name = "INCO_TERMS1", length = 20)
 	private String incoTerms1;
 
 	@Column(name = "INCO_TERMS2", length = 70)
 	private String incoTerms2;
-
-	
-
-	
 
 	public String getIncoTerms1() {
 		return incoTerms1;
@@ -599,16 +594,6 @@ public class SalesOrderHeader {
 		this.incoTerms2 = incoTerms2;
 	}
 
-	
-	
-	
-
-	
-
-	
-
-	
-
 	public String getEmailId() {
 		return emailId;
 	}
@@ -625,22 +610,8 @@ public class SalesOrderHeader {
 		this.paymentTerms = paymentTerms;
 	}
 
-	@Column(name="PAYMENT_TERMS",length=20)
+	@Column(name = "PAYMENT_TERMS", length = 20)
 	private String paymentTerms;
-	
-	
-	
-
-	
-
-	
-
-	
-
-
-	
-
-	
 
 	public String getWeight() {
 		return weight;
@@ -658,15 +629,30 @@ public class SalesOrderHeader {
 		this.workflowID = workflowID;
 	}
 	
+<<<<<<< HEAD
 	@Column(name="CUSTOMER_NAME")
 	private String customerName;
+=======
+	@Column(name="REFERENCE_DOCUMENT")
+	private String referenceDocument;
+	
+>>>>>>> refs/remotes/origin/master
 
+<<<<<<< HEAD
 	public String getCustomerName() {
 		return customerName;
 	}
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+=======
+	public String getReferenceDocument() {
+		return referenceDocument;
+	}
+
+	public void setReferenceDocument(String referenceDocument) {
+		this.referenceDocument = referenceDocument;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@Column(name = "WEIGHT", length = 2)
@@ -674,6 +660,7 @@ public class SalesOrderHeader {
 
 	@Column(name = "WORKFLOW_ID", length = 10) // check the data type in future
 	private String workflowID;
+<<<<<<< HEAD
 
 	
 	@Override
@@ -704,5 +691,7 @@ public class SalesOrderHeader {
 	
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 }
