@@ -694,35 +694,35 @@ public class SalesOrderHeaderDto {
 		this.documentProcessStatus = documentProcessStatus;
 	}
 
-	@Override
-	public String toString() {
-		return "SalesOrderHeaderDto [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
-				+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
-				+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
-				+ salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty + ", shipToParty="
-				+ shipToParty + ", customerPoNum=" + customerPoNum + ", customerPODate=" + customerPODate
-				+ ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
-				+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
-				+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate=" + createdDate
-				+ ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus=" + overallDocumentStatus
-				+ ", deliveryStatus=" + deliveryStatus + ", deliveryTolerance=" + deliveryTolerance + ", colorCoding="
-				+ colorCoding + ", comments=" + comments + ", bankName=" + bankName + ", projectName=" + projectName
-				+ ", poTypeField=" + poTypeField + ", pieceGuarantee=" + pieceGuarantee + ", acknowledgementStatus="
-				+ acknowledgementStatus + ", updateIndicator=" + updateIndicator + ", lastUpdatedOn=" + lastUpdatedOn
-				+ ", syncStatus=" + syncStatus + ", createdBy=" + createdBy + ", createdOn=" + createdOn
-				+ ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn + ", salesOrderItemList="
-				+ salesOrderItemList + ", salesHeaderId=" + salesHeaderId + ", plant=" + plant + ", netValueSA="
-				+ netValueSA + ", totalSalesOrderQuantitySA=" + totalSalesOrderQuantitySA + ", totalSalesOrderQuantity="
-				+ totalSalesOrderQuantity + ", isOpen=" + isOpen + ", tableKey=" + tableKey + ", documentCurrency="
-				+ documentCurrency + ", documentCurrencySA=" + documentCurrencySA + ", referenceDocument="
-				+ referenceDocument + ", name=" + name + ", emailId=" + emailId + ", city=" + city + ", destCountry="
-				+ destCountry + ", contactNo=" + contactNo + ", paymentTerms=" + paymentTerms + ", incoTerms1="
-				+ incoTerms1 + ", incoTerms2=" + incoTerms2 + ", weight=" + weight + ", country=" + country
-				+ ", orderReason=" + orderReason + ", overDeliveryTolerance=" + overDeliveryTolerance
-				+ ", underDeliveryTolerance=" + underDeliveryTolerance + ", colorCodingDetails=" + colorCodingDetails
-				+ ", postingDate=" + postingDate + ", postingError=" + postingError + ", postingStatus=" + postingStatus
-				+ ", documentProcessStatus=" + documentProcessStatus + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "SalesOrderHeaderDto [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
+//				+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
+//				+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
+//				+ salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty + ", shipToParty="
+//				+ shipToParty + ", customerPoNum=" + customerPoNum + ", customerPODate=" + customerPODate
+//				+ ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
+//				+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
+//				+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate=" + createdDate
+//				+ ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus=" + overallDocumentStatus
+//				+ ", deliveryStatus=" + deliveryStatus + ", deliveryTolerance=" + deliveryTolerance + ", colorCoding="
+//				+ colorCoding + ", comments=" + comments + ", bankName=" + bankName + ", projectName=" + projectName
+//				+ ", poTypeField=" + poTypeField + ", pieceGuarantee=" + pieceGuarantee + ", acknowledgementStatus="
+//				+ acknowledgementStatus + ", updateIndicator=" + updateIndicator + ", lastUpdatedOn=" + lastUpdatedOn
+//				+ ", syncStatus=" + syncStatus + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+//				+ ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn + ", salesOrderItemList="
+//				+ salesOrderItemList + ", salesHeaderId=" + salesHeaderId + ", plant=" + plant + ", netValueSA="
+//				+ netValueSA + ", totalSalesOrderQuantitySA=" + totalSalesOrderQuantitySA + ", totalSalesOrderQuantity="
+//				+ totalSalesOrderQuantity + ", isOpen=" + isOpen + ", tableKey=" + tableKey + ", documentCurrency="
+//				+ documentCurrency + ", documentCurrencySA=" + documentCurrencySA + ", referenceDocument="
+//				+ referenceDocument + ", name=" + name + ", emailId=" + emailId + ", city=" + city + ", destCountry="
+//				+ destCountry + ", contactNo=" + contactNo + ", paymentTerms=" + paymentTerms + ", incoTerms1="
+//				+ incoTerms1 + ", incoTerms2=" + incoTerms2 + ", weight=" + weight + ", country=" + country
+//				+ ", orderReason=" + orderReason + ", overDeliveryTolerance=" + overDeliveryTolerance
+//				+ ", underDeliveryTolerance=" + underDeliveryTolerance + ", colorCodingDetails=" + colorCodingDetails
+//				+ ", postingDate=" + postingDate + ", postingError=" + postingError + ", postingStatus=" + postingStatus
+//				+ ", documentProcessStatus=" + documentProcessStatus + "]";
+//	}
 
 	// UPDATE THE toString METHOD AFTER EACH UPDATION OF FIELDS
 
