@@ -1,7 +1,10 @@
 package com.incture.cherrywork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +27,9 @@ import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
+import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
+import com.incture.cherrywork.services.ISalesOrderItemService;
 
 @RestController
 @Api(value = "Sales Order Header", tags = { "Sales Order Header" })
@@ -34,6 +39,8 @@ public class SalesOrderHeaderController {
 
 	@Autowired
 	private ISalesOrderHeaderService salesOrderHeaderService;
+	@Autowired
+	private ISalesOrderItemService salesOrderItemService;
 
 	@GetMapping("/test")
 	public String test() {
@@ -99,6 +106,12 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
+	@DeleteMapping("/SalesOrderItemDelete")
+	@ApiOperation(value = "Delete SalesOrderItem Dataset")
+	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
+		return salesOrderItemService.deleteItemOnly(salesItemId);
+	}
+	
 
 	@PostMapping("/SalesOrderHeader/save")
 	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
@@ -111,6 +124,10 @@ public class SalesOrderHeaderController {
 	{
 		return salesOrderHeaderService.getHeader(stp);
 	}
+	
+	
+	//@PostMapping("/page/{pageNo}")
+	//
 	/*@GetMapping("/getUserDetailsBySTP/{stpId}")
 	public ResponseEntity<Object> getUserDetailsBySTP(@PathVariable("stpId") String stpId) {
 		return salesOrderHeaderService.getUserDetailsBySTP(stpId);

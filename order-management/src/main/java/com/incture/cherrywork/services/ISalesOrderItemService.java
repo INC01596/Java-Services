@@ -27,4 +27,5 @@ public interface ISalesOrderItemService {
 	ResponseEntity<Object> updateLineItem(List<SalesOrderItemDto> dto);
 	SalesOrderDropDownDto getLookUpValues();
 	//ResponseEntity<Object> addLineItem(@PathVariable String s4DocumentId, @Valid @RequestBody List<SalesOrderItemDto> dto, @Valid @RequestBody SalesOrderHeaderDto headerDto);
+	ResponseEntity<Object> deleteItemOnly(String salesItemId);
 }

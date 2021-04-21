@@ -1,6 +1,7 @@
 package com.incture.cherrywork.services;
 
 import java.math.BigDecimal;
+import org.springframework.data.domain.Page;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URI;
@@ -27,6 +28,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -182,6 +186,18 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 	}
 	
+	/*@Override
+	public Page<SalesOrderHeader> getManage(HeaderDetailUIDto dto,Pageable pageable) {
+		try {
+			Page<SalesOrderHeader> l = repo.getManageService(dto);
+          return l;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}*/
+	
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 		
@@ -210,6 +226,15 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+//	@Override
+//	public Page<SalesOrderHeader> findPaginated(int pageNo,HeaderDetailUIDto dto)
+//	{
+//		int pageSize=5;
+//		Pageable pageable=PageRequest.of(pageNo-1, pageNo);
+//		Page<SalesOrderHeader> header=getManage(dto, pageable);
+//		
+//	}
 
 	@Override
 	public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {

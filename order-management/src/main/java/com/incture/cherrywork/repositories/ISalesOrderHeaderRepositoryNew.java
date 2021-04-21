@@ -129,7 +129,7 @@ public class ISalesOrderHeaderRepositoryNew {
 		try {
 			StringBuffer headerQuery = new StringBuffer(
 					"select s from SalesOrderHeader s where s.documentType=:documentType");
-			System.err.println("**********1*****8");
+			
 			if (!ServicesUtil.isEmpty(dto.getCreatedBy()))
 				headerQuery.append(" and s.createdBy=:createdBy");
 			if (dto.getDocumentProcessStatus() == null){
@@ -138,9 +138,9 @@ public class ISalesOrderHeaderRepositoryNew {
 			}
 			else
 				headerQuery.append(" and s.documentProcessStatus = " + dto.getDocumentProcessStatus().ordinal() + "");
-			System.err.println("**********2*****8");
+		
 			
-			System.err.println(dto.getDocumentType());
+			
 			if (!ServicesUtil.isEmpty(dto.getStpId())) {
 				String STP = listToString(dto.getStpId());
 				headerQuery.append(" and s.soldToParty in (" + STP + ")");
@@ -306,14 +306,14 @@ public class ISalesOrderHeaderRepositoryNew {
 					System.out.println("***1**");
 					lineItemDto =ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
 					System.out.println("***2**");
-					/*if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
+					if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
 						lineItemDto.setQualityTestList(setQualityTest(lineItemDto.getQualityTest()));
 					else
 						lineItemDto.setQualityTestList(new ArrayList<String>());
 					if (!ServicesUtil.isEmpty(lineItemDto.getDefaultQualityTest()))
 						lineItemDto.setDefaultQualityTestList(setQualityTest(lineItemDto.getDefaultQualityTest()));
 					else
-						lineItemDto.setDefaultQualityTestList(new ArrayList<String>());*/
+						lineItemDto.setDefaultQualityTestList(new ArrayList<String>());
 					lineItemDtoList.add(lineItemDto);
 					
 					

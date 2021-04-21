@@ -79,7 +79,7 @@ public class SalesOrderItemService implements ISalesOrderItemService {
 	}
 
 	@Override
-	public ResponseEntity<Object> delete(String s4DocumentId, String salesItemId) {
+	public ResponseEntity<Object> delete(String s4DocumentId,String salesItemId) {
 		Optional<SalesOrderItem> optionalSalesOrderItem = salesOrderItemRepository.findById(salesItemId);
 		if (!optionalSalesOrderItem.isPresent()) {
 			return ResponseEntity.notFound().build();
@@ -87,6 +87,17 @@ public class SalesOrderItemService implements ISalesOrderItemService {
 		salesOrderItemRepository.delete(optionalSalesOrderItem.get());
 		return ResponseEntity.ok().body(null);
 	}
+	@Override
+	public ResponseEntity<Object> deleteItemOnly(String salesItemId) {
+		Optional<SalesOrderItem> optionalSalesOrderItem = salesOrderItemRepository.findById(salesItemId);
+		if (!optionalSalesOrderItem.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		salesOrderItemRepository.delete(optionalSalesOrderItem.get());
+		return ResponseEntity.ok().body(null);
+	
+	}
+
 
 	@Override
 	public ResponseEntity<Object> readAll(String search) {
@@ -262,5 +273,6 @@ public class SalesOrderItemService implements ISalesOrderItemService {
 		return salesOrderItemRepository.getLookupValue(key);
 	}
 
+	
 	
 }
