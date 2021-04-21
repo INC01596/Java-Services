@@ -117,7 +117,6 @@ public class SalesOrderHeaderDto {
 		return shipToParty;
 	}
 
-	
 	public void setShipToParty(String shipToParty) {
 		this.shipToParty = shipToParty;
 	}
@@ -134,7 +133,6 @@ public class SalesOrderHeaderDto {
 
 	private Date customerPODate;
 
-	
 	public Date getCustomerPODate() {
 		return customerPODate;
 	}
@@ -175,7 +173,6 @@ public class SalesOrderHeaderDto {
 
 	private String netValue;
 
-	
 	public String getNetValue() {
 		return netValue;
 	}
@@ -403,298 +400,200 @@ public class SalesOrderHeaderDto {
 	public void setSalesOrderItemDtoList(List<SalesOrderItemDto> salesOrderItemList) {
 		this.salesOrderItemList = salesOrderItemList;
 	}
-	
-	//Awadhesh Kumar ------------------------------------------------------
-	
-		private String salesHeaderId;
 
-		public String getSalesHeaderId() {
-			return salesHeaderId;
-		}
+	// Awadhesh Kumar ------------------------------------------------------
 
-		public void setSalesHeaderId(String salesHeaderId) {
-			this.salesHeaderId = salesHeaderId;
-		}
-		
-		
-		private String plant;
+	private String salesHeaderId;
 
-		public String getPlant() {
-			return plant;
-		}
+	public String getSalesHeaderId() {
+		return salesHeaderId;
+	}
 
-		public void setPlant(String plant) {
-			this.plant = plant;
-		}
-		
-		private String netValueSA;
+	public void setSalesHeaderId(String salesHeaderId) {
+		this.salesHeaderId = salesHeaderId;
+	}
 
-		public String getNetValueSA() {
-			return netValueSA;
-		}
+	private String plant;
 
-		public void setNetValueSA(String netValueSA) {
-			this.netValueSA = netValueSA;
-		}
-		
-		private BigDecimal totalSalesOrderQuantitySA;
+	public String getPlant() {
+		return plant;
+	}
 
-		public BigDecimal getTotalSalesOrderQuantitySA() {
-			return totalSalesOrderQuantitySA;
-		}
+	public void setPlant(String plant) {
+		this.plant = plant;
+	}
 
-		public void setTotalSalesOrderQuantitySA(BigDecimal totalSalesOrderQuantitySA) {
-			this.totalSalesOrderQuantitySA = totalSalesOrderQuantitySA;
-		}
-		
-		private BigDecimal totalSalesOrderQuantity;
+	private String netValueSA;
 
-		public BigDecimal getTotalSalesOrderQuantity() {
-			return totalSalesOrderQuantity;
-		}
+	public String getNetValueSA() {
+		return netValueSA;
+	}
 
-		public void setTotalSalesOrderQuantity(BigDecimal totalSalesOrderQuantity) {
-			this.totalSalesOrderQuantity = totalSalesOrderQuantity;
-		}
-		
-		private Boolean isOpen;
+	public void setNetValueSA(String netValueSA) {
+		this.netValueSA = netValueSA;
+	}
 
-		public Boolean getIsOpen() {
-			return isOpen;
-		}
+	private BigDecimal totalSalesOrderQuantitySA;
 
-		public void setIsOpen(Boolean isOpen) {
-			this.isOpen = isOpen;
-		}
-		
-		private String tableKey;
+	public BigDecimal getTotalSalesOrderQuantitySA() {
+		return totalSalesOrderQuantitySA;
+	}
 
-		public String getTableKey() {
-			return tableKey;
-		}
+	public void setTotalSalesOrderQuantitySA(BigDecimal totalSalesOrderQuantitySA) {
+		this.totalSalesOrderQuantitySA = totalSalesOrderQuantitySA;
+	}
 
-		public void setTableKey(String tableKey) {
-			this.tableKey = tableKey;
-		}
-		
-		private String documentCurrency;
+	private BigDecimal totalSalesOrderQuantity;
 
-		public String getDocumentCurrency() {
-			return documentCurrency;
-		}
+	public BigDecimal getTotalSalesOrderQuantity() {
+		return totalSalesOrderQuantity;
+	}
 
-		public void setDocumentCurrency(String documentCurrency) {
-			this.documentCurrency = documentCurrency;
-		}
-		
-		private String documentCurrencySA;
+	public void setTotalSalesOrderQuantity(BigDecimal totalSalesOrderQuantity) {
+		this.totalSalesOrderQuantity = totalSalesOrderQuantity;
+	}
 
-		public String getDocumentCurrencySA() {
-			return documentCurrencySA;
-		}
+	private Boolean isOpen;
 
-		public void setDocumentCurrencySA(String documentCurrencySA) {
-			this.documentCurrencySA = documentCurrencySA;
-		}
-		
-		private String referenceDocument;
+	public Boolean getIsOpen() {
+		return isOpen;
+	}
 
-		public String getReferenceDocument() {
-			return referenceDocument;
-		}
+	public void setIsOpen(Boolean isOpen) {
+		this.isOpen = isOpen;
+	}
 
-		public void setReferenceDocument(String referenceDocument) {
-			this.referenceDocument = referenceDocument;
-		}
-		
-		private String name;
+	private String tableKey;
 
-		public String getName() {
-			return name;
-		}
+	public String getTableKey() {
+		return tableKey;
+	}
 
-		public void setName(String name) {
-			this.name = name;
-		}
-		
-		private String emailId;
+	public void setTableKey(String tableKey) {
+		this.tableKey = tableKey;
+	}
 
-		public String getEmailId() {
-			return emailId;
-		}
+	private String documentCurrency;
 
-		public void setEmailId(String emailId) {
-			this.emailId = emailId;
-		}
-		
-		private String city;
+	public String getDocumentCurrency() {
+		return documentCurrency;
+	}
 
-		public String getCity() {
-			return city;
-		}
+	public void setDocumentCurrency(String documentCurrency) {
+		this.documentCurrency = documentCurrency;
+	}
 
-		public void setCity(String city) {
-			this.city = city;
-		}
-		
-		private String destCountry;
+	private String documentCurrencySA;
 
-		public String getDestCountry() {
-			return destCountry;
-		}
+	public String getDocumentCurrencySA() {
+		return documentCurrencySA;
+	}
 
-		public void setDestCountry(String destCountry) {
-			this.destCountry = destCountry;
-		}
-		
-		private String contactNo;
+	public void setDocumentCurrencySA(String documentCurrencySA) {
+		this.documentCurrencySA = documentCurrencySA;
+	}
 
-		public String getContactNo() {
-			return contactNo;
-		}
+	private String referenceDocument;
 
-		public void setContactNo(String contactNo) {
-			this.contactNo = contactNo;
-		}
-		
-		
-		
-		private String paymentTerms;
+	public String getReferenceDocument() {
+		return referenceDocument;
+	}
 
-		public String getPaymentTerms() {
-			return paymentTerms;
-		}
+	public void setReferenceDocument(String referenceDocument) {
+		this.referenceDocument = referenceDocument;
+	}
 
-		public void setPaymentTerms(String paymentTerms) {
-			this.paymentTerms = paymentTerms;
-		}
-		
-		private String incoTerms1;
+	private String name;
 
-		public String getIncoTerms1() {
-			return incoTerms1;
-		}
+	public String getName() {
+		return name;
+	}
 
-		public void setIncoTerms1(String incoTerms1) {
-			this.incoTerms1 = incoTerms1;
-		}
-		
-		private String incoTerms2;
+	public void setName(String name) {
+		this.name = name;
+	}
 
-		public String getIncoTerms2() {
-			return incoTerms2;
-		}
+	private String emailId;
 
-		public void setIncoTerms2(String incoTerms2) {
-			this.incoTerms2 = incoTerms2;
-		}
-		
-		private String weight;
+	public String getEmailId() {
+		return emailId;
+	}
 
-		public String getWeight() {
-			return weight;
-		}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
 
-		public void setWeight(String weight) {
-			this.weight = weight;
-		}
-		
-		private String country;
+	private String city;
 
-		public String getCountry() {
-			return country;
-		}
+	public String getCity() {
+		return city;
+	}
 
-		public void setCountry(String country) {
-			this.country = country;
-		}
-		
-		private String orderReason;
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-		public String getOrderReason() {
-			return orderReason;
-		}
+	private String destCountry;
 
-		public void setOrderReason(String orderReason) {
-			this.orderReason = orderReason;
-		}
-		
-		
-		
-		private String overDeliveryTolerance;
+	public String getDestCountry() {
+		return destCountry;
+	}
 
-		public String getOverDeliveryTolerance() {
-			return overDeliveryTolerance;
-		}
+	public void setDestCountry(String destCountry) {
+		this.destCountry = destCountry;
+	}
 
-		public void setOverDeliveryTolerance(String overDeliveryTolerance) {
-			this.overDeliveryTolerance = overDeliveryTolerance;
-		}
-		
-		private String underDeliveryTolerance;
+	private String contactNo;
 
-		public String getUnderDeliveryTolerance() {
-			return underDeliveryTolerance;
-		}
+	public String getContactNo() {
+		return contactNo;
+	}
 
-		public void setUnderDeliveryTolerance(String underDeliveryTolerance) {
-			this.underDeliveryTolerance = underDeliveryTolerance;
-		}
-		
-		private String colorCodingDetails;
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
+	}
 
-		public String getColorCodingDetails() {
-			return colorCodingDetails;
-		}
+	private String paymentTerms;
 
-		public void setColorCodingDetails(String colorCodingDetails) {
-			this.colorCodingDetails = colorCodingDetails;
-		}
-		
-		private java.util.Date postingDate;
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
 
-		public java.util.Date getPostingDate() {
-			return postingDate;
-		}
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
+	}
 
-		public void setPostingDate(java.util.Date postingDate) {
-			this.postingDate = postingDate;
-		}
-		
-		private String postingError;
+	private String incoTerms1;
 
-		public String getPostingError() {
-			return postingError;
-		}
+	public String getIncoTerms1() {
+		return incoTerms1;
+	}
 
-		public void setPostingError(String postingError) {
-			this.postingError = postingError;
-		}
-		
-		private Boolean postingStatus; // success or fail
+	public void setIncoTerms1(String incoTerms1) {
+		this.incoTerms1 = incoTerms1;
+	}
 
-		public Boolean getPostingStatus() {
-			return postingStatus;
-		}
+	private String incoTerms2;
 
-		public void setPostingStatus(Boolean postingStatus) {
-			this.postingStatus = postingStatus;
-		}
-		
-	//sandeep
-		private EnOrderActionStatus documentProcessStatus;
+	public String getIncoTerms2() {
+		return incoTerms2;
+	}
 
-		public EnOrderActionStatus getDocumentProcessStatus() {
-			return documentProcessStatus;
-		}
-		public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
-			this.documentProcessStatus = documentProcessStatus;
-		}
+	public void setIncoTerms2(String incoTerms2) {
+		this.incoTerms2 = incoTerms2;
+	}
 
-		
+	private String weight;
 
+<<<<<<< HEAD
 		private String customerName;
+=======
+	public String getWeight() {
+		return weight;
+	}
+>>>>>>> refs/remotes/origin/master
 
+<<<<<<< HEAD
 		
 
 		public String getCustomerName() {
@@ -704,6 +603,143 @@ public class SalesOrderHeaderDto {
 		public void setCustomerName(String customerName) {
 			this.customerName = customerName;
 		}
+=======
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+>>>>>>> refs/remotes/origin/master
 
-		
+	private String country;
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	private String orderReason;
+
+	public String getOrderReason() {
+		return orderReason;
+	}
+
+	public void setOrderReason(String orderReason) {
+		this.orderReason = orderReason;
+	}
+
+	private String overDeliveryTolerance;
+
+	public String getOverDeliveryTolerance() {
+		return overDeliveryTolerance;
+	}
+
+	public void setOverDeliveryTolerance(String overDeliveryTolerance) {
+		this.overDeliveryTolerance = overDeliveryTolerance;
+	}
+
+	private String underDeliveryTolerance;
+
+	public String getUnderDeliveryTolerance() {
+		return underDeliveryTolerance;
+	}
+
+	public void setUnderDeliveryTolerance(String underDeliveryTolerance) {
+		this.underDeliveryTolerance = underDeliveryTolerance;
+	}
+
+	private String colorCodingDetails;
+
+	public String getColorCodingDetails() {
+		return colorCodingDetails;
+	}
+
+	public void setColorCodingDetails(String colorCodingDetails) {
+		this.colorCodingDetails = colorCodingDetails;
+	}
+
+	private java.util.Date postingDate;
+
+	public java.util.Date getPostingDate() {
+		return postingDate;
+	}
+
+	public void setPostingDate(java.util.Date postingDate) {
+		this.postingDate = postingDate;
+	}
+
+	private String postingError;
+
+	public String getPostingError() {
+		return postingError;
+	}
+
+	public void setPostingError(String postingError) {
+		this.postingError = postingError;
+	}
+
+	private Boolean postingStatus; // success or fail
+
+	public Boolean getPostingStatus() {
+		return postingStatus;
+	}
+
+	public void setPostingStatus(Boolean postingStatus) {
+		this.postingStatus = postingStatus;
+	}
+
+	private String customerName;
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	// sandeep
+	private EnOrderActionStatus documentProcessStatus;
+
+	public EnOrderActionStatus getDocumentProcessStatus() {
+		return documentProcessStatus;
+	}
+
+	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
+		this.documentProcessStatus = documentProcessStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "SalesOrderHeaderDto [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
+				+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
+				+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
+				+ salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty + ", shipToParty="
+				+ shipToParty + ", customerPoNum=" + customerPoNum + ", customerPODate=" + customerPODate
+				+ ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
+				+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
+				+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate=" + createdDate
+				+ ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus=" + overallDocumentStatus
+				+ ", deliveryStatus=" + deliveryStatus + ", deliveryTolerance=" + deliveryTolerance + ", colorCoding="
+				+ colorCoding + ", comments=" + comments + ", bankName=" + bankName + ", projectName=" + projectName
+				+ ", poTypeField=" + poTypeField + ", pieceGuarantee=" + pieceGuarantee + ", acknowledgementStatus="
+				+ acknowledgementStatus + ", updateIndicator=" + updateIndicator + ", lastUpdatedOn=" + lastUpdatedOn
+				+ ", syncStatus=" + syncStatus + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+				+ ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn + ", salesOrderItemList="
+				+ salesOrderItemList + ", salesHeaderId=" + salesHeaderId + ", plant=" + plant + ", netValueSA="
+				+ netValueSA + ", totalSalesOrderQuantitySA=" + totalSalesOrderQuantitySA + ", totalSalesOrderQuantity="
+				+ totalSalesOrderQuantity + ", isOpen=" + isOpen + ", tableKey=" + tableKey + ", documentCurrency="
+				+ documentCurrency + ", documentCurrencySA=" + documentCurrencySA + ", referenceDocument="
+				+ referenceDocument + ", name=" + name + ", emailId=" + emailId + ", city=" + city + ", destCountry="
+				+ destCountry + ", contactNo=" + contactNo + ", paymentTerms=" + paymentTerms + ", incoTerms1="
+				+ incoTerms1 + ", incoTerms2=" + incoTerms2 + ", weight=" + weight + ", country=" + country
+				+ ", orderReason=" + orderReason + ", overDeliveryTolerance=" + overDeliveryTolerance
+				+ ", underDeliveryTolerance=" + underDeliveryTolerance + ", colorCodingDetails=" + colorCodingDetails
+				+ ", postingDate=" + postingDate + ", postingError=" + postingError + ", postingStatus=" + postingStatus
+				+ ", documentProcessStatus=" + documentProcessStatus + "]";
+	}
+
+	// UPDATE THE toString METHOD AFTER EACH UPDATION OF FIELDS
+
 }

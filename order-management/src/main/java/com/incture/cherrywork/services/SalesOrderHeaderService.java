@@ -430,9 +430,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
         if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
-	s4DocumentId = ServicesUtil.randomId();
-
-		System.out.println("s4docid: "+dto.getHeaderDto().getS4DocumentId());
 		if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
 
 			s4DocumentId = ServicesUtil.randomId();
@@ -453,56 +450,80 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 		}
 
 
+		System.out.println("net Value in Header: " + dto.getHeaderDto().getNetValue());
+		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
+		System.out.println("header Do: " + header.toString());
+
+		System.out.println("net Value in Header Do: " + header.getNetValue());
 		
+		
+		salesOrderHeaderRepository.save(header);
 
-			if (dto.getSalesHeaderId() == null && (dto.getHeaderDto().getSalesHeaderId() != null))
-				dto.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-
-			System.out.println("net Value in Header: "+dto.getHeaderDto().getNetValue());
-			SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
-			System.out.println("header Do: " + header.toString());
-			
-			System.out.println("net Value in Header Do: "+header.getNetValue());
-			salesOrderHeaderRepository.save(header);
-
-			for (SalesOrderItemDto item : dto.getLineItemList()) {
-				if (item.getSalesItemId() == null) {
-					String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
-					item.setSalesItemId(salesItemId);
-				}
-				item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
-				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
-				item.setSalesOrderHeader(header);
-				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
-				salesOrderItemRepository.save(Item);
-
+		for (SalesOrderItemDto item : dto.getLineItemList()) {
+			if (item.getSalesItemId() == null) {
+				String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
+				item.setSalesItemId(salesItemId);
 			}
 
-			Collections.sort(dto.getLineItemList());
-			int i = 1;
-			for (SalesOrderItemDto item : dto.getLineItemList()) {
-				item.setLineItemNumber(String.valueOf(i));
-				i++;
-				System.out.println("line item number: " + item.getLineItemNumber());
+			if (item.getQualityTestList().contains("3.2 INSPECTION")) {
+				item.setInspection(true);
 			}
-			ResponseEntity<Object> res = submitSalesOrder1(dto);
-			ResponseEntity<Object> res1 = null;
-			if (res.getStatusCode().equals(HttpStatus.OK)) {
+			if (item.getQualityTestList().contains("BEND TEST")) {
+				item.setBendTest(true);
+			}
+			if (item.getQualityTestList().contains("IMPACT TEST")) {
+				item.setImpactTest(true);
 
-				// if
-				// (response.getStatus().equals(HttpStatus.OK.getReasonPhrase()))
-				// { System.err.println("[submitSalesOrder][odata] if case "
-				// +dto.getSalesHeaderId());
-				SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto);
-				res1 = submitOdata(odataHeaderDto);
 			}
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-			if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
-				return ResponseEntity.status(HttpStatus.OK).header("message", "Record submitted successfully. This is under review and you should get notified on this soon.").body(res1.getBody());
-			else
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Technical Error in Submitting").body(res1.getBody());
+			if (item.getQualityTestList().contains("ULTRASONIC TEST")) {
+				item.setUltralightTest(true);
+
+			}
+			if (item.getQualityTestList().contains("HARDNESS TEST")) {
+				item.setHardnessTest(true);
+
+			}
+			if (item.getQualityTestList().contains("BORON REQUIRED")) {
+				item.setIsElementBoronRequired(true);
+
+			}
+			item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
+			item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
+			item.setSalesOrderHeader(header);
+			SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
+			salesOrderItemRepository.save(Item);
+
 		}
 		
+
+		Collections.sort(dto.getLineItemList());
+		int i = 1;
+		for (SalesOrderItemDto item : dto.getLineItemList()) {
+			item.setLineItemNumber(String.valueOf(i));
+			i++;
+			System.out.println("line item number: " + item.getLineItemNumber());
+		}
+		ResponseEntity<Object> res = submitSalesOrder1(dto);
+		ResponseEntity<Object> res1 = null;
+		if (res.getStatusCode().equals(HttpStatus.OK)) {
+
+			// if
+			// (response.getStatus().equals(HttpStatus.OK.getReasonPhrase()))
+			// { System.err.println("[submitSalesOrder][odata] if case "
+			// +dto.getSalesHeaderId());
+			SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto);
+			res1 = submitOdata(odataHeaderDto);
+		}
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
+			return ResponseEntity.status(HttpStatus.OK)
+					.header("message",
+							"Record submitted successfully. This is under review and you should get notified on this soon.")
+					.body(res1.getBody());
+		else
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.header("message", "Technical Error in Submitting").body(res1.getBody());
+	}
 
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {
 
@@ -676,16 +697,15 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 					// open
 					// orders
 					salesHeaderDto.setIsOpen(true);
-				
-				
-				if(salesHeaderDto.getDocumentType() == "IN")
-					docID_6 = "IN"+docID_6;
-				if(salesHeaderDto.getDocumentType() == "OR")
-					docID_6 = "OR"+docID_6;
-				if(salesHeaderDto.getDocumentType() == "QT")
-					docID_6 = "QT"+docID_6;
-				
-				if(salesHeader != null)
+
+				if (salesHeaderDto.getDocumentType() == "IN")
+					docID_6 = "IN" + docID_6;
+				if (salesHeaderDto.getDocumentType() == "OR")
+					docID_6 = "OR" + docID_6;
+				if (salesHeaderDto.getDocumentType() == "QT")
+					docID_6 = "QT" + docID_6;
+
+				if (salesHeader != null)
 					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
 				salesHeaderDto.setSalesHeaderId(docID_6);
 				// salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
@@ -699,7 +719,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 				salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
 				// End
 
-				
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(salesHeaderDto, SalesOrderHeader.class));
 
 				// Notification for id and acknowledgement
@@ -824,16 +843,15 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 				SalesOrderHeaderDto salesHeaderDto = ObjectMapperUtils.map(salesHeader, SalesOrderHeaderDto.class);
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
 					salesHeaderDto.setIsOpen(true);
-				
-				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("IN"))
-					docID_6 = "IN"+docID_2;
-				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
-					docID_6 = "OR"+docID_2;
-				if((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("QT"))
-					docID_6 = "QT"+docID_2;
-				
-				
-				if(salesHeader != null)
+
+				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("IN"))
+					docID_6 = "IN" + docID_2;
+				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
+					docID_6 = "OR" + docID_2;
+				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("QT"))
+					docID_6 = "QT" + docID_2;
+
+				if (salesHeader != null)
 					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
 				salesHeaderDto.setSalesHeaderId(docID_2);
 
