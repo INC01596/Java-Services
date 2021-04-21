@@ -1,5 +1,9 @@
 package com.incture.cherrywork.services;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +13,7 @@ import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
+import com.incture.cherrywork.entities.SalesOrderHeader;
 @Repository
 public interface ISalesOrderHeaderService {
 
@@ -46,6 +51,9 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 	ResponseEntity<Object> getHeader(String stp);
 	
+//	List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable pageable);
+//	Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
+//	
 	
 	
 }

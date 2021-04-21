@@ -6,18 +6,24 @@ package com.incture.cherrywork.controllers;
 
 
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.MaterialContainerDto;
+import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderMaterialMasterDto;
 import com.incture.cherrywork.services.MaterialMasterServices;
+
+import io.swagger.annotations.ApiOperation;
 
 
 
@@ -43,6 +49,9 @@ public class MaterialMasterController {
 	public ResponseEntity<Object> create(@RequestBody SalesOrderMaterialMasterDto  dto) {
 		return materialMasterServices.create(dto);
 	}
+	
+	
+
 	
 	@GetMapping("/getMaterialByName/{material}")
 	public ResponseEntity<Object> getMaterialByName(@PathVariable("material") String material) {
