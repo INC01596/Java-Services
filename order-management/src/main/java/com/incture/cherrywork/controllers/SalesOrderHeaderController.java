@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
@@ -151,6 +152,12 @@ public class SalesOrderHeaderController {
 	@ApiOperation(value = "Mannual Search Result")
 	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto) {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
+	}
+	
+	@GetMapping("/filter")
+	public SalesOrderHeaderDto filter(@RequestBody FilterDto dto){
+		return salesOrderHeaderService.filter(dto);
+		
 	}
 
 }

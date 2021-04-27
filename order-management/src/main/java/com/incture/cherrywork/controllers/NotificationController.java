@@ -14,6 +14,7 @@ import com.incture.cherrywork.dtos.NotificationConfigDto;
 import com.incture.cherrywork.dtos.NotificationListDto;
 import com.incture.cherrywork.services.NotificationConfigService;
 import com.incture.cherrywork.services.NotificationDetailService;
+//import com.notification.NotificationListDto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +35,7 @@ public class NotificationController {
 	public ResponseEntity<Object> getNotification(@PathVariable("userId") String userId) {
 		NotificationListDto notificationListDto = null;
 		try {
-			notificationListDto = notificationDetailService.getNotification(userId);
+			//notificationListDto = notificationDetailService.getNotification(userId);
 
 		} catch (Exception e) {
 

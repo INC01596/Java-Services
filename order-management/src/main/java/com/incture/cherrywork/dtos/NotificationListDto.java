@@ -2,6 +2,8 @@ package com.incture.cherrywork.dtos;
 
 import java.util.List;
 
+import com.incture.cherrywork.dtos.NotificationDetailDto;
+
 public class NotificationListDto {
 
 	private List<NotificationDetailDto> notificationList;
