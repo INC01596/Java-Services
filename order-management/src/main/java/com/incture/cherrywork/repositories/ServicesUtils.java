@@ -71,8 +71,8 @@ public class ServicesUtils {
 
 		receiver = receiver.replace("-", ".");
 
-		String FROM_MAIL_ID = "awadheshkumar934@gmail.com";
-		String FROM_MAIL_ID_PASSWORD = "aW1533@9#";
+		String FROM_MAIL_ID = "developermailservicetest@gmail.com";
+		String FROM_MAIL_ID_PASSWORD = "9521747045";
 		String MAIL_HOST_NAME = "smtp.gmail.com";
 		String MAIL_PORT_NUMBER = "587";
 //		String FROM_MAIL_ID = "notification@sulb.com.bh";
@@ -83,7 +83,8 @@ public class ServicesUtils {
 //		String APP_URL = "https://foulath-holding-bsc-foulathdev-cesp-app-login.cfapps.eu10.hana.ondemand.com/Login/index.html#";
 //		String APP_URL = "https://foulath-foulathqas-qas-unit-login.cfapps.eu10.hana.ondemand.com/Login/index.html";
 //		String APP_URL = "https://foulath-foulathprd-prd-unit-login.cfapps.eu10.hana.ondemand.com";
-		String APP_URL = "https://order-management.cfapps.eu10.hana.ondemand.com";
+		String APP_URL = "https://order-management1.cfapps.eu10.hana.ondemand.com";
+//		String APP_URL = "http://192.168.1.8:8080";
 
 		Properties prop = new Properties();
 		prop.put("mail.smtp.host", MAIL_HOST_NAME);

@@ -80,4 +80,28 @@ public class INotificationConfigCustomRepositoryImpl implements INotificationCon
 		return notificationTypeDtos;
 	}
 	
+	@SuppressWarnings({ "unchecked" })
+	public boolean checkAlertForUser(String userId, String notificationTypeId){
+		boolean response = false;
+		//logger.debug("[NotificationConfigDao][checkAlertForUser] Started for User Id : "+userId+" and Type : "+notificationTypeId);
+		System.out.println("[NotificationConfigRepositoryImpl][checkAlertForUser] Started for User Id : "+userId+" and Type : "+notificationTypeId);
+		NotificationConfigDto configDto = new NotificationConfigDto();
+		List<NotificationConfig> notificationConfigDos = new ArrayList<>();
+		try{
+			String query = "select n from NotificationConfig n where lower(n.emailId)=:userId and n.notificationTypeId=:notificationTypeId";
+			Query q = entityManager.createQuery(query);
+			q.setParameter("userId", userId.toLowerCase());
+			q.setParameter("notificationTypeId", notificationTypeId);
+			notificationConfigDos = q.getResultList();
+			configDto = ObjectMapperUtils.map(notificationConfigDos.get(0), NotificationConfigDto.class);
+			if(configDto.getAlert()==true)
+				response = true;
+		}catch(Exception e){
+			//logger.error("[NotificationConfigDao][checkAlertForUser] Exception : "+e.getMessage());
+			System.out.println("[NotificationConfigDao][checkAlertForUser] Exception : "+e.getMessage());
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
 }

@@ -14,6 +14,7 @@ import com.incture.cherrywork.dtos.NotificationDetailDto;
 import com.incture.cherrywork.dtos.NotificationListDto;
 import com.incture.cherrywork.entities.NotificationDetail;
 
+
 @SuppressWarnings("unused")
 @Transactional
 @Repository

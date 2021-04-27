@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
@@ -34,6 +36,8 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 	
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
+	
+	SalesOrderHeaderDto filter(FilterDto dto);
 	
 
 	

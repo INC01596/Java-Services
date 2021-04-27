@@ -13,5 +13,6 @@ public interface INotificationConfigCustomRepository {
 	
 	ResponseEntity<Object> getNofiticationAlert(String userId);
 	List<NotificationTypeDto> getNotificationType();
+	boolean checkAlertForUser(String userId, String notificationTypeId);
 
 }

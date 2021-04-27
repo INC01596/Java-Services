@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.incture.cherrywork.dtos.NotificationListDto;
 
+
+
 @Repository
 public interface INotificationDetailCustomRepository {
 	NotificationListDto getNotification(String userId);

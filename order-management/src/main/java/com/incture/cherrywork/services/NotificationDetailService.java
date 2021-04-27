@@ -14,13 +14,14 @@ import org.springframework.stereotype.Service;
 import com.incture.cherrywork.dtos.NotificationDetailDto;
 import com.incture.cherrywork.dtos.NotificationListDto;
 import com.incture.cherrywork.dtos.NotificationTextDto;
-import com.incture.cherrywork.dtos.NotificationWebsocketDto;
 import com.incture.cherrywork.entities.NotificationDetail;
 import com.incture.cherrywork.entities.NotificationText;
+//import com.incture.cherrywork.notificationWebsocket.NotificationWebSocket;
+//import com.incture.cherrywork.notificationWebsocket.NotificationWebsocketDto;
 import com.incture.cherrywork.repositories.INotificationDetailRepository;
-import com.incture.cherrywork.repositories.NotificationWebSocket;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.ServicesUtils;
+
 
 @Service("NotificationDetailService")
 @Transactional
@@ -31,7 +32,7 @@ public class NotificationDetailService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-
+	
 	public NotificationListDto getNotification(String userId) {
 		return notificationDetailRepository.getNotification(userId);
 	}
@@ -48,20 +49,10 @@ public class NotificationDetailService {
 			String notificationTypeId, String triggerPoint, Boolean emailRequired) {
 		saveNotification1(email, soldToParty, s4DocumentId, source, target, notificationTypeId, triggerPoint,
 				emailRequired);
-		callWebsocket(email.toLowerCase());
+		//callWebsocket(email.toLowerCase());
 	}
 
-	// public void callWebsocket(String userId){
-	// NotificationListDto notificationListDto = new NotificationListDto();
-	// notificationListDto = notificationDetailDao.getNotification(userId);
-	// WebsocketDto websocketDto = new WebsocketDto();
-	// websocketDto.setUser(userId);
-	// websocketDto.setAlert(true);
-	// websocketDto.setNotification(notificationListDto);
-	// NotificationWebSocket webSocket = new NotificationWebSocket();
-	// webSocket.getResponse(websocketDto);
-	// }
-
+	
 	public void clearNotification(String userId) {
 		notificationDetailRepository.clearNotification(userId);
 	}
@@ -130,16 +121,18 @@ public class NotificationDetailService {
 		}
 	}
 	
-	public void callWebsocket(String userId){
-		NotificationListDto notificationListDto = new NotificationListDto();
-		notificationListDto = notificationDetailRepository.getNotification(userId);
-		NotificationWebsocketDto websocketDto = new NotificationWebsocketDto();
-		websocketDto.setUser(userId);
-		websocketDto.setAlert(true);
-		websocketDto.setNotification(notificationListDto);
-		NotificationWebSocket webSocket = new NotificationWebSocket();
-		webSocket.getResponse(websocketDto);
-	}
-
+//	public void callWebsocket(String userId){
+//		System.out.println("callWebsocket started!");
+//		NotificationListDto notificationListDto = new NotificationListDto();
+//		notificationListDto = notificationDetailRepository.getNotification(userId);
+//		NotificationWebsocketDto websocketDto = new NotificationWebsocketDto();
+//		websocketDto.setUser(userId);
+//		websocketDto.setAlert(true);
+//		websocketDto.setNotification(notificationListDto);
+//		//NotificationWebSocket webSocket = new NotificationWebSocket();
+//		//.getResponse(websocketDto);
+//		System.out.println("callWebsocket Completed!"+websocketDto.toString());
+//	}
+//
 
 }
