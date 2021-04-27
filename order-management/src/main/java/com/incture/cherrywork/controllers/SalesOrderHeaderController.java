@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
@@ -107,32 +106,31 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
+
 	@DeleteMapping("/SalesOrderItemDelete")
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
 		return salesOrderItemService.deleteItemOnly(salesItemId);
 	}
-	
 
 	@PostMapping("/SalesOrderHeader/save")
 	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
 	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
 		return salesOrderHeaderService.save(salesOrderHeaderDto);
 	}
-	
+
 	@PostMapping("/get1")
-	public ResponseEntity<Object> getHeader(@RequestParam String stp)
-	{
+	public ResponseEntity<Object> getHeader(@RequestParam String stp) {
 		return salesOrderHeaderService.getHeader(stp);
 	}
-	
-	
-	//@PostMapping("/page/{pageNo}")
+
+	// @PostMapping("/page/{pageNo}")
 	//
-	/*@GetMapping("/getUserDetailsBySTP/{stpId}")
-	public ResponseEntity<Object> getUserDetailsBySTP(@PathVariable("stpId") String stpId) {
-		return salesOrderHeaderService.getUserDetailsBySTP(stpId);
-	}*/
+	/*
+	 * @GetMapping("/getUserDetailsBySTP/{stpId}") public ResponseEntity<Object>
+	 * getUserDetailsBySTP(@PathVariable("stpId") String stpId) { return
+	 * salesOrderHeaderService.getUserDetailsBySTP(stpId); }
+	 */
 
 	/*---------------AWADHESH KUMAR---------------------------*/
 
@@ -152,12 +150,6 @@ public class SalesOrderHeaderController {
 	@ApiOperation(value = "Mannual Search Result")
 	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto) {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
-	}
-	
-	@GetMapping("/filter")
-	public SalesOrderHeaderDto filter(@RequestBody FilterDto dto){
-		return salesOrderHeaderService.filter(dto);
-		
 	}
 
 }

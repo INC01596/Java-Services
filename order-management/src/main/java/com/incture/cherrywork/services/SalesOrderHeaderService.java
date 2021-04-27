@@ -39,7 +39,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.gson.Gson;
-import com.incture.cherrywork.dtos.FilterDto;
+
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 
@@ -1011,22 +1011,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully")
 				.body(odataResponse);
 		// return response;
-	}
-	
-	public SalesOrderHeaderDto filter(FilterDto dto){
-		
-		
-		String query = "from SalesOrderHeader as s where s.createdDate between :stDate and :enDate";
-		Query q = entityManager.createQuery(query);
-		q.setParameter("stDate", dto.getFromDate());
-		q.setParameter("enDate", dto.getEndDate());
-		List<SalesOrderHeader> salesOrderHeader = q.getResultList();
-		System.out.println(salesOrderHeader.size());
-		SalesOrderHeaderDto headerDto=null;
-		if(salesOrderHeader.size()>0){
-			headerDto = ObjectMapperUtils.map(salesOrderHeader.get(0), SalesOrderHeaderDto.class);
-		}
-		return headerDto;
 	}
 
 }
