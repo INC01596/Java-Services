@@ -85,7 +85,7 @@ public class INotificationConfigCustomRepositoryImpl implements INotificationCon
 		boolean response = false;
 		//logger.debug("[NotificationConfigDao][checkAlertForUser] Started for User Id : "+userId+" and Type : "+notificationTypeId);
 		System.out.println("[NotificationConfigRepositoryImpl][checkAlertForUser] Started for User Id : "+userId+" and Type : "+notificationTypeId);
-		NotificationConfigDto configDto = new NotificationConfigDto();
+		NotificationConfigDto configDto = null;
 		List<NotificationConfig> notificationConfigDos = new ArrayList<>();
 		try{
 			String query = "select n from NotificationConfig n where lower(n.emailId)=:userId and n.notificationTypeId=:notificationTypeId";
@@ -93,8 +93,9 @@ public class INotificationConfigCustomRepositoryImpl implements INotificationCon
 			q.setParameter("userId", userId.toLowerCase());
 			q.setParameter("notificationTypeId", notificationTypeId);
 			notificationConfigDos = q.getResultList();
-			configDto = ObjectMapperUtils.map(notificationConfigDos.get(0), NotificationConfigDto.class);
-			if(configDto.getAlert()==true)
+			if(notificationConfigDos.size()>0)
+				configDto = ObjectMapperUtils.map(notificationConfigDos.get(0), NotificationConfigDto.class);
+			if((configDto != null)&&(configDto.getAlert()==true))
 				response = true;
 		}catch(Exception e){
 			//logger.error("[NotificationConfigDao][checkAlertForUser] Exception : "+e.getMessage());
