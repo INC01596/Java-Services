@@ -39,6 +39,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.gson.Gson;
+
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 
@@ -51,6 +52,7 @@ import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.entities.SequenceNumber;
+import com.incture.cherrywork.repositories.INotificationConfigRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepositoryNew;
 import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
@@ -61,17 +63,11 @@ import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
 
+import com.incture.cherrywork.util.ServicesUtil;
 
 import com.incture.cherrywork.util.ServicesUtil;
 
-
-
 import com.incture.cherrywork.util.ServicesUtil;
-
-
-
-import com.incture.cherrywork.util.ServicesUtil;
-
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 
@@ -80,7 +76,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 @Transactional
 public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	public static final Logger logger = LoggerFactory.getLogger(SalesOrderHeaderService.class);
-	
+
 	@Autowired
 	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
 
@@ -90,18 +86,27 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Autowired
 	private SalesOrderOdataServices odataServices;
 
+	@Autowired
+	private INotificationConfigRepository notificationConfigRepository;
+
+	@Autowired
+	private NotificationDetailService notificationDetailService;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
+<<<<<<< HEAD
 	
 	
 
     
 	
-	private SequenceNumberGen sequenceNumberGen;
+=======
 
+>>>>>>> refs/remotes/origin/master
+	private SequenceNumberGen sequenceNumberGen;
 
 	@Override
 	public ResponseEntity<Object> create(SalesOrderHeaderDto salesOrderHeaderDto) {
@@ -188,6 +193,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+<<<<<<< HEAD
 	*/
 	
 @Override
@@ -203,14 +209,24 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 	
 	
 }
+=======
+
+	/*
+	 * @Override public Page<SalesOrderHeader> getManage(HeaderDetailUIDto
+	 * dto,Pageable pageable) { try { Page<SalesOrderHeader> l =
+	 * repo.getManageService(dto); return l;
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); return null; } }
+	 */
+
+>>>>>>> refs/remotes/origin/master
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
-		
+
 		try {
 			List<String> l = repo.getHeader(stp);
-			HeaderIdDto dto=new HeaderIdDto();
-			for(String d:l)
-			{
+			HeaderIdDto dto = new HeaderIdDto();
+			for (String d : l) {
 				dto.setsalesHeaderId(d);
 				repo.deleteDraftedVersion(dto);
 			}
@@ -231,15 +247,16 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-//	@Override
-//	public Page<SalesOrderHeader> findPaginated(int pageNo,HeaderDetailUIDto dto)
-//	{
-//		int pageSize=5;
-//		Pageable pageable=PageRequest.of(pageNo-1, pageNo);
-//		Page<SalesOrderHeader> header=getManage(dto, pageable);
-//		
-//	}
+
+	// @Override
+	// public Page<SalesOrderHeader> findPaginated(int pageNo,HeaderDetailUIDto
+	// dto)
+	// {
+	// int pageSize=5;
+	// Pageable pageable=PageRequest.of(pageNo-1, pageNo);
+	// Page<SalesOrderHeader> header=getManage(dto, pageable);
+	//
+	// }
 
 	@Override
 	public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
@@ -266,59 +283,50 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 
 	@Override
 	public ResponseEntity<Object> save(@Valid SalesOrderHeaderDto dto) {
-		
 
-if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("")==true))
-				{
+		if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)
+				|| (!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId().equals("") == true)) {
 
-				if (dto.getDocumentType().equals("IN")) {
-					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
-						sequenceNumberGen = SequenceNumberGen.getInstance();
-						Session session = entityManager.unwrap(Session.class);
-						System.err.println("session : " + session);
-						String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
-						System.err.println("tempId" + tempEnquiryId);
-						dto.setSalesHeaderId(tempEnquiryId);
-						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+			if (dto.getDocumentType().equals("IN")) {
+				if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+					sequenceNumberGen = SequenceNumberGen.getInstance();
+					Session session = entityManager.unwrap(Session.class);
+					System.err.println("session : " + session);
+					String tempEnquiryId = sequenceNumberGen.getNextSeqNumber("IN", 8, session);
+					String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
+					System.err.println("tempId" + tempEnquiryId);
+					dto.setSalesHeaderId(tempEnquiryId);
+					// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 
-					}
-				} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
-					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
-						sequenceNumberGen = SequenceNumberGen.getInstance();
-						Session session = entityManager.unwrap(Session.class);
-						System.err.println("session : " + session);
-						String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
-						System.err.println("tempQuotationId" + tempQuotationId);
-						dto.setSalesHeaderId(tempQuotationId);
-						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+				}
+			} else if (dto.getDocumentType().equalsIgnoreCase("QT")) {
+				if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+					sequenceNumberGen = SequenceNumberGen.getInstance();
+					Session session = entityManager.unwrap(Session.class);
+					System.err.println("session : " + session);
+					String tempQuotationId = sequenceNumberGen.getNextSeqNumber("QT", 8, session);
+					String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
+					System.err.println("tempQuotationId" + tempQuotationId);
+					dto.setSalesHeaderId(tempQuotationId);
+					// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 
-					}
-				} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
-					if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
-						sequenceNumberGen = SequenceNumberGen.getInstance();
-						Session session = entityManager.unwrap(Session.class);
-						System.err.println("session : " + session);
-						String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, session);
-						String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
-						System.err.println("tempOrderId" + tempOrderId);
-						dto.setSalesHeaderId(tempOrderId);
-						// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
+				}
+			} else if (dto.getDocumentType().equalsIgnoreCase("OR")) {
+				if (ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+					sequenceNumberGen = SequenceNumberGen.getInstance();
+					Session session = entityManager.unwrap(Session.class);
+					System.err.println("session : " + session);
+					String tempOrderId = sequenceNumberGen.getNextSeqNumber("OR", 8, session);
+					String s4DocumentId = sequenceNumberGen.getNextSeqNumber("IN", 10, session);
+					System.err.println("tempOrderId" + tempOrderId);
+					dto.setSalesHeaderId(tempOrderId);
+					// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 
-					}
 				}
 			}
-		
-
-		
-		
-
-
-
+		}
 
 		SalesOrderHeader savedSalesOrderHeader = new SalesOrderHeader();
-
 
 		if (dto.getS4DocumentId() == null || dto.getS4DocumentId().equals("") == true) {
 			String s4 = UUID.randomUUID().toString().replace("-", "");
@@ -361,10 +369,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 				salesOrderItemRepository.save(salesOrderItem);
 			}
 		}
-
-
-
-
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
@@ -430,9 +434,8 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			}
 		}
 
-
 		String s4DocumentId = null;
-        if (dto.getHeaderDto().getSalesHeaderId() == null)
+		if (dto.getHeaderDto().getSalesHeaderId() == null)
 			dto.getHeaderDto().setSalesHeaderId(dto.getSalesHeaderId());
 
 		if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
@@ -440,10 +443,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			s4DocumentId = ServicesUtil.randomId();
 
 			// UUID uuid = UUID.randomUUID();
-
-
-
-
 
 			// s4DocumentId = Long.toString(uuid.getLeastSignificantBits(), 94);
 			// //
@@ -454,14 +453,12 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 		}
 
-
 		System.out.println("net Value in Header: " + dto.getHeaderDto().getNetValue());
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		System.out.println("header Do: " + header.toString());
 
 		System.out.println("net Value in Header Do: " + header.getNetValue());
-		
-		
+
 		salesOrderHeaderRepository.save(header);
 
 		for (SalesOrderItemDto item : dto.getLineItemList()) {
@@ -499,7 +496,6 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			salesOrderItemRepository.save(Item);
 
 		}
-		
 
 		Collections.sort(dto.getLineItemList());
 		int i = 1;
@@ -638,31 +634,28 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 			// //odataServices.usersBySoldToParty((dto.getSoldToParty()));
 			// List<String>listUser = getUserDetailsBySTP((userResponse));
 			// for (String email :listUser)
-			// { if
-			// (notificationConfigDao.checkAlertForUser(dto.getCreatedBy(),
-			// notificationTypeId)) {
-			// Dependency oon notification
-			// String odataResponse = odataServices.usersByEmail(email);
-			// List<UserDto> listUserDto =
-			// getUserDetailsByEmail(odataResponse);
-			// for (UserDto userDto : listUserDto) {
-			// if (!(userDto.getPersonaId().equals("01") &&
-			// notificationTypeId.equals("QT"))) {
-			// if (userDto.getPersonaId().equals("01")) {
-			// if (userDto.getUserId().equals(dto.getSoldToParty()))
-			/*
-			 * notificationDetailService.saveNotification(dto.getCreatedBy(),
-			 * dto.getSoldToParty(), null, "01", "01", // Dependency oon
-			 * notification /* notificationTypeId, "Start", true);
-			 */
-			// } else {
-			// notificationDetailService.saveNotification(userDto,
-			// dto.getSoldToParty(), null,
-			// userDto.getPersonaId(), userDto.getPersonaId(),
-			// notificationTypeId,
-			// "Start",
-			// true);
-			// }
+			// {
+			if (notificationConfigRepository.checkAlertForUser(dto.getHeaderDto().getCreatedBy(), notificationTypeId)) {
+				// Dependency oon notification
+				// String odataResponse = odataServices.usersByEmail(email);
+				// List<UserDto> listUserDto =
+				// getUserDetailsByEmail(odataResponse);
+				// for (UserDto userDto : listUserDto) {
+				// if (!(userDto.getPersonaId().equals("01") &&
+				// notificationTypeId.equals("QT"))) {
+				// if (userDto.getPersonaId().equals("01")) {
+				// if (userDto.getUserId().equals(dto.getSoldToParty()))
+				notificationDetailService.saveNotification(dto.getHeaderDto().getCreatedBy(),
+						dto.getHeaderDto().getSoldToParty(), null, "01", "01", notificationTypeId, "Start", true);
+
+				// } else {
+				// notificationDetailService.saveNotification(userDto,
+				// dto.getSoldToParty(), null,
+				// userDto.getPersonaId(), userDto.getPersonaId(),
+				// notificationTypeId,
+				// "Start",
+				// true);
+			}
 			// }
 			// }
 			// }

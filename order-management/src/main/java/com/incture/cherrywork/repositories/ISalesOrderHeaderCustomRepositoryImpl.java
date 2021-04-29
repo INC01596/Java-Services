@@ -400,7 +400,9 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setCreated_by(dto.getHeaderDto().getCreatedBy());
 		else
 			headerDto.setCreated_by("");
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()))
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()) && dto.getHeaderDto().getDocumentType().equals("OR"))
+			headerDto.setDocType("COM");
+		else if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()))
 			headerDto.setDocType(dto.getHeaderDto().getDocumentType());
 		else
 			headerDto.setDocType("");
@@ -408,7 +410,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setDoc_Curr_SA(dto.getHeaderDto().getDocumentCurrencySA());
 		else
 			headerDto.setDoc_Curr_SA("");
-		headerDto.setOrdType("");
+		headerDto.setOrdType("COM");
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getSoldToParty()))
 			headerDto.setSoldToParty(dto.getHeaderDto().getSoldToParty());
 		else

@@ -107,38 +107,47 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
+<<<<<<< HEAD
 	@PostMapping("/SalesOrderItemDelete")
+=======
+
+	@DeleteMapping("/SalesOrderItemDelete")
+>>>>>>> refs/remotes/origin/master
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
 		return salesOrderItemService.deleteItemOnly(salesItemId);
 	}
-	
 
 	@PostMapping("/SalesOrderHeader/save")
 	@ApiOperation(value = "Create a SalesOrderHeader Dataset")
 	public ResponseEntity<Object> save(@Valid @RequestBody SalesOrderHeaderDto salesOrderHeaderDto) {
 		return salesOrderHeaderService.save(salesOrderHeaderDto);
 	}
-	
+
 	@PostMapping("/get1")
-	public ResponseEntity<Object> getHeader(@RequestParam String stp)
-	{
+	public ResponseEntity<Object> getHeader(@RequestParam String stp) {
 		return salesOrderHeaderService.getHeader(stp);
 	}
+<<<<<<< HEAD
 	
 	
 	
 	//@PostMapping("/page/{pageNo}")
+=======
+
+	// @PostMapping("/page/{pageNo}")
+>>>>>>> refs/remotes/origin/master
 	//
-	/*@GetMapping("/getUserDetailsBySTP/{stpId}")
-	public ResponseEntity<Object> getUserDetailsBySTP(@PathVariable("stpId") String stpId) {
-		return salesOrderHeaderService.getUserDetailsBySTP(stpId);
-	}*/
+	/*
+	 * @GetMapping("/getUserDetailsBySTP/{stpId}") public ResponseEntity<Object>
+	 * getUserDetailsBySTP(@PathVariable("stpId") String stpId) { return
+	 * salesOrderHeaderService.getUserDetailsBySTP(stpId); }
+	 */
 
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")
-	@ApiOperation(value = "Submit The Enquiry")
+	@ApiOperation(value = "Submit The Enquiry, Quotation and Order")
 	public ResponseEntity<Object> submitEnquiry(@RequestBody SalesOrderHeaderItemDto dto) {
 		return salesOrderHeaderService.submitSalesOrder(dto);
 	}
