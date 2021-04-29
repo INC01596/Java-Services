@@ -31,6 +31,7 @@ import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 import com.incture.cherrywork.services.ISalesOrderItemService;
 
+@SuppressWarnings("unused")
 @RestController
 @Api(value = "Sales Order Header", tags = { "Sales Order Header" })
 @RequestMapping("/api/v1")
@@ -106,7 +107,7 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
-	@DeleteMapping("/SalesOrderItemDelete")
+	@PostMapping("/SalesOrderItemDelete")
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
 		return salesOrderItemService.deleteItemOnly(salesItemId);
@@ -124,6 +125,7 @@ public class SalesOrderHeaderController {
 	{
 		return salesOrderHeaderService.getHeader(stp);
 	}
+	
 	
 	
 	//@PostMapping("/page/{pageNo}")

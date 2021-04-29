@@ -95,6 +95,16 @@ public class SalesOrderMaterialMasterDto {
 	private Boolean syncStatus;
 
 	private Boolean ultraLightTest;
+	
+	private String itemNubmer;
+
+	public String getItemNubmer() {
+		return itemNubmer;
+	}
+
+	public void setItemNubmer(String itemNubmer) {
+		this.itemNubmer = itemNubmer;
+	}
 
 	private SalesOrderEnUpdateIndicator updateIndicator;
 
@@ -450,8 +460,8 @@ public class SalesOrderMaterialMasterDto {
 				+ sectionGradeDescription + ", sectionGroup=" + sectionGroup + ", sectionPricingGroup="
 				+ sectionPricingGroup + ", size=" + size + ", sizeGroup=" + sizeGroup + ", sizePricingGroup="
 				+ sizePricingGroup + ", standard=" + standard + ", standardDescription=" + standardDescription
-				+ ", syncStatus=" + syncStatus + ", ultraLightTest=" + ultraLightTest + ", updateIndicator="
-				+ updateIndicator + "]";
+				+ ", syncStatus=" + syncStatus + ", ultraLightTest=" + ultraLightTest + ", itemNubmer=" + itemNubmer
+				+ ", updateIndicator=" + updateIndicator + "]";
 	}
 
 	

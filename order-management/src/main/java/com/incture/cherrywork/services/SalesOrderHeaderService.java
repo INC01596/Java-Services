@@ -1,12 +1,12 @@
 package com.incture.cherrywork.services;
 
 import java.math.BigDecimal;
+
 import org.springframework.data.domain.Page;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +54,7 @@ import com.incture.cherrywork.entities.SequenceNumber;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepositoryNew;
 import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
+
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.SalesOrderHeaderPredicateBuilder;
 import com.incture.cherrywork.repositories.ServicesUtils;
@@ -74,6 +75,7 @@ import com.incture.cherrywork.util.ServicesUtil;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 
+@SuppressWarnings("unused")
 @Service
 @Transactional
 public class SalesOrderHeaderService implements ISalesOrderHeaderService {
@@ -93,7 +95,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-
+	
+	
 
     
 	
@@ -172,7 +175,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 	}
 
-	@Override
+/*	@Override
 	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 		try {
 			List<SalesOrderHeader> l = repo.getManageService(dto);
@@ -185,19 +188,21 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	*/
 	
-	/*@Override
-	public Page<SalesOrderHeader> getManage(HeaderDetailUIDto dto,Pageable pageable) {
-		try {
-			Page<SalesOrderHeader> l = repo.getManageService(dto);
-          return l;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}*/
+@Override
+public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
+{
 	
+	
+	Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
+	Page<SalesOrderHeader> p=repo.getManageService(dto,pageable);
+	//Page<SalesOrderHeader> p=repo.getManageService1(dto, pageable);
+	return  ResponseEntity.ok().body(p);
+	
+	
+	
+}
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 		
@@ -1042,5 +1047,23 @@ if ((!ServicesUtils.isEmpty(dto) && dto.getSalesHeaderId() == null)||(!ServicesU
 				.body(odataResponse);
 		// return response;
 	}
+	//Sandeep KUmar
+		public static String listToString(List<String> list) {
+			String response = "";
+			try {
+				for (String s : list) {
+					response = "'" + s + "', " + response;
+				}
+				response = response.substring(0, response.length() - 2);
+			} catch (Exception e) {
+				System.err.println("[SalesHeaderDao][listToString] Exception : " + e.getMessage());
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		
+
+		
 
 }

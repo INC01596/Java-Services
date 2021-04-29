@@ -304,7 +304,7 @@ public class SalesOrderItem {
 		this.discount1 = discount1;
 	}
 
-	@Column(name = "EnteredOrdQuantity", precision = 10, scale = 3)
+	@Column(name = "EnteredOrdQuantity", precision = 10, scale = 2)
 	private BigDecimal enteredOrdQuantity;
 
 	public BigDecimal getEnteredOrdQuantity() {

@@ -87,7 +87,7 @@ public class IMaterialMasterRepositoryNew {
 	public List<MaterialPlantDto> getMaterialNames(){
 		List<MaterialPlantDto> materialList = new ArrayList<>();
 		try {
-			String query = "select distinct material, plant,itemNo from MaterialMaster";
+			String query = "select distinct material, plant,itemNumber from MaterialMaster";
 			Query q = entityManager.createQuery(query);
 			List<Object[]> objList = q.getResultList();
 			System.err.println(objList);
@@ -98,7 +98,7 @@ public class IMaterialMasterRepositoryNew {
 				if (!ServicesUtil.isEmpty(obj[1]))
 					material.setPlant((String) obj[1]);
 				if (!ServicesUtil.isEmpty(obj[2]))
-					material.setItemNo((String) obj[2]);
+					material.setItemNumber((String) obj[2]);
 				materialList.add(material);
 			}
 			return materialList;

@@ -94,7 +94,7 @@ public class SalesOrderItemService implements ISalesOrderItemService {
 			return ResponseEntity.notFound().build();
 		}
 		salesOrderItemRepository.delete(optionalSalesOrderItem.get());
-		return ResponseEntity.ok().body(null);
+		return ResponseEntity.ok().body("Deleted Successfully");
 	
 	}
 

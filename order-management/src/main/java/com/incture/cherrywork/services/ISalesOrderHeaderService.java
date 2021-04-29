@@ -51,9 +51,13 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 	ResponseEntity<Object> getHeader(String stp);
 	
-//	List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable pageable);
-//	Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
-//	
+	
+	
+	
+	
+	
+	
+
 	
 	
 }
