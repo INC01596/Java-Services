@@ -585,13 +585,35 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
+<<<<<<< HEAD
+
+		private String customerName;
+
+=======
+>>>>>>> refs/remotes/origin/master
 	public String getWeight() {
 		return weight;
 	}
 
+<<<<<<< HEAD
+
+		public String getCustomerName() {
+			return customerName;
+		}
+
+		public void setCustomerName(String customerName) {
+			this.customerName = customerName;
+		}
+
+=======
+>>>>>>> refs/remotes/origin/master
 	public void setWeight(String weight) {
 		this.weight = weight;
 	}
+<<<<<<< HEAD
+
+=======
+>>>>>>> refs/remotes/origin/master
 
 	private String country;
 
@@ -673,6 +695,7 @@ public class SalesOrderHeaderDto {
 		this.postingStatus = postingStatus;
 	}
 
+<<<<<<< HEAD
 	private String customerName;
 
 	public String getCustomerName() {
@@ -712,6 +735,9 @@ public class SalesOrderHeaderDto {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
+=======
+	
+>>>>>>> 8137f647676d409f2de2d4c0989e7505a38f636b
 
 	// sandeep
 	private EnOrderActionStatus documentProcessStatus;

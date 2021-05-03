@@ -191,7 +191,7 @@ public class SalesOrderHeader {
 		this.shippingType = shippingType;
 	}
 
-	@Column(name = "TotalSoQuantity", precision = 13, scale = 3)
+	@Column(name = "TotalSoQuantity", precision = 13, scale = 2)
 	private BigDecimal totalSoQuantity;
 
 	public BigDecimal getTotalSoQuantity() {
@@ -214,7 +214,7 @@ public class SalesOrderHeader {
 		this.netValue = netValue;
 	}
 
-	@Column(name = "DeliveredQuantity", precision = 13, scale = 3)
+	@Column(name = "DeliveredQuantity", precision = 13, scale = 2)
 	private BigDecimal deliveredQuantity;
 
 	public BigDecimal getDeliveredQuantity() {

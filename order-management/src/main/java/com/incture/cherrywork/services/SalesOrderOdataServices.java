@@ -179,20 +179,18 @@ public class SalesOrderOdataServices {
 //		}
 //		return odataSchItemStartDto;
 //	}
-//	
-//	public String itemAckScheduler(){
-//		logger.debug("[OdataUtilService][itemAckScheduler] Started");
-//		String response = null;
-//		String URL = OdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'ACK'";
-//		try {
-//			response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
-//			logger.debug("[OdataUtilService][itemAckScheduler] Response : " + response);
-//		} catch (Exception e) {
-//			logger.error("[OdataUtilService][itemAckScheduler] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return response;
-//	}
+		public String itemAckScheduler(){
+		
+		String response = null;
+		String URL = SalesOrderOdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'ACK'";
+		try {
+			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 //	
 //	public OdataRollingPlanStartDto rollingPlanScheduler(){
 //		logger.debug("[OdataUtilService][rollingPlanScheduler] Started");
