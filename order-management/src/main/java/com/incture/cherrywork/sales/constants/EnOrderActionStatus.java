@@ -2,7 +2,7 @@ package com.incture.cherrywork.sales.constants;
 
 public enum EnOrderActionStatus {
 
-DRAFTED, OPEN, CREATED, CANCELLED;
+DRAFTED, OPEN, CREATED, OBDCREATED, PGICREATED, CANCELLED;
 	
 	EnOrderActionStatus(){
 		

@@ -35,7 +35,6 @@ public class SalesOrderHeader {
 	}
 
 	@Id
-
 	@Column(name = "S4DocumentId", length = 50)
 	private String s4DocumentId;
 
@@ -660,8 +659,72 @@ public class SalesOrderHeader {
 
 	}
 
-	
+	@Column(name="BLOCKED")
+	private boolean blocked;
 
+	@Column(name="OBD_STATUS")
+	private boolean obdStatus;
+	
+	@Column(name="PGI_STATUS")
+	private boolean pgiStatus;
+	
+	@Column(name="INVOICE_STATUS")
+	private boolean invoiceStatus;
+	
+	@Column(name="OUT_BOUND_ORDER_ID")
+	private String outBoundOrderId; 
+	
+	@Column(name="PGI_ID")
+	private String pgiId;
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	public boolean isObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(boolean obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public boolean isPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(boolean pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public boolean isInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(boolean invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	public String getOutBoundOrderId() {
+		return outBoundOrderId;
+	}
+
+	public void setOutBoundOrderId(String outBoundOrderId) {
+		this.outBoundOrderId = outBoundOrderId;
+	}
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
+	
 	
 	
 	

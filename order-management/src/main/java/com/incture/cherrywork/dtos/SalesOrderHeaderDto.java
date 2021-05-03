@@ -682,6 +682,36 @@ public class SalesOrderHeaderDto {
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
+	
+	private String salesOrderId;
+	private String obdId;
+	private String pgiId;
+	
+	
+
+	public String getSalesOrderId() {
+		return salesOrderId;
+	}
+
+	public void setSalesOrderId(String salesOrderId) {
+		this.salesOrderId = salesOrderId;
+	}
+
+	public String getObdId() {
+		return obdId;
+	}
+
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
 
 	// sandeep
 	private EnOrderActionStatus documentProcessStatus;

@@ -592,9 +592,9 @@ public class SalesOrderItem {
 		this.syncStatus = syncStatus;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)                    //Add optional = false
+	@ManyToOne(fetch = FetchType.LAZY, optional = false) // Add optional = false
 	@JoinColumn(name = "s4DocumentId")
-	@JsonIgnore 
+	@JsonIgnore
 	private SalesOrderHeader salesOrderHeader;
 
 	public SalesOrderHeader getSalesOrderHeader() {
@@ -650,26 +650,53 @@ public class SalesOrderItem {
 	public void setLastChangedOn(Date lastChangedOn) {
 		this.lastChangedOn = lastChangedOn;
 	}
+
+	// Awadhesh Kumar
+
+	@Column(name = "SALES_HEADER_ID", length = 10)
+	private String salesHeaderId;
+
+	public String getSalesHeaderId() {
+		return salesHeaderId;
+	}
+
+	public void setSalesHeaderId(String salesHeaderId) {
+		this.salesHeaderId = salesHeaderId;
+	}
+
+	@Column(name="BLOCKED")
+	private boolean blocked;
+	
+	@Column(name = "OUT_BOUND_ORDER_ID")
+	private String outBoundOrderId;
+
+	@Column(name = "PGI_ID")
+	private String pgiId;
+
+	public String getOutBoundOrderId() {
+		return outBoundOrderId;
+	}
+
+	public void setOutBoundOrderId(String outBoundOrderId) {
+		this.outBoundOrderId = outBoundOrderId;
+	}
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
 	
 	
-//Awadhesh Kumar
-	
-
-@Column(name = "SALES_HEADER_ID", length = 10) 
-private String salesHeaderId;
-
-
-public String getSalesHeaderId() {
-			return salesHeaderId;
-		}
-
-		public void setSalesHeaderId(String salesHeaderId) {
-			this.salesHeaderId = salesHeaderId;
-		}
-
-		
-		
-		
-		
-
 }

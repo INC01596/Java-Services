@@ -41,6 +41,7 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
+	ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto);
 
 	// sandeep
 
