@@ -65,24 +65,25 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.header("Message", "Please provide at least one Sales Order").body(null);
 
-		String query = "select s.blocked from SalesOrderHeader s where salesHeaderId=:salesHeaderId";
+		String query = "select s.blocked from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId";
 		Query q = entityManager.createQuery(query);
 		q.setParameter("salesHeaderId", dto.getHeaderDto().getSalesOrderId());
-		List<Integer> blocked = q.getResultList();
+		List<Boolean> blocked = q.getResultList();
+		System.out.println("blocked "+blocked);
 		if (blocked.size() == 0) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("Message", "The Sales Order which is being referenced does not exist").body(null);
 		}
-		if ((blocked.get(0) != 1)) {
+		if (!(blocked.get(0))) {
 			String query1 = "select i.blocked from SalesOrderItem i where salesHeaderId=:salesHeaderId";
 			Query q1 = entityManager.createQuery(query1);
 			q1.setParameter("salesHeaderId", dto.getHeaderDto().getSalesOrderId());
-			List<Integer> blockedItem = q1.getResultList();
+			List<Boolean> blockedItem = q1.getResultList();
 			if (blockedItem.size() == 0) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 						.header("Message", "The Item which is being referenced does not exist").body(null);
 			}
-			if ((blockedItem.get(0)) != 1) {
+			if (!(blockedItem.get(0))) {
 				if (dto.getHeaderDto().getObdId() != null && dto.getHeaderDto().getS4DocumentId() == null)
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							.header("Message", "Wrong Input! obdId can't be non-null with s4DocumentId as null")
@@ -184,6 +185,17 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		}
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+		if(dto.isDraft()){
+			if(res.getStatusCode().equals(HttpStatus.OK))
+				return ResponseEntity.status(HttpStatus.OK)
+						.header("message",
+								"Record submitted successfully as draft.")
+						.body(res.getBody());
+			else
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.header("message", "Technical Error in Submitting").body(res.getBody());
+		}
+		
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",

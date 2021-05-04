@@ -60,24 +60,13 @@ public interface ISalesOrderHeaderService {
 	// ResponseEntity<Object> getUserDetailsBySTP(String stpId);
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 
-	ResponseEntity<Object> getHeader(String stp);
-<<<<<<< HEAD
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
-=======
+	ResponseEntity<Object> getHeader(String stp);
 
 	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
 	// pageable);
 	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
 	//
 
->>>>>>> refs/remotes/origin/master
+
 }

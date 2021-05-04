@@ -9,6 +9,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Id;
@@ -665,14 +666,24 @@ public class SalesOrderItem {
 	}
 
 	@Column(name="BLOCKED")
-	private boolean blocked;
+	private Boolean blocked;
 	
-	@Column(name = "OUT_BOUND_ORDER_ID")
+	
+	
+	
+	public Boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	@Column(name = "OUT_BOUND_ORDER_ID",length=25)
 	private String outBoundOrderId;
 
-	@Column(name = "PGI_ID")
-	private String pgiId;
-
+	
+	
 	public String getOutBoundOrderId() {
 		return outBoundOrderId;
 	}
@@ -681,6 +692,9 @@ public class SalesOrderItem {
 		this.outBoundOrderId = outBoundOrderId;
 	}
 
+	@Column(name = "PGI_ID",length=25)
+	private String pgiId;
+
 	public String getPgiId() {
 		return pgiId;
 	}
@@ -688,15 +702,8 @@ public class SalesOrderItem {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
-
-	public boolean isBlocked() {
-		return blocked;
-	}
-
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
-	}
-
 	
 	
+
+		
 }

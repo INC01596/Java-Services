@@ -660,62 +660,73 @@ public class SalesOrderHeader {
 	}
 
 	@Column(name="BLOCKED")
-	private boolean blocked;
+	private Boolean blocked;
+	
+	
 
-	@Column(name="OBD_STATUS")
-	private boolean obdStatus;
-	
-	@Column(name="PGI_STATUS")
-	private boolean pgiStatus;
-	
-	@Column(name="INVOICE_STATUS")
-	private boolean invoiceStatus;
-	
-	@Column(name="OUT_BOUND_ORDER_ID")
-	private String outBoundOrderId; 
-	
-	@Column(name="PGI_ID")
-	private String pgiId;
-
-	public boolean isBlocked() {
+	public Boolean isblocked() {
 		return blocked;
 	}
 
-	public void setBlocked(boolean blocked) {
+	public void setBlocked(Boolean blocked) {
 		this.blocked = blocked;
 	}
 
-	public boolean isObdStatus() {
+	@Column(name="OBD_STATUS")
+	private Boolean obdStatus;
+	
+	
+	
+	public Boolean isObdStatus() {
 		return obdStatus;
 	}
 
-	public void setObdStatus(boolean obdStatus) {
+	public void setObdStatus(Boolean obdStatus) {
 		this.obdStatus = obdStatus;
 	}
 
-	public boolean isPgiStatus() {
+	@Column(name="PGI_STATUS")
+	private Boolean pgiStatus;
+	
+	
+	
+	public Boolean isPgiStatus() {
 		return pgiStatus;
 	}
 
-	public void setPgiStatus(boolean pgiStatus) {
+	public void setPgiStatus(Boolean pgiStatus) {
 		this.pgiStatus = pgiStatus;
 	}
 
-	public boolean isInvoiceStatus() {
+	@Column(name="INVOICE_STATUS")
+	private Boolean invoiceStatus;
+	
+	
+	
+	public Boolean isInvoiceStatus() {
 		return invoiceStatus;
 	}
 
-	public void setInvoiceStatus(boolean invoiceStatus) {
+	public void setInvoiceStatus(Boolean invoiceStatus) {
 		this.invoiceStatus = invoiceStatus;
 	}
 
-	public String getOutBoundOrderId() {
-		return outBoundOrderId;
+	@Column(name="OUT_BOUND_ORDER_ID",length=30)
+	private String obdId; 
+	
+	
+	
+	
+	public String getObdId() {
+		return obdId;
 	}
 
-	public void setOutBoundOrderId(String outBoundOrderId) {
-		this.outBoundOrderId = outBoundOrderId;
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
 	}
+
+	@Column(name="PGI_ID",length=30)
+	private String pgiId;
 
 	public String getPgiId() {
 		return pgiId;
@@ -726,6 +737,8 @@ public class SalesOrderHeader {
 	}
 	
 	
-	
-	
+
+		
+
+		
 }

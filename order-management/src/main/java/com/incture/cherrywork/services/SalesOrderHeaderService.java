@@ -97,15 +97,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-<<<<<<< HEAD
-	
-	
 
-    
-	
-=======
-
->>>>>>> refs/remotes/origin/master
 	private SequenceNumberGen sequenceNumberGen;
 
 	@Override
@@ -209,7 +201,7 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 	
 	
 }
-=======
+
 
 	/*
 	 * @Override public Page<SalesOrderHeader> getManage(HeaderDetailUIDto
@@ -219,7 +211,7 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 	 * } catch (Exception e) { e.printStackTrace(); return null; } }
 	 */
 
->>>>>>> refs/remotes/origin/master
+
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 
