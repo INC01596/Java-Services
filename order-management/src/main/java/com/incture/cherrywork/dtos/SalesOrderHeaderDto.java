@@ -585,26 +585,36 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> refs/remotes/origin/master
 
 
-		private String customerName;
-
+<<<<<<< HEAD
+=======
+	
+>>>>>>> refs/remotes/origin/master
 
 	public String getWeight() {
 		return weight;
 	}
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> refs/remotes/origin/master
 
 
-		public String getCustomerName() {
-			return customerName;
-		}
-
+<<<<<<< HEAD
 		public void setCustomerName(String customerName) {
 			this.customerName = customerName;
 		}
 
 
+=======
+		
+>>>>>>> refs/remotes/origin/master
 	public void setWeight(String weight) {
 		this.weight = weight;
 	}
@@ -689,7 +699,76 @@ public class SalesOrderHeaderDto {
 		this.postingStatus = postingStatus;
 	}
 
+
+	private String customerName;
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 	
+	private String salesOrderId;
+	private String obdId;
+	private String pgiId;
+	
+	
+
+	public String getSalesOrderId() {
+		return salesOrderId;
+	}
+
+	public void setSalesOrderId(String salesOrderId) {
+		this.salesOrderId = salesOrderId;
+	}
+
+	public String getObdId() {
+		return obdId;
+	}
+
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
+	
+	private String obdStatus;
+	private String pgiStatus;
+	private String invoiceStatus;
+	
+	
+
+	public String getObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
 
 	// sandeep
 	private EnOrderActionStatus documentProcessStatus;

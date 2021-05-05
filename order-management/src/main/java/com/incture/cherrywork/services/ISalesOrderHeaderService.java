@@ -43,6 +43,7 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
+	ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto);
 
 	// sandeep
 
@@ -61,6 +62,7 @@ public interface ISalesOrderHeaderService {
 	
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 
+<<<<<<< HEAD
 	
 
 	ResponseEntity<Object> getManageServiceObd(ObdDto dto);
@@ -74,8 +76,23 @@ public interface ISalesOrderHeaderService {
 	
 	
 	
+=======
+>>>>>>> refs/remotes/origin/master
 
+<<<<<<< HEAD
 	
 	
+=======
+	ResponseEntity<Object> getHeader(String stp);
+>>>>>>> refs/remotes/origin/master
 
+<<<<<<< HEAD
+=======
+	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
+	// pageable);
+	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
+	//
+
+
+>>>>>>> refs/remotes/origin/master
 }

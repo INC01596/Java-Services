@@ -30,6 +30,7 @@ public class SalesOrderHeaderItemDto {
 	private String underDeliveryTolerance;
 	
 	private String salesHeaderId;
+	private Boolean draft;
 
 	public String getSalesHeaderId() {
 		return salesHeaderId;
@@ -129,9 +130,19 @@ public class SalesOrderHeaderItemDto {
 		this.underDeliveryTolerance = underDeliveryTolerance;
 	}
 	
+	
 
 	
 	
+	
+	public Boolean getDraft() {
+		return draft;
+	}
+
+	public void setDraft(Boolean draft) {
+		this.draft = draft;
+	}
+
 	public SalesOrderHeaderDto getHeaderDto() {
 		return headerDto;
 	}

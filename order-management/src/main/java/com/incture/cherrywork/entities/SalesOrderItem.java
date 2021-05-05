@@ -9,6 +9,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.JoinColumn;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Id;
@@ -592,9 +593,9 @@ public class SalesOrderItem {
 		this.syncStatus = syncStatus;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)                    //Add optional = false
+	@ManyToOne(fetch = FetchType.LAZY, optional = false) // Add optional = false
 	@JoinColumn(name = "s4DocumentId")
-	@JsonIgnore 
+	@JsonIgnore
 	private SalesOrderHeader salesOrderHeader;
 
 	public SalesOrderHeader getSalesOrderHeader() {
@@ -650,26 +651,94 @@ public class SalesOrderItem {
 	public void setLastChangedOn(Date lastChangedOn) {
 		this.lastChangedOn = lastChangedOn;
 	}
+
+	// Awadhesh Kumar
+
+	@Column(name = "SALES_HEADER_ID", length = 10)
+	private String salesHeaderId;
+
+	public String getSalesHeaderId() {
+		return salesHeaderId;
+	}
+
+	public void setSalesHeaderId(String salesHeaderId) {
+		this.salesHeaderId = salesHeaderId;
+	}
+
+	@Column(name="BLOCKED")
+	private Boolean blocked;
 	
 	
-//Awadhesh Kumar
+	
+	
+	public Boolean getBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	@Column(name = "OUT_BOUND_ORDER_ID",length=25)
+	private String outBoundOrderId;
+
+	
+	
+	public String getOutBoundOrderId() {
+		return outBoundOrderId;
+	}
+
+	public void setOutBoundOrderId(String outBoundOrderId) {
+		this.outBoundOrderId = outBoundOrderId;
+	}
+
+	@Column(name = "PGI_ID",length=25)
+	private String pgiId;
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
+	
+	@Column(name="PICKED_QUANTITY")
+	private BigDecimal pickedQuantity;
+
+	public BigDecimal getPickedQuantity() {
+		return pickedQuantity;
+	}
+
+	public void setPickedQuantity(BigDecimal pickedQuantity) {
+		this.pickedQuantity = pickedQuantity;
+	}
+
+	@Column(name="SLOC")
+	private String sloc;
+
+	public String getSloc() {
+		return sloc;
+	}
+
+	public void setSloc(String sloc) {
+		this.sloc = sloc;
+	}
+	
+	@Column(name="UOM")
+	private String uom;
+
+	public String getUom() {
+		return uom;
+	}
+
+	public void setUom(String uom) {
+		this.uom = uom;
+	}
+	
+	
+	
 	
 
-@Column(name = "SALES_HEADER_ID", length = 10) 
-private String salesHeaderId;
-
-
-public String getSalesHeaderId() {
-			return salesHeaderId;
-		}
-
-		public void setSalesHeaderId(String salesHeaderId) {
-			this.salesHeaderId = salesHeaderId;
-		}
-
 		
-		
-		
-		
-
 }

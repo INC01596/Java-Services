@@ -3,16 +3,15 @@ package com.incture.cherrywork.dtos;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 
 import java.math.BigDecimal;
 
+public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 
-public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
-
-	
-		
 	private String salesItemId;
 
 	public String getSalesItemId() {
@@ -95,7 +94,6 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
 
 	private String netValue;
 
-	
 	public String getNetValue() {
 		return netValue;
 	}
@@ -573,193 +571,268 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto>{
 	public void setLastChangedOn(Date lastChangedOn) {
 		this.lastChangedOn = lastChangedOn;
 	}
+
+	// Awadhesh Kumar
+	// ---------------------------------------------------------------------------------------------
+
+	private String documentCurrency;
+
+	public String getDocumentCurrency() {
+		return documentCurrency;
+	}
+
+	public void setDocumentCurrency(String documentCurrency) {
+		this.documentCurrency = documentCurrency;
+	}
+
+	private String baseUnitOfMeasure;
+
+	public String getBaseUnitOfMeasure() {
+		return baseUnitOfMeasure;
+	}
+
+	public void setBaseUnitOfMeasure(String baseUnitOfMeasure) {
+		this.baseUnitOfMeasure = baseUnitOfMeasure;
+	}
+
+	private String flag;
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	private Boolean hardnessTest;
+
+	public Boolean getHardnessTest() {
+		return hardnessTest;
+	}
+
+	public void setHardnessTest(Boolean hardnessTest) {
+		this.hardnessTest = hardnessTest;
+	}
+
+	private Boolean isElementBoronRequired;
+
+	public Boolean getIsElementBoronRequired() {
+		return isElementBoronRequired;
+	}
+
+	public void setIsElementBoronRequired(Boolean isElementBoronRequired) {
+		this.isElementBoronRequired = isElementBoronRequired;
+	}
+
+	private String referenceDocument;
+
+	public String getReferenceDocument() {
+		return referenceDocument;
+	}
+
+	public void setReferenceDocument(String referenceDocument) {
+		this.referenceDocument = referenceDocument;
+	}
+
+	private String s4DocumentId;
+
+	public String getS4DocumentId() {
+		return s4DocumentId;
+	}
+
+	public void setS4DocumentId(String s4DocumentId) {
+		this.s4DocumentId = s4DocumentId;
+	}
+
+	private String qualityTest;
+
+	public String getQualityTest() {
+		return qualityTest;
+	}
+
+	public void setQualityTest(String qualityTest) {
+		this.qualityTest = qualityTest;
+	}
+
+	private String defaultQualityTest;
+
+	public String getDefaultQualityTest() {
+		return defaultQualityTest;
+	}
+
+	public void setDefaultQualityTest(String defaultQualityTest) {
+		this.defaultQualityTest = defaultQualityTest;
+	}
+
+	private List<String> defaultQualityTestList;
+
+	public List<String> getDefaultQualityTestList() {
+		return defaultQualityTestList;
+	}
+
+	public void setDefaultQualityTestList(List<String> defaultQualityTestList) {
+		this.defaultQualityTestList = defaultQualityTestList;
+	}
+
+	private List<String> qualityTestList;
+
+	public List<String> getQualityTestList() {
+		return qualityTestList;
+	}
+
+	public void setQualityTestList(List<String> qualityTestList) {
+		this.qualityTestList = qualityTestList;
+	}
+
+	private Boolean ultraSonicTest;
+
+	public Boolean getUltraSonicTest() {
+		return ultraSonicTest;
+	}
+
+	public void setUltraSonicTest(Boolean ultraSonicTest) {
+		this.ultraSonicTest = ultraSonicTest;
+	}
+
+	@JsonIgnore
+	private SalesOrderHeader salesOrderHeader;
+
+	public SalesOrderHeader getSalesOrderHeader() {
+		return salesOrderHeader;
+	}
+
+	public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
+		this.salesOrderHeader = salesOrderHeader;
+	}
+
+	private String salesHeaderId;
+
+	public String getSalesHeaderId() {
+		return salesHeaderId;
+	}
+
+	public void setSalesHeaderId(String salesHeaderId) {
+		this.salesHeaderId = salesHeaderId;
+	}
+
+	private String outBoundOrderId;
+
+	private String pgiId;
+
+	public String getOutBoundOrderId() {
+		return outBoundOrderId;
+	}
+
+	public void setOutBoundOrderId(String outBoundOrderId) {
+		this.outBoundOrderId = outBoundOrderId;
+	}
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
 	
-	//Awadhesh Kumar ---------------------------------------------------------------------------------------------
+	private BigDecimal pickedQuantity;
+	private String sloc;
 	
-		
-		
-		private String documentCurrency;
-
-		public String getDocumentCurrency() {
-			return documentCurrency;
-		}
-
-		public void setDocumentCurrency(String documentCurrency) {
-			this.documentCurrency = documentCurrency;
-		}
-		
-		private String baseUnitOfMeasure;
-
-		public String getBaseUnitOfMeasure() {
-			return baseUnitOfMeasure;
-		}
-
-		public void setBaseUnitOfMeasure(String baseUnitOfMeasure) {
-			this.baseUnitOfMeasure = baseUnitOfMeasure;
-		}
-		
-		private String flag;
-
-		public String getFlag() {
-			return flag;
-		}
-
-		public void setFlag(String flag) {
-			this.flag = flag;
-		}
-		
-		private Boolean hardnessTest;
-
-		public Boolean getHardnessTest() {
-			return hardnessTest;
-		}
-
-		public void setHardnessTest(Boolean hardnessTest) {
-			this.hardnessTest = hardnessTest;
-		}
-		
-		private Boolean isElementBoronRequired;
-
-		public Boolean getIsElementBoronRequired() {
-			return isElementBoronRequired;
-		}
-
-		public void setIsElementBoronRequired(Boolean isElementBoronRequired) {
-			this.isElementBoronRequired = isElementBoronRequired;
-		}
-		
-		private String referenceDocument;
-
-		public String getReferenceDocument() {
-			return referenceDocument;
-		}
-
-		public void setReferenceDocument(String referenceDocument) {
-			this.referenceDocument = referenceDocument;
-		}
-		
-		private String s4DocumentId;
-
-		public String getS4DocumentId() {
-			return s4DocumentId;
-		}
-
-		public void setS4DocumentId(String s4DocumentId) {
-			this.s4DocumentId = s4DocumentId;
-		}
-		
-		private String qualityTest;
-		
-		
-		
-		public String getQualityTest() {
-			return qualityTest;
-		}
-
-		public void setQualityTest(String qualityTest) {
-			this.qualityTest = qualityTest;
-		}
-		
-		private String defaultQualityTest;
-		
-		
-		
-		public String getDefaultQualityTest() {
-			return defaultQualityTest;
-		}
-
-		public void setDefaultQualityTest(String defaultQualityTest) {
-			this.defaultQualityTest = defaultQualityTest;
-		}
-
-		private List<String> defaultQualityTestList;
-		
-		
-		public List<String> getDefaultQualityTestList() {
-			return defaultQualityTestList;
-		}
-
-		public void setDefaultQualityTestList(List<String> defaultQualityTestList) {
-			this.defaultQualityTestList = defaultQualityTestList;
-		}
-
-		private List<String> qualityTestList;
-
-		public List<String> getQualityTestList() {
-			return qualityTestList;
-		}
-
-		public void setQualityTestList(List<String> qualityTestList) {
-			this.qualityTestList = qualityTestList;
-		}
-		
-		private Boolean ultraSonicTest;
-
-		
-		public Boolean getUltraSonicTest() {
-			return ultraSonicTest;
-		}
-
-		public void setUltraSonicTest(Boolean ultraSonicTest) {
-			this.ultraSonicTest = ultraSonicTest;
-		}
-
-		@JsonIgnore
-		private SalesOrderHeader salesOrderHeader;
-
-		public SalesOrderHeader getSalesOrderHeader() {
-			return salesOrderHeader;
-		}
-
-		public void setSalesOrderHeader(SalesOrderHeader salesOrderHeader) {
-			this.salesOrderHeader = salesOrderHeader;
-		}
-		
-		private String salesHeaderId;
-
-		public String getSalesHeaderId() {
-			return salesHeaderId;
-		}
-
-		public void setSalesHeaderId(String salesHeaderId) {
-			this.salesHeaderId = salesHeaderId;
-		}
-		
-		public int compareTo(SalesOrderItemDto obj1)
-		{
-			return obj1.salesItemId.compareTo(this.getSalesItemId());
-		}
-
-		@Override
-		public String toString() {
-			return "SalesOrderItemDto [salesItemId=" + salesItemId + ", clientSpecific=" + clientSpecific
-					+ ", lineItemNumber=" + lineItemNumber + ", material=" + material + ", materialDesc=" + materialDesc
-					+ ", cumConfirmedQty=" + cumConfirmedQty + ", itemCategory=" + itemCategory + ", plant=" + plant
-					+ ", netValue=" + netValue + ", amountB4Vat=" + amountB4Vat + ", vatPercent=" + vatPercent
-					+ ", vatAmount=" + vatAmount + ", totalAmountInclVat=" + totalAmountInclVat + ", deliveredQuantity="
-					+ deliveredQuantity + ", deliveredPieces=" + deliveredPieces + ", outstandingQuantity="
-					+ outstandingQuantity + ", outstandingPieces=" + outstandingPieces + ", availabilityStatus="
-					+ availabilityStatus + ", paymentChqDetail=" + paymentChqDetail + ", deliveryStatus=" + deliveryStatus
-					+ ", orderedPieces=" + orderedPieces + ", noOfBundles=" + noOfBundles + ", basePrice=" + basePrice
-					+ ", extras=" + extras + ", qualityTestExtras=" + qualityTestExtras + ", discount1=" + discount1
-					+ ", enteredOrdQuantity=" + enteredOrdQuantity + ", standard=" + standard + ", standardDesc="
-					+ standardDesc + ", sectionGrade=" + sectionGrade + ", sectionGradeDesc=" + sectionGradeDesc + ", size="
-					+ size + ", kgPerMeter=" + kgPerMeter + ", length=" + length + ", barsPerBundle=" + barsPerBundle
-					+ ", sectionGroup=" + sectionGroup + ", level2Id=" + level2Id + ", ceLogo=" + ceLogo + ", section="
-					+ section + ", sizeGroup=" + sizeGroup + ", isiLogo=" + isiLogo + ", impactTest=" + impactTest
-					+ ", bendTest=" + bendTest + ", ultralightTest=" + ultralightTest + ", inspection=" + inspection
-					+ ", ultrasonoicTest=" + ultrasonoicTest + ", gradePricingGroup=" + gradePricingGroup
-					+ ", totalNoPieces=" + totalNoPieces + ", bundleWt=" + bundleWt + ", updateIndicator=" + updateIndicator
-					+ ", changedOn=" + changedOn + ", syncStatus=" + syncStatus + ", createdBy=" + createdBy
-					+ ", createdOn=" + createdOn + ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn
-					+ /*", orderQuantity=" + orderQuantity +*/ ", documentCurrency=" + documentCurrency + ", baseUnitOfMeasure="
-					+ baseUnitOfMeasure + ", flag=" + flag + ", hardnessTest=" + hardnessTest + ", isElementBoronRequired="
-					+ isElementBoronRequired + ", referenceDocument=" + referenceDocument + ", s4DocumentId=" + s4DocumentId
-					+ ", qualityTest=" + qualityTest + ", defaultQualityTest=" + defaultQualityTest
-					+ ", defaultQualityTestList=" + defaultQualityTestList + ", qualityTestList=" + qualityTestList
-					+ ", ultraSonicTest=" + ultraSonicTest + ", salesOrderHeader=" + salesOrderHeader + "]";
-		}
-
-
 	
+
+	public BigDecimal getPickedQuantity() {
+		return pickedQuantity;
+	}
+
+	public void setPickedQuantity(BigDecimal pickedQuantity) {
+		this.pickedQuantity = pickedQuantity;
+	}
+
+	public String getSloc() {
+		return sloc;
+	}
+
+	public void setSloc(String sloc) {
+		this.sloc = sloc;
+	}
+	
+	private String uom;
+	
+	
+
+	public String getUom() {
+		return uom;
+	}
+
+	public void setUom(String uom) {
+		this.uom = uom;
+	}
+	
+	private String obdStatus;
+	private String pgiStatus;
+	private String invoiceStatus;
+	
+	
+
+	public String getObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+
+	public int compareTo(SalesOrderItemDto obj1) {
+		return obj1.salesItemId.compareTo(this.getSalesItemId());
+	}
+
+	@Override
+	public String toString() {
+		return "SalesOrderItemDto [salesItemId=" + salesItemId + ", clientSpecific=" + clientSpecific
+				+ ", lineItemNumber=" + lineItemNumber + ", material=" + material + ", materialDesc=" + materialDesc
+				+ ", cumConfirmedQty=" + cumConfirmedQty + ", itemCategory=" + itemCategory + ", plant=" + plant
+				+ ", netValue=" + netValue + ", amountB4Vat=" + amountB4Vat + ", vatPercent=" + vatPercent
+				+ ", vatAmount=" + vatAmount + ", totalAmountInclVat=" + totalAmountInclVat + ", deliveredQuantity="
+				+ deliveredQuantity + ", deliveredPieces=" + deliveredPieces + ", outstandingQuantity="
+				+ outstandingQuantity + ", outstandingPieces=" + outstandingPieces + ", availabilityStatus="
+				+ availabilityStatus + ", paymentChqDetail=" + paymentChqDetail + ", deliveryStatus=" + deliveryStatus
+				+ ", orderedPieces=" + orderedPieces + ", noOfBundles=" + noOfBundles + ", basePrice=" + basePrice
+				+ ", extras=" + extras + ", qualityTestExtras=" + qualityTestExtras + ", discount1=" + discount1
+				+ ", enteredOrdQuantity=" + enteredOrdQuantity + ", standard=" + standard + ", standardDesc="
+				+ standardDesc + ", sectionGrade=" + sectionGrade + ", sectionGradeDesc=" + sectionGradeDesc + ", size="
+				+ size + ", kgPerMeter=" + kgPerMeter + ", length=" + length + ", barsPerBundle=" + barsPerBundle
+				+ ", sectionGroup=" + sectionGroup + ", level2Id=" + level2Id + ", ceLogo=" + ceLogo + ", section="
+				+ section + ", sizeGroup=" + sizeGroup + ", isiLogo=" + isiLogo + ", impactTest=" + impactTest
+				+ ", bendTest=" + bendTest + ", ultralightTest=" + ultralightTest + ", inspection=" + inspection
+				+ ", ultrasonoicTest=" + ultrasonoicTest + ", gradePricingGroup=" + gradePricingGroup
+				+ ", totalNoPieces=" + totalNoPieces + ", bundleWt=" + bundleWt + ", updateIndicator=" + updateIndicator
+				+ ", changedOn=" + changedOn + ", syncStatus=" + syncStatus + ", createdBy=" + createdBy
+				+ ", createdOn=" + createdOn + ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn
+				+ /* ", orderQuantity=" + orderQuantity + */ ", documentCurrency=" + documentCurrency
+				+ ", baseUnitOfMeasure=" + baseUnitOfMeasure + ", flag=" + flag + ", hardnessTest=" + hardnessTest
+				+ ", isElementBoronRequired=" + isElementBoronRequired + ", referenceDocument=" + referenceDocument
+				+ ", s4DocumentId=" + s4DocumentId + ", qualityTest=" + qualityTest + ", defaultQualityTest="
+				+ defaultQualityTest + ", defaultQualityTestList=" + defaultQualityTestList + ", qualityTestList="
+				+ qualityTestList + ", ultraSonicTest=" + ultraSonicTest + ", salesOrderHeader=" + salesOrderHeader
+				+ "]";
+	}
+
 }

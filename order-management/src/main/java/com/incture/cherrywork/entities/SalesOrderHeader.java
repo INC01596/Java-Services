@@ -35,7 +35,6 @@ public class SalesOrderHeader {
 	}
 
 	@Id
-
 	@Column(name = "S4DocumentId", length = 50)
 	private String s4DocumentId;
 
@@ -206,7 +205,6 @@ public class SalesOrderHeader {
 	@Column(name = "NetValue")
 	private String netValue;
 
-	
 	public String getNetValue() {
 		return netValue;
 	}
@@ -615,6 +613,7 @@ public class SalesOrderHeader {
 
 	@Column(name = "WEIGHT", length = 2)
 	private String weight;
+
 	public String getWeight() {
 		return weight;
 	}
@@ -623,7 +622,6 @@ public class SalesOrderHeader {
 		this.weight = weight;
 	}
 
-	
 	@Column(name = "WORKFLOW_ID", length = 10) // check the data type in future
 	private String workflowID;
 
@@ -634,12 +632,10 @@ public class SalesOrderHeader {
 	public void setWorkflowID(String workflowID) {
 		this.workflowID = workflowID;
 	}
-	
 
-	@Column(name="CUSTOMER_NAME")
+	@Column(name = "CUSTOMER_NAME")
 	private String customerName;
 
-	
 	public String getCustomerName() {
 		return customerName;
 	}
@@ -647,9 +643,9 @@ public class SalesOrderHeader {
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
-	@Column(name="REFERENCE_DOCUMENT")
+
+	@Column(name = "REFERENCE_DOCUMENT")
 	private String referenceDocument;
-	
 
 	public String getReferenceDocument() {
 		return referenceDocument;
@@ -660,9 +656,70 @@ public class SalesOrderHeader {
 
 	}
 
-	
+	@Column(name = "BLOCKED")
+	private Boolean blocked;
 
-	
-	
-	
+	public Boolean isblocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	@Column(name = "OBD_STATUS")
+	private String obdStatus;
+
+	@Column(name = "PGI_STATUS")
+	private String pgiStatus;
+
+	@Column(name = "INVOICE_STATUS")
+	private String invoiceStatus;
+
+	public String getObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	@Column(name = "OUT_BOUND_ORDER_ID", length = 30)
+	private String obdId;
+
+	public String getObdId() {
+		return obdId;
+	}
+
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+	@Column(name = "PGI_ID", length = 30)
+	private String pgiId;
+
+	public String getPgiId() {
+		return pgiId;
+	}
+
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
+	}
+
 }

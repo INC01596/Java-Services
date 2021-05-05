@@ -40,6 +40,9 @@ import com.google.gson.JsonParser;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
+import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
+import com.incture.cherrywork.odata.dto.OdataSchItemStartDto;
+//import com.incture.cherrywork.odataServices.OdataServices;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ServicesUtils;
@@ -49,6 +52,9 @@ import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
 @SuppressWarnings("unused")
 @Service("OdataServices")
 public class SalesOrderOdataServices {
+	
+	
+	
 
 	//private Logger logger = LoggerFactory.getLogger(OdataServices.class);
 	
@@ -135,63 +141,65 @@ public class SalesOrderOdataServices {
 	}
 //	
 //	public OdataSchHeaderStartDto headerScheduler(){
-//		logger.debug("[OdataUtilService][headerScheduler] Started");
+//		logger.debug("[SalesOrderOdataUtilService][headerScheduler] Started");
 //		OdataSchHeaderStartDto odataSchHeaderStartDto = new OdataSchHeaderStartDto();
-//		String URL = OdataConstants.BASE_URL+"getSOHeaderTabSet?$filter=Vbeln%20eq%20'GET'";
+//		String URL = SalesOrderOdataConstants.BASE_URL+"getSOHeaderTabSet?$filter=Vbeln%20eq%20'GET'";
 //		try {
-//			String response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
+//			String response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
 //			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 //			odataSchHeaderStartDto = gson.fromJson(response.toString(), OdataSchHeaderStartDto.class);
-////			logger.debug("[OdataUtilService][headerScheduler] OdataMaterialDto : " + odataSchHeaderStartDto.toString());
+////			logger.debug("[SalesOrderOdataUtilService][headerScheduler] OdataMaterialDto : " + odataSchHeaderStartDto.toString());
 //		} catch (Exception e) {
-//			logger.error("[OdataUtilService][headerScheduler] Exception in JSON : " + e.getMessage());
+//			logger.error("[SalesOrderOdataUtilService][headerScheduler] Exception in JSON : " + e.getMessage());
 //			e.printStackTrace();
 //		}
 //		return odataSchHeaderStartDto;
 //	}
 //	
 //	public String headerAckScheduler(){
-//		logger.debug("[OdataUtilService][headerAckScheduler] Started");
+//		logger.debug("[SalesOrderOdataUtilService][headerAckScheduler] Started");
 //		String response = null;
-//		String URL = OdataConstants.BASE_URL+"getSOHeaderTabSet?$filter=Vbeln%20eq%20'ACK'";
+//		String URL = SalesOrderOdataConstants.BASE_URL+"getSOHeaderTabSet?$filter=Vbeln%20eq%20'ACK'";
 //		try {
-//			response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
-//			logger.debug("[OdataUtilService][headerAckScheduler] Response : " + response);
+//			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+//			logger.debug("[SalesOrderOdataUtilService][headerAckScheduler] Response : " + response);
 //		} catch (Exception e) {
-//			logger.error("[OdataUtilService][headerAckScheduler] Exception : " + e.getMessage());
+//			logger.error("[SalesOrderOdataUtilService][headerAckScheduler] Exception : " + e.getMessage());
 //			e.printStackTrace();
 //		}
 //		return response;
 //	}
 //	
 //	public OdataSchItemStartDto itemScheduler(){
-//		logger.debug("[OdataUtilService][itemScheduler] Started");
+//		logger.debug("[SalesOrderOdataUtilService][itemScheduler] Started");
 //		OdataSchItemStartDto odataSchItemStartDto = new OdataSchItemStartDto();
-//		String URL = OdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'GET'";
+//		String URL = SalesOrderOdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'GET'";
 //		try {
-//			String response = OdataUtilService.callOdata(URL, "GET", null, "fetch");
+//			String response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
 //			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 //			odataSchItemStartDto = gson.fromJson(response.toString(), OdataSchItemStartDto.class);
-//			logger.debug("[OdataUtilService][itemScheduler] OdataMaterialDto : " + odataSchItemStartDto.toString());
+//			logger.debug("[SalesOrderOdataUtilService][itemScheduler] OdataMaterialDto : " + odataSchItemStartDto.toString());
 //		} catch (Exception e) {
-//			logger.error("[OdataUtilService][itemScheduler] Exception in JSON : " + e.getMessage());
+//			logger.error("[SalesOrderOdataUtilService][itemScheduler] Exception in JSON : " + e.getMessage());
 //			e.printStackTrace();
 //		}
 //		return odataSchItemStartDto;
 //	}
-		public String itemAckScheduler(){
-		
-		String response = null;
-		String URL = SalesOrderOdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'ACK'";
-		try {
-			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return response;
-	}
 //	
+//	public String itemAckScheduler(){
+//		logger.debug("[SalesOrderOdataUtilService][itemAckScheduler] Started");
+//		String response = null;
+//		String URL = SalesOrderOdataConstants.BASE_URL+"getSOItemTabSet?$filter=Vbeln%20eq%20'ACK'";
+//		try {
+//			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+//			logger.debug("[SalesOrderOdataUtilService][itemAckScheduler] Response : " + response);
+//		} catch (Exception e) {
+//			logger.error("[SalesOrderOdataUtilService][itemAckScheduler] Exception : " + e.getMessage());
+//			e.printStackTrace();
+//		}
+//		return response;
+//	}
+	//	
 //	public OdataRollingPlanStartDto rollingPlanScheduler(){
 //		logger.debug("[OdataUtilService][rollingPlanScheduler] Started");
 //		OdataRollingPlanStartDto rollingPlanStartDto = new OdataRollingPlanStartDto();
