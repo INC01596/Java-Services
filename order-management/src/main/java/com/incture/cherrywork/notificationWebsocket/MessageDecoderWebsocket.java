@@ -1,4 +1,4 @@
-package com.incture.cherrywork.repositories;
+/*package com.incture.cherrywork.repositories;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
@@ -31,3 +31,4 @@ private static Gson gson = new Gson();
         // Close resources
     }
 }
+*/

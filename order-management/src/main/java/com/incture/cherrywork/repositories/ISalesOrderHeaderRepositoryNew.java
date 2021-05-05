@@ -29,8 +29,9 @@ import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
+import com.incture.cherrywork.dtos.InvoDto;
 import com.incture.cherrywork.dtos.MaterialContainerDto;
-
+import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
@@ -224,10 +225,236 @@ public class ISalesOrderHeaderRepositoryNew {
 		return headerEntityList;
 	}
 	*/
+	public Page<SalesOrderHeader> getManageServiceObd(ObdDto dto, Pageable pageable)
+	{
+//		 if(!ServicesUtils.isEmpty(dto.getDeliveryNo()))
+//		 {
+//			 System.err.println("Only InvoiceNo");
+//			 return repo.findAllD(dto.getDocumentType(),dto.getDeliveryNo(),pageable);
+//		 }
+		 
+		if(!ServicesUtil.isEmpty(dto.getSalesHeaderId()))
+		{
+			 System.err.println("Only salesHeaderId");
+			return repo.findAllS(dto.getSalesHeaderId(),pageable);
+		}
+		
+		 
+		 
+		 
+		 if(!ServicesUtils.isEmpty(dto.getStpId()))
+		 {
+				if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()) && !ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+				{
+					
+			     
+					    	  System.err.println("Only cust+type+status+created");
+					return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),pageable);
+				
+				}
+				else if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())){
+					System.err.println("Only cust+type+status");
+					return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getDocumentProcessStatus(),pageable);
+				}
+				else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())){
+					System.err.println("Only cust+type+created");
+						return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),pageable);
+				
+				}else 
+				{
+					System.err.println("only type+cust");
+					return repo.findAll(dto.getDocumentType(),dto.getStpId(),pageable);
+				}
+				
+				
+		 }
+		 
+		
+		 if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()))
+			{
+				if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) &&!ServicesUtil.isEmpty(dto.getShipToParty()) )
+				{
+					 System.err.println("status+request+documentType+creat");
+				    return repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
+				}
+				else if(!ServicesUtil.isEmpty(dto.getShipToParty())&& ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+				{
+					 System.err.println("status+request+documentType");
+					return repo.findAll1(dto.getDocumentType(),dto.getDocumentProcessStatus(),dto.getShipToParty(), pageable);
+				}
+				else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())&& ServicesUtil.isEmpty(dto.getShipToParty()) )
+				{
+					//status+created
+					 System.err.println("status+created+documentType");
+					return repo.findAll(dto.getDocumentType(),dto.getDocumentProcessStatus(), dto.getCreatedDateFrom(),dto.getCreatedDateTo(), pageable);
+				}
+				else
+				{
+					//status only
+				 System.err.println("Only status+documentType");
+				 return  repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(), pageable);
+				}
+					
+			
+			}else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+			{
+				
+				  if(!ServicesUtil.isEmpty(dto.getShipToParty()))
+				    {
+					 System.err.println("Only createdDate+documentType+shipToParty");
+					
+					return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
+			        }
+				 else
+				    {
+					 System.err.println("Only createdDate+documentType");
+				     return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(), pageable);
+				    }
+				
+			}
+			else if(!ServicesUtil.isEmpty(dto.getShipToParty()))
+			{
+				 System.err.println("Only doctype+delivery");
+				
+				return repo.findAll1(dto.getDocumentType(), dto.getShipToParty(), pageable);
+				
+			}
+			else 
+			{
+				 System.err.println("Only documentType");
+				return repo.findAll(dto.getDocumentType(), pageable);
+			
+			}	
+	}
+	
+	
+	
+	
+	
+	
+
+	public Page<SalesOrderHeader> getManageServiceInvo(InvoDto dto, Pageable pageable)
+	{
+		
+//		 if(!ServicesUtils.isEmpty(dto.getInvoiceNo()))
+//		 {
+//			 System.err.println("Only InvoiceNo");
+//			 return repo.findAllI(dto.getDocumentType(),dto.getInvoiceNo(),pageable);
+//		 }
+//		 
+//		 
+//		 if(!ServicesUtils.isEmpty(dto.getDeliveryNo()))
+//		 {
+//			 System.err.println("Only InvoiceNo");
+//			 return repo.findAllD(dto.getDocumentType(),dto.getDeliveryNo(),pageable);
+//		 }
+		if(!ServicesUtils.isEmpty(dto.getStpId())){
+			if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()) && !ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+			{
+				
+		     
+				    	  System.err.println("Only cust+type+status+created");
+				return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),pageable);
+			
+			}
+			else if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())){
+				System.err.println("Only cust+type+status");
+				return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getDocumentProcessStatus(),pageable);
+			}
+			else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())){
+				System.err.println("Only cust+type+created");
+					return repo.findAll(dto.getDocumentType(),dto.getStpId(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),pageable);
+			
+			}else 
+			{
+				System.err.println("only type+cust");
+				return repo.findAll(dto.getDocumentType(),dto.getStpId(),pageable);
+			}
+			
+			}
+//		 
+		if(!ServicesUtil.isEmpty(dto.getSalesHeaderId()))
+		{
+			 System.err.println("Only salesHeaderId");
+			return repo.findAllS(dto.getSalesHeaderId(),pageable);
+		}
+		
+		 
+		
+		 
+		 if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()))
+			{
+				if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) &&!ServicesUtil.isEmpty(dto.getShipToParty()) )
+				{
+					 System.err.println("status+request+documentType+creat");
+				    return repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
+				}
+				else if(!ServicesUtil.isEmpty(dto.getShipToParty())&& ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+				{
+					 System.err.println("status+request+documentType");
+					return repo.findAll1(dto.getDocumentType(),dto.getDocumentProcessStatus(),dto.getShipToParty(), pageable);
+				}
+				else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())&& ServicesUtil.isEmpty(dto.getShipToParty()) )
+				{
+					//status+created
+					 System.err.println("status+created+documentType");
+					return repo.findAll(dto.getDocumentType(),dto.getDocumentProcessStatus(), dto.getCreatedDateFrom(),dto.getCreatedDateTo(), pageable);
+				}
+				else
+				{
+					//status only
+				 System.err.println("Only status+documentType");
+				 return  repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(), pageable);
+				}
+					
+			
+			}else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+			{
+				
+				  if(!ServicesUtil.isEmpty(dto.getShipToParty()))
+				    {
+					 System.err.println("Only createdDate+documentType+shipToParty");
+					
+					return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
+			        }
+				 else
+				    {
+					 System.err.println("Only createdDate+documentType");
+				     return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(), pageable);
+				    }
+				
+			}
+			else if(!ServicesUtil.isEmpty(dto.getShipToParty()))
+			{
+				 System.err.println("Only doctype+delivery");
+				
+				return repo.findAll1(dto.getDocumentType(), dto.getShipToParty(), pageable);
+				
+			}
+			else 
+			{
+				 System.err.println("Only documentType");
+				return repo.findAll(dto.getDocumentType(), pageable);
+			
+			}			
+		
+	  
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public Page<SalesOrderHeader> getManageService(HeaderDetailUIDto dto, Pageable pageable) {
 
 		try {
+			
 			 if(!ServicesUtils.isEmpty(dto.getStpId())){
 			if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()) && !ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
 			{
@@ -261,20 +488,19 @@ public class ISalesOrderHeaderRepositoryNew {
 			
 			
 			
-			//status(created+requested)
 			if(!ServicesUtil.isEmpty(dto.getDocumentProcessStatus()))
 			{
-				if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) &&!ServicesUtil.isEmpty(dto.getRequestDeliveryDateFrom()) )
+				if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) &&!ServicesUtil.isEmpty(dto.getShipToParty()) )
 				{
 					 System.err.println("status+request+documentType+creat");
-				    return repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getRequestDeliveryDateFrom(),dto.getRequestDeliveryDateTo(), pageable);
+				    return repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
 				}
-				else if(!ServicesUtil.isEmpty(dto.getRequestDeliveryDateFrom())&& ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
+				else if(!ServicesUtil.isEmpty(dto.getShipToParty())&& ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
 				{
 					 System.err.println("status+request+documentType");
-					return repo.findAll1(dto.getDocumentType(),dto.getDocumentProcessStatus(),dto.getRequestDeliveryDateFrom(),dto.getRequestDeliveryDateTo(), pageable);
+					return repo.findAll1(dto.getDocumentType(),dto.getDocumentProcessStatus(),dto.getShipToParty(), pageable);
 				}
-				else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())&& ServicesUtil.isEmpty(dto.getRequestDeliveryDateFrom()) )
+				else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom())&& ServicesUtil.isEmpty(dto.getShipToParty()) )
 				{
 					//status+created
 					 System.err.println("status+created+documentType");
@@ -291,11 +517,11 @@ public class ISalesOrderHeaderRepositoryNew {
 			}else if(!ServicesUtil.isEmpty(dto.getCreatedDateFrom()))
 			{
 				
-				  if(!ServicesUtil.isEmpty(dto.getRequestDeliveryDateFrom()))
+				  if(!ServicesUtil.isEmpty(dto.getShipToParty()))
 				    {
-					 System.err.println("Only createdDate+documentType+requested");
+					 System.err.println("Only createdDate+documentType+shipToParty");
 					
-					return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getRequestDeliveryDateFrom(),dto.getRequestDeliveryDateTo(), pageable);
+					return repo.findAll(dto.getDocumentType(),dto.getCreatedDateFrom(),dto.getCreatedDateTo(),dto.getShipToParty(), pageable);
 			        }
 				 else
 				    {
@@ -304,11 +530,11 @@ public class ISalesOrderHeaderRepositoryNew {
 				    }
 				
 			}
-			else if(!ServicesUtil.isEmpty(dto.getRequestDeliveryDateFrom()))
+			else if(!ServicesUtil.isEmpty(dto.getShipToParty()))
 			{
 				 System.err.println("Only doctype+delivery");
 				
-				return repo.findAll1(dto.getDocumentType(), dto.getRequestDeliveryDateFrom(),dto.getRequestDeliveryDateTo(), pageable);
+				return repo.findAll1(dto.getDocumentType(), dto.getShipToParty(), pageable);
 				
 			}
 			else 
@@ -316,8 +542,10 @@ public class ISalesOrderHeaderRepositoryNew {
 				 System.err.println("Only documentType");
 				return repo.findAll(dto.getDocumentType(), pageable);
 			
-			}			
-	
+			}
+			
+			
+			
 } catch (Exception e) {
 			System.err.println("tError");
 			e.printStackTrace();

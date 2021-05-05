@@ -1,4 +1,4 @@
-package com.incture.cherrywork.repositories;
+/*package com.incture.cherrywork.repositories;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
@@ -26,3 +26,4 @@ public class MessageEncoderWebsocket implements Encoder.Text<NotificationWebsock
         // Close resources
     }
 }
+*/

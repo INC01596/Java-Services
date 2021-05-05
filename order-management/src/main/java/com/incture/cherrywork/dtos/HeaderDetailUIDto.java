@@ -17,6 +17,13 @@ public class HeaderDetailUIDto {
 	private Boolean isOpen;
 	private List<String> stpId;
 	private String customer;
+	private String shipToParty;
+	public String getShipToParty() {
+		return shipToParty;
+	}
+	public void setShipToParty(String shipToParty) {
+		this.shipToParty = shipToParty;
+	}
 	public String getCustomer() {
 		return customer;
 	}
@@ -129,8 +136,8 @@ public class HeaderDetailUIDto {
 		return "HeaderDetailUIDto [salesHeaderId=" + salesHeaderId + ", documentType=" + documentType
 				+ ", documentProcessStatus=" + documentProcessStatus + ", createdBy=" + createdBy + ", createdDateFrom="
 				+ createdDateFrom + ", createdDateTo=" + createdDateTo + ", isOpen=" + isOpen + ", stpId=" + stpId
-				+ ", customer=" + customer + ", isCustomer=" + isCustomer + ", plant=" + plant
-				+ ", requestDeliveryDateFrom=" + requestDeliveryDateFrom + ", requestDeliveryDateTo="
+				+ ", customer=" + customer + ", shipToParty=" + shipToParty + ", isCustomer=" + isCustomer + ", plant="
+				+ plant + ", requestDeliveryDateFrom=" + requestDeliveryDateFrom + ", requestDeliveryDateTo="
 				+ requestDeliveryDateTo + ", pageNo=" + pageNo + ", salesGroup=" + salesGroup + "]";
 	}
 	

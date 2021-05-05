@@ -24,6 +24,8 @@ import io.swagger.annotations.ApiOperation;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
+import com.incture.cherrywork.dtos.InvoDto;
+import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
@@ -107,12 +109,9 @@ public class SalesOrderHeaderController {
 
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
-<<<<<<< HEAD
-	@PostMapping("/SalesOrderItemDelete")
-=======
 
-	@DeleteMapping("/SalesOrderItemDelete")
->>>>>>> refs/remotes/origin/master
+	
+	@PostMapping("/SalesOrderItemDelete")
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
 		return salesOrderItemService.deleteItemOnly(salesItemId);
@@ -124,25 +123,16 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.save(salesOrderHeaderDto);
 	}
 
-	@PostMapping("/get1")
-	public ResponseEntity<Object> getHeader(@RequestParam String stp) {
-		return salesOrderHeaderService.getHeader(stp);
+	@PostMapping("/getObd")
+	public ResponseEntity<Object> getManageServiceObd(@RequestBody ObdDto dto) {
+		return salesOrderHeaderService.getManageServiceObd(dto);
 	}
-<<<<<<< HEAD
-	
-	
-	
-	//@PostMapping("/page/{pageNo}")
-=======
+	@PostMapping("/getInvo")
+	public ResponseEntity<Object> getManageServiceInvo(@RequestBody InvoDto dto) {
+		return salesOrderHeaderService.getManageServiceInvo(dto);
+	}
 
-	// @PostMapping("/page/{pageNo}")
->>>>>>> refs/remotes/origin/master
-	//
-	/*
-	 * @GetMapping("/getUserDetailsBySTP/{stpId}") public ResponseEntity<Object>
-	 * getUserDetailsBySTP(@PathVariable("stpId") String stpId) { return
-	 * salesOrderHeaderService.getUserDetailsBySTP(stpId); }
-	 */
+	
 
 	/*---------------AWADHESH KUMAR---------------------------*/
 

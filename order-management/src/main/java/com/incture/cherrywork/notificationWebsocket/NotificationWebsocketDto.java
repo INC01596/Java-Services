@@ -1,4 +1,4 @@
-package com.incture.cherrywork.dtos;
+/*package com.incture.cherrywork.dtos;
 
 public class NotificationWebsocketDto {
 	
@@ -32,4 +32,4 @@ public class NotificationWebsocketDto {
 	}
 
 
-}
+}*/

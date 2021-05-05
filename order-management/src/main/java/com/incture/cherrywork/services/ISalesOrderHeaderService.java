@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
+import com.incture.cherrywork.dtos.InvoDto;
+import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 
+@SuppressWarnings("unused")
 @Repository
 public interface ISalesOrderHeaderService {
 
@@ -29,8 +32,7 @@ public interface ISalesOrderHeaderService {
 
 	ResponseEntity<Object> readAll(String search);
 
-	// ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto);
-	// ResponseEntity<Object> deleteDraftedVersion(String s4DocumentId);
+	
 
 	/*-----------------AWADHESH KUMAR---------------*/
 
@@ -56,11 +58,15 @@ public interface ISalesOrderHeaderService {
 
 	ResponseEntity<Object> save(SalesOrderHeaderDto dto);
 
-	// ResponseEntity<Object> getUserDetailsBySTP(String stpId);
+	
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 
-	ResponseEntity<Object> getHeader(String stp);
-<<<<<<< HEAD
+	
+
+	ResponseEntity<Object> getManageServiceObd(ObdDto dto);
+
+	ResponseEntity<Object> getManageServiceInvo(InvoDto dto);
+
 	
 	
 	
@@ -71,12 +77,5 @@ public interface ISalesOrderHeaderService {
 
 	
 	
-=======
 
-	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
-	// pageable);
-	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
-	//
-
->>>>>>> refs/remotes/origin/master
 }

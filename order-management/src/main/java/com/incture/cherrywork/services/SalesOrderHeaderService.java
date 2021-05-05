@@ -42,7 +42,8 @@ import com.google.gson.Gson;
 
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
-
+import com.incture.cherrywork.dtos.InvoDto;
+import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
@@ -97,15 +98,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private ISalesOrderHeaderRepositoryNew repo;
-<<<<<<< HEAD
-	
-	
 
-    
-	
-=======
-
->>>>>>> refs/remotes/origin/master
 	private SequenceNumberGen sequenceNumberGen;
 
 	@Override
@@ -180,63 +173,38 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 	}
 
-/*	@Override
-	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
-		try {
-			List<SalesOrderHeader> l = repo.getManageService(dto);
-
-			Object t = ObjectMapperUtils.mapAll(l, SalesOrderHeaderDto.class);
-
-			return ResponseEntity.ok().body(t);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	@Override
+	public ResponseEntity<Object> getManageServiceObd(ObdDto dto) {
+		
+		Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
+			Page<SalesOrderHeader> p=repo.getManageServiceObd(dto,pageable);
+            return ResponseEntity.ok().body(p);
+		
 	}
-<<<<<<< HEAD
-	*/
 	
-@Override
-public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
-{
+	@Override
+	public ResponseEntity<Object> getManageServiceInvo(InvoDto dto) {
+		
+		Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
+			Page<SalesOrderHeader> p=repo.getManageServiceInvo(dto,pageable);
+            return ResponseEntity.ok().body(p);
+		
+	}
+
 	
-	
+    @Override
+    public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto){
+    	
 	Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
 	Page<SalesOrderHeader> p=repo.getManageService(dto,pageable);
-	//Page<SalesOrderHeader> p=repo.getManageService1(dto, pageable);
 	return  ResponseEntity.ok().body(p);
 	
-	
-	
-}
-=======
-
-	/*
-	 * @Override public Page<SalesOrderHeader> getManage(HeaderDetailUIDto
-	 * dto,Pageable pageable) { try { Page<SalesOrderHeader> l =
-	 * repo.getManageService(dto); return l;
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); return null; } }
-	 */
-
->>>>>>> refs/remotes/origin/master
-	@Override
-	public ResponseEntity<Object> getHeader(String stp) {
-
-		try {
-			List<String> l = repo.getHeader(stp);
-			HeaderIdDto dto = new HeaderIdDto();
-			for (String d : l) {
-				dto.setsalesHeaderId(d);
-				repo.deleteDraftedVersion(dto);
-			}
-			return new ResponseEntity<>(l, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 
+
+	
+
+	
 	@Override
 	public ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d) {
 		try {
@@ -248,15 +216,7 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 		}
 	}
 
-	// @Override
-	// public Page<SalesOrderHeader> findPaginated(int pageNo,HeaderDetailUIDto
-	// dto)
-	// {
-	// int pageSize=5;
-	// Pageable pageable=PageRequest.of(pageNo-1, pageNo);
-	// Page<SalesOrderHeader> header=getManage(dto, pageable);
-	//
-	// }
+	
 
 	@Override
 	public ResponseEntity<Object> getReferenceList(HeaderDetailUIDto dto) {
@@ -1054,6 +1014,8 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 			}
 			return response;
 		}
+
+	
 
 		
 

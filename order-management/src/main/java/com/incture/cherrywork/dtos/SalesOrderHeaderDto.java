@@ -585,17 +585,16 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
-<<<<<<< HEAD
+
 
 		private String customerName;
 
-=======
->>>>>>> refs/remotes/origin/master
+
 	public String getWeight() {
 		return weight;
 	}
 
-<<<<<<< HEAD
+
 
 		public String getCustomerName() {
 			return customerName;
@@ -605,15 +604,10 @@ public class SalesOrderHeaderDto {
 			this.customerName = customerName;
 		}
 
-=======
->>>>>>> refs/remotes/origin/master
+
 	public void setWeight(String weight) {
 		this.weight = weight;
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
 
 	private String country;
 
