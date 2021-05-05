@@ -720,6 +720,36 @@ public class SalesOrderHeaderDto {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
+	
+	private String obdStatus;
+	private String pgiStatus;
+	private String invoiceStatus;
+	
+	
+
+	public String getObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
 
 	// sandeep
 	private EnOrderActionStatus documentProcessStatus;

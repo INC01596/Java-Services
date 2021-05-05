@@ -1125,6 +1125,12 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto)
 				.body(odataResponse);
 		// return response;
 	}
+	
+	
+//	public Response headerScheduler() {
+//		return salesOrderHeaderRepository.headerScheduler();
+//	}
+
 	//Sandeep KUmar
 		public static String listToString(List<String> list) {
 			String response = "";

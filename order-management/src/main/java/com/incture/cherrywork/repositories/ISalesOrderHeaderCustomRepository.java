@@ -15,6 +15,7 @@ public interface ISalesOrderHeaderCustomRepository {
 	SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderItemDto dto);
 	String updateError(String temp_id, String value);
 	String getLookupValue(String key);
+//	ResponseEntity<Object> headerScheduler();
 	
 
 }

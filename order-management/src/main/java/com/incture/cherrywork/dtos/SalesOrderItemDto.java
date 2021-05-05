@@ -735,6 +735,70 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
+	
+	private BigDecimal pickedQuantity;
+	private String sloc;
+	
+	
+
+	public BigDecimal getPickedQuantity() {
+		return pickedQuantity;
+	}
+
+	public void setPickedQuantity(BigDecimal pickedQuantity) {
+		this.pickedQuantity = pickedQuantity;
+	}
+
+	public String getSloc() {
+		return sloc;
+	}
+
+	public void setSloc(String sloc) {
+		this.sloc = sloc;
+	}
+	
+	private String uom;
+	
+	
+
+	public String getUom() {
+		return uom;
+	}
+
+	public void setUom(String uom) {
+		this.uom = uom;
+	}
+	
+	private String obdStatus;
+	private String pgiStatus;
+	private String invoiceStatus;
+	
+	
+
+	public String getObdStatus() {
+		return obdStatus;
+	}
+
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
+	}
+
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
 
 	public int compareTo(SalesOrderItemDto obj1) {
 		return obj1.salesItemId.compareTo(this.getSalesItemId());

@@ -8,6 +8,6 @@ import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 public interface IOutBoundHeaderService {
 	
 	ResponseEntity<Object> createObd(SalesOrderHeaderItemDto dto);
-	ResponseEntity<Object> createPgi(@RequestBody SalesOrderHeaderItemDto dto);
+	ResponseEntity<Object> createPgi(String obdId, String action);
 
 }

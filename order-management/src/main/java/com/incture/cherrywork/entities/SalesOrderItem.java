@@ -671,7 +671,7 @@ public class SalesOrderItem {
 	
 	
 	
-	public Boolean isBlocked() {
+	public Boolean getBlocked() {
 		return blocked;
 	}
 
@@ -702,6 +702,41 @@ public class SalesOrderItem {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
+	
+	@Column(name="PICKED_QUANTITY")
+	private BigDecimal pickedQuantity;
+
+	public BigDecimal getPickedQuantity() {
+		return pickedQuantity;
+	}
+
+	public void setPickedQuantity(BigDecimal pickedQuantity) {
+		this.pickedQuantity = pickedQuantity;
+	}
+
+	@Column(name="SLOC")
+	private String sloc;
+
+	public String getSloc() {
+		return sloc;
+	}
+
+	public void setSloc(String sloc) {
+		this.sloc = sloc;
+	}
+	
+	@Column(name="UOM")
+	private String uom;
+
+	public String getUom() {
+		return uom;
+	}
+
+	public void setUom(String uom) {
+		this.uom = uom;
+	}
+	
+	
 	
 	
 

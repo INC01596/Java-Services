@@ -2,6 +2,7 @@ package com.incture.cherrywork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,9 @@ public class OutBoundHeaderController {
 		return outBoundHeaderService.createObd(dto);
 	}
 	
-	@PostMapping("/createPgi")
+	@PostMapping("/createPgi/{obdId}/{action}")
 	@ApiOperation(value = "Create PGI")
-	public ResponseEntity<Object> createPgi(@RequestBody SalesOrderHeaderItemDto dto){
-		return outBoundHeaderService.createPgi(dto);
+	public ResponseEntity<Object> createPgi(@PathVariable String obdId, @PathVariable String action){
+		return outBoundHeaderService.createPgi(obdId, action);
 	}
 }
