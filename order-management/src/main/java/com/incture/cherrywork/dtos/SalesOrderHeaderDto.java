@@ -585,36 +585,20 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
 
 
-<<<<<<< HEAD
-=======
-	
->>>>>>> refs/remotes/origin/master
+
 
 	public String getWeight() {
 		return weight;
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
 
 
-<<<<<<< HEAD
-		public void setCustomerName(String customerName) {
-			this.customerName = customerName;
-		}
+	
 
 
-=======
-		
->>>>>>> refs/remotes/origin/master
+
 	public void setWeight(String weight) {
 		this.weight = weight;
 	}

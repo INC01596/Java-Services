@@ -198,41 +198,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
 	Page<SalesOrderHeader> p=repo.getManageService(dto,pageable);
 	return  ResponseEntity.ok().body(p);
-	
-<<<<<<< HEAD
-=======
+
 	
 	
 }
 
 
-	/*
-	 * @Override public Page<SalesOrderHeader> getManage(HeaderDetailUIDto
-	 * dto,Pageable pageable) { try { Page<SalesOrderHeader> l =
-	 * repo.getManageService(dto); return l;
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); return null; } }
-	 */
+	
 
 
-	@Override
-	public ResponseEntity<Object> getHeader(String stp) {
-
-		try {
-			List<String> l = repo.getHeader(stp);
-			HeaderIdDto dto = new HeaderIdDto();
-			for (String d : l) {
-				dto.setsalesHeaderId(d);
-				repo.deleteDraftedVersion(dto);
-			}
-			return new ResponseEntity<>(l, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
->>>>>>> refs/remotes/origin/master
-	}
-
+	
 
 	
 

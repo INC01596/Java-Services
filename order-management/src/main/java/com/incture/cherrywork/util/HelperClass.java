@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import com.incture.cherrywork.WConstants.Constants;
 
 @SuppressWarnings("unused")
 public class HelperClass {
@@ -198,7 +201,101 @@ public class HelperClass {
 		String auth = "Basic " + DatatypeConverter.printBase64Binary(encodeUsernamePassword.getBytes());
 		return auth;
 	}
-	
+	public static Object findUsersFromGroupInIdp(String groupName) {
+		try {
+			if (!HelperClass.checkString(groupName)) {
+
+				Map<String, Object> map = DestinationReaderUtil
+						.getDestination(Constants.USERS_FROM_GROUP_IN_IDP_DESTINATION_NAME);
+
+				String groupListUrl = map.get("URL") + "service/scim/Groups";
+
+				Map<String, String> groupsInIdp = getGroupsFromIdp(groupListUrl, (String) map.get("User"),
+						(String) map.get("Password"));
+
+				String groupId = groupsInIdp.get(groupName);
+
+				if (!HelperClass.checkString(groupId)) {
+					return getUsersFromGroupInIdp(groupId, groupListUrl, (String) map.get("User"),
+							(String) map.get("Password"));
+				} else {
+					return "Group name is not found in idp";
+				}
+
+			} else {
+				return "Group name is invalid";
+			}
+		} catch (Exception e) {
+			return e;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private static Map<String, String> getGroupsFromIdp(String url, String username, String password)
+			throws IOException {
+
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpGet httpGet = new HttpGet(url);
+
+		httpGet.addHeader("Content-Type", "application/json");
+
+		// Encoding username and password
+		String auth = encodeUsernameAndPassword(username, password);
+		httpGet.addHeader("Authorization", auth);
+
+		HttpResponse response = client.execute(httpGet);
+		String dataFromStream = getDataFromStream(response.getEntity().getContent());
+		if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+			JSONObject json = new JSONObject(dataFromStream);
+
+			Map<String, Object> map = json.toMap();
+
+			Map<String, String> mapForGroupsInIdp = new HashMap<>();
+
+			List<Map<String, Object>> listOfGroups = (List<Map<String, Object>>) map.get("Resources");
+
+			for (Map<String, Object> innerMap : listOfGroups) {
+				mapForGroupsInIdp.put((String) innerMap.get("displayName"), (String) innerMap.get("id"));
+			}
+
+			System.err.println(mapForGroupsInIdp);
+			return mapForGroupsInIdp;
+		} else {
+			return null;
+		}
+
+	}
+	@SuppressWarnings("unchecked")
+	private static Object getUsersFromGroupInIdp(String groupId, String url, String username, String password)
+			throws IOException {
+		HttpClient client = HttpClientBuilder.create().build();
+
+		HttpGet httpGet = new HttpGet(url + "/" + groupId);
+
+		// Encoding username and password
+		String auth = encodeUsernameAndPassword(username, password);
+		httpGet.addHeader("Authorization", auth);
+
+		HttpResponse response = client.execute(httpGet);
+		String dataFromStream = getDataFromStream(response.getEntity().getContent());
+		if (response.getStatusLine().getStatusCode() == 200) {
+
+			JSONObject json = new JSONObject(dataFromStream);
+			Map<String, Object> outputInMap = json.toMap();
+
+			List<Map<String, String>> listOfUsersInMap = (List<Map<String, String>>) outputInMap.get("members");
+
+			List<String> listOfUsers = new ArrayList<>();
+			for (Map<String, String> usersMap : listOfUsersInMap) {
+				listOfUsers.add(usersMap.get("value"));
+			}
+			return listOfUsers;
+
+		} else {
+			return dataFromStream;
+		}
+	}
+
+
 	
 	
 	public static String getDataFromStream(InputStream stream) throws IOException {
@@ -211,6 +308,13 @@ public class HelperClass {
 		}
 		inStream.close();
 		return dataBuffer.toString();
+	}
+	
+	public static boolean checkString(String s) {
+		if (s == null || s.equals("") || s.trim().isEmpty() || s.matches("") || s.equals(null)) {
+			return true;
+		}
+		return false;
 	}
 	
 	
