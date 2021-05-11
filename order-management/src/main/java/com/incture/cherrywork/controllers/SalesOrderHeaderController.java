@@ -110,6 +110,10 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 	@PostMapping("/SalesOrderItemDelete")
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
@@ -131,6 +135,7 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> getManageServiceInvo(@RequestBody InvoDto dto) {
 		return salesOrderHeaderService.getManageServiceInvo(dto);
 	}
+<<<<<<< HEAD
 
 	//@PostMapping("/page/{pageNo}")
 
@@ -147,6 +152,10 @@ public class SalesOrderHeaderController {
 
 	
 
+=======
+
+	
+>>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")

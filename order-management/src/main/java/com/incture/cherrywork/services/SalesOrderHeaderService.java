@@ -198,21 +198,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
 	Page<SalesOrderHeader> p=repo.getManageService(dto,pageable);
 	return  ResponseEntity.ok().body(p);
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 	
 	
 }
 
 
-	/*
-	 * @Override public Page<SalesOrderHeader> getManage(HeaderDetailUIDto
-	 * dto,Pageable pageable) { try { Page<SalesOrderHeader> l =
-	 * repo.getManageService(dto); return l;
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); return null; } }
-	 */
+	
 
-
+<<<<<<< HEAD
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 
@@ -230,7 +228,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 
 	}
+=======
+>>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 
+	
 
 	
 
