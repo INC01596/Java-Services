@@ -149,7 +149,7 @@
 			<version>4.0.0</version>
 		</dependency>
 
-		
+
 		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
 		<dependency>
 			<groupId>com.sun.mail</groupId>
@@ -166,7 +166,7 @@
 			<version>1.1</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -180,7 +180,7 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 			<version>2.2.2.RELEASE</version>
 		</dependency>
-		
+
 
 		<!-- https://mvnrepository.com/artifact/com.sap.cloud/neo-java-web-api -->
 		<dependency>
@@ -189,6 +189,14 @@
 			<version>3.62.14</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.13</version>
+		</dependency>
+
 
 	</dependencies>
 	<build>

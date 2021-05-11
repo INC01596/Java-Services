@@ -13,6 +13,10 @@ public interface SalesOrderOdataConstants {
 	String BASE_URL = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_CREATE_SALESORDER_COM_SRV/";
 	String USER_ID = "BOPF1";
 	String PASSWORD = "Dec@200";
+	String BASE_URL_OBD = "http://incturedec:8080/sap/opu/odata/sap/Z_SALESORDER_STATUS_SRV/";
+	String BASE_URL_SCH = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_SO_CREATE_SRV/";
+	String USER_ID_OBD = "bopf2";
+	String PASSWORD_OBD = "Welcome@1234";
 //	
 //	String JSON = "application/json";
 	

@@ -29,9 +29,15 @@ public class OutBoundHeaderController {
 		return outBoundHeaderService.createObd(dto);
 	}
 	
-	@PostMapping("/createPgi/{obdId}/{action}")
+	@PostMapping("/createPgi/{obdId}")
 	@ApiOperation(value = "Create PGI")
-	public ResponseEntity<Object> createPgi(@PathVariable String obdId, @PathVariable String action){
-		return outBoundHeaderService.createPgi(obdId, action);
+	public ResponseEntity<Object> createPgi(@PathVariable String obdId){
+		return outBoundHeaderService.createPgi(obdId);
+	}
+	
+	@PostMapping("/createInv/{pgiId}")
+	@ApiOperation(value = "Create Invoice")
+	public ResponseEntity<Object> createInv(@PathVariable String invId){
+		return outBoundHeaderService.createInv(invId);
 	}
 }

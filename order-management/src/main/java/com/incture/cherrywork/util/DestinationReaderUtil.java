@@ -18,17 +18,21 @@ public class DestinationReaderUtil {
 
 	public static Map<String, Object> getDestination(String destinationName) throws URISyntaxException, IOException {
 
+		System.err.println("getDestination started..");
 		HttpClient client = HttpClientBuilder.create().build();
 
 		HttpPost httpPost = new HttpPost(ComConstants.DESTINATION_TOKEN_URL);
 		httpPost.addHeader("Content-Type", "application/json");
 
+		System.err.println("httpPost in get Destination"+httpPost);
 		// Encoding username and password
 		String auth = HelperClass.encodeUsernameAndPassword(ComConstants.DESTINATION_CLIENT_ID,
 				ComConstants.DESTINATION_CLIENT_SECRET);
 		httpPost.addHeader("Authorization", auth);
 
 		HttpResponse res = client.execute(httpPost);
+		
+		System.err.println("res in get destination"+res);
 
 		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
 		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
@@ -45,10 +49,12 @@ public class DestinationReaderUtil {
 			String dataFromStream = HelperClass.getDataFromStream(response.getEntity().getContent());
 			if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
 
+				System.err.println("in get Destination response status is 200");
 				JSONObject json = new JSONObject(dataFromStream);
 				return json.getJSONObject("destinationConfiguration").toMap();
 
 			}
+			System.err.println("in get Destination res status is 200");
 		}
 
 		return null;

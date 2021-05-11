@@ -3,6 +3,9 @@ package com.incture.cherrywork.dtos;
 import java.util.List;
 
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+import com.incture.cherrywork.sales.constants.EnOverallDocumentStatus;
+import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
+import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
 
 import java.util.ArrayList;
 
@@ -231,6 +234,18 @@ public class SalesOrderHeaderDto {
 		this.overallDocumentStatus = overallDocumentStatus;
 	}
 
+	private EnOverallDocumentStatus overallDocumentStatus1;
+	
+	
+	
+	public EnOverallDocumentStatus getOverallDocumentStatus1() {
+		return overallDocumentStatus1;
+	}
+
+	public void setOverallDocumentStatus1(EnOverallDocumentStatus overallDocumentStatus1) {
+		this.overallDocumentStatus1 = overallDocumentStatus1;
+	}
+
 	private String deliveryStatus;
 
 	public String getDeliveryStatus() {
@@ -322,6 +337,16 @@ public class SalesOrderHeaderDto {
 	}
 
 	private String updateIndicator;
+	private EnUpdateIndicator updateIndicator1;
+	
+
+	public EnUpdateIndicator getUpdateIndicator1() {
+		return updateIndicator1;
+	}
+
+	public void setUpdateIndicator1(EnUpdateIndicator updateIndicator1) {
+		this.updateIndicator1 = updateIndicator1;
+	}
 
 	public String getUpdateIndicator() {
 		return updateIndicator;
@@ -585,36 +610,15 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
-
-
-<<<<<<< HEAD
-=======
-	
->>>>>>> refs/remotes/origin/master
-
 	public String getWeight() {
 		return weight;
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/master
-
-
-<<<<<<< HEAD
 		public void setCustomerName(String customerName) {
 			this.customerName = customerName;
 		}
 
 
-=======
-		
->>>>>>> refs/remotes/origin/master
 	public void setWeight(String weight) {
 		this.weight = weight;
 	}
@@ -706,10 +710,17 @@ public class SalesOrderHeaderDto {
 		return customerName;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
+	private String paymentStatus;
 	
+	
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
 	private String salesOrderId;
 	private String obdId;
 	private String pgiId;
@@ -768,6 +779,134 @@ public class SalesOrderHeaderDto {
 
 	public void setInvoiceStatus(String invoiceStatus) {
 		this.invoiceStatus = invoiceStatus;
+	}
+	
+	private BigDecimal creditBlockQuantity;
+	
+	public BigDecimal getCreditBlockQuantity() {
+		return creditBlockQuantity;
+	}
+
+	public void setCreditBlockQuantity(BigDecimal creditBlockQuantity) {
+		this.creditBlockQuantity = creditBlockQuantity;
+	}
+	
+	
+	private BigDecimal onTimeDeliveredQuantity;
+	public BigDecimal getOnTimeDeliveredQuantity() {
+		return onTimeDeliveredQuantity;
+	}
+
+	public void setOnTimeDeliveredQuantity(BigDecimal onTimeDeliveredQuantity) {
+		this.onTimeDeliveredQuantity = onTimeDeliveredQuantity;
+	}
+
+	private Integer deliveryLeadingDays;
+	
+	public Integer getDeliveryLeadingDays() {
+		return deliveryLeadingDays;
+	}
+
+	public void setDeliveryLeadingDays(Integer deliveryLeadingDays) {
+		this.deliveryLeadingDays = deliveryLeadingDays;
+	}
+
+	private Integer paymentLeadingDays;
+	
+	public Integer getPaymentLeadingDays() {
+		return paymentLeadingDays;
+	}
+
+	public void setPaymentLeadingDays(Integer paymentLeadingDays) {
+		this.paymentLeadingDays = paymentLeadingDays;
+	}
+
+
+	private String salesOrganization;
+	
+	
+
+
+	public String getSalesOrganization() {
+		return salesOrganization;
+	}
+
+	public void setSalesOrganization(String salesOrganization) {
+		this.salesOrganization = salesOrganization;
+	}
+	
+	private String customerPONum;
+	
+
+	public String getCustomerPONum() {
+		return customerPONum;
+	}
+
+	public void setCustomerPONum(String customerPONum) {
+		this.customerPONum = customerPONum;
+	}
+	
+	private BigDecimal outstandingQuantity1;
+	
+	
+
+	
+
+	public BigDecimal getOutstandingQuantity1() {
+		return outstandingQuantity1;
+	}
+
+	public void setOutstandingQuantity1(BigDecimal outstandingQuantity1) {
+		this.outstandingQuantity1 = outstandingQuantity1;
+	}
+	
+	private EnPaymentChequeStatus paymentChequeDetail;
+	
+	
+
+	public EnPaymentChequeStatus getPaymentChequeDetail() {
+		return paymentChequeDetail;
+	}
+
+	public void setPaymentChequeDetail(EnPaymentChequeStatus paymentChequeDetail) {
+		this.paymentChequeDetail = paymentChequeDetail;
+	}
+	
+	private Integer deliveryStatus1;
+	
+	
+
+	public Integer getDeliveryStatus1() {
+		return deliveryStatus1;
+	}
+
+	public void setDeliveryStatus1(Integer deliveryStatus1) {
+		this.deliveryStatus1 = deliveryStatus1;
+	}
+	
+	private Boolean syncStatus1;
+	
+	
+	
+
+	public Boolean getSyncStatus1() {
+		return syncStatus1;
+	}
+
+	public void setSyncStatus1(Boolean syncStatus1) {
+		this.syncStatus1 = syncStatus1;
+	}
+	
+	private String invId;
+	
+	
+
+	public String getInvId() {
+		return invId;
+	}
+
+	public void setInvId(String invId) {
+		this.invId = invId;
 	}
 
 	// sandeep
