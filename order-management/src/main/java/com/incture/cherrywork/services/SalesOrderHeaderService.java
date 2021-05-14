@@ -198,7 +198,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
 	Page<SalesOrderHeader> p=repo.getManageService(dto,pageable);
 	return  ResponseEntity.ok().body(p);
-
 	
 	
 }
@@ -206,6 +205,24 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	
 
+
+	@Override
+	public ResponseEntity<Object> getHeader(String stp) {
+
+		try {
+			List<String> l = repo.getHeader(stp);
+			HeaderIdDto dto = new HeaderIdDto();
+			for (String d : l) {
+				dto.setsalesHeaderId(d);
+				repo.deleteDraftedVersion(dto);
+			}
+			return new ResponseEntity<>(l, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("EXCEPTION FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 
 	
 
@@ -480,7 +497,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// { System.err.println("[submitSalesOrder][odata] if case "
 			// +dto.getSalesHeaderId());
 			SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto);
-			res1 = submitOdata(odataHeaderDto);
+			res1 = submitOdata(odataHeaderDto, dto.getHeaderDto().getDocumentType());
 		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
@@ -508,19 +525,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> submitSalesOrder1(SalesOrderHeaderItemDto dto) {
 		System.err.println("sso1 started " + dto.toString()); //
-		logger.debug("[SalesHeaderDao][submitSalesOrder] Started : " + //
-				dto.toString());
+		//logger.debug("[SalesHeaderDao][submitSalesOrder] Started : " + //
+		//		dto.toString());
 		// Response response = new Response();
 		// Sessionsession = null;
 		// Transaction tx = null;
 		try {
 			String queryString = null;
 			Query query = null;
-			if (dto.getHeaderDto().getDocumentType() == "OBD") {
+			if (dto.getHeaderDto().getDocumentType().equals("OBD")) {
 				queryString = "select distinct(i.plant) from SalesOrderItem i where i.outBoundOrderId=:outBoundOrderId";
 				query = entityManager.createQuery(queryString);
 				query.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
-			} else if (dto.getHeaderDto().getDocumentType() == "PGI") {
+			} else if (dto.getHeaderDto().getDocumentType().equals("PGI")) {
 				queryString = "select distinct(i.plant) from SalesOrderItem i where i.pgiId=:pgiId";
 				query = entityManager.createQuery(queryString);
 				query.setParameter("pgiId", dto.getHeaderDto().getPgiId());
@@ -573,12 +590,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 
 			Query query1 = null;
-			if (dto.getHeaderDto().getDocumentType() == "OBD") {
+			if (dto.getHeaderDto().getDocumentType().equals("OBD")) {
 				String iq = "select s.salesItemId from SalesOrderItem s where s.outBoundOrderId=:outBoundOrderId order by s.salesItemId asc";
 				query1 = entityManager.createQuery(iq);
 				query1.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
 			}
-			if (dto.getHeaderDto().getDocumentType() == "PGI") {
+			else if (dto.getHeaderDto().getDocumentType().equals("PGI")) {
 				String iq = "select s.salesItemId from SalesOrderItem s where s.pgiId=:pgiId order by s.salesItemId asc";
 				query1 = entityManager.createQuery(iq);
 				query1.setParameter("pgiId", dto.getHeaderDto().getPgiId());
@@ -590,7 +607,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			List<String> listItem = query1.getResultList();
 
 			System.out.println("lineitem " + listItem);
-			if (listItem != null && listItem.size() > 0) {
+			if (listItem != null && listItem.size() > 0 && (!(dto.getHeaderDto().getDocumentType().equals("OBD"))||(!(dto.getHeaderDto().getDocumentType().equals("PGI"))))) {
 				int i = 1;
 				for (String item : listItem) {
 
@@ -678,10 +695,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			if (!ServicesUtils.isEmpty(docID_6)) {
 
 				String hString = null;
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					hString = "select s from SalesOrderHeader s where s.obdId='" + temp_id + "' and s.plant='4321'";
-				else if (Doc_Type == "PGI")
+				else if (Doc_Type.equals("PGI"))
 					hString = "select s from SalesOrderHeader s where s.pgiId='" + temp_id + "' and s.plant='4321'";
+				else if (Doc_Type.equals("INV"))
+					hString = "select s from SalesOrderHeader s where s.invId='" + temp_id + "' and s.plant='4321'";
 				else
 					hString = "select s from SalesOrderHeader s where s.salesHeaderId='" + temp_id
 							+ "' and s.plant='4321'";
@@ -697,20 +716,24 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// orders
 					salesHeaderDto.setIsOpen(true);
 
-				if (salesHeaderDto.getDocumentType() == "IN")
+				if (salesHeaderDto.getDocumentType().equals("IN"))
 					docID_6 = "IN" + docID_6;
-				if (salesHeaderDto.getDocumentType() == "OR")
+				if (salesHeaderDto.getDocumentType().equals("OR"))
 					docID_6 = "OR" + docID_6;
-				if (salesHeaderDto.getDocumentType() == "QT")
+				if (salesHeaderDto.getDocumentType().equals("QT"))
 					docID_6 = "QT" + docID_6;
-				if (salesHeaderDto.getDocumentType() == "OBD")
+				if (salesHeaderDto.getDocumentType().equals("OBD"))
 					docID_6 = "OBD" + docID_6;
-				if (salesHeaderDto.getDocumentType() == "PGI")
+				if (salesHeaderDto.getDocumentType().equals("PGI"))
 					docID_6 = "PGI" + docID_6;
+				if (salesHeaderDto.getDocumentType().equals("INV"))
+					docID_6 = "INV" + docID_6;
 
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					salesHeaderDto.setObdId(docID_6);
-				else if (Doc_Type == "PGI")
+				else if (Doc_Type.equals("PGI"))
+					salesHeaderDto.setPgiId(docID_6);
+				else if (Doc_Type.equals("INV"))
 					salesHeaderDto.setPgiId(docID_6);
 				else
 					salesHeaderDto.setSalesHeaderId(docID_6);
@@ -725,11 +748,18 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				salesHeaderDto.setPostingDate(new Date());
 				salesHeaderDto.setPostingError(null);
 				salesHeaderDto.setPostingStatus(true);
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD")){
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
-				if (Doc_Type == "PGI")
+					salesHeaderDto.setObdStatus("Created");
+				}
+				else if (Doc_Type.equals("PGI")){
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
-				else
+					salesHeaderDto.setPgiStatus("Created");
+				}
+				else if(Doc_Type.equals("INV")){
+					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
+					salesHeaderDto.setInvoiceStatus("Created");
+				}
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
 				// End
 
@@ -749,6 +779,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						notificationTypeId = "N04";
 					else if (salesHeaderDto.getDocumentType().equals("PGI"))
 						notificationTypeId = "N05";
+					else if (salesHeaderDto.getDocumentType().equals("INV"))
+						notificationTypeId = "N06";
 					// String odataResponse1 =
 					// odataServices.usersBySoldToParty(salesHeaderDto.getSoldToParty());
 					// List<String> listUsers =
@@ -816,10 +848,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// session = sessionFactory.openSession();
 				// tx = session.beginTransaction();
 				String lString = null;
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					lString = "select s from SalesOrderItem s where s.outBoundOrderId=:temp_id and s.plant='4321'";
-				if (Doc_Type == "PGI")
+				if (Doc_Type.equals("PGI"))
 					lString = "select s from SalesOrderItem s where s.pgiId=:temp_id and s.plant='4321'";
+				if (Doc_Type.equals("INV"))
+					lString = "select s from SalesOrderItem s where s.invId=:temp_id and s.plant='4321'";
 				else
 					lString = "select s from SalesOrderItem s where s.salesHeaderId=:temp_id and s.plant='4321'";
 				Query lq = entityManager.createQuery(lString);
@@ -833,10 +867,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					SalesOrderItemDto salesItemDetailsDto = new SalesOrderItemDto();
 					salesItemDetailsDto = ObjectMapperUtils.map(salesItemDetailsDo, SalesOrderItemDto.class);
 					salesItemDetailsDto.setS4DocumentId(salesItemDetailsDo.getSalesOrderHeader().getS4DocumentId());
-					if (Doc_Type == "OBD")
+					if (Doc_Type.equals("OBD"))
 						salesItemDetailsDto.setOutBoundOrderId(docID_6);
-					if (Doc_Type == "PGI")
+					else if (Doc_Type.equals("PGI"))
 						salesItemDetailsDto.setPgiId(docID_6);
+					else if (Doc_Type.equals("INV"))
+						salesItemDetailsDto.setInvId(docID_6);
 					else
 						salesItemDetailsDto.setSalesHeaderId(docID_6);
 					// session = sessionFactory.openSession();
@@ -853,9 +889,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// session = sessionFactory.openSession();
 				// tx = session.beginTransaction();
 				String hString = null;
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					hString = "select s from SalesOrderHeader s where s.obdId='" + temp_id + "' and s.plant='CODD'";
-				if (Doc_Type == "PGI")
+				if (Doc_Type.equals("PGI"))
 					hString = "select s from SalesOrderHeader s where s.pgiId='" + temp_id + "' and s.plant='CODD'";
 				else
 					hString = "select s from SalesOrderHeader s where s.salesHeaderId='" + temp_id
@@ -881,7 +917,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OR"))
 					docID_6 = "OR" + docID_2;
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("QT"))
-					docID_6 = "QT" + docID_2;
+					docID_6 = "QT"
+							+ "" + docID_2;
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("OBD"))
 					docID_6 = "OBD" + docID_2;
 				if ((salesHeaderDto.getDocumentType() != null) && salesHeaderDto.getDocumentType().equals("PGI"))
@@ -889,16 +926,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 				if (salesHeader != null)
 					salesHeaderDto.setS4DocumentId(salesHeader.getS4DocumentId());
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					salesHeaderDto.setObdId(docID_2);
-				if (Doc_Type == "PGI")
+				if (Doc_Type.equals("PGI"))
 					salesHeaderDto.setPgiId(docID_2);
 				else
 					salesHeaderDto.setSalesHeaderId(docID_2);
 
-				if (Doc_Type == "OBD")
+				if (Doc_Type.equals("OBD"))
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
-				if (Doc_Type == "PGI")
+				if (Doc_Type.equals("PGI"))
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
 				else
 					salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
@@ -963,11 +1000,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// if
 					// (userDto.getUserId().equals(salesHeaderDto.getSoldToParty()))
 
-					if (Doc_Type == "OBD")
+					if (Doc_Type.equals("OBD"))
 						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
 								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
 								notificationTypeId, "OBD Created", true);
-					if (Doc_Type == "PGI")
+					if (Doc_Type.equals("PGI"))
 						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
 								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
 								notificationTypeId, "PGI Created", true);
@@ -1008,9 +1045,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// session = sessionFactory.openSession();
 				// tx = session.beginTransaction();
 				String lString = null;
-				if(Doc_Type == "OBD")
+				if(Doc_Type.equals("OBD"))
 					lString = "select s from SalesOrderItem s where s.outBoundOrderId=:temp_id and s.plant='CODD'";
-				if(Doc_Type == "PGI")
+				if(Doc_Type.equals("PGI"))
 					lString = "select s from SalesOrderItem s where s.pgiId=:temp_id and s.plant='CODD'";
 				else
 					lString = "select s from SalesOrderItem s where s.salesHeaderId=:temp_id and s.plant='CODD'";
@@ -1043,13 +1080,13 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	@Async
-	public ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto) {
+	public ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto, String docType) {
 
 		System.err.println("[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString());
 		// Response response = new Response();
 		String odataResponse = null;
 		try {
-			odataResponse = odataServices.postData(odataHeaderDto);
+			odataResponse = odataServices.postData(odataHeaderDto,docType);
 			System.out.println("odataresponse: " + odataResponse);
 			JSONObject json = new JSONObject((odataResponse));
 			System.err.println("[submitSalesOrder][submitOdata] json : " + json.toString());
@@ -1100,6 +1137,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				.body(odataResponse);
 		// return response;
 	}
+	
+
+		
+
 	
 	
 //	public Response headerScheduler() {

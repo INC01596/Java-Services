@@ -1,6 +1,5 @@
 package com.incture.cherrywork.repositories;
 
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -8,6 +7,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -22,6 +22,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
+import com.incture.cherrywork.dtos.OutBoundDeliveryDto;
+import com.incture.cherrywork.dtos.OutBoundDeliveryItemDto;
 import com.incture.cherrywork.dtos.SalesOrderDropDownSearchHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
@@ -39,6 +47,7 @@ import com.incture.cherrywork.dtos.SalesOrderStandardListDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
+import com.incture.cherrywork.odata.dto.OdataSchHeaderDto;
 import com.incture.cherrywork.sales.constants.EnOperation;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
@@ -47,6 +56,8 @@ import com.incture.cherrywork.services.SalesOrderHeaderService;
 import com.incture.cherrywork.services.SalesOrderItemService;
 import com.incture.cherrywork.services.SalesOrderOdataServices;
 import com.incture.cherrywork.util.ServicesUtil;
+import com.incture.cherrywork.sales.constants.EnOverallDocumentStatus;
+import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
 
 @SuppressWarnings("unused")
 @Transactional
@@ -55,22 +66,21 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-//	@Autowired
-//	private SalesOrderHeaderService salesOrderHeaderService;
-//	
-//	@Autowired
-//	private SalesOrderItemService salesOrderItemService;
 
-//	@Autowired
-//	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
+	// @Autowired
+	// private SalesOrderHeaderService salesOrderHeaderService;
+	//
+	// @Autowired
+	// private SalesOrderItemService salesOrderItemService;
 
-	//@Autowired
-	//private ISalesOrderItemRepository salesOrderItemRepository;
+	// @Autowired
+	// private ISalesOrderHeaderRepository salesOrderHeaderRepository;
+
+	// @Autowired
+	// private ISalesOrderItemRepository salesOrderItemRepository;
 
 	@Autowired
 	private SalesOrderOdataServices odataServices;
-
 
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {
@@ -228,7 +238,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				if (!ServicesUtils.isEmpty(dto.getKgPerMeter()))
 					query.append(" m.KG_PER_METER = \'" + dto.getKgPerMeter() + "\' and");
 				if (!ServicesUtils.isEmpty(dto.getLength())) {
-					if (dto.getLength() != null && dto.getLength().equals("other") && !ServicesUtils.isEmpty(dto.getOtherLength())) {
+					if (dto.getLength() != null && dto.getLength().equals("other")
+							&& !ServicesUtils.isEmpty(dto.getOtherLength())) {
 						query.append(" m.LENGTH = (select top 1 l.LENGTH from MATERIAL l where l.LENGTH <= "
 								+ dto.getOtherLength() + " ");
 						if (!ServicesUtils.isEmpty(dto.getMaterial()))
@@ -259,20 +270,15 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Material Fetched Successfully").body(listDto);
 
 	}
-	
-	
 
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderItemDto dto) {
 		// logger.debug("[SalesHeaderDao][getOdataReqPayload] Started : " +
 		// salesHeaderId);
 		// SalesItemDetailsDao salesItemDetailsDao = new SalesItemDetailsDao();
-		
-		
-		
-		System.err.println("salesHeaderId in reqpayload: "+dto.getHeaderDto().getSalesHeaderId());
+
+		System.err.println("salesHeaderId in reqpayload: " + dto.getHeaderDto().getSalesHeaderId());
 		String salesHeaderId = dto.getHeaderDto().getSalesHeaderId();
 		SalesOrderOdataHeaderDto odataHeaderDto = new SalesOrderOdataHeaderDto();
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
@@ -282,8 +288,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			Query hq = entityManager.createQuery(headerQuery);
 			hq.setParameter("salesHeaderId", salesHeaderId);
 			headerEntityList = hq.getResultList();
-			System.err.println("headerEntityList in reqpayload: "+headerEntityList.toString());
-			for (SalesOrderHeader entity : headerEntityList){
+			System.err.println("headerEntityList in reqpayload: " + headerEntityList.toString());
+			for (SalesOrderHeader entity : headerEntityList) {
 				SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
 				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
 				List<SalesOrderItemDto> lineItemListDto = new ArrayList<>();
@@ -298,25 +304,25 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				headerDto.setOverDeliveryTolerance(dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setPlant(dto.getHeaderDto().getPlant());
 				headerDto.setCustomerPODate(dto.getHeaderDto().getCustomerPODate());
-				System.out.println("in [reqpayload] ovdeltol: "+dto.getHeaderDto().getOverDeliveryTolerance());
+				System.out.println("in [reqpayload] ovdeltol: " + dto.getHeaderDto().getOverDeliveryTolerance());
 				headerDto.setUnderDeliveryTolerance(dto.getHeaderDto().getUnderDeliveryTolerance());
-				System.err.println("headerEntityList in reqpayload: "+headerDto.toString());
+				System.err.println("headerEntityList in reqpayload: " + headerDto.toString());
 				salesHeaderItemDto.setHeaderDto(headerDto);
 				String itemQuery = "select s from SalesOrderItem s where s.salesHeaderId=:salesHeaderId";
 				Query iq = entityManager.createQuery(itemQuery);
 				iq.setParameter("salesHeaderId", salesHeaderId);
 				lineItemListDo = iq.getResultList();
-				System.err.println("lineItemListDo in reqpayload: "+lineItemListDo.toString());
+				System.err.println("lineItemListDo in reqpayload: " + lineItemListDo.toString());
 				for (SalesOrderItem item : lineItemListDo) {
 					SalesOrderItemDto itemDto = new SalesOrderItemDto();
 					itemDto = ObjectMapperUtils.map(item, SalesOrderItemDto.class);
-					lineItemListDto.add(itemDto);  
+					lineItemListDto.add(itemDto);
 				}
-				System.err.println("lineItemListDto in reqpayload"+lineItemListDo);
+				System.err.println("lineItemListDto in reqpayload" + lineItemListDo);
 				salesHeaderItemDto.setLineItemList(lineItemListDto);
 				odataHeaderDto = convertToOdataReq(salesHeaderItemDto);
-				System.err.println("salesHeaderItemDto "+salesHeaderItemDto.toString());
-				System.err.println("odataHeaderDto: "+odataHeaderDto);
+				System.err.println("salesHeaderItemDto " + salesHeaderItemDto.toString());
+				System.err.println("odataHeaderDto: " + odataHeaderDto);
 				// logger.debug("[SalesHeaderDao][getOdataReqPayload] end : " +
 				// odataHeaderDto);
 			}
@@ -328,8 +334,6 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		return odataHeaderDto;
 	}
 
-		
-	
 	public String updateError(String temp_id, String value) {
 		// logger.debug("[SalesHeaderDao][updateError] Start : " + temp_id + " :
 		// " + value);
@@ -339,12 +343,12 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			long t = d.getTime();
 			value = value.replaceAll("'", "");
 			String hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
-					+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='" + temp_id
-					+ "'";
+					+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='"
+					+ temp_id + "'";
 			Query hq = entityManager.createNativeQuery(hString);
 			hq.executeUpdate();
 			msg = "Success";
-			
+
 		} catch (Exception e) {
 			msg = "Faliure";
 			// logger.error("[SalesHeaderDao][updateError] Exception : " +
@@ -353,27 +357,28 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		}
 		return msg;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public String getLookupValue(String key) {
-		//logger.debug("[LookUpDao][getLookupValue] Started : " + key);
+		// logger.debug("[LookUpDao][getLookupValue] Started : " + key);
 		String value = null;
 		try {
 			String strQuery = "select m.description from LookUp m where m.key =: key ";
 			Query query = entityManager.createQuery(strQuery);
 			query.setParameter("key", key);
-			List<String >values = query.getResultList();
-			if(values.size()>0)
+			List<String> values = query.getResultList();
+			if (values.size() > 0)
 				value = values.get(0);
 		} catch (Exception e) {
-			//logger.error("[LookUpDao][getLookupValue] Exception :" + e.getMessage());
+			// logger.error("[LookUpDao][getLookupValue] Exception :" +
+			// e.getMessage());
 			e.printStackTrace();
 		}
 		return value;
 	}
-	
+
 	public SalesOrderOdataHeaderDto convertToOdataReq(SalesOrderHeaderItemDto dto) {
-		//logger.debug("[SalesHeaderDao][convertToOdataReq] Stated : " + dto);
+		// logger.debug("[SalesHeaderDao][convertToOdataReq] Stated : " + dto);
 		System.out.println("[SalesHeaderDao][convertToOdataReq] Stated : " + dto);
 		SalesOrderOdataHeaderDto headerDto = new SalesOrderOdataHeaderDto();
 		List<SalesOrderOdataLineItemDto> odataItemList = new ArrayList<>();
@@ -385,9 +390,9 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getS4DocumentId())) {
 			if ((dto.getHeaderDto().getPlant() != null) && dto.getHeaderDto().getPlant().equals("CODD")) {
 				headerDto.setDocID_6("");
-				headerDto.setDocID_2(/*dto.getHeaderDto().getS4DocumentId()*/"");
+				headerDto.setDocID_2(/* dto.getHeaderDto().getS4DocumentId() */"");
 			} else if (dto.getHeaderDto().getPlant() != null && dto.getHeaderDto().getPlant().equals("4321")) {
-				headerDto.setDocID_6(/*dto.getHeaderDto().getS4DocumentId()*/"");
+				headerDto.setDocID_6(/* dto.getHeaderDto().getS4DocumentId() */"");
 				headerDto.setDocID_2("");
 			}
 		} else {
@@ -403,7 +408,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setCreated_by(dto.getHeaderDto().getCreatedBy());
 		else
 			headerDto.setCreated_by("");
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()) && dto.getHeaderDto().getDocumentType().equals("OR"))
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType())
+				&& dto.getHeaderDto().getDocumentType().equals("OR"))
 			headerDto.setDocType("COM");
 		else if (!ServicesUtils.isEmpty(dto.getHeaderDto().getDocumentType()))
 			headerDto.setDocType(dto.getHeaderDto().getDocumentType());
@@ -450,12 +456,10 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setDistChannel(dto.getHeaderDto().getDistributionChannel());
 		else
 			headerDto.setDistChannel("");
-		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getPaymentTerms()))
-		{
+		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getPaymentTerms())) {
 			headerDto.setPayment(dto.getHeaderDto().getPaymentTerms());
-			System.out.println("in [converttoodata] paymentterms "+dto.getHeaderDto().getPaymentTerms());
-		}
-		else
+			System.out.println("in [converttoodata] paymentterms " + dto.getHeaderDto().getPaymentTerms());
+		} else
 			headerDto.setPayment("");
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getRequestDeliveryDate())) {
 			String date = ServicesUtils.DateToString(dto.getHeaderDto().getRequestDeliveryDate());
@@ -513,7 +517,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				BigDecimal netValue = new BigDecimal(dto.getHeaderDto().getNetValue());
 				BigDecimal val = netValue.divide(dto.getHeaderDto().getTotalSalesOrderQuantity(), 3,
 						RoundingMode.HALF_UP);
-				System.out.println("in[converttoodata] netval: "+netValue+" val "+val+" val in string "+val.toString());
+				System.out.println(
+						"in[converttoodata] netval: " + netValue + " val " + val + " val in string " + val.toString());
 				headerDto.setWeightAVG(val.toString());
 			} else {
 				BigDecimal val = new BigDecimal(0);
@@ -539,7 +544,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setBSTKD_E("");
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getOverDeliveryTolerance())) {
 			String ot = getLookupValue(dto.getHeaderDto().getOverDeliveryTolerance());
-			System.err.println("in [converttoodata]"+ot);
+			System.err.println("in [converttoodata]" + ot);
 			headerDto.setOvdelTol(ot.substring(0, ot.length()));
 		} else
 			headerDto.setOvdelTol("");
@@ -564,15 +569,16 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setShType(dto.getHeaderDto().getShippingType());
 		else
 			headerDto.setShType("");
-		   int count = 0;
+		int count = 0;
 		for (SalesOrderItemDto itemDto : dto.getLineItemList()) {
 			SalesOrderOdataLineItemDto odataLine = new SalesOrderOdataLineItemDto();
 			odataLine.setTemp_id("");
-			 count += 1;
-			
+			count += 1;
+
 			odataLine.setItem(Integer.toString(count));
-//			System.out.println("line item number in ctodta"+itemDto.getLineItemNumber());
-//			odataLine.setItem(itemDto.getLineItemNumber());
+			// System.out.println("line item number in
+			// ctodta"+itemDto.getLineItemNumber());
+			// odataLine.setItem(itemDto.getLineItemNumber());
 			if (!ServicesUtils.isEmpty(itemDto.getItemCategory()))
 				odataLine.setItemcat(itemDto.getItemCategory());
 			else
@@ -671,370 +677,277 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			odataItemList.add(odataLine);
 		}
 		headerDto.setSotoLi(odataItemList);
-		//logger.debug("[SalesHeaderDao][convertToOdataReq] end : " + headerDto);
+		// logger.debug("[SalesHeaderDao][convertToOdataReq] end : " +
+		// headerDto);
 		System.err.println("[SalesHeader][convertToOdataReq] end : " + headerDto);
 		return headerDto;
 	}
-	
-//	public ResponseEntity<Object> headerScheduler() {
-//		//logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new Date());
-//		System.err.println("[SalesHeaderDao][headerScheduler] Start : " + new Date());
-//		//Response response = new Response();
-//		ArrayList<String> list = new ArrayList<>();
-//		//Session session = null;
-//		//Transaction tx = null;
-//		try {
-//			OdataSchHeaderStartDto odataSchHeaderStartDto = odataServices.headerScheduler();
-//			List<SalesOrderHeaderDto> listSalesHeaderDto = convertData(odataSchHeaderStartDto);
-//			for (SalesOrderHeaderDto salesHeaderDto : listSalesHeaderDto) {
-//				if (salesHeaderDto.getUpdateIndicator().equals(EnUpdateIndicator.DELETE)) {
-//					//session = sessionFactory.openSession();
-//					//tx = session.beginTransaction();
-//					Query query = entityManager.createQuery("delete from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
-//					query.setParameter("s4DocumentId", salesHeaderDto.getS4DocumentId());
-//					query.executeUpdate();
-//					list.add("D-" + salesHeaderDto.getS4DocumentId());
-////					session.flush();
-////					session.clear();
-////					tx.commit();
-//				} else {
-////					session = sessionFactory.openSession();
-////					tx = session.beginTransaction();
-//					Query query = entityManager.createQuery("select s.tableKey from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
-//					query.setParameter("s4DocumentId", salesHeaderDto.getS4DocumentId());
-//					List<String> objList = query.getResultList();
-////					session.flush();
-////					session.clear();
-////					tx.commit();
-//
-//					if (objList != null && objList.size() > 0) {
-////						session = sessionFactory.openSession();
-////						tx = session.beginTransaction();
-//						String tableKey = objList.get(0).toString();
-//						list.add("U-" + tableKey);
-//						//logger.debug("[SalesHeaderDao][headerScheduler] table key : " + tableKey);
-//						System.err.println("[SalesHeaderDao][headerScheduler] table key : " + tableKey);
-//
-//						StringBuffer sb = new StringBuffer("update SALES_HEADER set ");
-//						sb.append("CLIENT_SPECIFIC = " + salesHeaderDto.getClientSpecific() + ", ");
-//						sb.append("HEADER_ID = '" + salesHeaderDto.getSalesHeaderId() + "', ");
-//						sb.append("S4_DOCUMENT_ID = '" + salesHeaderDto.getS4DocumentId() + "', ");
-//						sb.append("DOCUMENT_TYPE = '" + salesHeaderDto.getDocumentType() + "', ");
-//						sb.append("DOCUMENT_CATEGORY = '" + salesHeaderDto.getDocumentCategory() + "', ");
-//						//sb.append("SALES_ORG = '" + salesHeaderDto.getSalesOrganization() + "', ");
-//						sb.append("DISTRIBUTION_CHANNEL = '" + salesHeaderDto.getDistributionChannel() + "', ");
-//						sb.append("DIVSION = '" + salesHeaderDto.getDivision() + "', ");
-//						sb.append("SALES_OFFICE = '" + salesHeaderDto.getSalesOffice() + "', ");
-//						sb.append("SOLD_TO_PARTY = '" + salesHeaderDto.getSoldToParty() + "', ");
-//						sb.append("SHIP_TO_PARTY = '" + salesHeaderDto.getShipToParty() + "', ");
-//						sb.append("CUSTOMER_PO_NUM = '" + salesHeaderDto.getCustomerPoNum().replace("'", "''") + "', ");
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getCustomerPODate()))
-//							sb.append("CUSTOMER_PO_DATE = '" + salesHeaderDto.getCustomerPODate() + "', ");
-//						else
-//							sb.append("CUSTOMER_PO_DATE = null, ");
-//						sb.append("REQUEST_DELIVERY_DATE = '" + salesHeaderDto.getRequestDeliveryDate() + "', ");
-//						sb.append("SHIPPING_TYPE = '" + salesHeaderDto.getShippingType() + "', ");
-//						sb.append("TOTAL_SO_QUANTITY = " + salesHeaderDto.getTotalSalesOrderQuantity() + ", ");
-//						sb.append("NET_VALUE = " + salesHeaderDto.getNetValue() + ", ");
-//						sb.append("TOTAL_SO_QUANTITY_SA = " + salesHeaderDto.getTotalSalesOrderQuantitySA() + ", ");
-//						sb.append("NET_VALUE_SA = " + salesHeaderDto.getNetValueSA() + ", ");
-//						sb.append("PLANT = '" + salesHeaderDto.getPlant() + "', ");
-//						sb.append("DOCUMENT_CURRENCY = '" + salesHeaderDto.getDocumentCurrency() + "', ");
-//						sb.append("INCO_TERMS1 = '" + salesHeaderDto.getIncoTerms1() + "', ");
-//						sb.append("INCO_TERMS2 = '" + salesHeaderDto.getIncoTerms2() + "', ");
-//						sb.append("DELIVERED_QUANTITY = " + salesHeaderDto.getDeliveredQuantity() + ", ");
-//						sb.append("OUTSTANDING_QUANTITY = " + salesHeaderDto.getOutstandingQuantity() + ", ");
-//						//sb.append("CREDIT_BLOCK_QUANTITY = " + salesHeaderDto.getCreditBlockQuantity() + ", ");
-//						//sb.append("ON_TIME_DELIVERED_QUANTITY = " + salesHeaderDto.getOnTimeDeliveredQuantity() + ", ");
-//						//sb.append("DELIVERY_LEADING_DAYS = " + salesHeaderDto.getDeliveryLeadingDays() + ", ");
-//						//sb.append("PAYMENT_LEADING_DAYS = " + salesHeaderDto.getPaymentLeadingDays() + ", ");
-//						sb.append("CREATED_DATE = '" + salesHeaderDto.getCreatedDate() + "', ");
-//						sb.append("CREATED_BY = '" + salesHeaderDto.getCreatedBy() + "', ");
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getPaymentChqDetail()))
-//							sb.append(
-//									"PAYMENT_CHQ_DETAIL = " + salesHeaderDto.getPaymentChqDetail()/*.ordinal()*/ + ", ");
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getOverallDocumentStatus()))
-//							sb.append("OVERALL_DOCUMENT_STATUS = " + salesHeaderDto.getOverallDocumentStatus().ordinal()
-//									+ ", ");
-//						sb.append("DELIVERY_STATUS = " + salesHeaderDto.getDeliveryStatus() + ", ");
-//						sb.append("DELIVERY_TOLERANCE = '" + salesHeaderDto.getDeliveryTolerance() + "', ");
-//						// sb.append("OVER_DELIVERY_TOLERANCE = '" +
-//						// salesHeaderDto.getOverDeliveryTolerance() + "', ");
-//						// sb.append("UNDER_DELIVERY_TOLERANCE = '" +
-//						// salesHeaderDto.getUnderDeliveryTolerance() + "', ");
-//						sb.append("COLOR_CODING_DETAILS = '" + salesHeaderDto.getColorCodingDetails() + "', ");
-//						sb.append("COMMENTS = '" + salesHeaderDto.getComments().replace("'", "''") + "', ");
-//						sb.append("BANK_NAME = '" + salesHeaderDto.getBankName().replace("'", "''") + "', ");
-//						sb.append("PROJECT_NAME = '" + salesHeaderDto.getProjectName().replace("'", "''") + "', ");
-//						sb.append("PO_TYPE_FIELD = '" + salesHeaderDto.getPoTypeField() + "', ");
-//						sb.append("PIECE_GUARANTEE = " + salesHeaderDto.getPieceGuarantee() + ", ");
-//						sb.append("IS_CUSTOMER_ACK = " + salesHeaderDto.getAcknowledgementStatus() + ", ");
-//						sb.append("REFERENCE_DOCUMENT = '" + salesHeaderDto.getReferenceDocument() + "', ");
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getUpdateIndicator()))
-//							sb.append("UPDATE_INDICATOR = " + salesHeaderDto.getUpdateIndicator().ordinal() + ", ");
-//						// sb.append("LAST_UPDATED_ON = '" +
-//						// salesHeaderDto.getLastUpdatedOn() + "', ");
-//						sb.append("SYNC_STATUS = " + salesHeaderDto.getSyncStatus() + ", ");
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getOverallDocumentStatus()) && salesHeaderDto
-//								.getOverallDocumentStatus().equals(EnOverallDocumentStatus.COMPLETELY_PROCESSED))
-//							sb.append("IS_OPEN = false, ");
-//						else
-//							sb.append("IS_OPEN = true, ");
-//						if (salesHeaderDto.getDocumentType().equals("IN")
-//								|| salesHeaderDto.getDocumentType().equals("QT")) {
-//							sb.append("PAYMENT_STATUS = '0', ");
-//						} else {
-//							if (salesHeaderDto.getPlant().equals("4321")) {
-//								BigDecimal status = new BigDecimal(0);
-//								if (salesHeaderDto.getTotalSalesOrderQuantity().equals(new BigDecimal(0.000))) {
-//									status = new BigDecimal(0.000);
-//								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantity()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantity(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
-//								}
-//								Integer value = status.intValue();
-//								sb.append("PAYMENT_STATUS = '" + value.toString() + "', ");
-//							} else if (salesHeaderDto.getPlant().equals("CODD")) {
-//								BigDecimal status = new BigDecimal(0);
-//								if (salesHeaderDto.getTotalSalesOrderQuantitySA().equals(new BigDecimal(0.000))) {
-//									status = new BigDecimal(0.000);
-//								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantitySA()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantitySA(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
-//								}
-//								Integer value = status.intValue();
-//								sb.append("PAYMENT_STATUS = '" + value.toString() + "', ");
-//							}
-//						}
-//
-//						sb.append("DOCUMENT_PROCESS_STATUS = 2 ");
-//						sb.append("where TABLE_KEY = '" + tableKey + "'");
-//						Query query1 = session.createSQLQuery(sb.toString());
-//						query1.executeUpdate();
-//						session.flush();
-//						session.clear();
-//						tx.commit();
-//					} else {
-//						session = sessionFactory.openSession();
-//						tx = session.beginTransaction();
-//						salesHeaderDto.setTableKey(UUID.randomUUID().toString().replaceAll("-", ""));
-//						salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
-//						if (!ServicesUtil.isEmpty(salesHeaderDto.getOverallDocumentStatus()) && salesHeaderDto
-//								.getOverallDocumentStatus().equals(EnOverallDocumentStatus.COMPLETELY_PROCESSED))
-//							salesHeaderDto.setIsOpen(false);
-//						else
-//							salesHeaderDto.setIsOpen(true);
-//						if (salesHeaderDto.getDocumentType().equals("IN")
-//								|| salesHeaderDto.getDocumentType().equals("QT")) {
-//							salesHeaderDto.setPaymentStatus("0");
-//						} else {
-//							if (salesHeaderDto.getPlant().equals("4321")) {
-//								BigDecimal status = new BigDecimal(0);
-//								if (salesHeaderDto.getTotalSalesOrderQuantity().equals(new BigDecimal(0.000))) {
-//									status = new BigDecimal(0.000);
-//								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantity()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantity(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
-//								}
-//								Integer value = status.intValue();
-//								salesHeaderDto.setPaymentStatus(value.toString());
-//							} else if (salesHeaderDto.getPlant().equals("CODD")) {
-//								BigDecimal status = new BigDecimal(0);
-//								if (salesHeaderDto.getTotalSalesOrderQuantitySA().equals(new BigDecimal(0.000))) {
-//									status = new BigDecimal(0.000);
-//								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantitySA()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantitySA(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
-//								}
-//								Integer value = status.intValue();
-//								salesHeaderDto.setPaymentStatus(value.toString());
-//							}
-//						}
-//						list.add("I-" + salesHeaderDto.getTableKey());
-//						createOrUpdate(salesHeaderDto);
-//						session.flush();
-//						session.clear();
-//						tx.commit();
-//					}
-//				}
-//			}
-//			response.setData(list);
-//			response.setMessage("Successfully Updated");
-//			response.setStatus(HttpStatus.OK.getReasonPhrase());
-//			response.setStatusCode(HttpStatus.OK.value());
-//			String ackResponse = odataServices.headerAckScheduler();
-//			logger.debug("[SalesHeaderDao][headerScheduler] ackResponse : " + ackResponse);
-//		} catch (Exception e) {
-//			logger.error("[SalesHeaderDao][headerScheduler] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//			response.setMessage("Error Updating");
-//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-//			response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//		}
-//		logger.debug("[SalesHeaderDao][headerScheduler] Ended : " + new Date());
-//		return response;
-//	}
-//
 
-//	public List<SalesOrderHeaderDto> convertData(OdataSchHeaderStartDto odataSchHeaderStartDto) {
-//		//logger.debug("[SalesHeaderDao][convertData] Start : ");
-//		System.err.println("[SalesHeaderDao][convertData] Start : ");
-//		List<SalesOrderHeaderDto> listSalesHeaderDto = new ArrayList<>();
-//		try {
-//			for (OdataSchHeaderDto odataSchHeaderDto : odataSchHeaderStartDto.getD().getResults()) {
-//				SalesOrderHeaderDto salesHeaderDto = new SalesOrderHeaderDto();
-//				salesHeaderDto.setClientSpecific(Integer.parseInt(odataSchHeaderDto.getMandt()));
-//				salesHeaderDto.setSalesHeaderId(odataSchHeaderDto.getTemp_id());
-//				if (odataSchHeaderDto.getVbeln().length() < 10)
-//					salesHeaderDto
-//							.setS4DocumentId(String.format("%010d", Integer.parseInt(odataSchHeaderDto.getVbeln())));
-//				else
-//					salesHeaderDto.setS4DocumentId(odataSchHeaderDto.getVbeln());
-//				if (odataSchHeaderDto.getVbtyp().equals("A"))
-//					salesHeaderDto.setDocumentType("IN");
-//				else if (odataSchHeaderDto.getVbtyp().equals("B"))
-//					salesHeaderDto.setDocumentType("QT");
-//				else if (odataSchHeaderDto.getVbtyp().equals("C"))
-//					salesHeaderDto.setDocumentType("OR");
-//				salesHeaderDto.setDocumentCategory(odataSchHeaderDto.getAuart());
-//				salesHeaderDto.setSalesOrganization(odataSchHeaderDto.getVkorg());
-//				salesHeaderDto.setDistributionChannel(odataSchHeaderDto.getVtweg());
-//				salesHeaderDto.setDivision(odataSchHeaderDto.getSpart());
-//				salesHeaderDto.setSalesOffice(odataSchHeaderDto.getVkbur());
-//				salesHeaderDto.setSalesGroup(odataSchHeaderDto.getVkgrp());
-//				salesHeaderDto.setSoldToParty("0000" + odataSchHeaderDto.getKunag());
-//				salesHeaderDto.setShipToParty("0000" + odataSchHeaderDto.getKunwe());
-//				salesHeaderDto.setCustomerPONum(odataSchHeaderDto.getBstkd());
-//				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getBstdk())) {
-//					String s = odataSchHeaderDto.getBstdk().substring(6, 19);
-//					long l = Long.parseLong(s);
-//					Timestamp d = new Timestamp(l);
-//					salesHeaderDto.setCustomerPODate(d);
-//				} else
-//					salesHeaderDto.setCustomerPODate(null);
-//				salesHeaderDto.setIncoTerms1(odataSchHeaderDto.getInco1());
-//				salesHeaderDto.setIncoTerms2(odataSchHeaderDto.getInco2());
-//				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getVdatu())) {
-//					String s = odataSchHeaderDto.getVdatu().substring(6, 19);
-//					long l = Long.parseLong(s);
-//					Timestamp d = new Timestamp(l);
-//					salesHeaderDto.setRequestDeliveryDate(d);
-//				} else
-//					salesHeaderDto.setRequestDeliveryDate(null);
-//				salesHeaderDto.setShippingType(odataSchHeaderDto.getVsart());
-//				if (odataSchHeaderDto.getVkorg().equals("6001") || odataSchHeaderDto.getVkorg().equals("6002")) {
-//					if (odataSchHeaderDto.getTotalQty().equals("0.000"))
-//						salesHeaderDto.setTotalSalesOrderQuantity(new BigDecimal(0.000));
-//					else
-//						salesHeaderDto.setTotalSalesOrderQuantity(new BigDecimal(odataSchHeaderDto.getTotalQty()));
-//					salesHeaderDto.setNetValue(odataSchHeaderDto.getOrdValue());
-//					salesHeaderDto.setTotalSalesOrderQuantitySA(null);
-//					salesHeaderDto.setNetValueSA(null);
-//					salesHeaderDto.setPlant("4321");
-//				} else if (odataSchHeaderDto.getVkorg().equals("2010") || odataSchHeaderDto.getVkorg().equals("2020")) {
-//					if (odataSchHeaderDto.getTotalQty().equals("0.000"))
-//						salesHeaderDto.setTotalSalesOrderQuantitySA(new BigDecimal(0.000));
-//					else
-//						salesHeaderDto.setTotalSalesOrderQuantitySA(new BigDecimal(odataSchHeaderDto.getTotalQty()));
-//					salesHeaderDto.setNetValueSA(odataSchHeaderDto.getOrdValue());
-//					salesHeaderDto.setTotalSalesOrderQuantity(null);
-//					salesHeaderDto.setNetValue(null);
-//					salesHeaderDto.setPlant("CODD");
-//				}
-//				salesHeaderDto.setDocumentCurrency(odataSchHeaderDto.getWaerk());
-//				salesHeaderDto.setDeliveredQuantity(new BigDecimal(odataSchHeaderDto.getDelvQty()));
-//				salesHeaderDto.setOutstandingQuantity(new BigDecimal(odataSchHeaderDto.getOsqty()));
-//				if (odataSchHeaderDto.getCreditBlk().equals("0.000"))
-//					salesHeaderDto.setCreditBlockQuantity(new BigDecimal(0.000));
-//				else
-//					salesHeaderDto.setCreditBlockQuantity(new BigDecimal(odataSchHeaderDto.getCreditBlk()));
-//				salesHeaderDto.setOnTimeDeliveredQuantity(new BigDecimal(odataSchHeaderDto.getOnTimeDlv()));
-//				salesHeaderDto.setDeliveryLeadingDays(Integer.parseInt(odataSchHeaderDto.getDelvDays()));
-//				salesHeaderDto.setPaymentLeadingDays(Integer.parseInt(odataSchHeaderDto.getPaymentDays()));
-//				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getErdat())) {
-//					String s = odataSchHeaderDto.getErdat().substring(6, 19);
-//					long l = Long.parseLong(s);
-//					Timestamp d = new Timestamp(l);
-//					salesHeaderDto.setCreatedDate(d);
-//				} else
-//					salesHeaderDto.setCreatedDate(null);
-//				salesHeaderDto.setCreatedBy(odataSchHeaderDto.getCreated_by());
-//				if (odataSchHeaderDto.getVbtyp().equals("A") || odataSchHeaderDto.getVbtyp().equals("B"))
-//					salesHeaderDto.setPaymentChequeDetail(null);
-//				else {
-//					if (odataSchHeaderDto.getCmgst().equals("A"))
-//						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.APPROVED);
-//					else if (odataSchHeaderDto.getCmgst().equals("B"))
-//						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.BLOCKED);
-//					else if (odataSchHeaderDto.getCmgst().equals("C"))
-//						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.PARTIALLY_BLOCKED);
-//				}
-//				if (odataSchHeaderDto.getGbstk().equals("A"))
-//					salesHeaderDto.setOverallDocumentStatus(EnOverallDocumentStatus.NOT_YET_PROCESSED);
-//				else if (odataSchHeaderDto.getGbstk().equals("B"))
-//					salesHeaderDto.setOverallDocumentStatus(EnOverallDocumentStatus.PARTIALLY_PROCESSED);
-//				else if (odataSchHeaderDto.getGbstk().equals("C"))
-//					salesHeaderDto.setOverallDocumentStatus(EnOverallDocumentStatus.COMPLETELY_PROCESSED);
-//				salesHeaderDto.setDeliveryStatus(Integer.parseInt(odataSchHeaderDto.getDelvStat()));
-//				salesHeaderDto.setDeliveryTolerance(odataSchHeaderDto.getDelTol());
-//				salesHeaderDto.setOverDeliveryTolerance(odataSchHeaderDto.getOvDelTol());
-//				salesHeaderDto.setUnderDeliveryTolerance(odataSchHeaderDto.getUnDelTol());
-//				salesHeaderDto.setColorCodingDetails(odataSchHeaderDto.getColorCode());
-//				salesHeaderDto.setComments(odataSchHeaderDto.getRemarks());
-//				salesHeaderDto.setBankName(odataSchHeaderDto.getBank());
-//				salesHeaderDto.setProjectName(odataSchHeaderDto.getProject());
-//				salesHeaderDto.setPoTypeField(odataSchHeaderDto.getTraderMtc());
-//				if (odataSchHeaderDto.getPcGuarantee().equalsIgnoreCase("TRUE"))
-//					salesHeaderDto.setPieceGuarantee(true);
-//				else
-//					salesHeaderDto.setPieceGuarantee(false);
-//				if (odataSchHeaderDto.getAcknowStat().equalsIgnoreCase("TRUE"))
-//					salesHeaderDto.setAcknowledgementStatus(true);
-//				if (odataSchHeaderDto.getUpdateInd().equals("I"))
-//					salesHeaderDto.setUpdateIndicator(EnUpdateIndicator.INSERT);
-//				else if (odataSchHeaderDto.getUpdateInd().equals("D"))
-//					salesHeaderDto.setUpdateIndicator(EnUpdateIndicator.DELETE);
-//				else if (odataSchHeaderDto.getUpdateInd().equals("U"))
-//					salesHeaderDto.setUpdateIndicator(EnUpdateIndicator.UPDATE);
-//				// if (!ServicesUtil.isEmpty(odataSchHeaderDto.getChangedOn()))
-//				// {
-//				// // String s = odataSchHeaderDto.getChangedOn().substring(6,
-//				// // 19);
-//				// long l = Long.parseLong(odataSchHeaderDto.getChangedOn());
-//				// Timestamp d = new Timestamp(l);
-//				// salesHeaderDto.setLastUpdatedOn(d);
-//				// } else
-//				// salesHeaderDto.setLastUpdatedOn(null);
-//				if (odataSchHeaderDto.getSyncStat().equalsIgnoreCase("TRUE"))
-//					salesHeaderDto.setSyncStatus(true);
-//				else
-//					salesHeaderDto.setSyncStatus(false);
-//				// DateTimeFormatter dtf =
-//				// DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//				// LocalDateTime now = LocalDateTime.now();
-//				// salesHeaderDto.setLastUpdatedOn(new Date(dtf.format(now)));
-//				salesHeaderDto.setReferenceDocument(odataSchHeaderDto.getRef_Doc());
-//				listSalesHeaderDto.add(salesHeaderDto);
-//			}
-//			logger.debug("[SalesHeaderDao][convertData] End : ");
-//		} catch (Exception e) {
-//			logger.debug("[SalesHeaderDao][convertData] Exception : " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return listSalesHeaderDto;
-//	}
-//
+	
+	public List<SalesOrderHeaderDto> convertData(OdataSchHeaderStartDto odataSchHeaderStartDto) {
+		// logger.debug("[SalesHeaderDao][convertData] Start : ");
+		System.err.println("[SalesHeaderDao][convertData] Start : ");
+		List<SalesOrderHeaderDto> listSalesHeaderDto = new ArrayList<>();
+		try {
+			for (OdataSchHeaderDto odataSchHeaderDto : odataSchHeaderStartDto.getD().getResults()) {
+				SalesOrderHeaderDto salesHeaderDto = new SalesOrderHeaderDto();
+				salesHeaderDto.setClientSpecific(Integer.parseInt(odataSchHeaderDto.getMandt()));
+				salesHeaderDto.setSalesHeaderId(odataSchHeaderDto.getTemp_id());
+				if (odataSchHeaderDto.getVbeln().length() < 10)
+					salesHeaderDto
+							.setS4DocumentId(String.format("%010d", Integer.parseInt(odataSchHeaderDto.getVbeln())));
+				else
+					salesHeaderDto.setS4DocumentId(odataSchHeaderDto.getVbeln());
+				if (odataSchHeaderDto.getVbtyp().equals("A"))
+					salesHeaderDto.setDocumentType("IN");
+				else if (odataSchHeaderDto.getVbtyp().equals("B"))
+					salesHeaderDto.setDocumentType("QT");
+				else if (odataSchHeaderDto.getVbtyp().equals("C"))
+					salesHeaderDto.setDocumentType("OR");
+				salesHeaderDto.setDocumentCategory(odataSchHeaderDto.getAuart());
+				salesHeaderDto.setSalesOrganization(odataSchHeaderDto.getVkorg());
+				salesHeaderDto.setDistributionChannel(odataSchHeaderDto.getVtweg());
+				salesHeaderDto.setDivision(odataSchHeaderDto.getSpart());
+				salesHeaderDto.setSalesOffice(odataSchHeaderDto.getVkbur());
+				salesHeaderDto.setSalesGroup(odataSchHeaderDto.getVkgrp());
+				salesHeaderDto.setSoldToParty("0000" + odataSchHeaderDto.getKunag());
+				salesHeaderDto.setShipToParty("0000" + odataSchHeaderDto.getKunwe());
+				salesHeaderDto.setCustomerPONum(odataSchHeaderDto.getBstkd());
+				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getBstdk())) {
+					String s = odataSchHeaderDto.getBstdk().substring(6, 19);
+					long l = Long.parseLong(s);
+					Timestamp d = new Timestamp(l);
+					salesHeaderDto.setCustomerPODate(d);
+				} else
+					salesHeaderDto.setCustomerPODate(null);
+				salesHeaderDto.setIncoTerms1(odataSchHeaderDto.getInco1());
+				salesHeaderDto.setIncoTerms2(odataSchHeaderDto.getInco2());
+				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getVdatu())) {
+					String s = odataSchHeaderDto.getVdatu().substring(6, 19);
+					long l = Long.parseLong(s);
+					Timestamp d = new Timestamp(l);
+					salesHeaderDto.setRequestDeliveryDate(d);
+				} else
+					salesHeaderDto.setRequestDeliveryDate(null);
+				salesHeaderDto.setShippingType(odataSchHeaderDto.getVsart());
+				if (odataSchHeaderDto.getVkorg().equals("6001") || odataSchHeaderDto.getVkorg().equals("6002")) {
+					if (odataSchHeaderDto.getTotalQty().equals("0.000"))
+						salesHeaderDto.setTotalSalesOrderQuantity(new BigDecimal(0.000));
+					else
+						salesHeaderDto.setTotalSalesOrderQuantity(new BigDecimal(odataSchHeaderDto.getTotalQty()));
+					salesHeaderDto.setNetValue(odataSchHeaderDto.getOrdValue());
+					salesHeaderDto.setTotalSalesOrderQuantitySA(null);
+					salesHeaderDto.setNetValueSA(null);
+					salesHeaderDto.setPlant("4321");
+				} else if (odataSchHeaderDto.getVkorg().equals("2010") || odataSchHeaderDto.getVkorg().equals("2020")) {
+					if (odataSchHeaderDto.getTotalQty().equals("0.000"))
+						salesHeaderDto.setTotalSalesOrderQuantitySA(new BigDecimal(0.000));
+					else
+						salesHeaderDto.setTotalSalesOrderQuantitySA(new BigDecimal(odataSchHeaderDto.getTotalQty()));
+					salesHeaderDto.setNetValueSA(odataSchHeaderDto.getOrdValue());
+					salesHeaderDto.setTotalSalesOrderQuantity(null);
+					salesHeaderDto.setNetValue(null);
+					salesHeaderDto.setPlant("CODD");
+				}
+				salesHeaderDto.setDocumentCurrency(odataSchHeaderDto.getWaerk());
+				salesHeaderDto.setDeliveredQuantity(new BigDecimal(odataSchHeaderDto.getDelvQty()));
+				salesHeaderDto.setOutstandingQuantity1(new BigDecimal(odataSchHeaderDto.getOsqty()));
+				if (odataSchHeaderDto.getCreditBlk().equals("0.000"))
+					salesHeaderDto.setCreditBlockQuantity(new BigDecimal(0.000));
+				else
+					salesHeaderDto.setCreditBlockQuantity(new BigDecimal(odataSchHeaderDto.getCreditBlk()));
+				salesHeaderDto.setOnTimeDeliveredQuantity(new BigDecimal(odataSchHeaderDto.getOnTimeDlv()));
+				salesHeaderDto.setDeliveryLeadingDays(Integer.parseInt(odataSchHeaderDto.getDelvDays()));
+				salesHeaderDto.setPaymentLeadingDays(Integer.parseInt(odataSchHeaderDto.getPaymentDays()));
+				if (!ServicesUtil.isEmpty(odataSchHeaderDto.getErdat())) {
+					String s = odataSchHeaderDto.getErdat().substring(6, 19);
+					long l = Long.parseLong(s);
+					Timestamp d = new Timestamp(l);
+					salesHeaderDto.setCreatedDate(d);
+				} else
+					salesHeaderDto.setCreatedDate(null);
+				salesHeaderDto.setCreatedBy(odataSchHeaderDto.getCreated_by());
+				if (odataSchHeaderDto.getVbtyp().equals("A") || odataSchHeaderDto.getVbtyp().equals("B"))
+					salesHeaderDto.setPaymentChequeDetail(null);
+				else {
+					if (odataSchHeaderDto.getCmgst().equals("A"))
+						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.APPROVED);
+					else if (odataSchHeaderDto.getCmgst().equals("B"))
+						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.BLOCKED);
+					else if (odataSchHeaderDto.getCmgst().equals("C"))
+						salesHeaderDto.setPaymentChequeDetail(EnPaymentChequeStatus.PARTIALLY_BLOCKED);
+				}
+				if (odataSchHeaderDto.getGbstk().equals("A"))
+					salesHeaderDto.setOverallDocumentStatus1(EnOverallDocumentStatus.NOT_YET_PROCESSED);
+				else if (odataSchHeaderDto.getGbstk().equals("B"))
+					salesHeaderDto.setOverallDocumentStatus1(EnOverallDocumentStatus.PARTIALLY_PROCESSED);
+				else if (odataSchHeaderDto.getGbstk().equals("C"))
+					salesHeaderDto.setOverallDocumentStatus1(EnOverallDocumentStatus.COMPLETELY_PROCESSED);
+				salesHeaderDto.setDeliveryStatus1(Integer.parseInt(odataSchHeaderDto.getDelvStat()));
+				salesHeaderDto.setDeliveryTolerance(odataSchHeaderDto.getDelTol());
+				salesHeaderDto.setOverDeliveryTolerance(odataSchHeaderDto.getOvDelTol());
+				salesHeaderDto.setUnderDeliveryTolerance(odataSchHeaderDto.getUnDelTol());
+				salesHeaderDto.setColorCodingDetails(odataSchHeaderDto.getColorCode());
+				salesHeaderDto.setComments(odataSchHeaderDto.getRemarks());
+				salesHeaderDto.setBankName(odataSchHeaderDto.getBank());
+				salesHeaderDto.setProjectName(odataSchHeaderDto.getProject());
+				salesHeaderDto.setPoTypeField(odataSchHeaderDto.getTraderMtc());
+				if (odataSchHeaderDto.getPcGuarantee().equalsIgnoreCase("TRUE"))
+					salesHeaderDto.setPieceGuarantee(true);
+				else
+					salesHeaderDto.setPieceGuarantee(false);
+				if (odataSchHeaderDto.getAcknowStat().equalsIgnoreCase("TRUE"))
+					salesHeaderDto.setAcknowledgementStatus(true);
+				if (odataSchHeaderDto.getUpdateInd().equals("I"))
+					salesHeaderDto.setUpdateIndicator1(EnUpdateIndicator.INSERT);
+				else if (odataSchHeaderDto.getUpdateInd().equals("D"))
+					salesHeaderDto.setUpdateIndicator1(EnUpdateIndicator.DELETE);
+				else if (odataSchHeaderDto.getUpdateInd().equals("U"))
+					salesHeaderDto.setUpdateIndicator1(EnUpdateIndicator.UPDATE);
+				// if (!ServicesUtil.isEmpty(odataSchHeaderDto.getChangedOn()))
+				// {
+				// // String s = odataSchHeaderDto.getChangedOn().substring(6,
+				// // 19);
+				// long l = Long.parseLong(odataSchHeaderDto.getChangedOn());
+				// Timestamp d = new Timestamp(l);
+				// salesHeaderDto.setLastUpdatedOn(d);
+				// } else
+				// salesHeaderDto.setLastUpdatedOn(null);
+				if (odataSchHeaderDto.getSyncStat().equalsIgnoreCase("TRUE"))
+					salesHeaderDto.setSyncStatus1(true);
+				else
+					salesHeaderDto.setSyncStatus1(false);
+				// DateTimeFormatter dtf =
+				// DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				// LocalDateTime now = LocalDateTime.now();
+				// salesHeaderDto.setLastUpdatedOn(new Date(dtf.format(now)));
+				salesHeaderDto.setReferenceDocument(odataSchHeaderDto.getRef_Doc());
+				listSalesHeaderDto.add(salesHeaderDto);
+			}
+			//logger.debug("[SalesHeaderDao][convertData] End : ");
+			System.err.println("[SalesHeaderDao][convertData] End : ");
+		} catch (Exception e) {
+			//logger.debug("[SalesHeaderDao][convertData] Exception : " + e.getMessage());
+			System.err.println("[SalesHeaderDao][convertData] Exception : " + e.getMessage());
+			e.printStackTrace();
+		}
+		return listSalesHeaderDto;
+	}
+
+	public OdataOutBoudDeliveryInputDto getOdataReqPayloadObd(SalesOrderHeaderItemDto inputDto) {
+
+		OdataOutBoudDeliveryInputDto odataInputOutBound = new OdataOutBoudDeliveryInputDto();
+
+		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getSalesOrderId());
+
+		List<SalesOrderItemDto> outBoundDeliveryItemList = inputDto.getLineItemList();
+		StringJoiner joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+
+		}
+		odataInputOutBound.setBtgew(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
+			joiner.add(outBoundDeliveryItemList.get(i).getLineItemNumber());
+		}
+		odataInputOutBound.setKunag(joiner.toString());
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+
+			joiner.add(outBoundDeliveryItemList.get(i).getUom());
+		}
+		odataInputOutBound.setLgnum(joiner.toString());
+
+		odataInputOutBound.setTernr("1");
+
+		odataInputOutBound.setVstel(inputDto.getLineItemList().get(0).getSloc()); // ShippingPoint
+
+		// odataInputOutBound.setVbeln(inputDto.getHeaderDto().getSalesOrderId());
+		// odataInputOutBound.setKunag(inputDto.getLineItemList().get(0).getLineItemNumber());
+		// odataInputOutBound.setBtgew(inputDto.getLineItemList().get(0).getPickedQuantity());
+		// odataInputOutBound.setLgnum(inputDto.getLineItemList().get(0).getUom());
+		// odataInputOutBound.setTernr("1");
+		// odataInputOutBound.setVstel("CODD");
+
+		return odataInputOutBound;
+	}
+
+	public OdataOutBoudDeliveryPgiInputDto getOdataReqPayloadPgi(SalesOrderHeaderItemDto inputDto) {
+
+		OdataOutBoudDeliveryPgiInputDto odataInputOutBound = new OdataOutBoudDeliveryPgiInputDto();
+
+		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getObdId());
+
+		List<SalesOrderItemDto> outBoundDeliveryItemList = inputDto.getLineItemList();
+		StringJoiner joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+		}
+		odataInputOutBound.setBtgew(joiner.toString());
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getUom());
+		}
+		odataInputOutBound.setGewei(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getLineItemNumber());
+		}
+		odataInputOutBound.setKunag(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getSloc());
+		}
+		odataInputOutBound.setLgnum(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+		}
+		odataInputOutBound.setNtgew(joiner.toString());
+
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getMaterial());
+		}
+		odataInputOutBound.setTraid(joiner.toString());
+		joiner = new StringJoiner("/:/");
+		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
+			joiner.add(outBoundDeliveryItemList.get(i).getPlant());
+		}
+		odataInputOutBound.setWerks(joiner.toString());
+
+		/*
+		 * private String Vbeln ;//– Delivery number private String Kunag ;//–
+		 * Item Number private String Traid ;// – Material Number private String
+		 * Werks ;// – Plant Number private String Btgew ;// – Delivered
+		 * Quantity private String Ntgew ;// – Picked Quantity private String
+		 * Gewei ;// – UOM private String Lgnum ;// – Storage Location
+		 */
+		odataInputOutBound.setTernr("2");
+		// ObjectWriter ow = new
+		// ObjectMapper().writer().withDefaultPrettyPrinter();
+		// String json = ow.writeValueAsString(odataInputOutBound);
+
+		return odataInputOutBound;
+	}
+	
+	public OdataOutBoudDeliveryInvoiceInputDto getOdataReqPayloadInv(SalesOrderHeaderItemDto inputDto) {
+
+		OdataOutBoudDeliveryInvoiceInputDto odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
+
+		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getPgiId());
+
+		odataInputOutBound.setTernr("3");
+
+		return odataInputOutBound;
+	}
+
 
 }

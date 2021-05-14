@@ -106,5 +106,5 @@ public class NotificationController {
 	public ResponseEntity<Object> createNotificationAlert(@PathVariable("userId") String userId) {
 		return notificationConfigService.createNotificationAlert(userId);
 	}
-
+	
 }

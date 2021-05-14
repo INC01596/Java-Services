@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,22 +69,44 @@ import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderLevelStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
+<<<<<<< HEAD
 import com.incture.cherrywork.dtos.DlvBlockReleaseMapDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
+=======
+import com.incture.cherrywork.dto.workflow.DlvBlockReleaseMapDto;
+import com.incture.cherrywork.dto.workflow.SalesDocItemDto;
+//import com.incture.cherrywork.dtos.ResponseEntity;
+>>>>>>> refs/remotes/origin/master
 import com.incture.cherrywork.dtos.WorkflowResponseEntity;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+<<<<<<< HEAD
 import com.incture.cherrywork.services.new_workflow.DlvBlockReleaseMapService;
 import com.incture.cherrywork.services.new_workflow.SalesOrderItemStatusService;
 import com.incture.cherrywork.services.new_workflow.SalesOrderTaskStatusService;
+=======
+import com.incture.cherrywork.services.new_workflow.IWorkflowServices;
+>>>>>>> refs/remotes/origin/master
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
+import com.incture.cherrywork.workflow.repo.ISalesDocItemRepository;
+import com.incture.cherrywork.workflow.repo.ISalesOrderItemStatusRepository;
+import com.incture.cherrywork.workflow.repo.ISalesOrderLevelStatusCustomRepository;
+import com.incture.cherrywork.workflow.repo.ISalesOrderLevelStatusRepository;
+import com.incture.cherrywork.workflow.repo.ISalesOrderTaskStatusCustomRepository;
+import com.incture.cherrywork.workflow.repo.ISalesOrderTaskStatusRepository;
+import com.incture.cherrywork.WConstants.DkshStatusConstants;
 
 import io.swagger.models.HttpMethod;
 
+<<<<<<< HEAD
 @SuppressWarnings("unused")
+=======
+
+@SuppressWarnings("deprecation")
+>>>>>>> refs/remotes/origin/master
 @Service
 @Transactional
 public class ApprovalworkflowTrigger {
@@ -99,33 +122,68 @@ public class ApprovalworkflowTrigger {
 	private static final String BASIC = "Basic";
 	private static final String AUTHORIZATION = "Authorization";
 
+<<<<<<< HEAD
 	@Lazy
 	@Autowired
 	private SalesDocItemDao salesDocItemDao;
+=======
+//	@Autowired
+//	private SalesDocItemDao salesDocItemDao;
+//
+//	@Autowired
+//	private DlvBlockReleaseMapService dlvBlockreleasemapservice;
+>>>>>>> refs/remotes/origin/master
 
 	@Lazy
 	@Autowired
-	private DlvBlockReleaseMapService dlvBlockreleasemapservice;
+	private IWorkflowServices salesordertaskstatusdao;
+
+//	@Autowired
+//	private SalesOrderItemStatusService salesOrderItemStatusService;
+//
+//	@Autowired
+//	private SalesOrderTaskStatusService salesOrderTaskStatus;
 
 	@Lazy
 	@Autowired
+<<<<<<< HEAD
 	private SalesOrderTaskStatusDao salesordertaskstatusdao;
 
 	@Lazy
+=======
+	private ISalesOrderLevelStatusRepository salesorderlevelstausdao;
+	
+>>>>>>> refs/remotes/origin/master
 	@Autowired
+<<<<<<< HEAD
 	private SalesOrderItemStatusService salesOrderItemStatusService;
 
 	@Lazy
+=======
+	private ISalesOrderTaskStatusRepository salesOrderTaskStatusRepository;
+	
+>>>>>>> refs/remotes/origin/master
 	@Autowired
+<<<<<<< HEAD
 	private SalesOrderTaskStatusService salesOrderTaskStatus;
     
+=======
+	private ISalesDocItemRepository salesDocItemRepository;
+
+//	@Autowired
+//	private SalesOrderItemStatusDao salesOrderItemStatusDao;
+>>>>>>> refs/remotes/origin/master
 	
 	@Autowired
+<<<<<<< HEAD
 	private SalesOrderLevelStatusDao salesorderlevelstausdao;
 
 	@Lazy
 	@Autowired
 	private SalesOrderItemStatusDao salesOrderItemStatusDao;
+=======
+	private ISalesOrderItemStatusRepository salesOrderItemStatusRepository;
+>>>>>>> refs/remotes/origin/master
 
 	// triggers the approval workflow and create the reccord in the
 	// SO_TASK_STATUS_table.
@@ -184,7 +242,7 @@ public class ApprovalworkflowTrigger {
 						System.err.println("taskstatusid " + taskstatusid);
 						if (!HelperClass.checkString(taskstatusid)) {
 							// create item status in ItemTable
-							ResponseEntity responseEntity = createNewItemAndUpdataItem(dataSet, taskstatusid, level);
+							ResponseEntity<Object> responseEntity = createNewItemAndUpdataItem(dataSet, taskstatusid, level);
 							response.setData(responseEntity);
 							response.setMessage("Success " + WorkflowResponseEntity.toString());
 							response.setStatus(ResponseStatus.SUCCESS);
@@ -236,8 +294,7 @@ public class ApprovalworkflowTrigger {
 
 		WorkflowResponseEntity response = new WorkflowResponseEntity("", 200, TRIGGERFAILUER, ResponseStatus.FAILED,
 				null, null, "");
-		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				", Level status serial id registered ", ResponseStatus.FAILED);
+		ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", ", Level status serial id registered ").body(null);
 		if (level != null && dataSet != null) {
 			List<String> approverList = null;
 			List<String> taskSerialIdList = null;
@@ -356,7 +413,7 @@ public class ApprovalworkflowTrigger {
 
 			taskSerialId = salesordertaskstatusdao
 					.saveOrUpdateSalesOrderTaskStatusSynchronized(salesOrderTaskStatusDto);
-		} catch (ExecutionFault e1) {
+		} catch (Exception e1) {
 			// logger.error("ApprovalWorkflowTrigger " + e1);
 		}
 		return taskSerialId;
@@ -405,7 +462,7 @@ public class ApprovalworkflowTrigger {
 			try {
 				taskSerialId.add(
 						salesordertaskstatusdao.saveOrUpdateSalesOrderTaskStatusSynchronized(salesOrderTaskStatusdto));
-			} catch (ExecutionFault e) {
+			} catch (Exception e) {
 				// logger.error("Approvalworkflow failed to create task in
 				// SO_TASK_TABLE" + e);
 
@@ -487,7 +544,7 @@ public class ApprovalworkflowTrigger {
 					salesOrderLevelStatusDto.setLevelStatus(StatusConstants.LEVEL_READY);
 					updateSalesOrderLevelStatus(salesOrderLevelStatusDto);
 					// get all the task from the SoTaskby taskSerialId
-					salesOrderTaskStatusDtoList = salesordertaskstatusdao
+					salesOrderTaskStatusDtoList = salesOrderTaskStatusRepository
 							.getAllTaskByTaskSerialId(salesOrderTaskStatusId);
 
 					if (!salesOrderTaskStatusDtoList.isEmpty()) {
@@ -531,8 +588,8 @@ public class ApprovalworkflowTrigger {
 
 		String msgid = "";
 		try {
-			msgid = salesorderlevelstausdao.saveOrUpdateSalesOrderLevelStatusSynchronized(salesOrderLevelStatusDto);
-		} catch (ExecutionFault e) {
+			msgid = salesordertaskstatusdao.saveOrUpdateSalesOrderLevelStatusSynchronized(salesOrderLevelStatusDto);
+		} catch (Exception e) {
 			// logger.error("saveOrUpdateSalesOrderLevelStatusSynchronized
 			// failed " + e);
 		}
@@ -545,7 +602,7 @@ public class ApprovalworkflowTrigger {
 
 		try {
 			return salesordertaskstatusdao.saveOrUpdateSalesOrderTaskStatusSynchronized(salesOrderTaskStatusDto);
-		} catch (ExecutionFault e) {
+		} catch (Exception e) {
 			// logger.error("updateSalesOrderTaskStatus failed " + e);
 		}
 		return null;
@@ -555,13 +612,11 @@ public class ApprovalworkflowTrigger {
 	// creates a new item record after the approval workflow is triggered and
 	// status is updated
 
-	public ResponseEntity createNewItemAndUpdataItem(String dataSet, String taskserializedId, String level) {
+	public ResponseEntity<Object> createNewItemAndUpdataItem(String dataSet, String taskserializedId, String level) {
 
-		ResponseEntity responseentity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				", Level status serial id not registered ", ResponseStatus.FAILED);
-
+		ResponseEntity<Object> responseentity =ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", ", Level status serial id not registered ").body(null);
 		String serialitemid = "";
-		List<SalesDocItemDto> listItem = salesDocItemDao.getSalesDocItemsByDecisionSetId(dataSet);
+		List<SalesDocItemDto> listItem = salesDocItemRepository.getSalesDocItemsByDecisionSetId(dataSet);
 
 		// List<String> listItem =
 		// salesDocItemDao.getItemListByDataSet(dataSet);
@@ -571,10 +626,10 @@ public class ApprovalworkflowTrigger {
 
 				for (int itemid = 0; itemid < listItem.size(); itemid++) {
 
-					ResponseEntity responseentity1DispayOnly = dlvBlockreleasemapservice
+					ResponseEntity responseentity1DispayOnly = salesordertaskstatusdao
 							.getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly(listItem.get(itemid).getItemDlvBlock());
 
-					DlvBlockReleaseMapDto releaseMapDto = (DlvBlockReleaseMapDto) responseentity1DispayOnly.getData();
+					DlvBlockReleaseMapDto releaseMapDto = (DlvBlockReleaseMapDto) responseentity1DispayOnly.getBody();
 
 					SalesOrderItemStatusDto salesorderitemstatusdto = new SalesOrderItemStatusDto();
 
@@ -596,12 +651,12 @@ public class ApprovalworkflowTrigger {
 					}
 
 					try {
-						serialitemid = salesOrderItemStatusService
+						serialitemid = salesordertaskstatusdao
 								.saveOrUpdateSalesOrderItemStatusSynchronised(salesorderitemstatusdto);
-					} catch (ExecutionFault e) {
+					} catch (Exception e) {
 						// logger.error(" Level status serial id Failed" + e);
-						responseentity.setMessage(e.getMessage());
-						return responseentity;
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", e.getMessage()).body(null);
+						
 
 					}
 					// logger.error("serialitemid" + serialitemid);
@@ -615,14 +670,14 @@ public class ApprovalworkflowTrigger {
 				SalesOrderItemStatusDto salesOrderItemStatusDto = null;
 				String previousLevel = "L" + (Integer.parseInt(String.valueOf(level.charAt(1))) - 1);
 				// checking if the prevous level is AND/OR
-				List<SalesOrderTaskStatusDto> salesOrderTaskStatusDtoList = salesordertaskstatusdao
+				List<SalesOrderTaskStatusDto> salesOrderTaskStatusDtoList = salesOrderTaskStatusRepository
 						.getAllTasksFromDecisionSetAndLevel(dataSet, previousLevel);
 				// if the previous level is OR
 				if (salesOrderTaskStatusDtoList.size() == 1) {
 
 					for (int itemid = 0; itemid < listItem.size(); itemid++) {
 
-						salesOrderItemStatusDto = salesOrderItemStatusDao.getItemStatusFromDecisionSetAndLevel(dataSet,
+						salesOrderItemStatusDto = salesOrderItemStatusRepository.getItemStatusFromDecisionSetAndLevel(dataSet,
 								previousLevel, listItem.get(itemid).getSalesItemOrderNo());
 
 						// check for null here
@@ -656,13 +711,12 @@ public class ApprovalworkflowTrigger {
 						// setting the foreing key .
 						salesOrderItemStatusDto.setTaskStatusSerialId(taskserializedId);
 						try {
-							serialitemid = salesOrderItemStatusService
+							serialitemid = salesordertaskstatusdao
 									.saveOrUpdateSalesOrderItemStatusSynchronised(salesOrderItemStatusDto);
 							// System.err.println("serialitemid" +
 							// serialitemid);
-						} catch (ExecutionFault e) {
-							new ResponseEntity("", HttpStatus.BAD_REQUEST,
-									", Level status serial id not registered " + e, ResponseStatus.FAILED);
+						} catch (Exception e) {
+							ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",", Level status serial id not registered ").body(null);
 							// logger.error("saveOrUpdateSalesOrderItemStatusSynchronised
 							// failed " + e);
 						}
@@ -675,19 +729,19 @@ public class ApprovalworkflowTrigger {
 			}
 		}
 
-		return new ResponseEntity("", HttpStatus.ACCEPTED, ", Level status serial id registered ",
-				ResponseStatus.SUCCESS);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).header("message", ", Level status serial id registered ").body(null);
+				
 
 	}
 
-	public ResponseEntity createAndUpdateItemForAnd(String dataSet, List<String> taskserializedIdList, String level) {
-		ResponseEntity responseentity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				", Level status serial id not registered ", ResponseStatus.FAILED);
+	public ResponseEntity<Object> createAndUpdateItemForAnd(String dataSet, List<String> taskserializedIdList, String level) {
+		ResponseEntity<Object> responseentity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",
+				", Level status serial id not registered ").body(null);
 
 		String serialitemid = "";
 		// List<String> listItemId =
 		// salesDocItemDao.getItemListByDataSet(dataSet);
-		List<SalesDocItemDto> listItem = salesDocItemDao.getSalesDocItemsByDecisionSetId(dataSet);
+		List<SalesDocItemDto> listItem = salesDocItemRepository.getSalesDocItemsByDecisionSetId(dataSet);
 		for (int taskid = 0; taskid < taskserializedIdList.size(); taskid++) {
 
 			String taskserializedId = taskserializedIdList.get(taskid);
@@ -697,12 +751,12 @@ public class ApprovalworkflowTrigger {
 
 					for (int itemid = 0; itemid < listItem.size(); itemid++) {
 
-						ResponseEntity responseentity1DispayOnly = dlvBlockreleasemapservice
+						ResponseEntity<Object> responseentity1DispayOnly = salesordertaskstatusdao
 								.getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly(
 										listItem.get(itemid).getItemDlvBlock());
 
 						DlvBlockReleaseMapDto releaseMapDto = (DlvBlockReleaseMapDto) responseentity1DispayOnly
-								.getData();
+								.getBody();
 
 						SalesOrderItemStatusDto salesorderitemstatusdto = new SalesOrderItemStatusDto();
 
@@ -723,12 +777,13 @@ public class ApprovalworkflowTrigger {
 							salesorderitemstatusdto.setTaskStatusSerialId(taskserializedId);
 						}
 						try {
-							serialitemid = salesOrderItemStatusService
+							serialitemid = salesordertaskstatusdao
 									.saveOrUpdateSalesOrderItemStatusSynchronised(salesorderitemstatusdto);
-						} catch (ExecutionFault e) {
+						} catch (Exception e) {
 							// logger.error(" Level status serial id Failed" +
 							// e);
-							responseentity.setMessage(e.getMessage());
+							responseentity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",
+									e.getMessage()).body(null);
 							return responseentity;
 
 						}
@@ -746,8 +801,8 @@ public class ApprovalworkflowTrigger {
 			}
 		}
 
-		return new ResponseEntity("", HttpStatus.ACCEPTED, ", Level status serial id registered ",
-				ResponseStatus.SUCCESS);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).header("message" ,", Level status serial id registered ").body(null);
+				
 
 	}
 
@@ -1278,10 +1333,15 @@ public class ApprovalworkflowTrigger {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public ResponseEntity checkForNextLevelTrigger(String dataSet, String level) {
+	public ResponseEntity<Object> checkForNextLevelTrigger(String dataSet, String level) {
 
+<<<<<<< HEAD
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				  "Check Next level Triggere failed ", ResponseStatus.FAILED);
+=======
+		ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header(
+				"message", " Check Next level Triggere failed ").body(null);
+>>>>>>> refs/remotes/origin/master
 
 		// System.err.println("dataSet and level " + dataSet + level);
 
@@ -1297,14 +1357,14 @@ public class ApprovalworkflowTrigger {
 
 			if (salesOrderLevelStatusDto != null) {
 
-				SalesOrderTaskStatusDto salesOrderTaskStatusDto = salesordertaskstatusdao
+				SalesOrderTaskStatusDto salesOrderTaskStatusDto = salesOrderTaskStatusRepository
 						.getAllTasksFromLevelStatusSerialId(salesOrderLevelStatusDto.getLevelStatusSerialId());
 				// System.err.println("salesOrderTaskStatusDto " +
 				// salesOrderTaskStatusDto);
 
 				if (salesOrderTaskStatusDto != null) {
 
-					List<SalesOrderItemStatusDto> salesOrderItemStatusDtoList = salesOrderItemStatusDao
+					List<SalesOrderItemStatusDto> salesOrderItemStatusDtoList = salesOrderItemStatusRepository
 							.getItemStatusDataUsingTaskSerialId(salesOrderTaskStatusDto.getTaskStatusSerialId());
 
 					// System.err.println("salesOrderItemStatusDtoList " +
@@ -1324,13 +1384,12 @@ public class ApprovalworkflowTrigger {
 								// System.err.println("Inside the if statemnt
 								// ");
 								checkIfApproved = true;
-								responseEntity.setMessage("Success");
-								responseEntity.setStatus(ResponseStatus.SUCCESS);
-								responseEntity.setStatusCode(HttpStatus.ACCEPTED);
+//								responseEntity.setMessage("Success");
+//								responseEntity.setStatus(ResponseStatus.SUCCESS);
+//								responseEntity.setStatusCode(HttpStatus.ACCEPTED);
 								// if atleast one item is approved ,than return
 								// true
-								return new ResponseEntity(responseEntity, HttpStatus.ACCEPTED, "" + checkIfApproved,
-										ResponseStatus.SUCCESS);
+								return ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "Success").body(null);
 							} else {
 								// Check while if remaining items are approvred
 								// or not , if all rejected than return false
@@ -1347,46 +1406,76 @@ public class ApprovalworkflowTrigger {
 									if (!salesOrderLevelStatusDtoList.isEmpty()) {
 
 										responseEntity = updateLevelStatusAbandond(salesOrderLevelStatusDtoList);
-										responseEntity.setMessage(
-												"All the item are rejected by user and further Level Abondened");
-										return new ResponseEntity(responseEntity, HttpStatus.ACCEPTED,
-												"" + checkIfApproved, ResponseStatus.SUCCESS);
+										return ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "All the item are rejected by user and further Level Abondened").body("All the item are rejected by user and further Level Abondened");
+												
 
 									} else {
+<<<<<<< HEAD
 										return new ResponseEntity("", HttpStatus.BAD_REQUEST,
 												 "salesOrderLevelStatusDtoList is null",
 												ResponseStatus.FAILED);
+=======
+										return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "salesOrderLevelStatusDtoList is null").body("salesOrderLevelStatusDtoList is null");
+												
+>>>>>>> refs/remotes/origin/master
 									}
 								}
 
 							}
 						}
 					} else {
+<<<<<<< HEAD
 						return new ResponseEntity("", HttpStatus.BAD_REQUEST,
 								 ",salesOrderItemStatusDtoList is null", ResponseStatus.FAILED);
+=======
+						
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "salesOrderItemStatusDtoList is null").body("salesOrderItemStatusDtoList is null");
+						
+>>>>>>> refs/remotes/origin/master
 					}
 				} else {
+<<<<<<< HEAD
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
 							 ",salesOrderTaskStatusDto is null", ResponseStatus.FAILED);
+=======
+					
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "salesOrderTaskStatusDto is null").body("salesOrderTaskStatusDto is null");
+>>>>>>> refs/remotes/origin/master
 				}
 			} else {
 
+<<<<<<< HEAD
 				return new ResponseEntity("", HttpStatus.BAD_REQUEST,
 						 ",salesOrderLevelStatusDto is null", ResponseStatus.FAILED);
+=======
+				
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "salesOrderLevelStatusDto is null").body("salesOrderLevelStatusDto is null");
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 
+<<<<<<< HEAD
 			return new ResponseEntity("", HttpStatus.BAD_REQUEST, ",salesOrderLevelStatusDto is null",
 					ResponseStatus.FAILED);
+=======
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "salesOrderLevelStatusDto is null").body("salesOrderLevelStatusDto is null");
+>>>>>>> refs/remotes/origin/master
 		}
 
-		responseEntity.setMessage("at the end check next trigger fail ");
-		return responseEntity;
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "at the end check next trigger fail").body("at the end check next trigger fail");
 	}
 
+<<<<<<< HEAD
 	public ResponseEntity updateLevelStatusAbandond(List<SalesOrderLevelStatusDto> saleOrderLevelStatusDoList) {
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				",Failed to update SalesOrderLevelStatus", ResponseStatus.FAILED);
+=======
+	public ResponseEntity<Object> updateLevelStatusAbandond(List<SalesOrderLevelStatusDto> saleOrderLevelStatusDoList) {
+		ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "Failed to update SalesOrderLevelStatus").body("Failed to update SalesOrderLevelStatus");
+		
+>>>>>>> refs/remotes/origin/master
 		if (!saleOrderLevelStatusDoList.isEmpty()) {
 			SalesOrderLevelStatusDto salesOrderLevelStatusDto = null;
 
@@ -1397,45 +1486,58 @@ public class ApprovalworkflowTrigger {
 				salesOrderLevelStatusDto.setLevelStatus(StatusConstants.LEVEL_ABANDON);
 
 				try {
-					salesorderlevelstausdao.saveOrUpdateSalesOrderLevelStatusSynchronized(salesOrderLevelStatusDto);
-					responseEntity.setMessage("Success");
-					responseEntity.setStatus(ResponseStatus.SUCCESS);
-					responseEntity.setStatusCode(HttpStatus.ACCEPTED);
+					salesordertaskstatusdao.saveOrUpdateSalesOrderLevelStatusSynchronized(salesOrderLevelStatusDto);
 
-				} catch (ExecutionFault e) {
+				} catch (Exception e) {
 
+<<<<<<< HEAD
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
 							",Failed to update SalesOrderLevelStatus" + e, ResponseStatus.FAILED);
+=======
+					
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "Failed to update SalesOrderLevelStatus").body("Failed to update SalesOrderLevelStatus");
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		} else {
+<<<<<<< HEAD
 			return new ResponseEntity("", HttpStatus.BAD_REQUEST, ", SalesOrderLevelStatusList is null",
 					ResponseStatus.FAILED);
+=======
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message",  "SalesOrderLevelStatusList is null").body("SalesOrderLevelStatusList is null");
+>>>>>>> refs/remotes/origin/master
 		}
-		return responseEntity;
+		return ResponseEntity.status(HttpStatus.OK).header("message",  "Success").body("Success");
 
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public ResponseEntity checkForNextLevelTriggerAnd(String dataSet, String level) {
+	public ResponseEntity<Object> checkForNextLevelTriggerAnd(String dataSet, String level) {
 
+<<<<<<< HEAD
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				 ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+=======
+		ResponseEntity<Object> responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.header("message","Check Next level Triggere failed ").body("Check Next level Triggere failed ");
+		
+		
+>>>>>>> refs/remotes/origin/master
 		// System.err.println("dataSet and level " + dataSet + level);
 		boolean checkIfApproved = false;
-		responseEntity = salesOrderTaskStatus.getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(dataSet,
+		responseEntity = salesordertaskstatusdao.getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(dataSet,
 				level);
 
-		Map<String, Integer> mapToEvaluateApprove = (Map<String, Integer>) responseEntity.getData();
+		Map<String, Integer> mapToEvaluateApprove = (Map<String, Integer>) responseEntity.getBody();
 
 		if (mapToEvaluateApprove.containsValue(StatusConstants.ITEM_APPROVE)) {
 			checkIfApproved = true;
-			responseEntity.setMessage("Success");
-			responseEntity.setStatus(ResponseStatus.SUCCESS);
-			responseEntity.setStatusCode(HttpStatus.ACCEPTED);
+//			responseEntity.setMessage("Success");
+//			responseEntity.setStatus(ResponseStatus.SUCCESS);
+//			responseEntity.setStatusCode(HttpStatus.ACCEPTED);
 
-			return new ResponseEntity(responseEntity, HttpStatus.ACCEPTED, "" + checkIfApproved,
-					ResponseStatus.SUCCESS);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header("message","Success").body(checkIfApproved);
 		} else {
 			checkIfApproved = false;
 			List<SalesOrderLevelStatusDto> salesOrderLevelStatusDtoList = salesorderlevelstausdao
@@ -1444,11 +1546,10 @@ public class ApprovalworkflowTrigger {
 			if (!salesOrderLevelStatusDtoList.isEmpty()) {
 
 				responseEntity = updateLevelStatusAbandond(salesOrderLevelStatusDtoList);
-				responseEntity.setMessage("All the item are rejected by user and further Level Abondened");
-				return new ResponseEntity(responseEntity, HttpStatus.ACCEPTED, "" + checkIfApproved,
-						ResponseStatus.SUCCESS);
-			}
-
+//				responseEntity.setMessage);
+				return ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "All the item are rejected by user and further Level Abondened").body(responseEntity);		
+				}
+			
 			return responseEntity;
 		}
 
@@ -1463,7 +1564,7 @@ public class ApprovalworkflowTrigger {
 		// get all the salesOrderLevelStatusDto by prevousLevel and DataSet to
 		// check the AprroverType .
 
-		List<SalesOrderTaskStatusDto> salesOrderTaskStatusDtoList = salesordertaskstatusdao
+		List<SalesOrderTaskStatusDto> salesOrderTaskStatusDtoList = salesOrderTaskStatusRepository
 				.getAllTasksFromDecisionSetAndLevel(dataSet, previousLevel);
 
 		if (!salesOrderTaskStatusDtoList.isEmpty() && salesOrderTaskStatusDtoList.size() > 1) {
@@ -1479,15 +1580,19 @@ public class ApprovalworkflowTrigger {
 	public ResponseEntity CreateReccordForcumilativeStatusOfALLTaskANDType(String taskserializedId, String DataSet,
 			String level) {
 
+<<<<<<< HEAD
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				", Check Next level Triggere failed ", ResponseStatus.FAILED);
+=======
+		ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Check Next level Triggere failed").body("Check Next level Triggere failed");
+>>>>>>> refs/remotes/origin/master
 
 		String previousLevel = "L" + (Integer.parseInt(String.valueOf(level.charAt(1))) - 1);
 
-		responseEntity = salesOrderTaskStatus.getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(DataSet,
+		responseEntity = salesordertaskstatusdao.getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(DataSet,
 				previousLevel);
 		@SuppressWarnings("unchecked")
-		Map<String, Integer> cumilativeItemStatus = (Map<String, Integer>) responseEntity.getData();
+		Map<String, Integer> cumilativeItemStatus = (Map<String, Integer>) responseEntity.getBody();
 		Set<String> itemIdSet = cumilativeItemStatus.keySet();
 		for (String itemId : itemIdSet) {
 			SalesOrderItemStatusDto salesOrderItemStatusDto = new SalesOrderItemStatusDto();
@@ -1501,26 +1606,33 @@ public class ApprovalworkflowTrigger {
 			} else if (StatusConstants.ITEM_REJECT.equals(cumilativeItemStatus.get(itemId))
 					|| StatusConstants.ITEM_INDIRECT_REJECT.equals(cumilativeItemStatus.get(itemId))) {
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.ITEM_INDIRECT_REJECT);
+<<<<<<< HEAD
 				salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
+=======
+				salesOrderItemStatusDto.setVisiblity(DkshStatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
+>>>>>>> refs/remotes/origin/master
 			}
 			// Rjected from ECCC get cumilative from or to and
 			else if (StatusConstants.REJECTED_FROM_ECC.equals(cumilativeItemStatus.get(itemId))) {
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
 				salesOrderItemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
+<<<<<<< HEAD
 			} else if (StatusConstants.DISPLAY_ONLY_ITEM.equals(cumilativeItemStatus.get(itemId))) {
+=======
+			} else if (DkshStatusConstants.DISPLAY_ONLY_ITEM.equals(cumilativeItemStatus.get(itemId))) {
+>>>>>>> refs/remotes/origin/master
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
 				salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 			}
 			salesOrderItemStatusDto.setTaskStatusSerialId(taskserializedId);
 
 			try {
-				String serialitemid = salesOrderItemStatusService
+				String serialitemid = salesordertaskstatusdao
 						.saveOrUpdateSalesOrderItemStatusSynchronised(salesOrderItemStatusDto);
 				// System.err.println("serialitemid" + serialitemid);
-			} catch (ExecutionFault e) {
+			} catch (Exception e) {
 
-				new ResponseEntity("", HttpStatus.BAD_REQUEST, ", Level status serial id not registered " + e,
-						ResponseStatus.FAILED);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Level status serial id not registered "+e).body("Level status serial id not registered "+e);
 				// logger.error("saveOrUpdateSalesOrderItemStatusSynchronised
 				// failed " + e);
 
@@ -1537,7 +1649,7 @@ public class ApprovalworkflowTrigger {
 		WorkflowResponseEntity response = new WorkflowResponseEntity("", 200, TRIGGERFAILUER, ResponseStatus.FAILED,
 				null, null, "");
 
-		List<String> workflowInstanceIdList = salesordertaskstatusdao.getTasksIdFromDecisionSetAndLevel(DataSet);
+		List<String> workflowInstanceIdList = salesOrderTaskStatusRepository.getTasksIdFromDecisionSetAndLevel(DataSet);
 
 		System.err.println(" workflowInstanceIdList :" + workflowInstanceIdList);
 		if (!workflowInstanceIdList.isEmpty()) {
@@ -1560,8 +1672,13 @@ public class ApprovalworkflowTrigger {
 
 	public ResponseEntity checkNextLevelTriggerForAND_ORR(String dataSet, String level, String approvalType) {
 
+<<<<<<< HEAD
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 			", Check Next level Triggere failed ", ResponseStatus.FAILED);
+=======
+		ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Check Next level Triggere failed").body("Check Next level Triggere failed");
+			
+>>>>>>> refs/remotes/origin/master
 
 		if (approvalType.equalsIgnoreCase("OR") || approvalType.equalsIgnoreCase("")) {
 			responseEntity = checkForNextLevelTrigger(dataSet, level);
@@ -1698,9 +1815,9 @@ public class ApprovalworkflowTrigger {
 	// Bussiness key will be SalesOrder Number and DecisionSet Number
 	public ResponseEntity closeAllWorkflowsByBussinessKey(String bussinessKey) {
 		try {
-			ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.OK,
-					", Worklfow Failed To CloseCompeletly ", ResponseStatus.FAILED);
-			List<String> dsNumber = salesDocItemDao.getDSBySalesHeaderID(bussinessKey);
+			ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.OK).header("message", "Worklfow Failed To CloseCompeletly").body("Worklfow Failed To CloseCompeletly");
+				
+			List<String> dsNumber = salesDocItemRepository.getDSBySalesHeaderID(bussinessKey);
 
 			System.err.println("dsNumbers " + dsNumber);
 			List<String> listWorkflowResponse = null;
@@ -1732,19 +1849,24 @@ public class ApprovalworkflowTrigger {
 							});
 
 						}
-						responseEntity = new ResponseEntity("", HttpStatus.OK, ", Worklfow closed Compeletly  ",
-								ResponseStatus.SUCCESS);
+						responseEntity = ResponseEntity.status(HttpStatus.OK).header("message", "Worklfow closed Compeletly").body("Worklfow closed Compeletly");
+								
 					} else {
-						responseEntity = new ResponseEntity(response, HttpStatus.OK,
-								", Worklfow Failed To CloseCompeletly  ", ResponseStatus.FAILED);
+						responseEntity = ResponseEntity.status(HttpStatus.OK).header("message", "Worklfow Failed To Close Compeletly").body(response);
+								
 					}
 
 				}
 			}
 			return responseEntity;
 		} catch (Exception e) {
+<<<<<<< HEAD
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "",
 					ResponseStatus.FAILED);
+=======
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "failed").body(e);
+					
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
@@ -1754,8 +1876,13 @@ public class ApprovalworkflowTrigger {
 	// input parameter  - definition id , context, GET/POST 
 	
 	public ResponseEntity httpRequest(String definitionId,String payload,String requestType,String requestUrl) throws URISyntaxException, IOException{
+<<<<<<< HEAD
 		 ResponseEntity  response = new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "Exception" ,
 					ResponseStatus.FAILED);
+=======
+		 ResponseEntity  response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Failed").body(null);
+					
+>>>>>>> refs/remotes/origin/master
 		
 	
 		HttpResponse httpResponse = null;
@@ -1766,8 +1893,8 @@ public class ApprovalworkflowTrigger {
 		if(requestType.equals("GET")){
 			HttpGet request = new HttpGet(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
 		httpResponse  = client.execute(request);
-		response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-					ResponseStatus.SUCCESS);
+		response = ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "SUCCESSFUL").body(httpResponse);
+					
 		}
 		if(requestType.equals("POST")){
 			 HttpPost request = new HttpPost(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
@@ -1776,8 +1903,8 @@ public class ApprovalworkflowTrigger {
 			StringEntity workflowPayload = new StringEntity(payload);
 		      request.setEntity(workflowPayload);
 		      httpResponse = client.execute(request);
-		      response =     new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-						ResponseStatus.SUCCESS);
+		      response =   ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "SUCCESSFUL").body(httpResponse);
+						
 		}
 		if(requestType.equals("PATCH")){
 			HttpPatch request = new HttpPatch(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
@@ -1786,34 +1913,35 @@ public class ApprovalworkflowTrigger {
 			StringEntity workflowPayload = new StringEntity(payload);
 		      request.setEntity(workflowPayload);
 		      httpResponse =  client.execute(request);
-		      response =  new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-						ResponseStatus.SUCCESS);
+		      response = ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "SUCCESSFUL").body(httpResponse);
+						
 		}
 		if(requestType.equals("DELETE")){
 			HttpDelete request =  new HttpDelete(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
 			request.addHeader("Content-type", "application/json");
 			request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
 			httpResponse = client.execute(request);
-			response =	new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-					ResponseStatus.SUCCESS);
+			response =	ResponseEntity.status(HttpStatus.ACCEPTED).header("message", "SUCCESSFUL").body(httpResponse);
+					
 		}
 		
 		return response;
 		} catch (Exception e ){
 			
+<<<<<<< HEAD
 			 return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED" ,
 						ResponseStatus.FAILED);
+=======
+			 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Failed").body(e);
+						
+			 
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	
 	
 	
 	// get jwtToken  get method for authentication 
-	
-	
-}
-
-	
 	
 	
 

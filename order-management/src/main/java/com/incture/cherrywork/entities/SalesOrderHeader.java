@@ -659,7 +659,8 @@ public class SalesOrderHeader {
 	@Column(name = "BLOCKED")
 	private Boolean blocked;
 
-	public Boolean isblocked() {
+	
+	public Boolean getBlocked() {
 		return blocked;
 	}
 
@@ -721,5 +722,18 @@ public class SalesOrderHeader {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
+	
+	@Column(name = "INV_ID", length = 30)
+	private String invId;
+
+	public String getInvId() {
+		return invId;
+	}
+
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
+	
+	
 
 }

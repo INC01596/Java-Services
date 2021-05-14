@@ -3,6 +3,7 @@ package com.incture.cherrywork.dtos;
 import java.util.Map;
 
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
@@ -19,6 +20,8 @@ public class WorkflowResponseEntity {
 	private Map<String,Object> responseMessage;
 	private JSONArray responseJson;
 	private String id;
+	private HttpStatus httpStatus;
+	
 	
 	public Object getData() {
 		return data;
@@ -33,6 +36,23 @@ public class WorkflowResponseEntity {
 		this.responseMessage = responseMessage;
 		this.responseJson = responseJson;
 		this.id = id;
+	}
+	
+	
+	
+	public WorkflowResponseEntity(int responseStatusCode, String message, ResponseStatus status,
+			Map<String, Object> responseMessage) {
+		super();
+		this.responseStatusCode = responseStatusCode;
+		this.message = message;
+		this.status = status;
+		this.responseMessage = responseMessage;
+	}
+	
+	public WorkflowResponseEntity(String id, HttpStatus httpStatus, String message){
+		this.id = id;
+		this.httpStatus = httpStatus;
+		this.message = message;
 	}
 	public void setData(Object data) {
 		this.data = data;

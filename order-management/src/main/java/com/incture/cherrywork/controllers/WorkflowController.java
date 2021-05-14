@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,13 +18,15 @@ import com.incture.cherrywork.dtos.ApprovalWorkflowInputDto;
 import com.incture.cherrywork.dtos.CheckNextTriggerDto;
 import com.incture.cherrywork.dtos.DecisionSetWorkflow;
 import com.incture.cherrywork.dtos.DeletePayloadDto;
-import com.incture.cherrywork.dtos.ResponseEntity;
+
 import com.incture.cherrywork.dtos.WorkflowResponseDto;
 import com.incture.cherrywork.dtos.WorkflowResponseEntity;
+import com.incture.cherrywork.services.new_workflow.WorkflowTrigger;
 import com.incture.cherrywork.workflow.ApprovalworkflowTrigger;
 import com.incture.cherrywork.workflow.DeletionOfWorflowTaskId;
 import com.incture.cherrywork.workflow.ImeTrigger;
-import com.incture.cherrywork.workflow.WorkflowTrigger;
+
+
 
 
 

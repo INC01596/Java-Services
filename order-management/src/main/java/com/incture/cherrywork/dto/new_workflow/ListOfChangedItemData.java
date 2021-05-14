@@ -10,7 +10,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+<<<<<<< HEAD
 
+=======
+//@NoArgsConstructor
+@AllArgsConstructor
+>>>>>>> refs/remotes/origin/master
 @EqualsAndHashCode(callSuper = false)
 public @Data class ListOfChangedItemData extends BaseDto {
 

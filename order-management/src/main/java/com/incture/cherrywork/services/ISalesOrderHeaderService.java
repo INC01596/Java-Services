@@ -43,7 +43,9 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto dto);
-	ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto);
+	ResponseEntity<Object> submitOdata(SalesOrderOdataHeaderDto odataHeaderDto, String DocType);
+	void updateRecord(String temp_id, String docID_6, String docID_2, String Doc_Type);
+	
 
 	// sandeep
 
@@ -62,7 +64,6 @@ public interface ISalesOrderHeaderService {
 	
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 
-
 	
 
 	ResponseEntity<Object> getManageServiceObd(ObdDto dto);
@@ -76,6 +77,13 @@ public interface ISalesOrderHeaderService {
 	
 	
 	
+
+	ResponseEntity<Object> getHeader(String stp);
+	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
+	// pageable);
+	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
+	//
+
 
 
 }

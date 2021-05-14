@@ -110,7 +110,6 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.deleteDraftedVersion(d);
 	}
 
-
 	@PostMapping("/SalesOrderItemDelete")
 	@ApiOperation(value = "Delete SalesOrderItem Dataset")
 	public ResponseEntity<Object> deleteItemOnly(@RequestParam String salesItemId) {
@@ -133,7 +132,22 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.getManageServiceInvo(dto);
 	}
 
+
+	//@PostMapping("/page/{pageNo}")
+
+
+
+	// @PostMapping("/page/{pageNo}")
+
+	//
+	/*
+	 * @GetMapping("/getUserDetailsBySTP/{stpId}") public ResponseEntity<Object>
+	 * getUserDetailsBySTP(@PathVariable("stpId") String stpId) { return
+	 * salesOrderHeaderService.getUserDetailsBySTP(stpId); }
+	 */
+
 	
+
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")

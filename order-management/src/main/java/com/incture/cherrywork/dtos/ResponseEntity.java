@@ -8,6 +8,10 @@ import com.incture.cherrywork.sales.constants.ResponseStatus;
 import lombok.Data;
 
 @Data
+<<<<<<< HEAD
+=======
+//@AllArgsConstructor
+>>>>>>> refs/remotes/origin/master
 public class ResponseEntity {
 
 	private Object data;

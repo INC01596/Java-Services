@@ -703,6 +703,19 @@ public class SalesOrderItem {
 		this.pgiId = pgiId;
 	}
 	
+	@Column(name = "INV_ID",length=25)
+	private String invId;
+	
+	
+	
+	public String getInvId() {
+		return invId;
+	}
+
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
+
 	@Column(name="PICKED_QUANTITY")
 	private BigDecimal pickedQuantity;
 
@@ -735,6 +748,7 @@ public class SalesOrderItem {
 	public void setUom(String uom) {
 		this.uom = uom;
 	}
+	
 	
 	
 	

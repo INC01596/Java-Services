@@ -10,8 +10,8 @@ import com.incture.cherrywork.entities.workflow.SalesOrderTaskStatusesDo;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
 
 @Repository
-public interface ISalesOrderTaskStatusesRepository extends JpaRepository<SalesOrderTaskStatusesDo, SalesOrderTaskStatusPrimaryKey>,
-QuerydslPredicateExecutor<SalesOrderHeader>, ISalesOrderHeaderCustomRepository {
+public interface ISalesOrderTaskStatusesRepository extends JpaRepository<SalesOrderTaskStatusesDo, String>,
+QuerydslPredicateExecutor<SalesOrderTaskStatusesDo>/*, ISalesOrderTaskStatusesCustomRepository*/ {
 
 
 }

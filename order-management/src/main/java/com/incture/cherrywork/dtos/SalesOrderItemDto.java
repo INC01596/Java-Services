@@ -7,6 +7,9 @@ import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.entities.SalesOrderHeader;
+import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
+import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
+import com.incture.cherrywork.sales.constants.EnOverallDocumentStatus;
 
 import java.math.BigDecimal;
 
@@ -33,6 +36,18 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private String lineItemNumber;
+	private Integer lineItemNumber1;
+	
+	
+
+	
+	public Integer getLineItemNumber1() {
+		return lineItemNumber1;
+	}
+
+	public void setLineItemNumber1(Integer lineItemNumber1) {
+		this.lineItemNumber1 = lineItemNumber1;
+	}
 
 	public String getLineItemNumber() {
 		return lineItemNumber;
@@ -163,6 +178,16 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private String outstandingQuantity;
+	private BigDecimal outstandingQuantity1;
+
+	
+	public BigDecimal getOutstandingQuantity1() {
+		return outstandingQuantity1;
+	}
+
+	public void setOutstandingQuantity1(BigDecimal outstandingQuantity1) {
+		this.outstandingQuantity1 = outstandingQuantity1;
+	}
 
 	public String getOutstandingQuantity() {
 		return outstandingQuantity;
@@ -203,6 +228,17 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private String deliveryStatus;
+	
+	private BigDecimal deliveryStatus1;
+	
+
+	public BigDecimal getDeliveryStatus1() {
+		return deliveryStatus1;
+	}
+
+	public void setDeliveryStatus1(BigDecimal deliveryStatus1) {
+		this.deliveryStatus1 = deliveryStatus1;
+	}
 
 	public String getDeliveryStatus() {
 		return deliveryStatus;
@@ -233,6 +269,16 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private BigDecimal basePrice;
+	private String basePrice1;
+
+	
+	public String getBasePrice1() {
+		return basePrice1;
+	}
+
+	public void setBasePrice1(String basePrice1) {
+		this.basePrice1 = basePrice1;
+	}
 
 	public BigDecimal getBasePrice() {
 		return basePrice;
@@ -503,6 +549,10 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private String updateIndicator;
+	
+
+	
+	
 
 	public String getUpdateIndicator() {
 		return updateIndicator;
@@ -523,6 +573,17 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 
 	private Date syncStatus;
+	private Boolean syncStatus1;
+	
+	
+
+	public Boolean getSyncStatus1() {
+		return syncStatus1;
+	}
+
+	public void setSyncStatus1(Boolean syncStatus1) {
+		this.syncStatus1 = syncStatus1;
+	}
 
 	public Date getSyncStatus() {
 		return syncStatus;
@@ -574,6 +635,180 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 
 	// Awadhesh Kumar
 	// ---------------------------------------------------------------------------------------------
+
+	private BigDecimal orderQuantity;
+
+	private BigDecimal amountBeforeVAT;
+
+	private BigDecimal VATAmount;
+
+	private Integer VATPercent;
+
+	private BigDecimal totalAmountIncludingVAT;
+
+	private EnPaymentChequeStatus paymentChequeDetail;
+
+	private BigDecimal creditBlockQuantity;
+
+	private BigDecimal onTimeDeliveredQuantity;
+
+	private EnOverallDocumentStatus overallProcessingStatus;
+
+	private Integer numberOfPieces;
+
+	private Integer numberOfBundles;
+	
+	private String standardDescription;
+	
+	private String sectionGradeDescription;
+	
+	private BigDecimal totalNumberOfPieces;
+	
+	private BigDecimal bundleWeight;
+	
+	private EnUpdateIndicator updateIndicator1;
+	
+	private String lineItemStatus;
+	
+	
+	
+	
+	
+	public String getLineItemStatus() {
+		return lineItemStatus;
+	}
+
+	public void setLineItemStatus(String lineItemStatus) {
+		this.lineItemStatus = lineItemStatus;
+	}
+
+	public EnUpdateIndicator getUpdateIndicator1() {
+		return updateIndicator1;
+	}
+
+	public void setUpdateIndicator1(EnUpdateIndicator updateIndicator1) {
+		this.updateIndicator1 = updateIndicator1;
+	}
+
+	public BigDecimal getBundleWeight() {
+		return bundleWeight;
+	}
+
+	public void setBundleWeight(BigDecimal bundleWeight) {
+		this.bundleWeight = bundleWeight;
+	}
+
+	public BigDecimal getTotalNumberOfPieces() {
+		return totalNumberOfPieces;
+	}
+
+	public void setTotalNumberOfPieces(BigDecimal totalNumberOfPieces) {
+		this.totalNumberOfPieces = totalNumberOfPieces;
+	}
+
+	public String getSectionGradeDescription() {
+		return sectionGradeDescription;
+	}
+
+	public void setSectionGradeDescription(String sectionGradeDescription) {
+		this.sectionGradeDescription = sectionGradeDescription;
+	}
+
+	public String getStandardDescription() {
+		return standardDescription;
+	}
+
+	public void setStandardDescription(String standardDescription) {
+		this.standardDescription = standardDescription;
+	}
+
+	public Integer getNumberOfBundles() {
+		return numberOfBundles;
+	}
+
+	public void setNumberOfBundles(Integer numberOfBundles) {
+		this.numberOfBundles = numberOfBundles;
+	}
+
+	public Integer getNumberOfPieces() {
+		return numberOfPieces;
+	}
+
+	public void setNumberOfPieces(Integer numberOfPieces) {
+		this.numberOfPieces = numberOfPieces;
+	}
+
+	public EnOverallDocumentStatus getOverallProcessingStatus() {
+		return overallProcessingStatus;
+	}
+
+	public void setOverallProcessingStatus(EnOverallDocumentStatus overallProcessingStatus) {
+		this.overallProcessingStatus = overallProcessingStatus;
+	}
+
+	public BigDecimal getOnTimeDeliveredQuantity() {
+		return onTimeDeliveredQuantity;
+	}
+
+	public void setOnTimeDeliveredQuantity(BigDecimal onTimeDeliveredQuantity) {
+		this.onTimeDeliveredQuantity = onTimeDeliveredQuantity;
+	}
+
+	public BigDecimal getCreditBlockQuantity() {
+		return creditBlockQuantity;
+	}
+
+	public void setCreditBlockQuantity(BigDecimal creditBlockQuantity) {
+		this.creditBlockQuantity = creditBlockQuantity;
+	}
+
+	public EnPaymentChequeStatus getPaymentChequeDetail() {
+		return paymentChequeDetail;
+	}
+
+	public void setPaymentChequeDetail(EnPaymentChequeStatus paymentChequeDetail) {
+		this.paymentChequeDetail = paymentChequeDetail;
+	}
+
+	public BigDecimal getTotalAmountIncludingVAT() {
+		return totalAmountIncludingVAT;
+	}
+
+	public void setTotalAmountIncludingVAT(BigDecimal totalAmountIncludingVAT) {
+		this.totalAmountIncludingVAT = totalAmountIncludingVAT;
+	}
+
+	public Integer getVATPercent() {
+		return VATPercent;
+	}
+
+	public void setVATPercent(Integer vATPercent) {
+		VATPercent = vATPercent;
+	}
+
+	public BigDecimal getVATAmount() {
+		return VATAmount;
+	}
+
+	public void setVATAmount(BigDecimal vATAmount) {
+		VATAmount = vATAmount;
+	}
+
+	public BigDecimal getAmountBeforeVAT() {
+		return amountBeforeVAT;
+	}
+
+	public void setAmountBeforeVAT(BigDecimal amountBeforeVAT) {
+		this.amountBeforeVAT = amountBeforeVAT;
+	}
+
+	public BigDecimal getOrderQuantity() {
+		return orderQuantity;
+	}
+
+	public void setOrderQuantity(BigDecimal orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
 
 	private String documentCurrency;
 
@@ -735,17 +970,25 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
-	
-	private BigDecimal pickedQuantity;
-	private String sloc;
-	
-	
 
-	public BigDecimal getPickedQuantity() {
+	private String pickedQuantity;
+	private String sloc;
+
+	private String materialDescription;
+
+	public String getMaterialDescription() {
+		return materialDescription;
+	}
+
+	public void setMaterialDescription(String materialDescription) {
+		this.materialDescription = materialDescription;
+	}
+
+	public String getPickedQuantity() {
 		return pickedQuantity;
 	}
 
-	public void setPickedQuantity(BigDecimal pickedQuantity) {
+	public void setPickedQuantity(String pickedQuantity) {
 		this.pickedQuantity = pickedQuantity;
 	}
 
@@ -756,10 +999,8 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	public void setSloc(String sloc) {
 		this.sloc = sloc;
 	}
-	
+
 	private String uom;
-	
-	
 
 	public String getUom() {
 		return uom;
@@ -768,12 +1009,10 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	public void setUom(String uom) {
 		this.uom = uom;
 	}
-	
+
 	private String obdStatus;
 	private String pgiStatus;
 	private String invoiceStatus;
-	
-	
 
 	public String getObdStatus() {
 		return obdStatus;
@@ -798,7 +1037,18 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	public void setInvoiceStatus(String invoiceStatus) {
 		this.invoiceStatus = invoiceStatus;
 	}
+	
+	private String invId;
+	
+	
 
+	public String getInvId() {
+		return invId;
+	}
+
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
 
 	public int compareTo(SalesOrderItemDto obj1) {
 		return obj1.salesItemId.compareTo(this.getSalesItemId());
