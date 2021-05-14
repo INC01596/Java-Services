@@ -610,27 +610,14 @@ public class SalesOrderHeaderDto {
 
 	private String weight;
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 	public String getWeight() {
 		return weight;
 	}
 
-<<<<<<< HEAD
+
 		public void setCustomerName(String customerName) {
 			this.customerName = customerName;
 		}
-=======
-
-
-	
-
->>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 
 
 	public void setWeight(String weight) {

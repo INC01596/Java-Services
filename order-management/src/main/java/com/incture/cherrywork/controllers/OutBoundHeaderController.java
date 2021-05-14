@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.services.IOutBoundHeaderService;
+import com.incture.cherrywork.services.SchedulerServices;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +23,9 @@ public class OutBoundHeaderController {
 	
 	@Autowired
 	private IOutBoundHeaderService outBoundHeaderService;
+	
+	@Autowired
+	private SchedulerServices schedulerServices;
 	
 	@PostMapping("/createObd")
 	@ApiOperation(value = "Create Obd")
@@ -37,7 +41,19 @@ public class OutBoundHeaderController {
 	
 	@PostMapping("/createInv/{pgiId}")
 	@ApiOperation(value = "Create Invoice")
-	public ResponseEntity<Object> createInv(@PathVariable String invId){
-		return outBoundHeaderService.createInv(invId);
+	public ResponseEntity<Object> createInv(@PathVariable String pgiId){
+		return outBoundHeaderService.createInv(pgiId);
+	}
+	
+	
+	
+	@PostMapping("/headerScheduler")
+	public ResponseEntity<Object> headerSch(){
+		return schedulerServices.headerScheduler();
+	}
+	
+	@PostMapping("/itemScheduler")
+	public ResponseEntity<Object> itemSch(){
+		return schedulerServices.itemScheduler();
 	}
 }

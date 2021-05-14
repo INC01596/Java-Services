@@ -942,7 +942,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 		OdataOutBoudDeliveryInvoiceInputDto odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
 
-		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getObdId());
+		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getPgiId());
 
 		odataInputOutBound.setTernr("3");
 

@@ -64,10 +64,6 @@ public interface ISalesOrderHeaderService {
 	
 	ResponseEntity<Object> deleteDraftedVersion(HeaderIdDto d);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 	
 
 	ResponseEntity<Object> getManageServiceObd(ObdDto dto);
@@ -81,7 +77,7 @@ public interface ISalesOrderHeaderService {
 	
 	
 	
-<<<<<<< HEAD
+
 	ResponseEntity<Object> getHeader(String stp);
 	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
 	// pageable);
@@ -90,8 +86,4 @@ public interface ISalesOrderHeaderService {
 
 
 
-=======
-
-
->>>>>>> 8eae5b09ed12485c2105a781cb07f637479e7cf4
 }
