@@ -1,4 +1,4 @@
-/*package com.incture.cherrywork.workflow;
+package com.incture.cherrywork.workflow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,20 +13,24 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.incture.constant.DkshConstants;
-import com.incture.constant.StrategyConstants;
-import com.incture.dao.SalesDocItemDao;
-import com.incture.dto.SalesDocItemDto;
-import com.incture.dto.TH_IDB_RO_RuleInputDto;
-import com.incture.exceptions.ExecutionFault;
-import com.incture.rule.idb.dto.ApproverDataOutputDto;
-import com.incture.rule.idb.dto.TH_IDBRuleInputDto;
-import com.incture.rule.interfaces.RuleInputDto;
-import com.incture.rule.services.THIDBRuleService;
-import com.incture.utils.SequenceNumberGen;
+import com.incture.cherrywork.WConstants.Constants;
+import com.incture.cherrywork.dao.SalesDocItemDao;
+import com.incture.cherrywork.dtos.SalesDocItemDto;
+import com.incture.cherrywork.dtos.TH_IDB_RO_RuleInputDto;
+import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.rules.ApproverDataOutputDto;
+import com.incture.cherrywork.rules.RuleInputDto;
+import com.incture.cherrywork.rules.THIDBRuleService;
+import com.incture.cherrywork.rules.TH_IDBRuleInputDto;
+import com.incture.cherrywork.sales.constants.StrategyConstants;
+import com.incture.cherrywork.util.SequenceNumberGen;
+
+
+
 
 @Transactional
 @Repository
@@ -35,6 +39,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Lazy
 	@Autowired
 	private SequenceNumberGen seqNumGenRepo;
 
@@ -61,7 +66,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		if( customerPo !=null  && !customerPo.isEmpty()){
 		String checkTypeOfSo = customerPo.substring(0, 2);
 		// if of Return Order Type and Return ExchangeType
-		if (checkTypeOfSo.equals(DkshConstants.RETURN_ORDER)||checkTypeOfSo.equals(DkshConstants.RETURN_EXCHANGE)) {
+		if (checkTypeOfSo.equals(Constants.RETURN_ORDER)||checkTypeOfSo.equals(Constants.RETURN_EXCHANGE)) {
 
 			return generateApprovalMatFroReturnOrder(salesDocItemDtolist, strategy, distributionChannel, salesOrg,
 					country, requestType, requestCategory);
@@ -102,7 +107,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 	private List<ApproverDataOutputDto> determineDsAndApprovalSetForRO(
 			Map.Entry<TH_IDB_RO_RuleInputDto, List<SalesDocItemDto>> entry) {
 
-		THIDROBRuleService rulesService = new THIDROBRuleService();
+		THIDBRuleService rulesService = new THIDBRuleService();
 		double totalAmount = 0;
 
 		for (SalesDocItemDto itemDto : entry.getValue()) {
@@ -130,7 +135,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		if (outputList != null && !outputList.isEmpty()) {
 			Session session = sf.openSession();
 			// if its of Blocked sales order type
-			decisionSetId = seqNumGenRepo.getNextSeqNumberForDS("DS_", 6, session);
+			decisionSetId = seqNumGenRepo.getNextSeqNumber("DS_", 6, session);
 			session.close();
 
 			List<SalesDocItemDto> itemList = salesDocItemDao.getSalesDocItemsByDecisionSetId(decisionSetId);
@@ -164,7 +169,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		if (outputList != null && !outputList.isEmpty()) {
 			Session session = sf.openSession();
 			// if its of Blocked sales order type
-			decisionSetId = seqNumGenRepo.getNextSeqNumberForDS("RO_DS_", 6, session);
+			decisionSetId = seqNumGenRepo.getNextSeqNumber("RO_DS_", 6, session);
 			session.close();
 
 			List<SalesDocItemDto> itemList = salesDocItemDao.getSalesDocItemsByDecisionSetId(decisionSetId);
@@ -225,23 +230,23 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 					th_idb_proc_dto.setDistributionChannel(distributionChannel);
 					th_idb_proc_dto.setSalesOrg(salesOrg);
 				} else {
-					th_idb_proc_dto.setDistributionChannel(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesOrg(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup4(DkshConstants.DEFAULT);
-					type = DkshConstants.DEFAULT;
+					th_idb_proc_dto.setDistributionChannel(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup4(Constants.DEFAULT);
+					type = Constants.DEFAULT;
 
 				}
 
 				if (inputMap.containsKey(th_idb_proc_dto) || defaultInputMap.containsKey(th_idb_proc_dto)) {
-					if (!type.equals(DkshConstants.DEFAULT))
+					if (!type.equals(Constants.DEFAULT))
 						inputMap.get(th_idb_proc_dto).add(salesDocItemDto);
 					else
 						defaultInputMap.get(th_idb_proc_dto).add(salesDocItemDto);
 				} else {
 					List<SalesDocItemDto> dtoList = new ArrayList<>();
 					dtoList.add(salesDocItemDto);
-					if (!type.equals(DkshConstants.DEFAULT))
+					if (!type.equals(Constants.DEFAULT))
 						inputMap.put(th_idb_proc_dto, dtoList);
 					else
 						defaultInputMap.put(th_idb_proc_dto, dtoList);
@@ -252,13 +257,13 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 			for (Map.Entry<TH_IDBRuleInputDto, List<SalesDocItemDto>> entry : inputMap.entrySet()) {
 				List<ApproverDataOutputDto> outputList = null;
 				String decisionSetId = null;
-				if (!entry.getKey().getDistributionChannel().equals(DkshConstants.DEFAULT)
+				if (!entry.getKey().getDistributionChannel().equals(Constants.DEFAULT)
 						&& entry.getKey().getDistributionChannel() != null
-						&& !entry.getKey().getSalesOrg().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getSalesOrg().equals(Constants.DEFAULT)
 						&& entry.getKey().getSalesOrg() != null
-						&& !entry.getKey().getMaterialGroup().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getMaterialGroup().equals(Constants.DEFAULT)
 						&& entry.getKey().getMaterialGroup() != null
-						&& !entry.getKey().getMaterialGroup4().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getMaterialGroup4().equals(Constants.DEFAULT)
 						&& entry.getKey().getMaterialGroup4() != null) {
 					try {
 						outputList = determineDsAndApprovalSet(entry);
@@ -274,10 +279,10 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 					TH_IDBRuleInputDto th_idb_proc_dto = new TH_IDBRuleInputDto();
 
-					th_idb_proc_dto.setDistributionChannel(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup4(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesOrg(DkshConstants.DEFAULT);
+					th_idb_proc_dto.setDistributionChannel(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup4(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
 					for (SalesDocItemDto salesDocItemDto : entry.getValue()) {
 
 						if (defaultInputMap.containsKey(th_idb_proc_dto))
@@ -368,29 +373,29 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 					th_idb_proc_dto.setSalesOrg(salesOrg);
 
 				} else {
-					th_idb_proc_dto.setDistributionChannel(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesArea(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup4(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setCountry(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMatrialNumber(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setRequestType(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setReturnType(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesTerritory(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesOrg(DkshConstants.DEFAULT);
-					type = DkshConstants.DEFAULT;
+					th_idb_proc_dto.setDistributionChannel(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesArea(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup4(Constants.DEFAULT);
+					th_idb_proc_dto.setCountry(Constants.DEFAULT);
+					th_idb_proc_dto.setMatrialNumber(Constants.DEFAULT);
+					th_idb_proc_dto.setRequestType(Constants.DEFAULT);
+					th_idb_proc_dto.setReturnType(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesTerritory(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
+					type = Constants.DEFAULT;
 
 				}
 
 				if (inputMap.containsKey(th_idb_proc_dto) || defaultInputMap.containsKey(th_idb_proc_dto)) {
-					if (!type.equals(DkshConstants.DEFAULT))
+					if (!type.equals(Constants.DEFAULT))
 						inputMap.get(th_idb_proc_dto).add(salesDocItemDto);
 					else
 						defaultInputMap.get(th_idb_proc_dto).add(salesDocItemDto);
 				} else {
 					List<SalesDocItemDto> dtoList = new ArrayList<>();
 					dtoList.add(salesDocItemDto);
-					if (!type.equals(DkshConstants.DEFAULT))
+					if (!type.equals(Constants.DEFAULT))
 						inputMap.put(th_idb_proc_dto, dtoList);
 					else
 						defaultInputMap.put(th_idb_proc_dto, dtoList);
@@ -401,25 +406,25 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 			for (Map.Entry<TH_IDB_RO_RuleInputDto, List<SalesDocItemDto>> entry : inputMap.entrySet()) {
 				List<ApproverDataOutputDto> outputList = null;
 				String decisionSetId = null;
-				if (!entry.getKey().getDistributionChannel().equals(DkshConstants.DEFAULT)
+				if (!entry.getKey().getDistributionChannel().equals(Constants.DEFAULT)
 						&& entry.getKey().getDistributionChannel() != null
-						&& !entry.getKey().getSalesArea().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getSalesArea().equals(Constants.DEFAULT)
 						&& entry.getKey().getSalesArea() != null
-						&& !entry.getKey().getSalesTerritory().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getSalesTerritory().equals(Constants.DEFAULT)
 						&& entry.getKey().getSalesTerritory() != null
-						&& !entry.getKey().getCountry().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getCountry().equals(Constants.DEFAULT)
 						&& entry.getKey().getCountry() != null
-						&& !entry.getKey().getMaterialGroup().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getMaterialGroup().equals(Constants.DEFAULT)
 						&& entry.getKey().getMaterialGroup() != null
-						&& !entry.getKey().getMaterialGroup4().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getMaterialGroup4().equals(Constants.DEFAULT)
 						&& entry.getKey().getMaterialGroup4() != null
-						&& !entry.getKey().getMatrialNumber().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getMatrialNumber().equals(Constants.DEFAULT)
 						&& entry.getKey().getMatrialNumber() != null
-						&& !entry.getKey().getRequestType().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getRequestType().equals(Constants.DEFAULT)
 						&& entry.getKey().getRequestType() != null
-						&& !entry.getKey().getReturnType().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getReturnType().equals(Constants.DEFAULT)
 						&& entry.getKey().getReturnType() != null
-						&& !entry.getKey().getSalesOrg().equals(DkshConstants.DEFAULT)
+						&& !entry.getKey().getSalesOrg().equals(Constants.DEFAULT)
 						&& entry.getKey().getSalesOrg() != null)
 
 					try {
@@ -435,16 +440,16 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 					TH_IDB_RO_RuleInputDto th_idb_proc_dto = new TH_IDB_RO_RuleInputDto();
 
-					th_idb_proc_dto.setDistributionChannel(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMaterialGroup4(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesArea(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesTerritory(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setCountry(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setRequestType(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setReturnType(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setMatrialNumber(DkshConstants.DEFAULT);
-					th_idb_proc_dto.setSalesOrg(DkshConstants.DEFAULT);
+					th_idb_proc_dto.setDistributionChannel(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup(Constants.DEFAULT);
+					th_idb_proc_dto.setMaterialGroup4(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesArea(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesTerritory(Constants.DEFAULT);
+					th_idb_proc_dto.setCountry(Constants.DEFAULT);
+					th_idb_proc_dto.setRequestType(Constants.DEFAULT);
+					th_idb_proc_dto.setReturnType(Constants.DEFAULT);
+					th_idb_proc_dto.setMatrialNumber(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
 					for (SalesDocItemDto salesDocItemDto : entry.getValue()) {
 
 						if (defaultInputMap.containsKey(th_idb_proc_dto))
@@ -492,4 +497,4 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 	}
 
-}*/
+}

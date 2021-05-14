@@ -11,8 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @EqualsAndHashCode(callSuper = false)
 public @Data class SalesOrderValidatorDto extends BaseDto {
 	/**
@@ -36,5 +35,42 @@ public @Data class SalesOrderValidatorDto extends BaseDto {
 	@Override
 	public void validate(EnOperation enOperation) throws InvalidInputFault {
 	}
+
+	public String getSalesOrderNum() {
+		return salesOrderNum;
+	}
+
+	public void setSalesOrderNum(String salesOrderNum) {
+		this.salesOrderNum = salesOrderNum;
+	}
+
+	public String getDecisionSetId() {
+		return decisionSetId;
+	}
+
+	public void setDecisionSetId(String decisionSetId) {
+		this.decisionSetId = decisionSetId;
+	}
+
+	public String getSapTaskId() {
+		return sapTaskId;
+	}
+
+	public void setSapTaskId(String sapTaskId) {
+		this.sapTaskId = sapTaskId;
+	}
+
+	public String getLevelNum() {
+		return levelNum;
+	}
+
+	public void setLevelNum(String levelNum) {
+		this.levelNum = levelNum;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 
 }

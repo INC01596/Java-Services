@@ -5,18 +5,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class DeletePayloadDto {
 	
+	public boolean delete;
+	 public String id;
 	
-		
-	
-		public boolean isDelete() {
+	public boolean isDelete() {
 		return delete;
 	}
+		public DeletePayloadDto() {
+			super();
+			
+		}
+	public DeletePayloadDto(boolean delete, String id) {
+			super();
+			this.delete = delete;
+			this.id = id;
+		}
+	
 	public void setDelete(boolean delete) {
 		this.delete = delete;
 	}
@@ -26,8 +35,7 @@ public class DeletePayloadDto {
 	public void setId(String id) {
 		this.id = id;
 	}
-		public boolean delete;
-		 public String id;
+		
 		
 		
 	

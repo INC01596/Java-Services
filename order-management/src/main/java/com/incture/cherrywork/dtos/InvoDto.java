@@ -14,7 +14,15 @@ public class InvoDto{
 	private EnOrderActionStatus documentProcessStatus;
 	private String createdBy;
 	private String salesHeaderId;
-	private String DeliveryNo;
+	private String obdId;
+	public String getObdId() {
+		return obdId;
+	}
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
@@ -74,12 +82,7 @@ public class InvoDto{
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
-	public String getDeliveryNo() {
-		return DeliveryNo;
-	}
-	public void setDeliveryNo(String deliveryNo) {
-		DeliveryNo = deliveryNo;
-	}
+	
 	
 	public Date getCreatedDateFrom() {
 		return createdDateFrom;
@@ -93,15 +96,14 @@ public class InvoDto{
 	public void setCreatedDateTo(Date createdDateTo) {
 		this.createdDateTo = createdDateTo;
 	}
-
-	
 	@Override
 	public String toString() {
 		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", InvoiceNo=" + InvoiceNo
 				+ ", documentProcessStatus=" + documentProcessStatus + ", createdBy=" + createdBy + ", salesHeaderId="
-				+ salesHeaderId + ", DeliveryNo=" + DeliveryNo + ", stpId=" + stpId + ", createdDateFrom="
-				+ createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty + "]";
+				+ salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom
+				+ ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty + "]";
 	}
+
 	
 	
 	

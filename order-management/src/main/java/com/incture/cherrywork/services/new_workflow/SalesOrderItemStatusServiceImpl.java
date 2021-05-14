@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.WConstants.StatusConstants;
+import com.incture.cherrywork.dao.SalesOrderItemStatusDao;
+import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
+import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.dto.new_workflow.ListOfChangedItemData;
 import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
@@ -30,6 +33,7 @@ import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.util.HelperClass;
 
 
 
@@ -53,13 +57,13 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 	public ResponseEntity saveOrUpdateSalesOrderItemStatus(SalesOrderItemStatusDto salesOrderItemStatusDto) {
 		try {
 			if (salesOrderItemStatusDto != null) {
-				if (!checkString(salesOrderItemStatusDto.getTaskStatusSerialId())) {
+				if (!HelperClass.checkString(salesOrderItemStatusDto.getTaskStatusSerialId())) {
 
 					String msg = soItemStatusRepo.saveOrUpdateSalesOrderItemStatus(salesOrderItemStatusDto);
 
 					if (msg == null) {
 						return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-								INVALID_INPUT + ", Task status serial id field is : "
+								"INVALID_INPUT + , Task status serial id field is : "
 										+ salesOrderItemStatusDto.getTaskStatusSerialId() + " not registered Yet!!",
 								ResponseStatus.FAILED);
 					} else {
@@ -68,14 +72,14 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 					}
 				} else {
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-							INVALID_INPUT + ", Task status serial id field is mandatory!!", ResponseStatus.FAILED);
+							"INVALID_INPUT + , Task status serial id field is mandatory!!", ResponseStatus.FAILED);
 				}
 			} else {
-				return new ResponseEntity("", HttpStatus.BAD_REQUEST, INVALID_INPUT, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.BAD_REQUEST, "INVALID_INPUT", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -85,13 +89,13 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 		try {
 			List<SalesOrderItemStatusDto> list = soItemStatusRepo.listAllSalesOrderItemStatuses();
 			if (list != null && !list.isEmpty()) {
-				return new ResponseEntity(list, HttpStatus.OK, DATA_FOUND, ResponseStatus.SUCCESS);
+				return new ResponseEntity(list, HttpStatus.OK, "DATA_FOUND", ResponseStatus.SUCCESS);
 			} else {
-				return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.NO_CONTENT, "EMPTY_LIST", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -99,12 +103,12 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 	@Override
 	public ResponseEntity deleteSalesOrderItemStatusById(String salesOrderItemStatusId) {
 		try {
-			if (!checkString(salesOrderItemStatusId)) {
+			if (!HelperClass.checkString(salesOrderItemStatusId)) {
 				String msg = soItemStatusRepo.deleteSalesOrderItemStatusById(salesOrderItemStatusId);
 				if (msg != null) {
 					return new ResponseEntity("", HttpStatus.ACCEPTED, msg, ResponseStatus.SUCCESS);
 				} else {
-					return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED,
+					return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR," EXCEPTION_FAILED",
 							ResponseStatus.FAILED);
 				}
 			} else {
@@ -112,8 +116,8 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR," EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -121,7 +125,7 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 	@Override
 	public ResponseEntity getSalesOrderItemStatusById(String salesOrderItemStatusId) {
 		try {
-			if (!checkString(salesOrderItemStatusId)) {
+			if (!HelperClass.checkString(salesOrderItemStatusId)) {
 				SalesOrderItemStatusDto salesOrderItemStatusDto = soItemStatusRepo
 						.getSalesOrderItemStatusById(salesOrderItemStatusId);
 				if (salesOrderItemStatusDto != null) {
@@ -140,8 +144,8 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 						ResponseStatus.SUCCESS);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -156,16 +160,16 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 						.batchFetchByTaskSerIdItemId(taskItemList);
 
 				if (map != null && !map.isEmpty()) {
-					return new ResponseEntity(map, HttpStatus.OK, DATA_FOUND, ResponseStatus.SUCCESS);
+					return new ResponseEntity(map, HttpStatus.OK, "DATA_FOUND", ResponseStatus.SUCCESS);
 				} else {
-					return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
+					return new ResponseEntity("", HttpStatus.NO_CONTENT, "EMPTY_LIST", ResponseStatus.FAILED);
 				}
 			} else {
-				return new ResponseEntity("", HttpStatus.BAD_REQUEST, INVALID_INPUT, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.BAD_REQUEST, "INVALID_INPUT", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -174,8 +178,8 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 	public ResponseEntity onSubmitCheckAndUpdateItemStatus(OnSubmitTaskDto submitTaskDto) {
 
 		try {
-			if (submitTaskDto != null && !checkString(submitTaskDto.getTaskId())
-					&& !checkString(submitTaskDto.getLevelNum()) && !checkString(submitTaskDto.getDecisionSetId())) {
+			if (submitTaskDto != null && !HelperClass.checkString(submitTaskDto.getTaskId())
+					&& !HelperClass.checkString(submitTaskDto.getLevelNum()) &&!HelperClass.checkString(submitTaskDto.getDecisionSetId())) {
 
 				if (!submitTaskDto.getListOfChangedItemData().isEmpty()) {
 
@@ -243,11 +247,11 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 				}
 
 			} else {
-				return new ResponseEntity("", HttpStatus.BAD_REQUEST, INVALID_INPUT, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.BAD_REQUEST, "INVALID_INPUT", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 
@@ -266,8 +270,8 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			 * HttpStatus.BAD_REQUEST, "sap task id not found",
 			 * ResponseStatus.FAILED); }
 			 */ } catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR," EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 		return null;
@@ -279,13 +283,13 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			List<SalesOrderItemStatusDto> list = soItemStatusRepo.getItemStatusFromDecisionSetAndLevel(decisionSetId,
 					levelNum);
 			if (list != null && !list.isEmpty()) {
-				return new ResponseEntity(list, HttpStatus.OK, DATA_FOUND, ResponseStatus.SUCCESS);
+				return new ResponseEntity(list, HttpStatus.OK, "DATA_FOUND", ResponseStatus.SUCCESS);
 			} else {
-				return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.NO_CONTENT, "EMPTY_LIST", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+		//	HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -297,13 +301,13 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			List<SalesOrderItemStatusDto> list = soItemStatusRepo
 					.getItemsStatusFromDecisionSetAndItemNumForAllLevels(decisionSetId, workflowTaskId, itemNum);
 			if (list != null && !list.isEmpty()) {
-				return new ResponseEntity(list, HttpStatus.OK, DATA_FOUND, ResponseStatus.SUCCESS);
+				return new ResponseEntity(list, HttpStatus.OK, "DATA_FOUND", ResponseStatus.SUCCESS);
 			} else {
-				return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.NO_CONTENT, "EMPTY_LIST", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}
@@ -321,7 +325,7 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 				return new ResponseEntity("", HttpStatus.NO_CONTENT, Constants.EMPTY_LIST, ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -367,13 +371,13 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			List<SalesOrderItemStatusDto> list = soItemStatusRepo
 					.getItemsStatusFromDecisionSetAndItemNumForAllLevels(decisionSetId, itemNum);
 			if (list != null && !list.isEmpty()) {
-				return new ResponseEntity(list, HttpStatus.OK, DATA_FOUND, ResponseStatus.SUCCESS);
+				return new ResponseEntity(list, HttpStatus.OK, "DATA_FOUND", ResponseStatus.SUCCESS);
 			} else {
-				return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
+				return new ResponseEntity("", HttpStatus.NO_CONTENT, "EMPTY_LIST", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
 	}

@@ -17,6 +17,8 @@ private String startedAt;
 private String startedBy;
 private String completedAt;
 private String status;
+private String businessKey;
+private String subject;
 
 public String getId() {
 	return id;
@@ -72,6 +74,5 @@ public String getSubject() {
 public void setSubject(String subject) {
 	this.subject = subject;
 }
-private String businessKey;
-private String subject;
+
 }

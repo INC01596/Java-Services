@@ -23,9 +23,9 @@ public interface ISalesOrderHeaderRepository extends JpaRepository<SalesOrderHea
 //	@Query("from SalesOrderHeader s where s.documentType=:documentType and s.invoiceNo=:invoiceNo order by s.createdDate desc")
 //	public Page<SalesOrderHeader> findAllI(@Param("documentType") String documentType,@Param("invoiceNo") String invoiceNo,Pageable pageable);
 //	
-//	@Query("from SalesOrderHeader s where s.documentType=:documentType and s.DeliveryNo=:deliveryNo order by s.createdDate desc")
-//	public Page<SalesOrderHeader> findAllD(@Param("documentType") String documentType,@Param("deliveryNo") String deliveryNo,Pageable pageable);
-//	
+	@Query("from SalesOrderHeader s where  s.obdId=:obdId order by s.createdDate desc")
+	public Page<SalesOrderHeader> findAllD(@Param("obdId") String obdId,Pageable pageable);
+	
 	
 	//Only document Type
 		@Query("from SalesOrderHeader s where s.documentType=:documentType order by s.createdDate desc")

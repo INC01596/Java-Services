@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +27,17 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -40,6 +45,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.incture.cherrywork.WConstants.Constants;
+
+import com.incture.cherrywork.sales.constants.ResponseStatus;
+
+ 
 
 @SuppressWarnings("unused")
 public class HelperClass {
@@ -348,4 +357,160 @@ public class HelperClass {
 		return response.getAllHeaders();
 
 	}
+	public ResponseEntity cancellingWorkflowUsingOauthClient(String workflowId) {
+
+		try {
+			String token = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+
+			HttpClient client = HttpClientBuilder.create().build();
+
+			/*Map<String, Object> map = DestinationReaderUtil
+					.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);*/
+			
+			String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances/" + workflowId;
+			String payload = "{\"context\": {},\"status\":\"CANCELED\"}";
+
+			HttpPatch httpPatch = new HttpPatch(url);
+			httpPatch.addHeader("Authorization", "Bearer " + token);
+			httpPatch.addHeader("Content-Type", "application/json");
+
+			try {
+				StringEntity entity = new StringEntity(payload);
+				entity.setContentType("application/json");
+				httpPatch.setEntity(entity);
+				HttpResponse response = client.execute(httpPatch);
+
+				if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
+					return new ResponseEntity(HttpStatus.NO_CONTENT);
+				} else {
+					return new ResponseEntity(HttpStatus.BAD_REQUEST);
+				}
+
+			} catch (IOException e) {
+				//logger.error(e.getMessage());
+				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+		} catch (Exception e) {
+			//logger.error(e.getMessage());
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	public ResponseEntity getWorkflowInstanceUsingOauthClient(String bussinessKey) {
+
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			//Map<String, Object> map = DestinationReaderUtil.getDestination(DkshConstants.WORKFLOW_TRIGGER_ID);
+			
+			String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+			String url = Constants.WORKFLOW_REST_BASE_URL;
+			System.err.println("url " + url);
+			String trimmed = url.substring(8);
+			//String userpass = map.get("User") + ":" + map.get("Password");
+			//String encoding = javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+
+			URIBuilder builder = new URIBuilder();
+			builder.setScheme("https").setHost(trimmed).setPath("/v1/workflow-instances")
+					.setParameter("businessKey", bussinessKey).setParameter("status", "RUNNING");
+			URI uri = builder.build();
+			System.err.println("URI " + uri);
+
+			HttpGet httpGet = new HttpGet(uri);
+			httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + jwToken);
+			httpGet.addHeader("Content-Type", "application/json");
+
+			try {
+
+				HttpResponse response = client.execute(httpGet);
+
+				if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+					return new ResponseEntity(HttpStatus.OK);
+				} else {
+					return new ResponseEntity(HttpStatus.BAD_REQUEST);
+				}
+
+			} catch (IOException e) {
+				
+				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+		} catch (Exception e) {
+			
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	public List<String> convertResponseToDto(@SuppressWarnings("rawtypes") ResponseEntity response) {
+		System.err.println("response " + response);
+		ArrayList<String> ids = new ArrayList<String>();
+		JSONArray jsonArray = new JSONArray( response.getBody().toString());
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject explrObject = jsonArray.getJSONObject(i);
+			ids.add(explrObject.getString("id").toString());
+		}
+		System.err.println("al1 " + ids);
+		return ids;
+	}
+
+	public static List<?> convertObjectToList(Object obj) {
+		List<?> list = new ArrayList<>();
+		if (obj.getClass().isArray()) {
+			list = Arrays.asList((Object[]) obj);
+		} else if (obj instanceof Collection) {
+			list = new ArrayList<>((Collection<?>) obj);
+		}
+		return list;
+	}
+	public ResponseEntity completeTaskInWorkflowUsingOauthClient(String salesOrderNum, String taskId) {
+
+		try {
+			String token = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+
+			HttpClient client = HttpClientBuilder.create().build();
+
+			//Map<String, Object> map = DestinationReaderUtil
+				//	.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);
+			
+			String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/task-instances/" + taskId;
+			String payload = "{\"context\": {},\"status\":\"COMPLETED\",\"subject\": \"" + salesOrderNum
+					+ "\",\"priority\": \"MEDIUM\"}";
+
+			HttpPatch httpPatch = new HttpPatch(url);
+			httpPatch.addHeader("Authorization", "Bearer " + token);
+			httpPatch.addHeader("Content-Type", "application/json");
+
+			try {
+				if (!HelperClass.checkString(salesOrderNum)) {
+					StringEntity entity = new StringEntity(payload);
+					entity.setContentType("application/json");
+					httpPatch.setEntity(entity);
+					HttpResponse response = client.execute(httpPatch);
+
+					if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
+						return new ResponseEntity(HttpStatus.NO_CONTENT);
+					} else {
+						return new ResponseEntity(HttpStatus.BAD_REQUEST);
+					}
+				} else {
+					return new ResponseEntity(HttpStatus.BAD_REQUEST);
+				}
+
+			} catch (IOException e) {
+				
+				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+		} catch (Exception e) {
+			
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
 }
+
+ 

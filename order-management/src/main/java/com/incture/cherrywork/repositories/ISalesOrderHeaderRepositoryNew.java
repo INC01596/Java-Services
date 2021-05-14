@@ -227,11 +227,11 @@ public class ISalesOrderHeaderRepositoryNew {
 	*/
 	public Page<SalesOrderHeader> getManageServiceObd(ObdDto dto, Pageable pageable)
 	{
-//		 if(!ServicesUtils.isEmpty(dto.getDeliveryNo()))
-//		 {
-//			 System.err.println("Only InvoiceNo");
-//			 return repo.findAllD(dto.getDocumentType(),dto.getDeliveryNo(),pageable);
-//		 }
+		 if(!ServicesUtils.isEmpty(dto.getObdId()))
+		 {
+			 System.err.println("Only OBD");
+		 return repo.findAllD(dto.getObdId(),pageable);
+		 }
 		 
 		if(!ServicesUtil.isEmpty(dto.getSalesHeaderId()))
 		{
@@ -326,6 +326,8 @@ public class ISalesOrderHeaderRepositoryNew {
 			
 			}	
 	}
+		 
+	
 	
 	
 	
@@ -336,6 +338,12 @@ public class ISalesOrderHeaderRepositoryNew {
 	public Page<SalesOrderHeader> getManageServiceInvo(InvoDto dto, Pageable pageable)
 	{
 		
+		
+		 if(!ServicesUtils.isEmpty(dto.getObdId()))
+		 {
+			 System.err.println("Only OBD");
+		 return repo.findAllD(dto.getObdId(),pageable);
+		 }
 //		 if(!ServicesUtils.isEmpty(dto.getInvoiceNo()))
 //		 {
 //			 System.err.println("Only InvoiceNo");

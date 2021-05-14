@@ -11,7 +11,7 @@ public class ObdDto {
 	private String documentType;
 	private EnOrderActionStatus documentProcessStatus;
 	private String salesHeaderId;
-	private String DeliveryNo;
+	private String obdId;
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
@@ -54,11 +54,12 @@ public class ObdDto {
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
-	public String getDeliveryNo() {
-		return DeliveryNo;
+	
+	public String getObdId() {
+		return obdId;
 	}
-	public void setDeliveryNo(String deliveryNo) {
-		DeliveryNo = deliveryNo;
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
 	}
 	public Date getCreatedDateFrom() {
 		return createdDateFrom;
@@ -75,8 +76,8 @@ public class ObdDto {
 	@Override
 	public String toString() {
 		return "ObdDto [pageNo=" + pageNo + ", documentType=" + documentType + ", documentProcessStatus="
-				+ documentProcessStatus + ", salesHeaderId=" + salesHeaderId + ", DeliveryNo=" + DeliveryNo + ", stpId="
-				+ stpId + ", createdDateFrom=" + createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty="
+				+ documentProcessStatus + ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId
+				+ ", createdDateFrom=" + createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty="
 				+ shipToParty + "]";
 	}
 	

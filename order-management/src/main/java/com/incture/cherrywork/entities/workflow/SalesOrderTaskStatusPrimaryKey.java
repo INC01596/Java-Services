@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
-@NoArgsConstructor
-@AllArgsConstructor
 public @Data class SalesOrderTaskStatusPrimaryKey implements Serializable {
 
 	/**
@@ -30,6 +28,21 @@ public @Data class SalesOrderTaskStatusPrimaryKey implements Serializable {
 
 	@Column(name = "USER_GROUP", length = 20)
 	private String userGroup;
+
+	
+
+	public SalesOrderTaskStatusPrimaryKey() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public SalesOrderTaskStatusPrimaryKey(String requestId, String decisionSetId, String level, String userGroup) {
+		super();
+		this.requestId = requestId;
+		this.decisionSetId = decisionSetId;
+		this.level = level;
+		this.userGroup = userGroup;
+	}
 
 	public String getRequestId() {
 		return requestId;

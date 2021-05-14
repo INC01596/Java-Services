@@ -1,10 +1,11 @@
-/*package com.incture.cherrywork.workflow;
+package com.incture.cherrywork.workflow;
 
 import java.util.List;
 import java.util.Map;
 
-import com.incture.dto.SalesDocItemDto;
-import com.incture.rule.idb.dto.ApproverDataOutputDto;
+import com.incture.cherrywork.dtos.SalesDocItemDto;
+import com.incture.cherrywork.rules.ApproverDataOutputDto;
+
 
 public interface DecisionSetCreation {
 	
@@ -14,4 +15,3 @@ public interface DecisionSetCreation {
 
 }
 
-*/

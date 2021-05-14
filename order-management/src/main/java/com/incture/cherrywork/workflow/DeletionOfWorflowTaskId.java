@@ -29,6 +29,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -39,8 +40,11 @@ import com.incture.cherrywork.dtos.DeletePayloadDto;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 
 @Service
+@Transactional
+@SuppressWarnings("unused")
 public class DeletionOfWorflowTaskId {
 
+	
 	private static final String XCSRFTOKEN = "X-CSRF-Token";
 
 	private static final String TRIGGERFAILUER = "Trigger FAILURE no poper dataset and level ";
@@ -91,6 +95,7 @@ public class DeletionOfWorflowTaskId {
 		return payloads;
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<String> httpClientGet(String url) throws IOException, URISyntaxException {
 
 		List<String> id = new ArrayList<String>();
@@ -165,6 +170,7 @@ public class DeletionOfWorflowTaskId {
 		return httpClient;
 	}
 
+	@SuppressWarnings("unused")
 	private static String getXSRFToken(String requestURL, HttpClient client, HttpContext httpContext)
 			throws URISyntaxException {
 		HttpGet httpGet = null;
@@ -210,6 +216,7 @@ public class DeletionOfWorflowTaskId {
 		httpContext.setAttribute(HttpClientContext.COOKIE_STORE, new BasicCookieStore());
 
 		HttpResponse responseClient = null;
+		@SuppressWarnings("unused")
 		HttpClient httpClients = null;
 		httpClients = getHTTPClients();
 

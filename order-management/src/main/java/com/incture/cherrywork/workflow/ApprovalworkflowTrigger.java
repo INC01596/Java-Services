@@ -4,6 +4,7 @@ package com.incture.cherrywork.workflow;
 
 
 import java.io.BufferedReader;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +51,7 @@ import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -59,21 +61,35 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.WConstants.StatusConstants;
+import com.incture.cherrywork.dao.SalesDocItemDao;
+import com.incture.cherrywork.dao.SalesOrderItemStatusDao;
+import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
+import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderLevelStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
+import com.incture.cherrywork.dtos.DlvBlockReleaseMapDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
+import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.WorkflowResponseEntity;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.services.new_workflow.DlvBlockReleaseMapService;
+import com.incture.cherrywork.services.new_workflow.SalesOrderItemStatusService;
+import com.incture.cherrywork.services.new_workflow.SalesOrderTaskStatusService;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
 
 import io.swagger.models.HttpMethod;
+
+@SuppressWarnings("unused")
+@Service
+@Transactional
 public class ApprovalworkflowTrigger {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	
 	private static final String XCSRFTOKEN = "X-CSRF-Token";
 
 	private static final String TRIGGERFAILUER = "Trigger FAILURE no poper dataset and level ";
@@ -83,24 +99,31 @@ public class ApprovalworkflowTrigger {
 	private static final String BASIC = "Basic";
 	private static final String AUTHORIZATION = "Authorization";
 
+	@Lazy
 	@Autowired
 	private SalesDocItemDao salesDocItemDao;
 
+	@Lazy
 	@Autowired
 	private DlvBlockReleaseMapService dlvBlockreleasemapservice;
 
+	@Lazy
 	@Autowired
 	private SalesOrderTaskStatusDao salesordertaskstatusdao;
 
+	@Lazy
 	@Autowired
 	private SalesOrderItemStatusService salesOrderItemStatusService;
 
+	@Lazy
 	@Autowired
 	private SalesOrderTaskStatusService salesOrderTaskStatus;
-
+    
+	
 	@Autowired
 	private SalesOrderLevelStatusDao salesorderlevelstausdao;
 
+	@Lazy
 	@Autowired
 	private SalesOrderItemStatusDao salesOrderItemStatusDao;
 
@@ -560,15 +583,15 @@ public class ApprovalworkflowTrigger {
 							&& releaseMapDto.getSpecialClient() == false) {
 
 						salesorderitemstatusdto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
-						salesorderitemstatusdto.setItemStatus(DkshStatusConstants.DISPLAY_ONLY_ITEM);
-						salesorderitemstatusdto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
+						salesorderitemstatusdto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
+						salesorderitemstatusdto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 						salesorderitemstatusdto.setTaskStatusSerialId(taskserializedId);
 
 					} else {
 
 						salesorderitemstatusdto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
-						salesorderitemstatusdto.setItemStatus(DkshStatusConstants.BLOCKED);
-						salesorderitemstatusdto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
+						salesorderitemstatusdto.setItemStatus(StatusConstants.BLOCKED);
+						salesorderitemstatusdto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 						salesorderitemstatusdto.setTaskStatusSerialId(taskserializedId);
 					}
 
@@ -605,29 +628,29 @@ public class ApprovalworkflowTrigger {
 						// check for null here
 						salesOrderItemStatusDto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
 						// salesOrderItemStatusDto.setSalesOrderItemNum(listItem.get(itemid));
-						if (salesOrderItemStatusDto.getItemStatus().equals(DkshStatusConstants.BLOCKED)) {
-							salesOrderItemStatusDto.setItemStatus(DkshStatusConstants.BLOCKED);
-							salesOrderItemStatusDto.setVisiblity(DkshStatusConstants.VISIBLITY_INACTIVE);
-						} else if (salesOrderItemStatusDto.getItemStatus().equals(DkshStatusConstants.ITEM_APPROVE)) {
-							salesOrderItemStatusDto.setItemStatus(DkshStatusConstants.BLOCKED);
-							salesOrderItemStatusDto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
-						} else if (salesOrderItemStatusDto.getItemStatus().equals(DkshStatusConstants.ITEM_REJECT)
+						if (salesOrderItemStatusDto.getItemStatus().equals(StatusConstants.BLOCKED)) {
+							salesOrderItemStatusDto.setItemStatus(StatusConstants.BLOCKED);
+							salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_INACTIVE);
+						} else if (salesOrderItemStatusDto.getItemStatus().equals(StatusConstants.ITEM_APPROVE)) {
+							salesOrderItemStatusDto.setItemStatus(StatusConstants.BLOCKED);
+							salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
+						} else if (salesOrderItemStatusDto.getItemStatus().equals(StatusConstants.ITEM_REJECT)
 								|| salesOrderItemStatusDto.getItemStatus()
-										.equals(DkshStatusConstants.ITEM_INDIRECT_REJECT)) {
-							salesOrderItemStatusDto.setItemStatus(DkshStatusConstants.ITEM_INDIRECT_REJECT);
+										.equals(StatusConstants.ITEM_INDIRECT_REJECT)) {
+							salesOrderItemStatusDto.setItemStatus(StatusConstants.ITEM_INDIRECT_REJECT);
 							salesOrderItemStatusDto
-									.setVisiblity(DkshStatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
+									.setVisiblity(StatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
 						}
 						// check for Rejected in ECCC for OR case
 						else if (salesOrderItemStatusDto.getItemStatus()
-								.equals(DkshStatusConstants.REJECTED_FROM_ECC)) {
-							salesOrderItemStatusDto.setItemStatus(DkshStatusConstants.REJECTED_FROM_ECC);
+								.equals(StatusConstants.REJECTED_FROM_ECC)) {
+							salesOrderItemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
 							// check the visibility
-							salesOrderItemStatusDto.setVisiblity(DkshStatusConstants.REJECTED_FROM_ECC);
+							salesOrderItemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
 						} else if (salesOrderItemStatusDto.getItemStatus()
-								.equals(DkshStatusConstants.DISPLAY_ONLY_ITEM)) {
-							salesOrderItemStatusDto.setItemStatus(DkshStatusConstants.DISPLAY_ONLY_ITEM);
-							salesOrderItemStatusDto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
+								.equals(StatusConstants.DISPLAY_ONLY_ITEM)) {
+							salesOrderItemStatusDto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
+							salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 						}
 
 						// setting the foreing key .
@@ -688,15 +711,15 @@ public class ApprovalworkflowTrigger {
 								&& releaseMapDto.getSpecialClient() == false) {
 
 							salesorderitemstatusdto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
-							salesorderitemstatusdto.setItemStatus(DkshStatusConstants.DISPLAY_ONLY_ITEM);
-							salesorderitemstatusdto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
+							salesorderitemstatusdto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
+							salesorderitemstatusdto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 							salesorderitemstatusdto.setTaskStatusSerialId(taskserializedId);
 
 						} else {
 
 							salesorderitemstatusdto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
-							salesorderitemstatusdto.setItemStatus(DkshStatusConstants.BLOCKED);
-							salesorderitemstatusdto.setVisiblity(DkshStatusConstants.VISIBLITY_ACTIVE);
+							salesorderitemstatusdto.setItemStatus(StatusConstants.BLOCKED);
+							salesorderitemstatusdto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 							salesorderitemstatusdto.setTaskStatusSerialId(taskserializedId);
 						}
 						try {
@@ -1203,8 +1226,8 @@ public class ApprovalworkflowTrigger {
 //		 * requestConfig.setSocketTimeout(50 * 1000);
 //		 */
 
-		/*CloseableHttpClient httpClient = clientBuilder.disableAutomaticRetries().build();
-		return httpClient;*/
+		CloseableHttpClient httpClient = clientBuilder.disableAutomaticRetries().build();
+		return httpClient;
 	}
 
 	public WorkflowResponseEntity approvalworkflowTriggeringAndUpdateTables(String salesOrderNo, String requestId,
@@ -1258,7 +1281,7 @@ public class ApprovalworkflowTrigger {
 	public ResponseEntity checkForNextLevelTrigger(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				INVALID_INPUT + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+				  "Check Next level Triggere failed ", ResponseStatus.FAILED);
 
 		// System.err.println("dataSet and level " + dataSet + level);
 
@@ -1331,7 +1354,7 @@ public class ApprovalworkflowTrigger {
 
 									} else {
 										return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-												INVALID_INPUT + ",salesOrderLevelStatusDtoList is null",
+												 "salesOrderLevelStatusDtoList is null",
 												ResponseStatus.FAILED);
 									}
 								}
@@ -1340,20 +1363,20 @@ public class ApprovalworkflowTrigger {
 						}
 					} else {
 						return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-								INVALID_INPUT + ",salesOrderItemStatusDtoList is null", ResponseStatus.FAILED);
+								 ",salesOrderItemStatusDtoList is null", ResponseStatus.FAILED);
 					}
 				} else {
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-							INVALID_INPUT + ",salesOrderTaskStatusDto is null", ResponseStatus.FAILED);
+							 ",salesOrderTaskStatusDto is null", ResponseStatus.FAILED);
 				}
 			} else {
 
 				return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-						INVALID_INPUT + ",salesOrderLevelStatusDto is null", ResponseStatus.FAILED);
+						 ",salesOrderLevelStatusDto is null", ResponseStatus.FAILED);
 			}
 		} else {
 
-			return new ResponseEntity("", HttpStatus.BAD_REQUEST, INVALID_INPUT + ",salesOrderLevelStatusDto is null",
+			return new ResponseEntity("", HttpStatus.BAD_REQUEST, ",salesOrderLevelStatusDto is null",
 					ResponseStatus.FAILED);
 		}
 
@@ -1363,7 +1386,7 @@ public class ApprovalworkflowTrigger {
 
 	public ResponseEntity updateLevelStatusAbandond(List<SalesOrderLevelStatusDto> saleOrderLevelStatusDoList) {
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				INVALID_INPUT + ",Failed to update SalesOrderLevelStatus", ResponseStatus.FAILED);
+				",Failed to update SalesOrderLevelStatus", ResponseStatus.FAILED);
 		if (!saleOrderLevelStatusDoList.isEmpty()) {
 			SalesOrderLevelStatusDto salesOrderLevelStatusDto = null;
 
@@ -1371,7 +1394,7 @@ public class ApprovalworkflowTrigger {
 
 				salesOrderLevelStatusDto = saleOrderLevelStatusDoList.get(iteratelevellist);
 
-				salesOrderLevelStatusDto.setLevelStatus(DkshStatusConstants.LEVEL_ABANDON);
+				salesOrderLevelStatusDto.setLevelStatus(StatusConstants.LEVEL_ABANDON);
 
 				try {
 					salesorderlevelstausdao.saveOrUpdateSalesOrderLevelStatusSynchronized(salesOrderLevelStatusDto);
@@ -1382,11 +1405,11 @@ public class ApprovalworkflowTrigger {
 				} catch (ExecutionFault e) {
 
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-							INVALID_INPUT + ",Failed to update SalesOrderLevelStatus" + e, ResponseStatus.FAILED);
+							",Failed to update SalesOrderLevelStatus" + e, ResponseStatus.FAILED);
 				}
 			}
 		} else {
-			return new ResponseEntity("", HttpStatus.BAD_REQUEST, INVALID_INPUT + ", SalesOrderLevelStatusList is null",
+			return new ResponseEntity("", HttpStatus.BAD_REQUEST, ", SalesOrderLevelStatusList is null",
 					ResponseStatus.FAILED);
 		}
 		return responseEntity;
@@ -1397,7 +1420,7 @@ public class ApprovalworkflowTrigger {
 	public ResponseEntity checkForNextLevelTriggerAnd(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				INVALID_INPUT + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+				 ", Check Next level Triggere failed ", ResponseStatus.FAILED);
 		// System.err.println("dataSet and level " + dataSet + level);
 		boolean checkIfApproved = false;
 		responseEntity = salesOrderTaskStatus.getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(dataSet,
@@ -1457,7 +1480,7 @@ public class ApprovalworkflowTrigger {
 			String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				INVALID_INPUT + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+				", Check Next level Triggere failed ", ResponseStatus.FAILED);
 
 		String previousLevel = "L" + (Integer.parseInt(String.valueOf(level.charAt(1))) - 1);
 
@@ -1478,13 +1501,13 @@ public class ApprovalworkflowTrigger {
 			} else if (StatusConstants.ITEM_REJECT.equals(cumilativeItemStatus.get(itemId))
 					|| StatusConstants.ITEM_INDIRECT_REJECT.equals(cumilativeItemStatus.get(itemId))) {
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.ITEM_INDIRECT_REJECT);
-				salesOrderItemStatusDto.setVisiblity(Constants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
+				salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
 			}
 			// Rjected from ECCC get cumilative from or to and
 			else if (StatusConstants.REJECTED_FROM_ECC.equals(cumilativeItemStatus.get(itemId))) {
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
 				salesOrderItemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
-			} else if (Constants.DISPLAY_ONLY_ITEM.equals(cumilativeItemStatus.get(itemId))) {
+			} else if (StatusConstants.DISPLAY_ONLY_ITEM.equals(cumilativeItemStatus.get(itemId))) {
 				salesOrderItemStatusDto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
 				salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 			}
@@ -1538,7 +1561,7 @@ public class ApprovalworkflowTrigger {
 	public ResponseEntity checkNextLevelTriggerForAND_ORR(String dataSet, String level, String approvalType) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				INVALID_INPUT + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+			", Check Next level Triggere failed ", ResponseStatus.FAILED);
 
 		if (approvalType.equalsIgnoreCase("OR") || approvalType.equalsIgnoreCase("")) {
 			responseEntity = checkForNextLevelTrigger(dataSet, level);
@@ -1687,14 +1710,16 @@ public class ApprovalworkflowTrigger {
 				System.err.println("dsNumberInList " + dsNumber.get(i));
 
 				if (dsNumber.get(i) != null) {
-					// get all the workflowInstanceId by bussinessKey.
-					ResponseEntity response = new HelperClass().getWorkflowInstanceUsingOauthClient(dsNumber.get(i));
+					// get all the workflowInstanceId by bussinessKey
+					HelperClass h=new HelperClass();
+					org.springframework.http.ResponseEntity response =new HelperClass().getWorkflowInstanceUsingOauthClient(bussinessKey);
 					System.err.println("responseEntity WokrlfowIds " + response);
 
 					if (response.getStatusCode().value() == HttpStatus.OK.value()) {
 						// get all the response and form the list of the
 						// workflowInstanceId
-						listWorkflowResponse = new HelperClass().convertResponseToDto(response);
+						
+						listWorkflowResponse =new HelperClass().convertResponseToDto(response);
 						System.err.println("workflowResponseDto " + listWorkflowResponse);
 						if (listWorkflowResponse != null && !listWorkflowResponse.isEmpty()) {
 							// call the executor framework to update task status
@@ -1702,7 +1727,7 @@ public class ApprovalworkflowTrigger {
 							// cancel workfow api
 							listWorkflowResponse.stream().forEach(e -> {
 								System.err.println("Workflow Instance Id : " + e);
-								ResponseEntity responses = new HelperClass().cancellingWorkflowUsingOauthClient(e);
+								org.springframework.http.ResponseEntity responses = new HelperClass().cancellingWorkflowUsingOauthClient(e);
 								System.err.println("responseOfCancelling " + responses);
 							});
 
@@ -1718,7 +1743,7 @@ public class ApprovalworkflowTrigger {
 			}
 			return responseEntity;
 		} catch (Exception e) {
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "",
 					ResponseStatus.FAILED);
 		}
 
@@ -1729,7 +1754,7 @@ public class ApprovalworkflowTrigger {
 	// input parameter  - definition id , context, GET/POST 
 	
 	public ResponseEntity httpRequest(String definitionId,String payload,String requestType,String requestUrl) throws URISyntaxException, IOException{
-		 ResponseEntity  response = new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED ,
+		 ResponseEntity  response = new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "Exception" ,
 					ResponseStatus.FAILED);
 		
 	
@@ -1776,7 +1801,7 @@ public class ApprovalworkflowTrigger {
 		return response;
 		} catch (Exception e ){
 			
-			 return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED ,
+			 return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED" ,
 						ResponseStatus.FAILED);
 		}
 	}
@@ -1791,5 +1816,4 @@ public class ApprovalworkflowTrigger {
 	
 	
 	
-}
 

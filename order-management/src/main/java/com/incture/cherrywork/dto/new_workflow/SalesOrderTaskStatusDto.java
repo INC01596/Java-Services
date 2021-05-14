@@ -12,15 +12,34 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @EqualsAndHashCode(callSuper = false)
 public @Data class SalesOrderTaskStatusDto extends BaseDto {
+
+	public SalesOrderTaskStatusDto() {
+		super();
+		
+	}
 
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
+
+	public SalesOrderTaskStatusDto(String taskStatusSerialId, String levelStatusSerialId, String taskId,
+			Integer taskStatus, String approver, String completedBy, SalesOrderLevelStatusDo salesOrderLevelStatus,
+			List<SalesOrderItemStatusDto> itemStatusList) {
+		super();
+		this.taskStatusSerialId = taskStatusSerialId;
+		this.levelStatusSerialId = levelStatusSerialId;
+		this.taskId = taskId;
+		this.taskStatus = taskStatus;
+		this.approver = approver;
+		this.completedBy = completedBy;
+		this.salesOrderLevelStatus = salesOrderLevelStatus;
+		this.itemStatusList = itemStatusList;
+	}
 
 	private String taskStatusSerialId;
 

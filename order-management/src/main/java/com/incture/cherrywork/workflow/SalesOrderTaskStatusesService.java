@@ -1,23 +1,24 @@
 package com.incture.cherrywork.workflow;
 
 
-import org.springframework.http.ResponseEntity;
+
 
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusKeyDto;
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusesDto;
+import com.incture.cherrywork.dtos.ResponseEntity;
 
 
 public interface SalesOrderTaskStatusesService {
 
-	public ResponseEntity<Object> saveOrUpdateSalesOrderTaskStatus(SalesOrderTaskStatusesDto salesOrderTaskStatusDto);
+	public ResponseEntity saveOrUpdateSalesOrderTaskStatus(SalesOrderTaskStatusesDto salesOrderTaskStatusDto);
 
-	public ResponseEntity<Object> listAllSalesOrderTaskStatus();
+	public ResponseEntity listAllSalesOrderTaskStatus();
 
-	public ResponseEntity<Object> getSalesOrderTaskStatusById(SalesOrderTaskStatusKeyDto key);
+	public ResponseEntity getSalesOrderTaskStatusById(SalesOrderTaskStatusKeyDto key);
 
-	public ResponseEntity<Object> deleteSalesOrderTaskStatusById(SalesOrderTaskStatusKeyDto key);
+	public ResponseEntity deleteSalesOrderTaskStatusById(SalesOrderTaskStatusKeyDto key);
 
-	public ResponseEntity<Object> getSalesOrderTaskStatusAccToDsAndLevel(String decisionSet, String level);
+	public ResponseEntity getSalesOrderTaskStatusAccToDsAndLevel(String decisionSet, String level);
 
 }
 

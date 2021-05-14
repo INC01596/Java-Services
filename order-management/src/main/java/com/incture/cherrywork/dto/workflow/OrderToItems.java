@@ -3,7 +3,7 @@ package com.incture.cherrywork.dto.workflow;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.incture.cherrywork.dtos.OdataBatchOnsubmitItem;
 
 import lombok.Data;
 

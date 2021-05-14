@@ -96,6 +96,25 @@ public class ServicesUtil {
 			return getTime();
 		}
 	}
+	public static Long dateConversionFromECC(String s) {
+
+		if (s != null && !s.isEmpty()) {
+
+			// getting date in millisecond
+			String stringDate = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
+
+			Long milliSeconds = Long.parseLong(stringDate);
+			return milliSeconds;
+			// creating Date from millisecond
+			// Date currentDate = new Date(milliSeconds);
+
+			// return currentDate;
+
+		}
+
+		return null;
+
+	}
 
 	public static boolean isEmptyNumber(int str) {
 

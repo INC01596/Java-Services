@@ -1,7 +1,7 @@
 package com.incture.cherrywork.workflow;
 
-import com.incture.dto.ResponseEntity;
-import com.incture.dto.WorkflowResponseEntity;
+import com.incture.cherrywork.dtos.ResponseEntity;
+import com.incture.cherrywork.dtos.WorkflowResponseEntity;
 
 public interface ApprovalworkflowTriggerImpl {
 
