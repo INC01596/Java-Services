@@ -325,34 +325,60 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 				System.err.println("odataHeaderDto: " + odataHeaderDto);
 				// logger.debug("[SalesHeaderDao][getOdataReqPayload] end : " +
 				// odataHeaderDto);
+				System.err.println("[SalesHeaderDao][getOdataReqPayload] end : " +odataHeaderDto);
 			}
 		} catch (Exception e) {
 			// logger.error("[SalesHeaderDao][getOdataReqPayload] Exception : "
 			// + e.getMessage());
+			System.err.println("[SalesHeaderDao][getOdataReqPayload] Exception : "
+					 + e.getMessage());
 			e.printStackTrace();
 		}
 		return odataHeaderDto;
 	}
 
-	public String updateError(String temp_id, String value) {
+	public String updateError(String temp_id, String value, String DocType) {
 		// logger.debug("[SalesHeaderDao][updateError] Start : " + temp_id + " :
 		// " + value);
+		
 		String msg = "";
+		System.err.println("[SalesHeaderDao][updateError] Start : " + temp_id + " :" + value);
 		try {
 			Date d = new Date();
 			long t = d.getTime();
 			value = value.replaceAll("'", "");
-			String hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
-					+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='"
-					+ temp_id + "'";
+			String hString = null;
+			if(DocType.equals("OBD"))
+			{
+				hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
+						+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where OUT_BOUND_ORDER_ID='"
+						+ temp_id + "'";
+				System.out.println("docType is OBD and temp_id "+temp_id);
+			}
+			else if(DocType.equals("PGI"))
+				hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
+				+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where PGI_ID='"
+				+ temp_id + "'";
+			else if(DocType.equals("INV"))
+				hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
+				+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where INV_ID='"
+				+ temp_id + "'";
+			else{
+				hString = "update SALES_ORDER_HEADER set DOCUMENT_PROCESS_STATUS= 0, POSTING_ERROR='" + value
+				+ "', POSTING_STATUS=false, POSTING_DATE = '" + new Timestamp(t) + "' where SALES_HEADER_ID='"
+				+ temp_id + "'";
+				System.out.println("docType is else and temp_id "+temp_id);
+			}
 			Query hq = entityManager.createNativeQuery(hString);
 			hq.executeUpdate();
-			msg = "Success";
+			msg = "Updated Error";
 
 		} catch (Exception e) {
 			msg = "Faliure";
 			// logger.error("[SalesHeaderDao][updateError] Exception : " +
 			// e.getMessage());
+			System.err.println("[SalesHeaderDao][updateError] Exception : " +
+					e.getMessage());
 			e.printStackTrace();
 		}
 		return msg;
@@ -663,7 +689,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			else
 				odataLine.setBoron_req("N");
 			if (!ServicesUtils.isEmpty(itemDto.getNetValue()))
-				odataLine.setRate(itemDto.getNetValue());
+				odataLine.setRate(String.valueOf(itemDto.getNetValue()));
 			else
 				odataLine.setRate("");
 			if (!ServicesUtils.isEmpty(itemDto.getReferenceDocument()))
@@ -844,7 +870,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		StringJoiner joiner = new StringJoiner("/:/");
 		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
 
-			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity().toString());
 
 		}
 		odataInputOutBound.setBtgew(joiner.toString());
@@ -860,7 +886,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 			joiner.add(outBoundDeliveryItemList.get(i).getUom());
 		}
-		odataInputOutBound.setLgnum(joiner.toString());
+		//odataInputOutBound.setLgnum(joiner.toString());
+		odataInputOutBound.setLgnum(inputDto.getLineItemList().get(0).getUom());
 
 		odataInputOutBound.setTernr("1");
 
@@ -872,6 +899,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		// odataInputOutBound.setLgnum(inputDto.getLineItemList().get(0).getUom());
 		// odataInputOutBound.setTernr("1");
 		// odataInputOutBound.setVstel("CODD");
+		odataInputOutBound.setObdId(inputDto.getHeaderDto().getObdId());
 
 		return odataInputOutBound;
 	}
@@ -885,7 +913,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		List<SalesOrderItemDto> outBoundDeliveryItemList = inputDto.getLineItemList();
 		StringJoiner joiner = new StringJoiner("/:/");
 		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
-			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity().toString());
 		}
 		odataInputOutBound.setBtgew(joiner.toString());
 		joiner = new StringJoiner("/:/");
@@ -896,7 +924,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 		joiner = new StringJoiner("/:/");
 		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
-			joiner.add(outBoundDeliveryItemList.get(i).getLineItemNumber());
+			joiner.add(outBoundDeliveryItemList.get(i).getItemNumber());
 		}
 		odataInputOutBound.setKunag(joiner.toString());
 
@@ -908,7 +936,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 		joiner = new StringJoiner("/:/");
 		for (int i = 0; i < outBoundDeliveryItemList.size(); i++) {
-			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity());
+			joiner.add(outBoundDeliveryItemList.get(i).getPickedQuantity().toString());
 		}
 		odataInputOutBound.setNtgew(joiner.toString());
 
@@ -934,6 +962,8 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 		// ObjectWriter ow = new
 		// ObjectMapper().writer().withDefaultPrettyPrinter();
 		// String json = ow.writeValueAsString(odataInputOutBound);
+		
+		odataInputOutBound.setPgiId(inputDto.getHeaderDto().getPgiId());
 
 		return odataInputOutBound;
 	}
@@ -942,9 +972,10 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 
 		OdataOutBoudDeliveryInvoiceInputDto odataInputOutBound = new OdataOutBoudDeliveryInvoiceInputDto();
 
-		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getPgiId());
+		odataInputOutBound.setVbeln(inputDto.getHeaderDto().getObdId());
 
 		odataInputOutBound.setTernr("3");
+		odataInputOutBound.setInvId(inputDto.getHeaderDto().getInvId());
 
 		return odataInputOutBound;
 	}

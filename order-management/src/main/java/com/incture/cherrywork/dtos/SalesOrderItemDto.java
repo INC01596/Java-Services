@@ -971,7 +971,7 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 		this.pgiId = pgiId;
 	}
 
-	private String pickedQuantity;
+	private BigDecimal pickedQuantity;
 	private String sloc;
 
 	private String materialDescription;
@@ -984,11 +984,12 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 		this.materialDescription = materialDescription;
 	}
 
-	public String getPickedQuantity() {
+	
+	public BigDecimal getPickedQuantity() {
 		return pickedQuantity;
 	}
 
-	public void setPickedQuantity(String pickedQuantity) {
+	public void setPickedQuantity(BigDecimal pickedQuantity) {
 		this.pickedQuantity = pickedQuantity;
 	}
 
@@ -1013,6 +1014,17 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	private String obdStatus;
 	private String pgiStatus;
 	private String invoiceStatus;
+	private Boolean blocked;
+	
+	
+
+	public Boolean getBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
 
 	public String getObdStatus() {
 		return obdStatus;
@@ -1039,7 +1051,7 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 	}
 	
 	private String invId;
-	
+	private String itemNumber;
 	
 
 	public String getInvId() {
@@ -1048,6 +1060,26 @@ public class SalesOrderItemDto implements Comparable<SalesOrderItemDto> {
 
 	public void setInvId(String invId) {
 		this.invId = invId;
+	}
+
+	
+	private String orderItemId;
+
+	public String getOrderItemId() {
+		return orderItemId;
+	}
+
+	public void setOrderItemId(String orderItemId) {
+		this.orderItemId = orderItemId;
+	}
+	
+
+	public String getItemNumber() {
+		return itemNumber;
+	}
+
+	public void setItemNumber(String itemNumber) {
+		this.itemNumber = itemNumber;
 	}
 
 	public int compareTo(SalesOrderItemDto obj1) {

@@ -20,7 +20,7 @@ public interface ISalesOrderHeaderCustomRepository {
 	ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto);
 	ResponseEntity<Object> getMannualSearch(SalesOrderSearchHeaderDto searchDto);
 	SalesOrderOdataHeaderDto getOdataReqPayload(SalesOrderHeaderItemDto dto);
-	String updateError(String temp_id, String value);
+	String updateError(String temp_id, String value, String DocType);
 	String getLookupValue(String key);
 	OdataOutBoudDeliveryInputDto getOdataReqPayloadObd(SalesOrderHeaderItemDto dto);
 	OdataOutBoudDeliveryPgiInputDto getOdataReqPayloadPgi(SalesOrderHeaderItemDto inputDto);

@@ -725,8 +725,17 @@ public class SalesOrderHeaderDto {
 	private String salesOrderId;
 	private String obdId;
 	private String pgiId;
+	private Boolean blocked;
 	
 	
+
+	public Boolean getBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
 
 	public String getSalesOrderId() {
 		return salesOrderId;
@@ -908,6 +917,17 @@ public class SalesOrderHeaderDto {
 
 	public void setInvId(String invId) {
 		this.invId = invId;
+	}
+
+	private String amount;
+	
+	
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
 	}
 
 	// sandeep
