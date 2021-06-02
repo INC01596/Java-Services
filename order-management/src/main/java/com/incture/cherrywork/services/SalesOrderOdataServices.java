@@ -1,5 +1,6 @@
 package com.incture.cherrywork.services;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incture.cherrywork.dtos.ODataBatchPayload;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
@@ -44,6 +46,7 @@ import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
+import com.incture.cherrywork.util.ReturnExchangeConstants;
 
 @SuppressWarnings("unused")
 @Service("OdataServices")
@@ -176,6 +179,75 @@ public class SalesOrderOdataServices {
 		return response;
 	}
 
+	
+	public static String BULK_INSERT(List<ODataBatchPayload> requestList, String url, String tag) throws IOException {
+
+		// generate uniqueId for a batch boundary
+		// String batchGuid = generateUUID(); // System generated
+
+		String batchGuid = "zmybatch";
+		//log.info("batchGuid", batchGuid);
+		System.err.println("batchGuid "+batchGuid);
+
+		// generate uniqueId for each item to be inserted
+		// String changeSetId = generateUUID();
+		String changeSetId = "zmychangeset";
+
+		//log.info("changeSetId", changeSetId);
+		System.err.println("changeSetId "+changeSetId);
+
+		// Begin of: Prepare Bulk Request Format for SharePoint
+		// Bulk-Insert-Query ----------------
+		String batchContents = "";
+		try {
+
+			// Start: changeset to insert data ----------
+			String batchCnt_Insert = "";
+
+			for (ODataBatchPayload data : requestList) {
+
+				batchCnt_Insert = batchCnt_Insert + "--changeset_" + changeSetId + "\n"
+						+ "Content-Type: application/http" + "\n" + "Content-Transfer-Encoding: binary" + "\n" + ""
+						+ "\n" + "POST " + tag + " HTTP/1.1" + "\n" + "Content-Type: application/json" + "\n"
+						+ "Accept: application/json" + "\n\n" + "{" + "\n" + "\"d\":" + new Gson().toJson(data) + "\n" // new
+																														// Gson().toJson(data)
+						+ "}" + "\n";
+
+			}
+			// END: changeset to insert data ----------
+
+			batchCnt_Insert = batchCnt_Insert + "--changeset_" + changeSetId + "--\n";
+
+			System.err.println("batchCnt_Insert" + batchCnt_Insert);
+
+			// create batch for creating items
+			batchContents = "--batch_" + batchGuid + "\n" + "Content-Type: multipart/mixed; boundary=changeset_"
+					+ changeSetId + "\n" + "" + "\n" + batchCnt_Insert;
+
+			batchContents = batchContents + "--batch_" + batchGuid + "--";
+
+			System.err.println("> batchContents :: " + batchContents);
+
+		} catch (Exception e) {
+			return "failed" + e;
+		}
+		// End of: Prepare Bulk Request Format for SharePoint Bulk-Insert-Query
+		// ----------------
+
+		// Call POST method to server
+		String response = SalesOrderOdataUtilService.roBatchPost(batchContents, batchGuid, url);
+//		String requestURL = null;
+//		requestURL = SalesOrderOdataConstants.BASE_URL_RETURN + "$batch";
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+//		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+//		String response = SalesOrderOdataUtilService.callOdataReturnExchange(requestURL, "POST", batchContents, null, batchGuid);
+		System.err.println("response --- " + response);
+
+		return response;
+	}
+	
+	
 
 	// public Response acknowledge(String s4DocumentId) {
 	// logger.debug("[OdataServices][acknowledge] Started : " + s4DocumentId);

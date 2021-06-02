@@ -35,17 +35,28 @@ public class DestinationReaderUtil {
 		System.err.println("res in get destination"+res);
 
 		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
+		System.err.println("data in getDestination "+data);
 		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+			System.err.println("in get destination for loop");
 			String jwtToken = new JSONObject(data).getString("access_token");
+			System.err.println("in get destination jwtToken "+jwtToken);
 
 			HttpGet httpGet = new HttpGet(ComConstants.DESTINATION_BASE_URL
-					+ "destination-configuration/v1/destinations/" + destinationName);
+					+ "/destination-configuration/v1/destinations/" + destinationName);
+			System.err.println("in get destination httpGet"+httpGet);
 
 			httpGet.addHeader("Content-Type", "application/json");
 
 			httpGet.addHeader("Authorization", "Bearer " + jwtToken);
 
-			HttpResponse response = client.execute(httpGet);
+			HttpResponse response = null;
+			try{
+				response = client.execute(httpGet);
+			}
+			catch(Exception e){
+				System.err.println("Exception in executing client");
+				e.printStackTrace();
+			}
 			String dataFromStream = HelperClass.getDataFromStream(response.getEntity().getContent());
 			if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
 
@@ -59,7 +70,7 @@ public class DestinationReaderUtil {
 
 		return null;
 	}
-	
+
 	public static String getConectivityProxy() throws URISyntaxException, IOException {
 
 		System.err.println("77 destination");
@@ -71,29 +82,26 @@ public class DestinationReaderUtil {
 		// Encoding username and password
 		String auth = HelperClass.encodeUsernameAndPassword(ComConstants.CONECTIVITY_CLIENT_ID,
 				ComConstants.CONECTIVITY_CLIENT_SECRET);
-		
-		
+
 		httpPost.addHeader("Authorization", auth);
 
 		HttpResponse res = client.execute(httpPost);
-		
-		System.err.println( " 92 rest" + res);
+
+		System.err.println(" 92 rest" + res);
 
 		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
 		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
 			String jwtToken = new JSONObject(data).getString("access_token");
-			
-			System.err.println("jwtProxyToken "+jwtToken);
 
-			
-				return jwtToken;
+			System.err.println("jwtProxyToken " + jwtToken);
 
-			}
-		
-		
+			return jwtToken;
+
+		}
 
 		return null;
 	}
+
 	public static String getJwtTokenForAuthenticationForSapApi() throws URISyntaxException, IOException {
 		System.err.println("77 destination");
 		HttpClient client = HttpClientBuilder.create().build();
@@ -104,13 +112,13 @@ public class DestinationReaderUtil {
 				ComConstants.WORKFLOW_CLIENT_SECRETE);
 		httpPost.addHeader("Authorization", auth);
 		HttpResponse res = client.execute(httpPost);
-		System.err.println( " 92 rest" + res);
+		System.err.println(" 92 rest" + res);
 		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
 		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
 			String jwtToken = new JSONObject(data).getString("access_token");
-			System.err.println("jwtProxyToken "+jwtToken);
-				return jwtToken;
-			}
+			System.err.println("jwtProxyToken " + jwtToken);
+			return jwtToken;
+		}
 		return null;
 	}
 }

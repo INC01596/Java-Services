@@ -34,7 +34,6 @@ import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
 import com.incture.cherrywork.util.SequenceNumberGen;
 import com.incture.cherrywork.util.ServicesUtil;
 
-
 @Service("SchedulerServices")
 @Transactional
 public class SchedulerServices {
@@ -44,7 +43,6 @@ public class SchedulerServices {
 
 	@Autowired
 	ISalesOrderItemRepository salesOrderItemRepository;
-
 
 	@Autowired
 	private SalesOrderOdataServices odataServices;
@@ -56,42 +54,48 @@ public class SchedulerServices {
 
 	@Scheduled(cron = "0 0/10 * * * ?")
 	public ResponseEntity<Object> headerScheduler() {
-		//logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new Date());
+		// logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new
+		// Date());
 		System.err.println("[SalesHeaderDao][headerScheduler] Start : " + new Date());
-		//Response response = new Response();
+		// Response response = new Response();
 		ArrayList<String> list = new ArrayList<>();
-		//Session session = null;
-		//Transaction tx = null;
+		// Session session = null;
+		// Transaction tx = null;
 		try {
 			OdataSchHeaderStartDto odataSchHeaderStartDto = odataServices.headerScheduler();
-			List<SalesOrderHeaderDto> listSalesHeaderDto = salesOrderHeaderRepository.convertData(odataSchHeaderStartDto);
+			System.err.println("odataSchHeaderStartDto" + odataSchHeaderStartDto.toString());
+			List<SalesOrderHeaderDto> listSalesHeaderDto = salesOrderHeaderRepository
+					.convertData(odataSchHeaderStartDto);
 			for (SalesOrderHeaderDto salesHeaderDto : listSalesHeaderDto) {
 				if (salesHeaderDto.getUpdateIndicator().equals(EnUpdateIndicator.DELETE)) {
-					//session = sessionFactory.openSession();
-					//tx = session.beginTransaction();
-					Query query = entityManager.createQuery("delete from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
+					// session = sessionFactory.openSession();
+					// tx = session.beginTransaction();
+					Query query = entityManager
+							.createQuery("delete from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
 					query.setParameter("s4DocumentId", salesHeaderDto.getS4DocumentId());
 					query.executeUpdate();
 					list.add("D-" + salesHeaderDto.getS4DocumentId());
-//					session.flush();
-//					session.clear();
-//					tx.commit();
+					// session.flush();
+					// session.clear();
+					// tx.commit();
 				} else {
-//					session = sessionFactory.openSession();
-//					tx = session.beginTransaction();
-					Query query = entityManager.createQuery("select s.tableKey from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
+					// session = sessionFactory.openSession();
+					// tx = session.beginTransaction();
+					Query query = entityManager.createQuery(
+							"select s.tableKey from SalesOrderHeader s where s.s4DocumentId=:s4DocumentId");
 					query.setParameter("s4DocumentId", salesHeaderDto.getS4DocumentId());
 					List<String> objList = query.getResultList();
-//					session.flush();
-//					session.clear();
-//					tx.commit();
+					// session.flush();
+					// session.clear();
+					// tx.commit();
 
 					if (objList != null && objList.size() > 0) {
-//						session = sessionFactory.openSession();
-//						tx = session.beginTransaction();
+						// session = sessionFactory.openSession();
+						// tx = session.beginTransaction();
 						String tableKey = objList.get(0).toString();
 						list.add("U-" + tableKey);
-						//logger.debug("[SalesHeaderDao][headerScheduler] table key : " + tableKey);
+						// logger.debug("[SalesHeaderDao][headerScheduler] table
+						// key : " + tableKey);
 						System.err.println("[SalesHeaderDao][headerScheduler] table key : " + tableKey);
 
 						StringBuffer sb = new StringBuffer("update SALES_HEADER set ");
@@ -100,7 +104,8 @@ public class SchedulerServices {
 						sb.append("S4_DOCUMENT_ID = '" + salesHeaderDto.getS4DocumentId() + "', ");
 						sb.append("DOCUMENT_TYPE = '" + salesHeaderDto.getDocumentType() + "', ");
 						sb.append("DOCUMENT_CATEGORY = '" + salesHeaderDto.getDocumentCategory() + "', ");
-						//sb.append("SALES_ORG = '" + salesHeaderDto.getSalesOrganization() + "', ");
+						// sb.append("SALES_ORG = '" +
+						// salesHeaderDto.getSalesOrganization() + "', ");
 						sb.append("DISTRIBUTION_CHANNEL = '" + salesHeaderDto.getDistributionChannel() + "', ");
 						sb.append("DIVSION = '" + salesHeaderDto.getDivision() + "', ");
 						sb.append("SALES_OFFICE = '" + salesHeaderDto.getSalesOffice() + "', ");
@@ -130,11 +135,11 @@ public class SchedulerServices {
 						sb.append("CREATED_DATE = '" + salesHeaderDto.getCreatedDate() + "', ");
 						sb.append("CREATED_BY = '" + salesHeaderDto.getCreatedBy() + "', ");
 						if (!ServicesUtil.isEmpty(salesHeaderDto.getPaymentChqDetail()))
-							sb.append(
-									"PAYMENT_CHQ_DETAIL = " + salesHeaderDto.getPaymentChqDetail()/*.ordinal()*/ + ", ");
+							sb.append("PAYMENT_CHQ_DETAIL = " + salesHeaderDto
+									.getPaymentChqDetail()/* .ordinal() */ + ", ");
 						if (!ServicesUtil.isEmpty(salesHeaderDto.getOverallDocumentStatus1()))
-							sb.append("OVERALL_DOCUMENT_STATUS = " + salesHeaderDto.getOverallDocumentStatus1().ordinal()
-									+ ", ");
+							sb.append("OVERALL_DOCUMENT_STATUS = "
+									+ salesHeaderDto.getOverallDocumentStatus1().ordinal() + ", ");
 						sb.append("DELIVERY_STATUS = " + salesHeaderDto.getDeliveryStatus() + ", ");
 						sb.append("DELIVERY_TOLERANCE = '" + salesHeaderDto.getDeliveryTolerance() + "', ");
 						// sb.append("OVER_DELIVERY_TOLERANCE = '" +
@@ -168,11 +173,15 @@ public class SchedulerServices {
 								if (salesHeaderDto.getTotalSalesOrderQuantity().equals(new BigDecimal(0.000))) {
 									status = new BigDecimal(0.000);
 								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantity()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantity(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
+									// status =
+									// salesHeaderDto.getTotalSalesOrderQuantity()
+									// .subtract(salesHeaderDto.getCreditBlockQuantity());
+									// status =
+									// status.divide(salesHeaderDto.getTotalSalesOrderQuantity(),
+									// 3,
+									// RoundingMode.HALF_UP);
+									// status = status.multiply(new
+									// BigDecimal(100.000));
 								}
 								Integer value = status.intValue();
 								sb.append("PAYMENT_STATUS = '" + value.toString() + "', ");
@@ -181,11 +190,15 @@ public class SchedulerServices {
 								if (salesHeaderDto.getTotalSalesOrderQuantitySA().equals(new BigDecimal(0.000))) {
 									status = new BigDecimal(0.000);
 								} else {
-//									status = salesHeaderDto.getTotalSalesOrderQuantitySA()
-//											.subtract(salesHeaderDto.getCreditBlockQuantity());
-//									status = status.divide(salesHeaderDto.getTotalSalesOrderQuantitySA(), 3,
-//											RoundingMode.HALF_UP);
-//									status = status.multiply(new BigDecimal(100.000));
+									// status =
+									// salesHeaderDto.getTotalSalesOrderQuantitySA()
+									// .subtract(salesHeaderDto.getCreditBlockQuantity());
+									// status =
+									// status.divide(salesHeaderDto.getTotalSalesOrderQuantitySA(),
+									// 3,
+									// RoundingMode.HALF_UP);
+									// status = status.multiply(new
+									// BigDecimal(100.000));
 								}
 								Integer value = status.intValue();
 								sb.append("PAYMENT_STATUS = '" + value.toString() + "', ");
@@ -196,12 +209,12 @@ public class SchedulerServices {
 						sb.append("where TABLE_KEY = '" + tableKey + "'");
 						Query query1 = entityManager.createNativeQuery(sb.toString());
 						query1.executeUpdate();
-//						session.flush();
-//						session.clear();
-//						tx.commit();
+						// session.flush();
+						// session.clear();
+						// tx.commit();
 					} else {
-//						session = sessionFactory.openSession();
-//						tx = session.beginTransaction();
+						// session = sessionFactory.openSession();
+						// tx = session.beginTransaction();
 						salesHeaderDto.setTableKey(UUID.randomUUID().toString().replaceAll("-", ""));
 						salesHeaderDto.setDocumentProcessStatus(EnOrderActionStatus.CREATED);
 						if (!ServicesUtil.isEmpty(salesHeaderDto.getOverallDocumentStatus()) && salesHeaderDto
@@ -243,23 +256,27 @@ public class SchedulerServices {
 						}
 						list.add("I-" + salesHeaderDto.getTableKey());
 						salesOrderHeaderRepository.save(ObjectMapperUtils.map(salesHeaderDto, SalesOrderHeader.class));
-//						session.flush();
-//						session.clear();
-//						tx.commit();
+						// session.flush();
+						// session.clear();
+						// tx.commit();
 					}
 				}
 			}
-			
+
 			String ackResponse = odataServices.headerAckScheduler();
-			//logger.debug("[SalesHeaderDao][headerScheduler] ackResponse : " + ackResponse);
+			// logger.debug("[SalesHeaderDao][headerScheduler] ackResponse : " +
+			// ackResponse);
 			System.err.println("[SalesHeaderDao][headerScheduler] ackResponse : " + ackResponse);
 		} catch (Exception e) {
-			//logger.error("[SalesHeaderDao][headerScheduler] Exception : " + e.getMessage());
+			// logger.error("[SalesHeaderDao][headerScheduler] Exception : " +
+			// e.getMessage());
 			System.err.println("[SalesHeaderDao][headerScheduler] Exception : " + e.getMessage());
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Error Updating").body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Error Updating")
+					.body(null);
 		}
-		//logger.debug("[SalesHeaderDao][headerScheduler] Ended : " + new Date());
+		// logger.debug("[SalesHeaderDao][headerScheduler] Ended : " + new
+		// Date());
 		System.err.println("[SalesHeaderDao][headerScheduler] Ended : " + new Date());
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
@@ -267,19 +284,23 @@ public class SchedulerServices {
 	@Scheduled(cron = "0 0/10 * * * ?")
 	@SuppressWarnings({ "unchecked", "resource" })
 	public ResponseEntity<Object> itemScheduler() {
-		//logger.debug("[SalesItemDetailsDao][itemScheduler] Start : " + new Date());
+		// logger.debug("[SalesItemDetailsDao][itemScheduler] Start : " + new
+		// Date());
 		System.err.println("[SalesItemDetailsDao][itemScheduler] Start : " + new Date());
-		//Response response = new Response();
+		// Response response = new Response();
 		ArrayList<String> list = new ArrayList<>();
-//		Session session = null;
-//		Transaction tx = null;
+		// Session session = null;
+		// Transaction tx = null;
 		try {
 			OdataSchItemStartDto odataSchItemStartDto = odataServices.itemScheduler();
-			List<SalesOrderItemDto> listSalesItemDetailsDto = salesOrderItemRepository.convertData(odataSchItemStartDto);
+			System.err.println("odataSchItemStartDto" + odataSchItemStartDto);
+			List<SalesOrderItemDto> listSalesItemDetailsDto = salesOrderItemRepository
+					.convertData(odataSchItemStartDto);
+			System.err.println("listSalesItemDetailsDto" + listSalesItemDetailsDto);
 			for (SalesOrderItemDto salesItemDetailsDto : listSalesItemDetailsDto) {
-				if(salesItemDetailsDto.getUpdateIndicator().equals(EnUpdateIndicator.DELETE)){
-//					session = sessionFactory.openSession();
-//					tx = session.beginTransaction();
+				if (salesItemDetailsDto.getUpdateIndicator().equals(EnUpdateIndicator.DELETE)) {
+					// session = sessionFactory.openSession();
+					// tx = session.beginTransaction();
 					StringBuffer sb1 = new StringBuffer(
 							"delete from SalesOrderItem s where s.s4DocumentId=:s4DocumentId and s.material=:material and s.plant=:plant");
 					if (!ServicesUtil.isEmpty(salesItemDetailsDto.getMaterialDescription()))
@@ -297,12 +318,12 @@ public class SchedulerServices {
 						query.setParameter("lineItemNumber", salesItemDetailsDto.getLineItemNumber());
 					query.executeUpdate();
 					list.add("D-" + salesItemDetailsDto.getSalesItemId());
-//					session.flush();
-//					session.clear();
-//					tx.commit();
-				}else{
-//					session = sessionFactory.openSession();
-//					tx = session.beginTransaction();
+					// session.flush();
+					// session.clear();
+					// tx.commit();
+				} else {
+					// session = sessionFactory.openSession();
+					// tx = session.beginTransaction();
 					StringBuffer sb1 = new StringBuffer(
 							"select s.salesItemId from SalesOrderItem s where s.s4DocumentId=:s4DocumentId ");
 					if (!ServicesUtil.isEmpty(salesItemDetailsDto.getLineItemNumber()))
@@ -312,16 +333,17 @@ public class SchedulerServices {
 					if (!ServicesUtil.isEmpty(salesItemDetailsDto.getLineItemNumber()))
 						query.setParameter("lineItemNumber", salesItemDetailsDto.getLineItemNumber());
 					List<String> objList = query.getResultList();
-//					session.flush();
-//					session.clear();
-//					tx.commit();
+					// session.flush();
+					// session.clear();
+					// tx.commit();
 
 					if (objList != null && objList.size() > 0) {
-//						session = sessionFactory.openSession();
-//						tx = session.beginTransaction();
+						// session = sessionFactory.openSession();
+						// tx = session.beginTransaction();
 						String salesItemId = objList.get(0).toString();
 						list.add("U-" + salesItemId);
-						//logger.debug("[SalesItemDetailsDao][itemScheduler] matId : " + salesItemId);
+						// logger.debug("[SalesItemDetailsDao][itemScheduler]
+						// matId : " + salesItemId);
 						System.err.println("[SalesItemDetailsDao][itemScheduler] matId : " + salesItemId);
 						salesItemDetailsDto.setSalesItemId(salesItemId);
 
@@ -350,8 +372,8 @@ public class SchedulerServices {
 									+ ", ");
 						sb.append("DELIVERY_STATUS = " + salesItemDetailsDto.getDeliveryStatus() + ", ");
 						sb.append("CREDIT_BLOCK_QUANTITY = " + salesItemDetailsDto.getCreditBlockQuantity() + ", ");
-						sb.append(
-								"ON_TIME_DELIVERED_QUANTITY = " + salesItemDetailsDto.getOnTimeDeliveredQuantity() + ", ");
+						sb.append("ON_TIME_DELIVERED_QUANTITY = " + salesItemDetailsDto.getOnTimeDeliveredQuantity()
+								+ ", ");
 						if (!ServicesUtil.isEmpty(salesItemDetailsDto.getOverallProcessingStatus()))
 							sb.append("OVERALL_PROCESSING_STATUS = "
 									+ salesItemDetailsDto.getOverallProcessingStatus().ordinal() + ", ");
@@ -385,60 +407,56 @@ public class SchedulerServices {
 						sb.append("TOTAL_NO_PIECES = " + salesItemDetailsDto.getTotalNumberOfPieces() + ", ");
 						sb.append("BUNDLE_WT = " + salesItemDetailsDto.getBundleWeight() + ", ");
 						if (!ServicesUtil.isEmpty(salesItemDetailsDto.getUpdateIndicator1()))
-							sb.append("UPDATE_INDCATOR = " + salesItemDetailsDto.getUpdateIndicator1().ordinal() + ", ");
+							sb.append(
+									"UPDATE_INDCATOR = " + salesItemDetailsDto.getUpdateIndicator1().ordinal() + ", ");
 						sb.append("CHANGED_ON = '" + salesItemDetailsDto.getChangedOn() + "', ");
 						sb.append("SYNC_STATUS = " + salesItemDetailsDto.getSyncStatus() + " ");
 						sb.append("where SALES_ITEM_ID = '" + salesItemId + "'");
 
 						Query query1 = entityManager.createNativeQuery(sb.toString());
 						query1.executeUpdate();
-//						session.flush();
-//						session.clear();
-//						tx.commit();
+						// session.flush();
+						// session.clear();
+						// tx.commit();
 					} else {
 						Session session = entityManager.unwrap(Session.class);
-//						tx = session.beginTransaction();
+						// tx = session.beginTransaction();
 						sequenceNumberGen = SequenceNumberGen.getInstance();
-						
-						salesItemDetailsDto.setSalesItemId(sequenceNumberGen.getNextSeqNumber("IT", new Integer(8), session));
+
+						salesItemDetailsDto
+								.setSalesItemId(sequenceNumberGen.getNextSeqNumber("IT", new Integer(8), session));
 						list.add("I-" + salesItemDetailsDto.getSalesItemId());
 						salesOrderItemRepository.save(ObjectMapperUtils.map(salesItemDetailsDto, SalesOrderItem.class));
-//						session.flush();
-//						session.clear();
-//						tx.commit();
+						// session.flush();
+						// session.clear();
+						// tx.commit();
 					}
 				}
 			}
-//			response.setData(list);
-//			response.setMessage("Successfully Updated");
-//			response.setStatus(HttpStatus.OK.getReasonPhrase());
-//			response.setStatusCode(HttpStatus.OK.value());
+			// response.setData(list);
+			// response.setMessage("Successfully Updated");
+			// response.setStatus(HttpStatus.OK.getReasonPhrase());
+			// response.setStatusCode(HttpStatus.OK.value());
 			String ackResponse = odataServices.itemAckScheduler();
-			//logger.debug("[SalesItemDetailsDao][itemScheduler] ackResponse : " + ackResponse);
+			// logger.debug("[SalesItemDetailsDao][itemScheduler] ackResponse :
+			// " + ackResponse);
 			System.err.println("[SalesItemDetailsDao][itemScheduler] ackResponse : " + ackResponse);
 		} catch (Exception e) {
-			//logger.error("[SalesItemDetailsDao][itemScheduler] Exception : " + e.getMessage());
+			// logger.error("[SalesItemDetailsDao][itemScheduler] Exception : "
+			// + e.getMessage());
 			System.err.println("[SalesItemDetailsDao][itemScheduler] Exception : " + e.getMessage());
 			e.printStackTrace();
-//			response.setMessage("Error Updating");
-//			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-//			response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Error Updating").body(null);
-			
+			// response.setMessage("Error Updating");
+			// response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+			// response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", "Error Updating")
+					.body(null);
+
 		}
-		//logger.debug("[SalesItemDetailsDao][itemScheduler] Ended : " + new Date());
+		// logger.debug("[SalesItemDetailsDao][itemScheduler] Ended : " + new
+		// Date());
 		System.err.println("[SalesItemDetailsDao][itemScheduler] Ended : " + new Date());
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
 
-
-//	@Scheduled(cron = "0 0/15 * * * ?")
-//	public Response materialScheduler() {
-//		return materialMasterDao.materialScheduler();
-//	}
-//
-//	@Scheduled(cron = "0 0/15 * * * ?")
-//	public Response rollingPlanScheduler() {
-//		return rollingPlanDao.rollingPlanScheduler();
-//	}
 }

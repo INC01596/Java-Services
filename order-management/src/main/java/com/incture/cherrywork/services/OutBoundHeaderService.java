@@ -151,6 +151,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 			salesOrderHeaderRepository.save(header);
 
+			Integer itemNumber = 10;
 			for (SalesOrderItemDto item : dto.getLineItemList()) {
 				if (item.getSalesItemId() == null) {
 					String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
@@ -179,12 +180,24 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 					item.setIsElementBoronRequired(true);
 
 				}
+				
 				item.setOutBoundOrderId(dto.getHeaderDto().getObdId());
 				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
 				item.setSalesOrderHeader(header);
+				String str = itemNumber.toString();
+				if(str.length()==2)
+					str = "0000"+str;
+				else if(str.length()==3)
+					str = "000"+str;
+				else if(str.length()==4)
+					str = "00"+str;
+				else if(str.length()==5)
+					str = "0"+str;
+				item.setItemNumber(str);
 				// item.setObdStatus("Draft");
 				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
 				salesOrderItemRepository.save(Item);
+				itemNumber+=10;
 
 			}
 
@@ -207,17 +220,37 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 					// +dto.getSalesHeaderId());
 					OdataOutBoudDeliveryInputDto obdDto = salesOrderHeaderRepository.getOdataReqPayloadObd(dto);
 
-					res1 = submitOdataObd(obdDto, dto.getHeaderDto().getDocumentType());
-					if(res1.getStatusCode().equals(HttpStatus.OK))
-					{
+					res1 = submitOdataObd(obdDto, "OBD");
+					if (res1.getStatusCode().equals(HttpStatus.OK)) {
 						dto.getHeaderDto().setObdStatus("CREATED");
 						dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
-						salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
-					}
-					else{
+						String query2 = "select outBoundOrderId from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4doc";
+						Query q2 = entityManager.createQuery(query2);
+						q2.setParameter("s4doc", s4DocumentId);
+						List<String> obdID = q2.getResultList();
+						if(obdID != null)
+						dto.getHeaderDto().setObdId(obdID.get(0));
+						dto.getHeaderDto().setPgiStatus("PENDING");
+						dto.getHeaderDto().setInvoiceStatus("PENDING");
+						// String str = res1.getBody().toString();
+
+						salesOrderHeaderRepository
+								.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
+						String query3 = "from SalesOrderHeader where salesHeaderId=:salesHeaderId and documentType=:dType";
+						Query q3 = entityManager.createQuery(query3);
+						q3.setParameter("salesHeaderId", dto.getHeaderDto().getSalesOrderId());
+						q3.setParameter("dType", "OR");
+						List<SalesOrderHeader> list = q3.getResultList();
+						if(list.size()>0){
+							SalesOrderHeader header1 = list.get(0);
+							header1.setDocumentProcessStatus(EnOrderActionStatus.PROCESSING);
+						}
+					} else {
 						dto.getHeaderDto().setObdStatus("FAILED");
-						//dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
-						salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
+						dto.getHeaderDto().setPostingError((String)res1.getBody());
+						// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
+						salesOrderHeaderRepository
+								.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 					}
 
 				}
@@ -257,12 +290,12 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 		System.out.println("listHeader Size: " + listheader.size());
 
-		String query1 = "from SalesOrderItem i where i.outBoundOrderId=:obdId and i.pgiId is null";
+		String query1 = "from SalesOrderItem i where i.outBoundOrderId=:obdId";
 		Query q1 = entityManager.createQuery(query1);
 		q1.setParameter("obdId", obdId);
 
 		List<SalesOrderItem> listItem = q1.getResultList();
-		System.err.println("listItem size " + listItem.size()+" and listItem"+listItem);
+		System.err.println("listItem size " + listItem.size() + " and listItem" + listItem);
 
 		SalesOrderHeaderDto headerDto = ObjectMapperUtils.map(listheader.get(0), SalesOrderHeaderDto.class);
 
@@ -296,7 +329,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				dto.getHeaderDto().setPgiId(tempPgiId);
 				// dto.getHeaderDto().setS4DocumentId(s4DocumentId);
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.DRAFTED);
-				dto.getHeaderDto().setPgiStatus("Draft");
+				// dto.getHeaderDto().setPgiStatus("Draft");
 				// sequenceNumberGen.updateRecord(new
 				// SequenceNumber(dto.getHeaderDto().getDocumentType(),Integer.valueOf(tempEnquiryId).subString(tempEnquiryId.length()-2,tempEnquiryId.length)),session);
 			}
@@ -373,15 +406,15 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			// { System.err.println("[submitSalesOrder][odata] if case "
 			// +dto.getSalesHeaderId());
 			OdataOutBoudDeliveryPgiInputDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayloadPgi(dto);
-			res1 = submitOdataPgi(odataHeaderDto, dto.getHeaderDto().getDocumentType());
-			if(res1.getStatusCode().equals(HttpStatus.OK)){
+			res1 = submitOdataPgi(odataHeaderDto, "PGI");
+			if (res1.getStatusCode().equals(HttpStatus.OK)) {
 				dto.getHeaderDto().setPgiStatus("CREATED");
 				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
-			}
-			else{
+			} else {
 				dto.getHeaderDto().setPgiStatus("FAILED");
-				//dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
+				dto.getHeaderDto().setPostingError((String)res1.getBody());
+				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
 		}
@@ -400,25 +433,30 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 	}
 
 	// submitObdToEcc(obdDto,dto.getHeaderDto().getDocumentType());
-	
-	public ResponseEntity<Object> createInv(String pgiId){
-		
-		System.out.println("createPgi strated pgiId: " + pgiId);
-		String query = "from SalesOrderHeader s where s.pgiId=:pgiId and s.pgiStatus =: Created";
+
+	public ResponseEntity<Object> createInv(String obdId) {
+
+		System.out.println("createPgi strated pgiId: " + obdId);
+		String query = "from SalesOrderHeader s where s.obdId=:pgiId and s.pgiStatus =: Created";
 		Query q = entityManager.createQuery(query);
-		q.setParameter("pgiId", pgiId);
+		q.setParameter("pgiId", obdId);
 		q.setParameter("Created", "CREATED");
 
 		List<SalesOrderHeader> listheader = q.getResultList();
+		if (listheader.size() == 0)
+			ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.header("Message",
+							"Either your reference to OBD is wrong(OBDID) or The PGI is still not created fore this OBD.")
+					.body("Either your reference to OBD is wrong(OBDID) or The PGI is still not created fore this OBD.");
 
 		System.out.println("listHeader Size: " + listheader.size());
 
-		String query1 = "from SalesOrderItem i where i.pgiId=:pgiId and i.invId is null";
+		String query1 = "from SalesOrderItem i where i.outBoundOrderId=:pgiId";
 		Query q1 = entityManager.createQuery(query1);
-		q1.setParameter("pgiId", pgiId);
+		q1.setParameter("pgiId", obdId);
 
 		List<SalesOrderItem> listItem = q1.getResultList();
-		System.err.println("listItem size " + listItem.size()+" and listItem"+listItem);
+		System.err.println("listItem size " + listItem.size() + " and listItem" + listItem);
 
 		SalesOrderHeaderDto headerDto = ObjectMapperUtils.map(listheader.get(0), SalesOrderHeaderDto.class);
 
@@ -529,15 +567,23 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			// { System.err.println("[submitSalesOrder][odata] if case "
 			// +dto.getSalesHeaderId());
 			OdataOutBoudDeliveryInvoiceInputDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayloadInv(dto);
-			res1 = submitOdataInv(odataHeaderDto, dto.getHeaderDto().getDocumentType());
-			if(res1.getStatusCode().equals(HttpStatus.OK)){
+			res1 = submitOdataInv(odataHeaderDto, "INV");
+			if (res1.getStatusCode().equals(HttpStatus.OK)) {
 				dto.getHeaderDto().setInvoiceStatus("CREATED");
+				String query2 = "select invId from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4doc";
+				Query q2 = entityManager.createQuery(query2);
+				q2.setParameter("s4doc", dto.getHeaderDto().getS4DocumentId());
+				List<String> invID = q2.getResultList();
+				if(invID != null)
+				dto.getHeaderDto().setInvId(invID.get(0));
 				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
-			}
-			else{
+				ServicesUtil.mailZippedInv(dto);
+			} else {
 				dto.getHeaderDto().setInvoiceStatus("FAILED");
-				//dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
+				dto.getHeaderDto().setPostingError((String)res1.getBody());
+				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
+				setStatusAsClosed(obdId);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
 		}
@@ -552,7 +598,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());
-		
+
 	}
 
 	@Override
@@ -564,10 +610,10 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 					.getDestination(ComConstants.ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME);
 			System.err.println("destination info in submitToECC " + destinationInfo);
 		} catch (URISyntaxException e) {
-			
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 		// set Url
@@ -634,47 +680,47 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 	@Async
 	public ResponseEntity<Object> submitOdataObd(OdataOutBoudDeliveryInputDto odataHeaderDto, String docType) {
 
-		System.err.println("[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString());
+		System.err.println(
+				"[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString() + "docType " + docType);
 		// Response response = new Response();
 		String odataResponse = null;
+		String value = null;
+		String DocID_6 = null, temp_id = null, DocID_2 = null;
 		try {
 			odataResponse = odataServices.postDataObd(odataHeaderDto, docType);
 			System.out.println("odataresponse: " + odataResponse);
 			JSONObject json = new JSONObject((odataResponse));
 			System.err.println("[submitOdataObd][postDataObd Response] json : " + json.toString());
 			if (!json.isNull("d")) {
-				String DocID_6 = null,temp_id=null,DocID_2=null;
+
 				JSONObject d = json.getJSONObject("d");
 				System.err.println("[OutBoundHeader][submitOdataObd] d : " + json.toString());
-				
-				//if (!d.isNull("Vbeln"))
-					temp_id = odataHeaderDto.getVbeln();
+
+				// if (!d.isNull("Vbeln"))
+				temp_id = odataHeaderDto.getVbeln();
 				if (!d.isNull("Vbeln"))
 					DocID_6 = d.getString("Vbeln");
 
-				System.err.println("Inv Id " + DocID_6);
+				System.err.println("obd Id " + DocID_6);
 
-				salesOrderHeaderService.updateRecord(temp_id, DocID_6, DocID_2,"OBD");
+				salesOrderHeaderService.updateRecord(odataHeaderDto.getObdId(), DocID_6, DocID_2, docType);
 			} else {
 				JSONObject error = json.getJSONObject("error");
 				// logger.debug("[submitSalesOrder][submitOdata] error : " +
 				// json.toString());
 				System.err.println("[submitSalesOrder][submitOdata] error : " + json.toString());
 				JSONObject message = error.getJSONObject("message");
-				String value = message.getString("value");
+				value = message.getString("value");
 				// logger.debug("[submitSalesOrder][submitOdata] error value : "
 				// + value);
 				System.err.println("[submitSalesOrder][submitOdata] error value : " + value);
-				 salesOrderHeaderRepository.updateError(odataHeaderDto.getVbeln(),
-				 value);
+				// System.err.println(odataHeaderDto.getVbeln(), value,
+				// docType);
+				salesOrderHeaderRepository.updateError(odataHeaderDto.getObdId(), value, docType);
 				System.out.println("After Update Error! in submit odata in else" + error);
 
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message",
-						"Error in submitting odata for id: " /*
-																 * +
-																 * odataHeaderDto
-																 * .getTemp_id()
-																 */).body(error);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.header("Message", "Error in submitting odata for id: ").body(value);
 			}
 			// response.setMessage("Odata Submitted Successfully");
 			// response.setStatus(HttpStatus.OK.getReasonPhrase());
@@ -686,11 +732,8 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			// odataHeaderDto.getTemp_id());
 			// response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 			// response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message",
-					"Error in submitting odata for id: " /*
-															 * + odataHeaderDto.
-															 * getTemp_id()
-															 */).body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.header("Message", "Error in submitting odata for id: ").body(value);
 		}
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully")
 				.body(odataResponse);
@@ -703,36 +746,37 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		System.err.println("[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString());
 		// Response response = new Response();
 		String odataResponse = null;
+		String value = null;
 		try {
 			odataResponse = odataServices.postDataPgi(odataHeaderDto, docType);
 			System.out.println("odataresponse: " + odataResponse);
 			JSONObject json = new JSONObject((odataResponse));
 			System.err.println("[submitOdataObd][postDataObd Response] json : " + json.toString());
 			if (!json.isNull("d")) {
-				String DocID_6 = null,temp_id=null,DocID_2=null;
+				String DocID_6 = null, temp_id = null, DocID_2 = null;
 				JSONObject d = json.getJSONObject("d");
 				System.err.println("[OutBoundHeader][submitOdataObd] d : " + json.toString());
-				
-				//if (!d.isNull("Vbeln"))
-					temp_id = odataHeaderDto.getVbeln();
+
+				// if (!d.isNull("Vbeln"))
+				temp_id = odataHeaderDto.getVbeln();
 				if (!d.isNull("Vbeln"))
 					DocID_6 = d.getString("Vbeln");
 
 				System.err.println("Inv Id " + DocID_6);
 
-				//salesOrderHeaderService.updateRecord(temp_id, DocID_6, DocID_2,"PGI");
+				// salesOrderHeaderService.updateRecord(temp_id, DocID_6,
+				// DocID_2,"PGI");
 			} else {
 				JSONObject error = json.getJSONObject("error");
 				// logger.debug("[submitSalesOrder][submitOdata] error : " +
 				// json.toString());
 				System.err.println("[submitSalesOrder][submitOdata] error : " + json.toString());
 				JSONObject message = error.getJSONObject("message");
-				String value = message.getString("value");
+				value = message.getString("value");
 				// logger.debug("[submitSalesOrder][submitOdata] error value : "
 				// + value);
 				System.err.println("[submitSalesOrder][submitOdata] error value : " + value);
-				salesOrderHeaderRepository.updateError(odataHeaderDto.getVbeln(),
-				 value);
+				salesOrderHeaderRepository.updateError(odataHeaderDto.getPgiId(), value, docType);
 				System.out.println("After Update Error! in submit odata in else" + error);
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message",
@@ -740,7 +784,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 																 * +
 																 * odataHeaderDto
 																 * .getTemp_id()
-																 */).body(error);
+																 */).body(value);
 			}
 			// response.setMessage("Odata Submitted Successfully");
 			// response.setStatus(HttpStatus.OK.getReasonPhrase());
@@ -753,49 +797,49 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			// response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 			// response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.header("Message", "Error in submitting odata for id: ").body(null);
+					.header("Message", "Error in submitting odata for id: ").body(value);
 		}
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully")
 				.body(odataResponse);
 		// return response;
 	}
 
-	
 	@Async
 	public ResponseEntity<Object> submitOdataInv(OdataOutBoudDeliveryInvoiceInputDto odataHeaderDto, String docType) {
 
 		System.err.println("[submitSalesOrder][submitOdata] Started : " + odataHeaderDto.toString());
 		// Response response = new Response();
 		String odataResponse = null;
+		String value = null;
 		try {
 			odataResponse = odataServices.postDataInv(odataHeaderDto, docType);
 			System.out.println("odataresponse: " + odataResponse);
 			JSONObject json = new JSONObject((odataResponse));
 			System.err.println("[submitOdataObd][postDataObd Response] json : " + json.toString());
 			if (!json.isNull("d")) {
-				String DocID_6 = null,temp_id=null,DocID_2=null;
+				String DocID_6 = null, temp_id = null, DocID_2 = null;
 				JSONObject d = json.getJSONObject("d");
 				System.err.println("[OutBoundHeader][submitOdataObd] d : " + json.toString());
-				
-				//if (!d.isNull("Vbeln"))
-					temp_id = odataHeaderDto.getVbeln();
+
+				// if (!d.isNull("Vbeln"))
+				temp_id = odataHeaderDto.getVbeln();
 				if (!d.isNull("Vbeln"))
 					DocID_6 = d.getString("Vbeln");
 
 				System.err.println("Inv Id " + DocID_6);
 
-				salesOrderHeaderService.updateRecord(temp_id, DocID_6, DocID_2,"INV");
+				salesOrderHeaderService.updateRecord(odataHeaderDto.getInvId(), DocID_6, DocID_2, "INV");
 			} else {
 				JSONObject error = json.getJSONObject("error");
 				// logger.debug("[submitSalesOrder][submitOdata] error : " +
 				// json.toString());
 				System.err.println("[submitSalesOrder][submitOdata] error : " + json.toString());
 				JSONObject message = error.getJSONObject("message");
-				String value = message.getString("value");
+				value = message.getString("value");
 				// logger.debug("[submitSalesOrder][submitOdata] error value : "
 				// + value);
 				System.err.println("[submitSalesOrder][submitOdata] error value : " + value);
-				salesOrderHeaderRepository.updateError(odataHeaderDto.getVbeln(), value);
+				salesOrderHeaderRepository.updateError(odataHeaderDto.getInvId(), value, docType);
 				System.out.println("After Update Error! in submit odata in else" + error);
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("Message",
@@ -803,7 +847,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 																 * +
 																 * odataHeaderDto
 																 * .getTemp_id()
-																 */).body(error);
+																 */).body(value);
 			}
 			// response.setMessage("Odata Submitted Successfully");
 			// response.setStatus(HttpStatus.OK.getReasonPhrase());
@@ -816,11 +860,81 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			// response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 			// response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.header("Message", "Error in submitting odata for id: ").body(null);
+					.header("Message", "Error in submitting odata for id: ").body(value);
 		}
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Odata Submitted Successfully")
 				.body(odataResponse);
 		// return response;
 	}
 
+	public ResponseEntity<Object> getInvDetail(String invId) {
+		String query = "from SalesOrderHeader s where s.invId=:invId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("invId", invId);
+		List<SalesOrderHeader> headerList = q1.getResultList();
+		SalesOrderHeaderDto header = null;
+		if (headerList.size() != 0) {
+			header = ObjectMapperUtils.map(headerList.get(0), SalesOrderHeaderDto.class);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Message", "Invalid Invoice Id").body(null);
+		}
+		String query1 = "from SalesOrderItem s where s.invId=:invId";
+		Query q2 = entityManager.createQuery(query1);
+		q2.setParameter("invId", invId);
+		List<SalesOrderItem> itemList = q2.getResultList();
+		List<SalesOrderItemDto> itemlist = new ArrayList<>();
+		for (SalesOrderItem item : itemList) {
+			itemlist.add(ObjectMapperUtils.map(item, SalesOrderItemDto.class));
+		}
+		SalesOrderHeaderItemDto dto = new SalesOrderHeaderItemDto();
+		dto.setHeaderDto(header);
+		dto.setLineItemList(itemlist);
+		return ResponseEntity.status(HttpStatus.OK).header("Message", "Fetched Invoice detail").body(dto);
+
+	}
+	public void mailService(SalesOrderHeaderItemDto dto){
+		ServicesUtil.mailZippedInv(dto);
+	}
+	public void printService(SalesOrderHeaderItemDto dto){
+		ServicesUtil.printInv(dto);
+	}
+	public int setStatusAsClosed(String obdId){
+		
+		String query = "from SalesOrderHeader where obdId=:obdId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("obdId", obdId);
+		List<SalesOrderHeader> List = q1.getResultList();
+		String s4DocumentId = null;
+		if(List.size()>0)
+			s4DocumentId = List.get(0).getS4DocumentId();
+		String query2 = "select salesItemId from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4docId";
+		Query q2 = entityManager.createQuery(query2);
+		q2.setParameter("s4docId", s4DocumentId);
+		List<String> itemIdList = q2.getResultList();
+		for(String itemId:itemIdList){
+			String query3 = "select invId from SalesOrderItem i where i.orderItemId=:itemId and i.outBoundOrderId=:obdId";
+			Query q3 = entityManager.createQuery(query3);
+			q3.setParameter("itemId", itemId);
+			q3.setParameter("obdId", obdId);
+			List<String> invIdList = q3.getResultList();
+			if(invIdList.size()>0){
+				String invId = invIdList.get(0);
+				String prefix = invId.substring(0,3);
+				if(prefix.equals("PGI"))
+					return 0;
+			}
+		}
+		String query4 = "from SalesOrderHeader where salesHeaderId=:salesHeaderId and documentType=:dType";
+		Query q4 = entityManager.createQuery(query4);
+		q4.setParameter("salesHeaderId", List.get(0).getSalesHeaderId());
+		q4.setParameter("dType", "OR");
+		List<SalesOrderHeader> headerList = q4.getResultList();
+		if(headerList.size()>0){
+			SalesOrderHeader header1 = headerList.get(0);
+			header1.setDocumentProcessStatus(EnOrderActionStatus.DELIVERY_IN_TRANSIT);
+			salesOrderHeaderRepository.save(header1);
+		}
+		return 1;
+	}
+	
 }

@@ -69,7 +69,7 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 	@Override
 	public ResponseEntity<Object> getMaterialNames() {
 		try{
-			List<MaterialPlantDto> materialList=mrepo.getMaterialNames();
+			List<MaterialMaster> materialList=mrepo.getMaterialNames();
 			return ResponseEntity.ok(materialList);
 		   }catch (Exception e) {
 			System.err.println("try found exception");

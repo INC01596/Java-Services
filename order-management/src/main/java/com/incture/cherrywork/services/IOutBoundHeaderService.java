@@ -16,5 +16,8 @@ public interface IOutBoundHeaderService {
 	
 	ResponseEntity<Object> submitToEcc(SalesOrderHeaderItemDto inputDto);
 	ResponseEntity<Object> submitOdataObd(OdataOutBoudDeliveryInputDto odataHeaderDto, String docType);
+	ResponseEntity<Object> getInvDetail(String invId);
+	void mailService(SalesOrderHeaderItemDto dto);
+	void printService(SalesOrderHeaderItemDto dto);
 
 }

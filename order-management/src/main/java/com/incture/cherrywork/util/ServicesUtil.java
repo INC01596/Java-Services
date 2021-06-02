@@ -2,10 +2,14 @@ package com.incture.cherrywork.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -14,15 +18,49 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.PrintQuality;
+import javax.print.event.PrintJobAdapter;
+import javax.print.event.PrintJobEvent;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.exceptions.InvalidInputFault;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -610,130 +648,199 @@ public class ServicesUtil {
 		try {
 
 			PdfPTable table = new PdfPTable(2);
-			table.setWidthPercentage(60);
-			table.setWidths(new int[] { 5, 5 });
+			// table.setWidthPercentage(60);
+			table.setWidths(new int[] { 1, 1 });
 
-			// Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-
-			PdfPCell hcell;
-			// hcell = new PdfPCell(new Phrase("Id", headFont));
-			// hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			// table.addCell(hcell);
-
-			// hcell = new PdfPCell(new Phrase("Name", headFont));
-			// hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			// table.addCell(hcell);
-
-			// hcell = new PdfPCell(new Phrase("Population", headFont));
-			// hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			// table.addCell(hcell);
+			Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
 
 			// cellOne.setBorder(Rectangle.NO_BORDER);
 
-			for (int i = 0; i < 5; i++) {
-				PdfPCell cell=null;
-				if (i == 0) {
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase("SO Number"));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase(dto.getHeaderDto().getSalesHeaderId()));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-				}
-				else if(i==1){
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase("Request Delivery Date"));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase(dto.getHeaderDto().getRequestDeliveryDate().toString()));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-				}
-				else if(i==2){
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase("Net Amount"));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase(dto.getHeaderDto().getNetValueSA()));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-				}
-				else if(i==3){
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase("Shipping Point"));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase(dto.getHeaderDto().getNetValueSA()));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-				}
-				else if(i==4){
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase("Shipping"));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-					cell.setBorder(Rectangle.NO_BORDER);
-					cell = new PdfPCell(new Phrase(dto.getHeaderDto().getNetValueSA()));
-					cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-					cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(cell);
-
-				}
-			}
-
-//			for (E city : cities) {
-//
-//				PdfPCell cell;
-//
-//				cell = new PdfPCell(new Phrase(city.getId().toString()));
-//				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-//				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-//				table.addCell(cell);
-//
-//				cell = new PdfPCell(new Phrase(city.getName()));
-//				cell.setPaddingLeft(5);
-//				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-//				cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-//				table.addCell(cell);
-//
-//				cell = new PdfPCell(new Phrase(String.valueOf(city.getPopulation())));
-//				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-//				cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//				cell.setPaddingRight(5);
-//				table.addCell(cell);
-//			}
-
+			PdfPCell cell1 = null;
 			PdfWriter.getInstance(document, out);
 			document.open();
+
+			cell1 = new PdfPCell(new Phrase("Customer name", headFont));
+			cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell1.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell1);
+
+			cell1 = new PdfPCell(new Phrase(
+					dto.getHeaderDto().getCustomerName() + "(" + dto.getHeaderDto().getShipToParty() + ")", headFont));
+			cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell1.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell1);
+
+			PdfPCell cell2 = null;
+
+			cell2 = new PdfPCell(new Phrase("SO Number", headFont));
+			cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell2.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell2);
+
+			cell2 = new PdfPCell(new Phrase(dto.getHeaderDto().getSalesHeaderId(), headFont));
+			cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell2.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell2);
+
+			PdfPCell cell3 = null;
+
+			cell3 = new PdfPCell(new Phrase("OBD Number", headFont));
+			cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell3.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell3);
+
+			cell3 = new PdfPCell(new Phrase(dto.getHeaderDto().getObdId(), headFont));
+			cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell3.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell3);
+
+			PdfPCell cell4 = null;
+
+			cell4 = new PdfPCell(new Phrase("Created By", headFont));
+			cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell4.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell4);
+
+			cell4 = new PdfPCell(new Phrase(dto.getHeaderDto().getCreatedBy(), headFont));
+			cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell4.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell4);
+
+			PdfPCell cell5 = null;
+
+			cell5 = new PdfPCell(new Phrase("Created Date", headFont));
+			cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell5.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell5);
+
+			cell5 = new PdfPCell(new Phrase(dto.getHeaderDto().getCreatedDate().toString(), headFont));
+			cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell5.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell5);
+
+			PdfPCell cell6 = null;
+
+			cell6 = new PdfPCell(new Phrase("Plant", headFont));
+			cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell6.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell6);
+
+			cell6 = new PdfPCell(new Phrase(dto.getHeaderDto().getPlant(), headFont));
+			cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell6.setBorder(Rectangle.NO_BORDER);
+			table.addCell(cell6);
 			document.add(table);
+
+			PdfPTable emptytable = new PdfPTable(2);
+			emptytable.setWidths(new int[] { 1, 1 });
+			for (int i = 0; i < 5; i++) {
+				PdfPCell emptycell = null;
+
+				emptycell = new PdfPCell(new Phrase(""));
+				emptycell.setBorder(Rectangle.NO_BORDER);
+				emptytable.addCell(emptycell);
+
+				emptycell = new PdfPCell(new Phrase(""));
+				emptycell.setBorder(Rectangle.NO_BORDER);
+				emptytable.addCell(emptycell);
+			}
+
+			document.add(emptytable);
+
+			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);
+			PdfPTable table1 = new PdfPTable(4);
+			// table1.setWidthPercentage(60);
+			table1.setWidths(new int[] { 1, 1, 1, 1 });
+
+			PdfPCell hcell;
+
+			hcell = new PdfPCell(new Phrase("Item Number", headFont));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Shipping Point", headFont));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Requested Delivery Date", headFont));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(hcell);
+
+			hcell = new PdfPCell(new Phrase("Net Amount", headFont));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(hcell);
+
+			double Amount = 0;
+
+			for (SalesOrderItemDto item : dto.getLineItemList()) {
+
+				PdfPCell cell;
+				cell = new PdfPCell(new Phrase(item.getLineItemNumber()));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table1.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(item.getSloc()));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table1.addCell(cell);
+
+				cell = new PdfPCell(new Phrase(dto.getHeaderDto().getRequestDeliveryDate().toString()));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table1.addCell(cell);
+
+				double no = Double.parseDouble(item.getNetValue());
+				DecimalFormat dec = new DecimalFormat("#0.00");
+				cell = new PdfPCell(new Phrase(dec.format(no)));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table1.addCell(cell);
+				double Amount1 = Double.parseDouble(item.getNetValue());
+				Amount = Amount + Amount1;
+
+			}
+
+			document.add(table1);
+
+			PdfPTable table2 = new PdfPTable(2);
+			// table2.setWidthPercentage(50);
+			table2.setWidths(new int[] { 1, 1 });
+
+			PdfPCell newcell;
+
+			newcell = new PdfPCell(new Phrase("Total Amount", headFont));
+			newcell.setVerticalAlignment(Element.ALIGN_LEFT);
+			newcell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			table2.addCell(newcell);
+
+			DecimalFormat dec = new DecimalFormat("#0.00");
+			newcell = new PdfPCell(new Phrase(dec.format(Amount)));
+			newcell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			newcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table2.addCell(newcell);
+
+			document.add(table2);
 
 			document.close();
 
 		} catch (DocumentException ex) {
 
-			//logger.error("Error occurred: {0}", ex);
+			// logger.error("Error occurred: {0}", ex);
+			System.err.println(ex);
 		}
 
 		return new ByteArrayInputStream(out.toByteArray());
@@ -746,5 +853,176 @@ public class ServicesUtil {
 		return false;
 	}
 
-	
+	public static void mailZippedInv(SalesOrderHeaderItemDto dto) {
+		ByteArrayInputStream bis = generatePdf(dto);
+		String zipFileName = "invoice.zip";
+		String fileName = "invoice_" + dto.getHeaderDto().getInvId() + "_.pdf";
+		byte[] test = getZippedInv(bis, fileName);
+
+		String receiver = dto.getHeaderDto().getCreatedBy();
+		String name = dto.getHeaderDto().getCustomerName();
+		String text = "Please recive your invoice in the attachment!";
+		String subject = "Find Your Invoice with id: " + dto.getHeaderDto().getInvId();
+
+		receiver = receiver.replace("-", ".");
+
+		String FROM_MAIL_ID = "developermailservicetest@gmail.com";
+		String FROM_MAIL_ID_PASSWORD = "9521747045";
+		String MAIL_HOST_NAME = "smtp.gmail.com";
+		String MAIL_PORT_NUMBER = "587";
+		// String FROM_MAIL_ID = "notification@sulb.com.bh";
+		// String FROM_MAIL_ID_PASSWORD = "P@ssw0rd";
+		// String MAIL_HOST_NAME = "mail.sulb.com.bh";
+		// String MAIL_PORT_NUMBER = "25";
+
+		// String APP_URL =
+		// "https://foulath-holding-bsc-foulathdev-cesp-app-login.cfapps.eu10.hana.ondemand.com/Login/index.html#";
+		// String APP_URL =
+		// "https://foulath-foulathqas-qas-unit-login.cfapps.eu10.hana.ondemand.com/Login/index.html";
+		// String APP_URL =
+		// "https://foulath-foulathprd-prd-unit-login.cfapps.eu10.hana.ondemand.com";
+		String APP_URL = "https://order-management.cfapps.eu10.hana.ondemand.com";
+		// String APP_URL = "http://192.168.1.8:8080";
+
+		Properties prop = new Properties();
+		prop.put("mail.smtp.host", MAIL_HOST_NAME);
+		prop.put("mail.smtp.port", MAIL_PORT_NUMBER);
+		prop.put("mail.smtp.auth", "true");
+		prop.put("mail.smtp.socketFactory.port", MAIL_PORT_NUMBER);
+		// prop.put("mail.smtp.socketFactory.class",
+		// "javax.net.ssl.SSLSocketFactory");
+		prop.put("mail.smtp.starttls.enable", "true");
+
+		Session session = Session.getInstance(prop, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(FROM_MAIL_ID, FROM_MAIL_ID_PASSWORD);
+			}
+		});
+
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(FROM_MAIL_ID));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
+			message.setSubject(subject);
+			message.setText("Hi " + name + ",\n\n " + text + " \n\n " + "Application URL :" + APP_URL);
+
+			BodyPart messageBodyPart = new MimeBodyPart();
+			Multipart multipart = new MimeMultipart();
+
+			// Set text message part
+
+			messageBodyPart.setText("Hi,\n Please find your invoice as attached above.\n\n\n\n\n\nThanks\nCOM Team");
+
+			multipart.addBodyPart(messageBodyPart);
+
+			// Part two is attachment
+			messageBodyPart = new MimeBodyPart();
+
+			DataSource source = new ByteArrayDataSource(test, "application/zip");
+			messageBodyPart.setDataHandler(new DataHandler(source));
+			messageBodyPart.setFileName(zipFileName);
+			multipart.addBodyPart(messageBodyPart);
+
+			// Send the complete message parts
+			System.err.println("Successfully attached file.");
+			message.setContent(multipart);
+
+			Transport.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		// return ResponseEntity<Object>.status(HttpStatus.OK).header("message",
+		// "Mail Sent Successfully to " + receiver).body(null);
+		// return
+		// ResponseEntity.status(HttpStatus.SC_ACCEPTED).header("message", "Mail
+		// Sent Successfully to " + receiver)
+		// .body(null);
+		// }
+		//
+
+	}
+
+	public static byte[] getZippedInv(ByteArrayInputStream bis, String fileName) {
+		byte[] input = convertToByteArray(bis);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ZipOutputStream zos = new ZipOutputStream(baos);
+
+		ZipEntry entry = new ZipEntry(fileName);
+		entry.setSize(input.length);
+		try {
+
+			zos.putNextEntry(entry);
+			zos.write(input);
+			zos.closeEntry();
+			zos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return baos.toByteArray();
+	}
+
+	public static byte[] convertToByteArray(ByteArrayInputStream bis) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+		byte[] buffer = new byte[1024];
+		int len;
+
+		// read bytes from the input stream and store them in the buffer
+		try {
+			while ((len = bis.read(buffer)) != -1) {
+				// write bytes from the buffer into the output stream
+				os.write(buffer, 0, len);
+			}
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
+		return os.toByteArray();
+	}
+
+	public static void printInv(SalesOrderHeaderItemDto dto) {
+
+		// Get default print service
+		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+
+		// Create a print job
+		DocPrintJob printJob = printService.createPrintJob();
+
+		// Optional fancy listener
+		printJob.addPrintJobListener(new PrintJobAdapter() {
+			@Override
+			public void printJobCompleted(PrintJobEvent pje) {
+				System.out.println("PDF printing completed");
+				super.printJobCompleted(pje);
+			}
+
+			@Override
+			public void printJobFailed(PrintJobEvent pje) {
+				System.out.println("PDF printing failed");
+				super.printJobFailed(pje);
+			}
+		});
+
+		// Check the PDF file and get a byte array
+		ByteArrayInputStream bis = generatePdf(dto);
+		System.err.println(bis.available());
+		// byte[] PDFByteArray = convertToByteArray(bis);
+
+		// Create a doc and print it
+		// System.err.println(PDFByteArray.length);
+		Doc doc = new SimpleDoc(bis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+		try {
+			HashPrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
+			attrs.add(PrintQuality.HIGH);
+			attrs.add(MediaSizeName.ISO_A8);
+			printJob.print(doc, attrs);
+		} catch (PrintException e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
 }

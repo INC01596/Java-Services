@@ -304,6 +304,7 @@ public class HelperClass {
 	
 	
 	public static String getDataFromStream(InputStream stream) throws IOException {
+		System.err.println("[Helper Class][getDataFromStream] started");
 		StringBuilder dataBuffer = new StringBuilder();
 		BufferedReader inStream = new BufferedReader(new InputStreamReader(stream));
 		String data = "";
@@ -463,6 +464,100 @@ public class HelperClass {
 
 	}
 
+
+//	public static ResponseEntity<?> sendSms(SmsSendingDto smsSendingDto) {
+//		try {
+//			if ((!checkString(smsSendingDto.getMobileNum())
+//					|| (smsSendingDto.getMobileNumList() != null && !smsSendingDto.getMobileNumList().isEmpty()))
+//					&& !checkString(smsSendingDto.getFrom()) && !checkString(smsSendingDto.getMessage())
+//					&& !checkString(smsSendingDto.getReport()) && !checkString(smsSendingDto.getMessageType())) {
+//
+//				Map<String, Object> destinationMap = DestinationReaderUtil
+//						.getDestination(DkshApplicationConstants.SMS_SENDING_DESTINATION_NAME);
+//
+//				HttpClient client = MySSLSocketFactory.getNewHttpClient();
+//				HttpPost post = new HttpPost((String) destinationMap.get("URL"));
+//
+//				HttpHeaders headers = new HttpHeaders();
+//				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//				// add request parameter, form parameters
+//				List<NameValuePair> map = new ArrayList<>();
+//
+//				map.add(new BasicHeader(DkshApplicationConstants.REPORT_KEY, smsSendingDto.getReport()));
+//				map.add(new BasicHeader(DkshApplicationConstants.SENDER_GROUP_NAME_KEY, smsSendingDto.getFrom()));
+//				map.add(new BasicNameValuePair(DkshApplicationConstants.CHARGE_KEY,
+//						(String) destinationMap.get(DkshApplicationConstants.CHARGE_KEY)));
+//				map.add(new BasicNameValuePair(DkshApplicationConstants.CMD_KEY,
+//						(String) destinationMap.get(DkshApplicationConstants.CMD_KEY)));
+//				map.add(new BasicNameValuePair(DkshApplicationConstants.CODE_KEY,
+//						(String) destinationMap.get(DkshApplicationConstants.CODE_KEY)));
+//				map.add(new BasicHeader(DkshApplicationConstants.MESSAGE_TYPE_KEY, smsSendingDto.getMessageType()));
+//				map.add(new BasicHeader(DkshApplicationConstants.MESSAGE_KEY,
+//						smsSendingDto.getMessageType().equalsIgnoreCase("UNICODE")
+//								? convertStringToUTF16BEHexaValue(smsSendingDto.getMessage())
+//								: smsSendingDto.getMessage()));
+//
+//				HttpResponse response = null;
+//				StringBuilder sbResponse = new StringBuilder();
+//				if (smsSendingDto.getMobileNumList() != null && !smsSendingDto.getMobileNumList().isEmpty()) {
+//
+//					logger.error("Num list : " + smsSendingDto.getMobileNumList());
+//
+//					for (String number : smsSendingDto.getMobileNumList()) {
+//						map.add(new BasicNameValuePair(DkshApplicationConstants.RECIPIENT_MOBILE_NUM_KEY, number));
+//						UrlEncodedFormEntity entity = new UrlEncodedFormEntity(map);
+//						post.setEntity(entity);
+//						logger.error("Entity : " + entity);
+//						response = client.execute(post);
+//						String dataFromStream = EntityUtils.toString(response.getEntity());
+//						if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+//							JSONObject json = XML.toJSONObject(dataFromStream);
+//							if (json.getJSONObject("XML").get("STATUS").toString().equalsIgnoreCase("OK")) {
+//								sbResponse.append("SMS send successfully for Number : " + number + "; ");
+//							} else {
+//								sbResponse.append("Failed to send SMS for Number : " + number + " due to, "
+//										+ json.getJSONObject("XML").get("DETAIL") + "; ");
+//							}
+//						} else {
+//							sbResponse.append("Failed to connect for Number : " + number + "; ");
+//						}
+//					}
+//				} else {
+//					map.add(new BasicHeader(DkshApplicationConstants.RECIPIENT_MOBILE_NUM_KEY,
+//							smsSendingDto.getMobileNum()));
+//					UrlEncodedFormEntity entity = new UrlEncodedFormEntity(map);
+//					post.setEntity(entity);
+//					logger.error("Entity : " + entity);
+//					response = client.execute(post);
+//					String dataFromStream = EntityUtils.toString(response.getEntity());
+//					if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+//						JSONObject json = XML.toJSONObject(dataFromStream);
+//						if (json.getJSONObject("XML").get("STATUS").toString().equalsIgnoreCase("OK")) {
+//							sbResponse.append("SMS send successfully for Number : " + smsSendingDto.getMobileNum());
+//						} else {
+//							sbResponse.append("Failed to send SMS for Number : " + smsSendingDto.getMobileNum()
+//									+ " due to, " + json.getJSONObject("XML").get("DETAIL"));
+//						}
+//					} else {
+//						sbResponse.append("Failed to connect for Number : " + smsSendingDto.getMobileNum());
+//					}
+//				}
+//
+//				return new ResponseEntity<>(sbResponse.toString(), HttpStatus.OK);
+//			} else {
+//				return new ResponseEntity<>(
+//						INVALID_INPUT_PLEASE_RETRY
+//								+ " with from, message, message type, report and recipient mobile num.",
+//						HttpStatus.BAD_REQUEST);
+//			}
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(AppErrorMsgConstants.EXCEPTION_POST_MSG + e.getMessage(),
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//
+//		}
+//	}
+//
 
 
 }
