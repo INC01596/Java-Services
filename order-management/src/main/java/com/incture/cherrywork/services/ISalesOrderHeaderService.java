@@ -6,14 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.incture.cherrywork.dtos.ErrorDto;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.InvoDto;
 import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
@@ -69,16 +72,26 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getManageServiceObd(ObdDto dto);
 
 	ResponseEntity<Object> getManageServiceInvo(InvoDto dto);
+	
+	String updateError(ErrorDto dto, String dtype);
+	ResponseEntity<Object> getByObd(String obdId);
 
 	
+	 ResponseEntity<Object> getList();
 	
-	
-	
+	 List<SalesOrderItemDto> getDetails(String salesHeaderId);
 	
 	
 	
 
 	ResponseEntity<Object> getHeader(String stp);
+<<<<<<< HEAD
+	ResponseEntity<Object> getSOData(HeaderIdDto dto);
+	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
+	// pageable);
+	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
+	//
+=======
 	
 
 	ResponseEntity<Object> getByObd(String obdId);
@@ -86,6 +99,7 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getSOData(HeaderIdDto dto);
 
 	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 
 
 

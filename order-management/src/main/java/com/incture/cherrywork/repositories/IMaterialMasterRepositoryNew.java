@@ -84,6 +84,23 @@ public class IMaterialMasterRepositoryNew {
 	
 	//Sandeep Kumar
 	@SuppressWarnings("unchecked")
+<<<<<<< HEAD
+    public List<MaterialMaster> getMaterialNames(){
+       
+        try {
+           
+        return mmrepo.findAll();
+           
+           
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+       
+    }	
+	
+=======
 	public List<MaterialMaster> getMaterialNames(){
 		
 		try {
@@ -98,6 +115,7 @@ public class IMaterialMasterRepositoryNew {
 		}
 		
 	}
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 public List<SalesOrderMaterialMasterDto> getMaterialByDesc(MaterialContainerDto materialContainerDto) {
 		
 		List<SalesOrderMaterialMasterDto> listDto = new ArrayList<>();

@@ -761,9 +761,28 @@ public class SalesOrderItem {
 		this.uom = uom;
 	}
 	
+	@Column(name="ITEM_NUMBER")
+	private String itemNumber;
+
+	public String getItemNumber() {
+		return itemNumber;
+	}
+
+	public void setItemNumber(String itemNumber) {
+		this.itemNumber = itemNumber;
+	}
 	
 	
-	
+	@Column(name="ORDER_ITEM_ID")
+	private String orderItemId;
+
+	public String getOrderItemId() {
+		return orderItemId;
+	}
+
+	public void setOrderItemId(String orderItemId) {
+		this.orderItemId = orderItemId;
+	}
 	
 
 		

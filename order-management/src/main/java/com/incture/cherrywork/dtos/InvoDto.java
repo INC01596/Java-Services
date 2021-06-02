@@ -5,12 +5,17 @@ import java.util.List;
 
 
 
-public class InvoDto{
+public class InvoDto {
 
-	
 	private int pageNo;
 	private String documentType;
 	private String invId;
+<<<<<<< HEAD
+	private EnOrderActionStatus documentProcessStatus;
+	private String createdBy;
+	private String salesHeaderId;
+	private String obdId;
+=======
 	private String invoiceStatus;
 	private String createdBy;
 	private String salesHeaderId;
@@ -35,10 +40,22 @@ public class InvoDto{
 
 
 
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
 	private String shipToParty;
+<<<<<<< HEAD
+
+	private String invoiceStatus;
+
+	public EnOrderActionStatus getDocumentProcessStatus() {
+		return documentProcessStatus;
+	}
+
+	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
+		this.documentProcessStatus = documentProcessStatus;
+=======
 	
 	
 	
@@ -47,32 +64,45 @@ public class InvoDto{
 	}
 	public void setInvoiceStatus(String invoiceStatus) {
 		this.invoiceStatus = invoiceStatus;
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
+
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+
 	public List<String> getStpId() {
 		return stpId;
 	}
+
 	public void setStpId(List<String> stpId) {
 		this.stpId = stpId;
 	}
 
+	public String getInvId() {
+		return invId;
+	}
 
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
 
-	
 	public String getShipToParty() {
 		return shipToParty;
 	}
+
 	public void setShipToParty(String shipToParty) {
 		this.shipToParty = shipToParty;
 	}
+
 	public int getPageNo() {
 		return pageNo;
 	}
+
 	public void setPageNo(int pageNo) {
 		this.pageNo = pageNo;
 	}
@@ -80,30 +110,72 @@ public class InvoDto{
 	public String getDocumentType() {
 		return documentType;
 	}
+
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
 	}
+<<<<<<< HEAD
+
+=======
 	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	public String getSalesHeaderId() {
 		return salesHeaderId;
 	}
+
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
+<<<<<<< HEAD
+
+	public String getObdId() {
+		return obdId;
+	}
+
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+=======
 	
 	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	public Date getCreatedDateFrom() {
 		return createdDateFrom;
 	}
+
 	public void setCreatedDateFrom(Date createdDateFrom) {
 		this.createdDateFrom = createdDateFrom;
 	}
+
 	public Date getCreatedDateTo() {
 		return createdDateTo;
 	}
+
 	public void setCreatedDateTo(Date createdDateTo) {
 		this.createdDateTo = createdDateTo;
 	}
+<<<<<<< HEAD
+	
+
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", InvoiceNo=" + invId
+				+ ", documentProcessStatus=" + documentProcessStatus + ", createdBy=" + createdBy + ", salesHeaderId="
+				+ salesHeaderId + ", DeliveryNo=" + obdId + ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom
+				+ ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty +
+				"]";
+	}
+
+=======
 	@Override
 	public String toString() {
 		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", invId=" + invId + ", invoiceStatus="
@@ -115,4 +187,5 @@ public class InvoDto{
 	
 	
 	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 }

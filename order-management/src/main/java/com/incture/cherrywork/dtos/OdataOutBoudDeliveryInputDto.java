@@ -1,5 +1,7 @@
 package com.incture.cherrywork.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class OdataOutBoudDeliveryInputDto {
 	
 	private String Vbeln;//soNumber
@@ -8,6 +10,8 @@ public class OdataOutBoudDeliveryInputDto {
 	private String Lgnum;//Item Unit
 	private String Ternr;
 	private String Vstel;
+	@JsonIgnore
+	private String obdId;
 	public String getVbeln() {
 		return Vbeln;
 	}
@@ -37,6 +41,14 @@ public class OdataOutBoudDeliveryInputDto {
 	}
 	public void setTernr(String ternr) {
 		Ternr = ternr;
+	}
+	
+	
+	public String getObdId() {
+		return obdId;
+	}
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
 	}
 	@Override
 	public String toString() {

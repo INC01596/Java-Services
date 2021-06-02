@@ -156,7 +156,7 @@ public class SalesOrderHeader {
 		this.customerPoNum = customerPoNum;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "CustomerPoDate")
 	private Date customerPoDate;
 
@@ -168,7 +168,7 @@ public class SalesOrderHeader {
 		this.customerPoDate = customerPoDate;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "RequestDeliveryDate")
 	private Date requestDeliveryDate;
 
@@ -235,7 +235,7 @@ public class SalesOrderHeader {
 		this.outstandingQuantity = outstandingQuantity;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "CreatedDate")
 	private Date createdDate;
 
@@ -379,7 +379,7 @@ public class SalesOrderHeader {
 		this.updateIndicator = updateIndicator;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "LastUpdatedOn")
 	private Date lastUpdatedOn;
 
@@ -391,7 +391,7 @@ public class SalesOrderHeader {
 		this.lastUpdatedOn = lastUpdatedOn;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "SyncStatus")
 	private Date syncStatus;
 
@@ -732,6 +732,17 @@ public class SalesOrderHeader {
 
 	public void setInvId(String invId) {
 		this.invId = invId;
+	}
+	
+	@Column(name="AMOUNT")
+	private String amount;
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
 	}
 	
 	

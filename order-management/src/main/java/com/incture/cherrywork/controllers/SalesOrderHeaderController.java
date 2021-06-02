@@ -28,6 +28,7 @@ import com.incture.cherrywork.dtos.InvoDto;
 import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
@@ -162,6 +163,19 @@ public class SalesOrderHeaderController {
 	@ApiOperation(value = "Mannual Search Result")
 	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto) {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
+	}
+	
+	@PostMapping("/getByObd")
+    public ResponseEntity<Object> getByObd(@RequestParam String obdId) {
+        return salesOrderHeaderService.getByObd(obdId);
+    }
+	@GetMapping("/getList")
+	public ResponseEntity<Object> getList(){
+		return salesOrderHeaderService.getList();
+	}
+	@GetMapping("/getDetails/{salesHeaderId}")
+	public List<SalesOrderItemDto> getDetails(@PathVariable String salesHeaderId){
+		return salesOrderHeaderService.getDetails(salesHeaderId);
 	}
 
 }

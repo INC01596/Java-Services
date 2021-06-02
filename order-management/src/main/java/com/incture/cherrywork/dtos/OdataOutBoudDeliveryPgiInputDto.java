@@ -1,5 +1,7 @@
 package com.incture.cherrywork.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class OdataOutBoudDeliveryPgiInputDto {
 	
 	
@@ -65,6 +67,15 @@ public class OdataOutBoudDeliveryPgiInputDto {
 	}
 	public void setTernr(String ternr) {
 		Ternr = ternr;
+	}
+	@JsonIgnore
+	private String pgiId;
+	
+	public String getPgiId() {
+		return pgiId;
+	}
+	public void setPgiId(String pgiId) {
+		this.pgiId = pgiId;
 	}
 	@Override
 	public String toString() {

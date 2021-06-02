@@ -1,5 +1,7 @@
 package com.incture.cherrywork.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class OdataOutBoudDeliveryInvoiceInputDto {
 	
 	private String Vbeln ;
@@ -18,6 +20,16 @@ public class OdataOutBoudDeliveryInvoiceInputDto {
 	public void setTernr(String ternr) {
 		Ternr = ternr;
 	}
+	@JsonIgnore
+	private String invId;
+	
+	public String getInvId() {
+		return invId;
+	}
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
+	
 	@Override
 	public String toString() {
 		return "{"+" \"Vbeln\":"+"\""+ Vbeln +"\"" + ",\"Ternr\":" 
