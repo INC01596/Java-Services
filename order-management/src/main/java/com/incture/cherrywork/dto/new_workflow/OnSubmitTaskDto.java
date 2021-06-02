@@ -13,7 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-//@NoArgsConstructor
+
+
+
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public @Data class OnSubmitTaskDto extends BaseDto implements Cloneable {
@@ -72,10 +74,10 @@ public @Data class OnSubmitTaskDto extends BaseDto implements Cloneable {
 		onSubmitTaskDto.setListOfChangedItemData(new ArrayList<>());
 		return onSubmitTaskDto;
 	}
-	public OnSubmitTaskDto()
-	{
+	public OnSubmitTaskDto() {
 		super();
 	}
+	
 
 	public OnSubmitTaskDto(OnSubmitTaskDto dto) {
 		taskId = dto.getTaskId();
@@ -109,6 +111,8 @@ public @Data class OnSubmitTaskDto extends BaseDto implements Cloneable {
 
 		listOfChangedItemData = itemList;
 	}
+
+	
 
 	public String getTaskId() {
 		return taskId;

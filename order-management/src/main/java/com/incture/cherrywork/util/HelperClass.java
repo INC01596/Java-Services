@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.incture.cherrywork.WConstants.Constants;
+
+
+import com.incture.cherrywork.sales.constants.ResponseStatus;
+
+ 
+
 import com.incture.cherrywork.WConstants.DkshConstants;
 
 @SuppressWarnings("unused")
 public class HelperClass {
 	
 	
-	public static ResponseEntity<?> consumingOdataService(String url, String entity, String method,
+	public static ResponseEntity consumingOdataService(String url, String entity, String method,
 			Map<String, Object> destinationInfo) throws IOException, URISyntaxException {
 
 
@@ -354,15 +361,17 @@ public class HelperClass {
 		return response.getAllHeaders();
 
 	}
+
 	
-	public ResponseEntity<Object> getWorkflowInstanceUsingOauthClient(String bussinessKey) {
+	@SuppressWarnings("rawtypes")
+	public ResponseEntity getWorkflowInstanceUsingOauthClient(String bussinessKey) {
 
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			//Map<String, Object> map = DestinationReaderUtil.getDestination(DkshConstants.WORKFLOW_TRIGGER_ID);
 			
 			String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-			String url = DkshConstants.WORKFLOW_REST_BASE_URL;
+			String url = Constants.WORKFLOW_REST_BASE_URL;
 			System.err.println("url " + url);
 			String trimmed = url.substring(8);
 			//String userpass = map.get("User") + ":" + map.get("Password");
@@ -383,31 +392,27 @@ public class HelperClass {
 				HttpResponse response = client.execute(httpGet);
 
 				if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
-					return ResponseEntity.status(HttpStatus.OK).header("message", "Success").body(getDataFromStream(response.getEntity().getContent()));
-							
+					return new ResponseEntity(HttpStatus.OK);
 				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Task Updating failed").body(getDataFromStream(response.getEntity().getContent()));
+					return new ResponseEntity(HttpStatus.BAD_REQUEST);
 				}
 
 			} catch (IOException e) {
-				//logger.error(e.getMessage());
-				System.err.println(e.getMessage());
 				
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message",e.getCause().getCause().getLocalizedMessage()).body(e);
-						
+				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
 		} catch (Exception e) {
-//			logger.error(e.getMessage());
-			System.err.println(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getMessage()).body(e);
+			
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
-	public List<String> convertResponseToDto(ResponseEntity response) {
+
+	public List<String> convertResponseToDto(@SuppressWarnings("rawtypes") ResponseEntity response) {
 		System.err.println("response " + response);
 		ArrayList<String> ids = new ArrayList<String>();
-		JSONArray jsonArray = new JSONArray(response.getBody().toString());
+		JSONArray jsonArray = new JSONArray( response.getBody().toString());
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject explrObject = jsonArray.getJSONObject(i);
 			ids.add(explrObject.getString("id").toString());
@@ -416,53 +421,72 @@ public class HelperClass {
 		return ids;
 	}
 
+	public static List<?> convertObjectToList(Object obj) {
+		List<?> list = new ArrayList<>();
+		if (obj.getClass().isArray()) {
+			list = Arrays.asList((Object[]) obj);
+		} else if (obj instanceof Collection) {
+			list = new ArrayList<>((Collection<?>) obj);
+		}
+		return list;
+	}
 	
-	public ResponseEntity cancellingWorkflowUsingOauthClient(String workflowId) {
+	public ResponseEntity completeTaskInWorkflowUsingOauthClient(String salesOrderNum, String taskId) {
 
 		try {
 			String token = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
 
 			HttpClient client = HttpClientBuilder.create().build();
 
-			/*Map<String, Object> map = DestinationReaderUtil
-					.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);*/
+			//Map<String, Object> map = DestinationReaderUtil
+				//	.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);
 			
-			String url = DkshConstants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances/" + workflowId;
-			String payload = "{\"context\": {},\"status\":\"CANCELED\"}";
+			String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/task-instances/" + taskId;
+			String payload = "{\"context\": {},\"status\":\"COMPLETED\",\"subject\": \"" + salesOrderNum
+					+ "\",\"priority\": \"MEDIUM\"}";
 
 			HttpPatch httpPatch = new HttpPatch(url);
 			httpPatch.addHeader("Authorization", "Bearer " + token);
 			httpPatch.addHeader("Content-Type", "application/json");
 
 			try {
-				StringEntity entity = new StringEntity(payload);
-				entity.setContentType("application/json");
-				httpPatch.setEntity(entity);
-				HttpResponse response = client.execute(httpPatch);
+				if (!HelperClass.checkString(salesOrderNum)) {
+					StringEntity entity = new StringEntity(payload);
+					entity.setContentType("application/json");
+					httpPatch.setEntity(entity);
+					HttpResponse response = client.execute(httpPatch);
 
-				if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
-					return ResponseEntity.status(HttpStatus.NO_CONTENT).header("message", "Workflow Task is cancelled").body("Workflow Task is cancelled");
-							
+					if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
+						return new ResponseEntity(HttpStatus.NO_CONTENT);
+					} else {
+						return new ResponseEntity(HttpStatus.BAD_REQUEST);
+					}
 				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Task updating is failed").body(getDataFromStream(response.getEntity().getContent()));
-							
+					return new ResponseEntity(HttpStatus.BAD_REQUEST);
 				}
 
 			} catch (IOException e) {
-				//logger.error();
-				System.err.println(e.getMessage());
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getCause().getCause().getLocalizedMessage()).body(e);
-						
+				
+				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
 		} catch (Exception e) {
-			//logger.error();
-			System.err.println(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getMessage()).body(e);
-					
+			
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
+
+	
+	
+	}
+	
+
+	
+	
+
+
+
 
 
 //	public static ResponseEntity<?> sendSms(SmsSendingDto smsSendingDto) {
@@ -560,4 +584,4 @@ public class HelperClass {
 //
 
 
-}
+ 

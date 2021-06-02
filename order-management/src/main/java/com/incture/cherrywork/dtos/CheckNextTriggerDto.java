@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class CheckNextTriggerDto {
 
-	
+	private static final long serialVersionUID = 1L;
+	private String dataSet;
+	private String  level;
+	private String approvalType;
 	
 	public String getDataSet() {
 		return dataSet;
@@ -34,12 +37,7 @@ public class CheckNextTriggerDto {
 	public void setApprovalType(String approvalType) {
 		this.approvalType = approvalType;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	private static final long serialVersionUID = 1L;
-	private String dataSet;
-	private String  level;
-	private String approvalType;
+	
+	
 	
 }

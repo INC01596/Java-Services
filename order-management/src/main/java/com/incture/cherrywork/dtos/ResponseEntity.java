@@ -4,11 +4,10 @@ import org.springframework.http.HttpStatus;
 
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 
 @Data
-//@AllArgsConstructor
 public class ResponseEntity {
 
 	private Object data;
@@ -27,13 +26,15 @@ public class ResponseEntity {
 	public void setStatusCode(HttpStatus statusCode) {
 		this.statusCode = statusCode;
 	}
-	public ResponseEntity(Object data, HttpStatus statusCode, String message, ResponseStatus failed) {
+	public ResponseEntity(Object data, HttpStatus statusCode, String string, ResponseStatus failed) {
 		super();
 		this.data = data;
 		this.statusCode = statusCode;
-		this.message = message;
+		this.message = string;
 		this.status = failed;
 	}
+	
+	
 	public String getMessage() {
 		return message;
 	}

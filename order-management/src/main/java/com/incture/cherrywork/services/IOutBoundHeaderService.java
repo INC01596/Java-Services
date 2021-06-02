@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.incture.cherrywork.services;
 
 import org.springframework.http.ResponseEntity;
@@ -21,3 +22,25 @@ public interface IOutBoundHeaderService {
 	void printService(SalesOrderHeaderItemDto dto);
 
 }
+=======
+package com.incture.cherrywork.services;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
+import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
+import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
+
+public interface IOutBoundHeaderService {
+	
+	ResponseEntity<Object> createObd(SalesOrderHeaderItemDto dto);
+	ResponseEntity<Object> createPgi(String obdId);
+	ResponseEntity<Object> createInv(String invId);
+	
+	ResponseEntity<Object> submitToEcc(SalesOrderHeaderItemDto inputDto);
+	ResponseEntity<Object> submitOdataObd(OdataOutBoudDeliveryInputDto odataHeaderDto, String docType);
+
+}
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0

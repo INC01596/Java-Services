@@ -30,9 +30,13 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping(value = "/search")
 public class MaterialMasterController {
+	public MaterialMasterController() {
+		System.err.println("Inside material Determination controller");
+	}
 
 	@Autowired
 	private MaterialMasterServices materialMasterServices;
+	
 	
 	
 	

@@ -3,21 +3,49 @@ package com.incture.cherrywork.dtos;
 import java.util.Date;
 import java.util.List;
 
-import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+
 
 public class InvoDto {
 
 	private int pageNo;
 	private String documentType;
 	private String invId;
+<<<<<<< HEAD
 	private EnOrderActionStatus documentProcessStatus;
 	private String createdBy;
 	private String salesHeaderId;
 	private String obdId;
+=======
+	private String invoiceStatus;
+	private String createdBy;
+	private String salesHeaderId;
+	private String obdId;
+	public String getObdId() {
+		return obdId;
+	}
+	public void setObdId(String obdId) {
+		this.obdId = obdId;
+	}
+
+
+	
+
+	public String getInvId() {
+		return invId;
+	}
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
+
+
+
+
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
 	private String shipToParty;
+<<<<<<< HEAD
 
 	private String invoiceStatus;
 
@@ -27,6 +55,16 @@ public class InvoDto {
 
 	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
+=======
+	
+	
+	
+	public String getInvoiceStatus() {
+		return invoiceStatus;
+	}
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	}
 
 	public String getCreatedBy() {
@@ -76,7 +114,11 @@ public class InvoDto {
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	public String getSalesHeaderId() {
 		return salesHeaderId;
 	}
@@ -84,6 +126,7 @@ public class InvoDto {
 	public void setSalesHeaderId(String salesHeaderId) {
 		this.salesHeaderId = salesHeaderId;
 	}
+<<<<<<< HEAD
 
 	public String getObdId() {
 		return obdId;
@@ -93,6 +136,10 @@ public class InvoDto {
 		this.obdId = obdId;
 	}
 
+=======
+	
+	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 	public Date getCreatedDateFrom() {
 		return createdDateFrom;
 	}
@@ -108,6 +155,7 @@ public class InvoDto {
 	public void setCreatedDateTo(Date createdDateTo) {
 		this.createdDateTo = createdDateTo;
 	}
+<<<<<<< HEAD
 	
 
 	public String getInvoiceStatus() {
@@ -127,4 +175,17 @@ public class InvoDto {
 				"]";
 	}
 
+=======
+	@Override
+	public String toString() {
+		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", invId=" + invId + ", invoiceStatus="
+				+ invoiceStatus + ", createdBy=" + createdBy + ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId
+				+ ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom + ", createdDateTo=" + createdDateTo
+				+ ", shipToParty=" + shipToParty + "]";
+	}
+
+	
+	
+	
+>>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 }
