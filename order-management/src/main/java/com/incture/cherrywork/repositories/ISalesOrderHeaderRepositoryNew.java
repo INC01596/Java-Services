@@ -761,6 +761,44 @@ public class ISalesOrderHeaderRepositoryNew {
 		return null;
 
 	}
+	public List<SalesOrderItemDto> getDetails(String salesHeaderId) {
+		System.err.println("salesHeaderId " + salesHeaderId);
+		String query1 = "from SalesOrderHeader where salesHeaderId=:sid and documentType=:dType";
+		Query q1 = entityManager.createQuery(query1);
+		q1.setParameter("sid", salesHeaderId);
+		String docType = "OR";
+		q1.setParameter("dType", docType);
+
+		List<SalesOrderHeader> list1 = q1.getResultList();
+		System.err.println("list1 size " + list1.size());
+		String query2 = "from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4docId";
+		Query q2 = entityManager.createQuery(query2);
+		q2.setParameter("s4docId", list1.get(0).getS4DocumentId());
+		List<SalesOrderItem> list2 = q2.getResultList();
+		System.err.println("list2 size " + list2.size());
+
+		
+		List<SalesOrderItemDto> result = new ArrayList<>();
+
+		
+		
+		for (SalesOrderItem item1 : list2) {
+			SalesOrderItemDto item = ObjectMapperUtils.map(item1, SalesOrderItemDto.class);
+			String query3 = "from SalesOrderItem i where i.orderItemId=:oid";
+			Query q3 = entityManager.createQuery(query3);
+			q3.setParameter("oid", item.getSalesItemId());
+			List<SalesOrderItem> list3 = q3.getResultList();
+			System.err.println("list3 size" + list3.size());
+			item.setOutBoundOrderId(list3.get(0).getOutBoundOrderId());
+			item.setPgiId(list3.get(0).getPgiId());
+			item.setInvId(list3.get(0).getInvId());
+
+			result.add(item);
+		}
+
+		return result;
+	}
+
 
 	public TrackSOUIDto getSOData(HeaderIdDto dto) {
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
@@ -794,8 +832,9 @@ public class ISalesOrderHeaderRepositoryNew {
 
 				track.setHeaderDto(headerDto);
 				System.err.println("track"+track.toString());
+				List<SalesOrderItemDto> list=getDetails(dto.getsalesHeaderId());
 				try {
-					for(SalesOrderItem item:list1){
+					for(SalesOrderItemDto item:list){
 					StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where  i.orderItemId=:oid");
 				     Query q3 = entityManager.createQuery(lineItemQuery.toString());
 				   q3.setParameter("oid", item.getSalesItemId());

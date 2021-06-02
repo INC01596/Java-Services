@@ -5,6 +5,11 @@ package com.incture.cherrywork.services;
 
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.incture.cherrywork.dtos.ReturnFilterDto;
 import com.incture.cherrywork.entities.ReturnRequestHeader;
-
- 
+import com.incture.cherrywork.repositories.IReturnRequestHeaderRepository;
 import com.incture.cherrywork.repositories.IReturnRequestHeaderRepositoryNew;
+import com.incture.cherrywork.repositories.ServicesUtils;
+
 
 
 
@@ -28,78 +34,62 @@ import com.incture.cherrywork.repositories.IReturnRequestHeaderRepositoryNew;
 public class ReturnRequestHeaderServiceImpl implements ReturnRequestHeaderService {
 
 	@Autowired
-	private IReturnRequestHeaderRepositoryNew repo;
+	private IReturnRequestHeaderRepository repo;
 	
 	
 
+     
 	
+	    @Override
+		public ResponseEntity<Object>findAll(int pageNo)
+		{
+			
+		//String str="from ReturnRequestHeader";
+		//Query q=em.createQuery(str);
+	    	Pageable pageable=PageRequest.of(pageNo-1,10);
+		Page<ReturnRequestHeader>list=repo.findAll(pageable);
+		return ResponseEntity.ok().body(list);
+			
+		}
+
+
+
+
+
 
 	@Override
-	public ResponseEntity<Object> listAllReturnReqHeaders(ReturnFilterDto dto) {
-		try {
-			Pageable pageable=PageRequest.of(dto.getPageNo()-1,10);
-			Page <ReturnRequestHeader> p=repo.findAll(dto,pageable);
-			System.err.println("hell1");
-			System.err.println(p);
-			return ResponseEntity.ok().body(p);
-			
-		} 
-			
-		 catch (Exception e) {
-			return null;		
-			
-			
-			
+	public ResponseEntity<Object> listAllReturn(ReturnFilterDto dto) {
+		if(!ServicesUtils.isEmpty(dto.getReturnReqNumber()))
+	{
+		
+	      List<ReturnRequestHeader>list=repo.findAll1(dto.getReturnReqNumber());
+		  return ResponseEntity.ok().body(list);
 	}
-}
+		if(!ServicesUtils.isEmpty(dto.getDivision()))
+		{
+			List<ReturnRequestHeader>list=repo.findAll(dto.getDivision());
+			return ResponseEntity.ok().body(list);
+		}
+		return null;
+	}
 
-//	@Override
-//	public ResponseEntity<Object> getReturnReqHeaderById(String returnReqNum) {
-//		try {
-//			if (!HelperClass.checkString(returnReqNum)) {
-//				ReturnRequestHeaderDto returnRequestHeaderDto = returnRequestHeaderRepo
-//						.getReturnReqHeaderById(returnReqNum);
-//				if (returnRequestHeaderDto != null) {
-//					return new ResponseEntity(returnRequestHeaderDto, HttpStatus.ACCEPTED,
-//							"Return Req Header is found for Key : " + returnReqNum, ResponseStatus.SUCCESS);
-//				} else {
-//					return new ResponseEntity("", HttpStatus.NO_CONTENT,
-//							"Return Req Header is not available for Key : " + returnReqNum, ResponseStatus.FAILED);
-//				}
-//			} else {
-//				return new ResponseEntity("", HttpStatus.BAD_REQUEST, "Return Request Num field are mandatory",
-//						ResponseStatus.FAILED);
-//			}
-//		} catch (Exception e) {
-//			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-//			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
-//					ResponseStatus.FAILED);
-//		}
-//	}
-//
-//	@Override
-//	public ResponseEntity deleteReturnReqHeaderById(String returnReqNum) {
-//		try {
-//			if (!HelperClass.checkString(returnReqNum)) {
-//				String msg = Repo.deleteReturnReqHeaderById(returnReqNum);
-//				if (msg != null) {
-//					return new ResponseEntity("", HttpStatus.ACCEPTED, msg, ResponseStatus.SUCCESS);
-//				} else {
-//					return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED",
-//							ResponseStatus.FAILED);
-//				}
-//			} else {
-//				return new ResponseEntity("", HttpStatus.BAD_REQUEST, "Return Request Num field are mandatory",
-//						ResponseStatus.FAILED);
-//			}
-//		} catch (Exception e) {
-//			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
-//			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
-//					ResponseStatus.FAILED);
-//		}
-//	}
-//
-//	
+
+
+
+
+
+	@Override
+	public ResponseEntity<Object> listAllReturnReqHeaders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+
+
 
 	
 	

@@ -628,6 +628,11 @@ public  class ReturnRequestHeader implements Serializable {
 		return serialVersionUID;
 	}
 
+	public ReturnRequestHeader() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public ReturnRequestHeader(String returnReqNum, String roType, String requestType, String orderType,
 			String salesOrg, String mappingId, String distributionChannel, String division, String soldToParty,
 			String shipToParty, String billToParty, String payer, String contactPerson, String contactDivision,
