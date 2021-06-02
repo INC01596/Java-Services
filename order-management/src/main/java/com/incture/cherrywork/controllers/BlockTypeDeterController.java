@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.incture.cherrywork.dtos.ResponseEntity;
-import com.incture.cherrywork.workflow.BlockTypeDeterminationService;
+import com.incture.cherrywork.workflow.services.BlockTypeDeterminationService;
 
 
 @RestController

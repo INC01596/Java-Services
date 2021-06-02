@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +21,12 @@ import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.RequestMasterDaoImpl;
 import com.incture.cherrywork.dao.SalesDocHeaderDao;
 import com.incture.cherrywork.dao.SalesDocItemDao;
-import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
+
 import com.incture.cherrywork.dtos.RequestMasterDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.SequenceNumberGen;
@@ -35,18 +37,21 @@ import com.incture.cherrywork.util.SequenceNumberGen;
 @Transactional
 public class RequestMasterServiceImpl implements RequestMasterService {
 
+	@Lazy
 	@Autowired
 	private RequestMasterDaoImpl requestMasterRepo;
 
 	
+	
 	private SequenceNumberGen seqNumGenRepo;
-
+	@Lazy
 	@Autowired
 	private SalesDocItemDao salesItem;
 
+	@Lazy
 	@Autowired
 	private SalesOrderLevelStatusDao salesLevel;
-
+	@Lazy
 	@Autowired
 	private SalesDocHeaderDao salesDocHeaderDao;
 

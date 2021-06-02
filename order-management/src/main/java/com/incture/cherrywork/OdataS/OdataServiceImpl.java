@@ -38,9 +38,7 @@ import com.incture.cherrywork.Odat.Dto.SalesOrderItemOdataDto;
 import com.incture.cherrywork.Odat.Dto.SalesOrderItemOdataSaveDto;
 import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.WConstants.StatusConstants;
-import com.incture.cherrywork.dao.SalesOrderItemStatusDao;
-import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
-import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
+
 import com.incture.cherrywork.dto.new_workflow.ListOfChangedItemData;
 import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
@@ -50,6 +48,9 @@ import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHistoryDto;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.services.SalesDocItemService;
 import com.incture.cherrywork.services.SalesOrderHistoryServiceImpl;
@@ -569,7 +570,7 @@ public class OdataServiceImpl implements OdataService {
 						salesOrderItemStatusDto.setItemStatus(StatusConstants.ITEM_REJECT);
 						salesOrderItemStatusDao.saveOrUpdateSalesOrderItemStatus(salesOrderItemStatusDto);
 					}
-					salesOrderTaskStatusDto.setTaskStatus(StatusConstants.ITEM_REJECT);
+//					salesOrderTaskStatusDto.setTaskStatus(StatusConstants.ITEM_REJECT);
 					salesOrderTaskStatusDao.saveOrUpdateSalesOrderTaskStatus(salesOrderTaskStatusDto);
 				}
 				salesOrderLevelStatusDto.setLevelStatus(StatusConstants.LEVEL_BREACH);

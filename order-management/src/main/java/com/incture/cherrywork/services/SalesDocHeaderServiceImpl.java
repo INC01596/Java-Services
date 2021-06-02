@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +30,15 @@ import com.incture.cherrywork.util.HelperClass;
 @Transactional
 public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 
+	@Lazy
 	@Autowired
 	private SalesDocHeaderDao salesDocHeaderRepo;
 
+	@Lazy
 	@Autowired
 	private SalesDocItemDao salesDocItemRepo;
 
+	@Lazy
 	@Autowired
 	private RequestMasterDao requestMasterRepo;
 

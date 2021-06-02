@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.incture.cherrywork.dto.workflow;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class OrderToItems {
 	}
 }
 
-=======
+
 //package com.incture.cherrywork.dto.workflow;
 //
 //import java.util.List;
@@ -54,4 +54,4 @@ public class OrderToItems {
 //	}
 //}
 //
->>>>>>> refs/remotes/origin/master
+

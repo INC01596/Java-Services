@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusKeyDto;
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusesDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
-import com.incture.cherrywork.workflow.SalesOrderTaskStatusesService;
+import com.incture.cherrywork.workflow.services.SalesOrderTaskStatusesService;
 
 
 @RestController

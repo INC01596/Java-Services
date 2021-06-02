@@ -1,7 +1,10 @@
 package com.incture.cherrywork.dao;
 
+
+
 import java.util.List;
 
+import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 
@@ -22,7 +25,7 @@ public interface SalesDocHeaderDao {
 
 	public List<SalesDocHeaderDto> listAllSalesDocHeaderWithoutItems();
 
-	
+	public List<String> filteredSalesDocHeader(FilterDto filterData) throws ExecutionFault;
 
 	public String getRequestIdWithSoHeader(String salesHeaderOrderId);
 
@@ -30,7 +33,8 @@ public interface SalesDocHeaderDao {
 
 	public Integer testQuery() throws ExecutionFault;
 
-	
+	public List<String> createQueryforRights(FilterDto filterData);
+
 	public SalesDocHeaderDto getSalesDocHeaderByIdSession(String salesOrderNum);
 
 	public String saveSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault;
@@ -38,4 +42,3 @@ public interface SalesDocHeaderDao {
 	public String updateSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault;
 
 }
-

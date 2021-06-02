@@ -1,5 +1,7 @@
 package com.incture.cherrywork.dao;
 
+
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dtos.BaseDto;
@@ -16,7 +19,6 @@ import com.incture.cherrywork.dtos.CommentDto;
 import com.incture.cherrywork.entities.BaseDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.util.ServicesUtil;
-
 
 
 /**
@@ -31,6 +33,9 @@ public abstract class BaseDao<E extends BaseDo, D extends BaseDto> {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Lazy
+	@Autowired
+	private CommentDaoImpl commentRepo;
 
 	public final int BATCH_SIZE = 2;
 
@@ -53,7 +58,15 @@ public abstract class BaseDao<E extends BaseDo, D extends BaseDto> {
 		}
 	}
 
-	
+	public void saveCommentList(List<CommentDto> commentDtoList, String refDocNum) throws ExecutionFault {
+		if (commentDtoList != null && !commentDtoList.isEmpty()) {
+			for (CommentDto commentDto : commentDtoList) {
+				commentDto.setRefDocNum(refDocNum);
+				commentRepo.saveOrUpdateComment(commentDto);
+			}
+		}
+	}
+
 	public void persist(E entity) {
 		getSession().persist(entity);
 	}

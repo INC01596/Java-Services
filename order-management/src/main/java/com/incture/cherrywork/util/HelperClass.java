@@ -45,20 +45,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.incture.cherrywork.WConstants.Constants;
-<<<<<<< HEAD
+
 
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
  
-=======
+
 import com.incture.cherrywork.WConstants.DkshConstants;
->>>>>>> refs/remotes/origin/master
 
 @SuppressWarnings("unused")
 public class HelperClass {
 	
 	
-	public static ResponseEntity<?> consumingOdataService(String url, String entity, String method,
+	public static ResponseEntity consumingOdataService(String url, String entity, String method,
 			Map<String, Object> destinationInfo) throws IOException, URISyntaxException {
 
 
@@ -361,48 +360,8 @@ public class HelperClass {
 		return response.getAllHeaders();
 
 	}
-<<<<<<< HEAD
-	public ResponseEntity cancellingWorkflowUsingOauthClient(String workflowId) {
 
-		try {
-			String token = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-
-			HttpClient client = HttpClientBuilder.create().build();
-
-			/*Map<String, Object> map = DestinationReaderUtil
-					.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);*/
-			
-			String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances/" + workflowId;
-			String payload = "{\"context\": {},\"status\":\"CANCELED\"}";
-
-			HttpPatch httpPatch = new HttpPatch(url);
-			httpPatch.addHeader("Authorization", "Bearer " + token);
-			httpPatch.addHeader("Content-Type", "application/json");
-
-			try {
-				StringEntity entity = new StringEntity(payload);
-				entity.setContentType("application/json");
-				httpPatch.setEntity(entity);
-				HttpResponse response = client.execute(httpPatch);
-
-				if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
-					return new ResponseEntity(HttpStatus.NO_CONTENT);
-				} else {
-					return new ResponseEntity(HttpStatus.BAD_REQUEST);
-				}
-
-			} catch (IOException e) {
-				//logger.error(e.getMessage());
-				return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-
-		} catch (Exception e) {
-			//logger.error(e.getMessage());
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
+	
 	@SuppressWarnings("rawtypes")
 	public ResponseEntity getWorkflowInstanceUsingOauthClient(String bussinessKey) {
 
@@ -470,6 +429,7 @@ public class HelperClass {
 		}
 		return list;
 	}
+	
 	public ResponseEntity completeTaskInWorkflowUsingOauthClient(String salesOrderNum, String taskId) {
 
 		try {
@@ -515,120 +475,18 @@ public class HelperClass {
 		}
 
 	}
-=======
-	
-	public ResponseEntity<Object> getWorkflowInstanceUsingOauthClient(String bussinessKey) {
-
-		try {
-			HttpClient client = HttpClientBuilder.create().build();
-			//Map<String, Object> map = DestinationReaderUtil.getDestination(DkshConstants.WORKFLOW_TRIGGER_ID);
-			
-			String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-			String url = DkshConstants.WORKFLOW_REST_BASE_URL;
-			System.err.println("url " + url);
-			String trimmed = url.substring(8);
-			//String userpass = map.get("User") + ":" + map.get("Password");
-			//String encoding = javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
-
-			URIBuilder builder = new URIBuilder();
-			builder.setScheme("https").setHost(trimmed).setPath("/v1/workflow-instances")
-					.setParameter("businessKey", bussinessKey).setParameter("status", "RUNNING");
-			URI uri = builder.build();
-			System.err.println("URI " + uri);
-
-			HttpGet httpGet = new HttpGet(uri);
-			httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + jwToken);
-			httpGet.addHeader("Content-Type", "application/json");
-
-			try {
-
-				HttpResponse response = client.execute(httpGet);
-
-				if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
-					return ResponseEntity.status(HttpStatus.OK).header("message", "Success").body(getDataFromStream(response.getEntity().getContent()));
-							
-				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Task Updating failed").body(getDataFromStream(response.getEntity().getContent()));
-				}
-
-			} catch (IOException e) {
-				//logger.error(e.getMessage());
-				System.err.println(e.getMessage());
-				
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message",e.getCause().getCause().getLocalizedMessage()).body(e);
-						
-			}
-
-		} catch (Exception e) {
-//			logger.error(e.getMessage());
-			System.err.println(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getMessage()).body(e);
-		}
-
-	}
-	public List<String> convertResponseToDto(ResponseEntity response) {
-		System.err.println("response " + response);
-		ArrayList<String> ids = new ArrayList<String>();
-		JSONArray jsonArray = new JSONArray(response.getBody().toString());
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject explrObject = jsonArray.getJSONObject(i);
-			ids.add(explrObject.getString("id").toString());
-		}
-		System.err.println("al1 " + ids);
-		return ids;
-	}
 
 	
-	public ResponseEntity cancellingWorkflowUsingOauthClient(String workflowId) {
-
-		try {
-			String token = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-
-			HttpClient client = HttpClientBuilder.create().build();
-
-			/*Map<String, Object> map = DestinationReaderUtil
-					.getDestination(DkshConstants.WORKFLOW_CLOSE_TASK_DESTINATION);*/
-			
-			String url = DkshConstants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances/" + workflowId;
-			String payload = "{\"context\": {},\"status\":\"CANCELED\"}";
-
-			HttpPatch httpPatch = new HttpPatch(url);
-			httpPatch.addHeader("Authorization", "Bearer " + token);
-			httpPatch.addHeader("Content-Type", "application/json");
-
-			try {
-				StringEntity entity = new StringEntity(payload);
-				entity.setContentType("application/json");
-				httpPatch.setEntity(entity);
-				HttpResponse response = client.execute(httpPatch);
-
-				if (response.getStatusLine().getStatusCode() == HttpStatus.NO_CONTENT.value()) {
-					return ResponseEntity.status(HttpStatus.NO_CONTENT).header("message", "Workflow Task is cancelled").body("Workflow Task is cancelled");
-							
-				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("message", "Task updating is failed").body(getDataFromStream(response.getEntity().getContent()));
-							
-				}
-
-			} catch (IOException e) {
-				//logger.error();
-				System.err.println(e.getMessage());
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getCause().getCause().getLocalizedMessage()).body(e);
-						
-			}
-
-		} catch (Exception e) {
-			//logger.error();
-			System.err.println(e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("message", e.getMessage()).body(e);
-					
-		}
-
+	
 	}
+	
+
+	
+	
 
 
->>>>>>> refs/remotes/origin/master
 
-}
+
+
 
  

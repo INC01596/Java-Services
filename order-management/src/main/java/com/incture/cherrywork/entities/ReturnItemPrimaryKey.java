@@ -14,7 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
-
 public @Data class ReturnItemPrimaryKey implements Serializable {
 
 	
@@ -29,7 +28,7 @@ public @Data class ReturnItemPrimaryKey implements Serializable {
 	@JsonBackReference("task-Request_Item")
 	@ManyToOne
 	@JoinColumn(name = "RETURN_REQ_NUM", nullable = false, referencedColumnName = "RETURN_REQ_NUM")
-	private ReturnRequestHeaderDo returnReqHeaderDo;
+	private ReturnRequestHeader returnReqHeaderDo;
 
 	public String getReturnReqItemid() {
 		return returnReqItemid;
@@ -39,11 +38,11 @@ public @Data class ReturnItemPrimaryKey implements Serializable {
 		this.returnReqItemid = returnReqItemid;
 	}
 
-	public ReturnRequestHeaderDo getReturnReqHeaderDo() {
+	public ReturnRequestHeader getReturnReqHeaderDo() {
 		return returnReqHeaderDo;
 	}
 
-	public void setReturnReqHeaderDo(ReturnRequestHeaderDo returnReqHeaderDo) {
+	public void setReturnReqHeaderDo(ReturnRequestHeader returnReqHeaderDo) {
 		this.returnReqHeaderDo = returnReqHeaderDo;
 	}
 
@@ -51,10 +50,10 @@ public @Data class ReturnItemPrimaryKey implements Serializable {
 		return serialVersionUID;
 	}
 
-	public ReturnItemPrimaryKey(String returnReqItemid, ReturnRequestHeaderDo returnReqHeaderDo) {
+	public ReturnItemPrimaryKey(String returnReqItemid,ReturnRequestHeader returnRequestHeaderDo) {
 		super();
 		this.returnReqItemid = returnReqItemid;
-		this.returnReqHeaderDo = returnReqHeaderDo;
+		this.returnReqHeaderDo = returnRequestHeaderDo;
 	}
 
 }

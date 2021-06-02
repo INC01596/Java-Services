@@ -13,11 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
 
-=======
-//@NoArgsConstructor
->>>>>>> refs/remotes/origin/master
+
+
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public @Data class OnSubmitTaskDto extends BaseDto implements Cloneable {

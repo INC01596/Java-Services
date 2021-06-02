@@ -29,6 +29,8 @@ public class CommentController {
 
 	public CommentController() {
 		//HelperClass.getLogger(this.getClass().getName()).info("inside comment controller");
+	
+		System.err.println("Inside comment Type Determination controller");
 	}
 
 	@Autowired

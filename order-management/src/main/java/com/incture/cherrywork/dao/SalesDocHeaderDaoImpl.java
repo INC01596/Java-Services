@@ -1,26 +1,33 @@
 package com.incture.cherrywork.dao;
 
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.ScheduleLineDto;
 import com.incture.cherrywork.entities.SalesDocHeaderDo;
 import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.util.HelperClass;
 
 
 
@@ -31,9 +38,18 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 
 	// Control the list of Items here by flag
 	private Boolean listofItemTrigger = Boolean.FALSE;
-
+    @Lazy
 	@Autowired
 	private SalesDocItemDaoImpl salesDocItemDao;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	public Session getSession()
+	{
+		Session session = entityManager.unwrap(Session.class);
+		return session;
+	}
 
 	@Autowired
 	private SessionFactory sessionfactory;
@@ -530,18 +546,18 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 				.setParameter("soNum", salesHeaderOrderId).getSingleResult();
 	}
 
-	/*@Override
+	@Override
 	public List<String> filteredSalesDocHeader(FilterDto filterData) throws ExecutionFault {
 		try {
 			// when all fields are either null or empty
-			if (checkString(filterData.getStatus()) && checkString(filterData.getCustomerCode())
-					&& checkString(filterData.getSalesDocNumInitial()) && checkString(filterData.getSalesDocNumEnd())
-					&& checkString(filterData.getMaterialGroupFor()) && checkString(filterData.getDistributionChannel())
+			if (HelperClass.checkString(filterData.getStatus()) && HelperClass.checkString(filterData.getCustomerCode())
+					&& HelperClass.checkString(filterData.getSalesDocNumInitial()) && HelperClass.checkString(filterData.getSalesDocNumEnd())
+					&& HelperClass.checkString(filterData.getMaterialGroupFor()) && HelperClass.checkString(filterData.getDistributionChannel())
 					&& filterData.getInitialDate() == null && filterData.getEndDate() == null
-					&& checkString(filterData.getSalesOrg()) && checkString(filterData.getDivision())
-					&& checkString(filterData.getMaterialGroup()) && checkString(filterData.getCustomerPo())
-					&& checkString(filterData.getItemDlvBlock()) && checkString(filterData.getShipToParty())
-					&& checkString(filterData.getHeaderDlvBlock()) && checkString(filterData.getSapMaterialNum())) {
+					&& HelperClass.checkString(filterData.getSalesOrg()) && HelperClass.checkString(filterData.getDivision())
+					&& HelperClass.checkString(filterData.getMaterialGroup()) && HelperClass.checkString(filterData.getCustomerPo())
+					&& HelperClass.checkString(filterData.getItemDlvBlock()) && HelperClass.checkString(filterData.getShipToParty())
+					&& HelperClass.checkString(filterData.getHeaderDlvBlock()) && HelperClass.checkString(filterData.getSapMaterialNum())) {
 
 				System.err.println("For First time Login");
 				// getting list of so based on initial rights of login user
@@ -571,7 +587,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		System.err.println("createQueryforRights");
 		Map<String, String> map = null;
 		try {
-			map = (Map<String, String>) HelperClass.fetchUserInfoInIdp(filterData.getUserPID());
+			//map = (Map<String, String>) HelperClass.fetchUserInfoInIdp(filterData.getUserPID());
 			if (map.isEmpty()) {
 				return null;
 			}
@@ -580,8 +596,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		}
 
 		// checking if logged in person have all rights
-		boolean checkIfAllRights = new HelperClass().checkIfAllRights(map);
-
+		boolean checkIfAllRights=false;
 		if (checkIfAllRights) {
 			// if logged person have all rights then return all sales order
 			return getSession().createQuery(
@@ -755,9 +770,9 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 
 		}
 
-	}*/
+	}
 
-	/*private List<String> creatingCustomQueryForFilters(FilterDto filterData) {
+	private List<String> creatingCustomQueryForFilters(FilterDto filterData) {
 		StringBuilder startingQuery = new StringBuilder();
 		StringBuilder subQuery = new StringBuilder();
 		final String and = " AND ";
@@ -1068,7 +1083,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			subQuery.append(" i.itemDlvBlock = :itemDlvBlock ");
 		}
 	}
-*/
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Integer testQuery() throws ExecutionFault {
@@ -1102,3 +1117,4 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	}
 
 }
+

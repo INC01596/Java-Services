@@ -50,6 +50,7 @@ import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
+import com.incture.cherrywork.dtos.TrackSOUIDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.entities.SequenceNumber;
@@ -160,6 +161,27 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	// Sandeep
+	
+	
+	
+	
+	@Override
+	public ResponseEntity<Object> getByObd(String obdId) {
+		
+		try {
+			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
+
+			return ResponseEntity.ok().body(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+		
+	
+
+
 
 	@Override
 	public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
@@ -1162,7 +1184,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return response;
 		}
 
-	
+		@Override
+		public ResponseEntity<Object> getSOData(HeaderIdDto dto) {
+		  try{
+			  TrackSOUIDto dt= repo.getSOData(dto);
+			  return ResponseEntity.ok().body(dt);
+		  }
+		  catch(Exception e){
+			  return null; 
+		  }
+		
+		}
+
+		
 
 		
 

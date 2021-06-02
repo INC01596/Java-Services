@@ -66,10 +66,20 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 				.body(ObjectMapperUtils.map(savedmaterialMaster,SalesOrderMaterialMasterDto.class));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ResponseEntity<Object> getMaterialNames() {
 		try{
-			List<MaterialPlantDto> materialList=mrepo.getMaterialNames();
+			List<MaterialMaster> materialList=mrepo.getMaterialNames();
+			List<MaterialPlantDto> list=new ArrayList();
+			for(MaterialMaster m1:materialList)
+			{
+				MaterialPlantDto m=new MaterialPlantDto();
+				m.setItemNumber(m1.getItemNumber());
+				m.setPlant(m1.getPlant());
+				m.setMaterialDescription(m1.getMaterial());
+				list.add(m);
+			}  
 			return ResponseEntity.ok(materialList);
 		   }catch (Exception e) {
 			System.err.println("try found exception");

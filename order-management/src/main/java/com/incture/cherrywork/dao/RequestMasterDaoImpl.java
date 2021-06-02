@@ -1,5 +1,7 @@
 package com.incture.cherrywork.dao;
 
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -22,9 +25,10 @@ import com.incture.cherrywork.exceptions.ExecutionFault;
 @Repository
 @Component
 public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMasterDto> implements RequestMasterDao {
-
-	// @Autowired
-	// private CommentDao commentRepo;
+    
+	 @Lazy
+	 @Autowired
+	 private CommentDao commentRepo;
 
 	@Autowired
 	private SessionFactory sessionfactory;

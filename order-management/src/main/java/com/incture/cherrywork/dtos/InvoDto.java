@@ -3,15 +3,15 @@ package com.incture.cherrywork.dtos;
 import java.util.Date;
 import java.util.List;
 
-import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
+
 
 public class InvoDto{
 
 	
 	private int pageNo;
 	private String documentType;
-	private String InvoiceNo;
-	private EnOrderActionStatus documentProcessStatus;
+	private String invId;
+	private String invoiceStatus;
 	private String createdBy;
 	private String salesHeaderId;
 	private String obdId;
@@ -23,17 +23,30 @@ public class InvoDto{
 	}
 
 
+	
+
+	public String getInvId() {
+		return invId;
+	}
+	public void setInvId(String invId) {
+		this.invId = invId;
+	}
+
+
+
+
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
 	private String shipToParty;
 	
 	
-	public EnOrderActionStatus getDocumentProcessStatus() {
-		return documentProcessStatus;
+	
+	public String getInvoiceStatus() {
+		return invoiceStatus;
 	}
-	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
-		this.documentProcessStatus = documentProcessStatus;
+	public void setInvoiceStatus(String invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
 	}
 	public String getCreatedBy() {
 		return createdBy;
@@ -70,12 +83,7 @@ public class InvoDto{
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
 	}
-	public String getInvoiceNo() {
-		return InvoiceNo;
-	}
-	public void setInvoiceNo(String invoiceNo) {
-		InvoiceNo = invoiceNo;
-	}
+	
 	public String getSalesHeaderId() {
 		return salesHeaderId;
 	}
@@ -98,10 +106,10 @@ public class InvoDto{
 	}
 	@Override
 	public String toString() {
-		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", InvoiceNo=" + InvoiceNo
-				+ ", documentProcessStatus=" + documentProcessStatus + ", createdBy=" + createdBy + ", salesHeaderId="
-				+ salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom
-				+ ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty + "]";
+		return "InvoDto [pageNo=" + pageNo + ", documentType=" + documentType + ", invId=" + invId + ", invoiceStatus="
+				+ invoiceStatus + ", createdBy=" + createdBy + ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId
+				+ ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom + ", createdDateTo=" + createdDateTo
+				+ ", shipToParty=" + shipToParty + "]";
 	}
 
 	

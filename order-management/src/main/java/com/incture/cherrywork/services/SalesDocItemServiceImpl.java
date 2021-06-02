@@ -28,9 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.SalesDocItemDao;
-import com.incture.cherrywork.dao.SalesOrderItemStatusDao;
-import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
-import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
+
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderLevelStatusDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
@@ -44,12 +42,16 @@ import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.rules.ApproverDataOutputDto;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.tasksubmit.TriggerImeDestinationService;
 import com.incture.cherrywork.tasksubmit.TriggerImeForWorkflowService;
 import com.incture.cherrywork.util.HelperClass;
-import com.incture.cherrywork.workflow.DecisionSetCreation;
-import com.incture.cherrywork.workflow.WorkflowTrigger;
+import com.incture.cherrywork.workflow.services.DecisionSetCreation;
+import com.incture.cherrywork.workflow.services.WorkflowTrigger;
 
 @Service
 @Transactional
@@ -78,8 +80,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	@Autowired
 	private WorkflowTrigger workflowtrigger;
 
-	// @Autowired
-	// private TriggerImeDestinationService triggerImeService;
+//	@Autowired
+//	 private TriggerImeDestinationService triggerImeService;
 
 	@Autowired
 	private TriggerImeForWorkflowService triggerImeService;

@@ -24,3 +24,4 @@ public interface SalesOrderTaskStatusService {
 	public ResponseEntity getAllTasksFromDecisionSetAndLevelWithItems(String decisionSetId, String levelNum);
 
 }
+

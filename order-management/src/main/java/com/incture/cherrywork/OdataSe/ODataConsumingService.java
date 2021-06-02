@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -72,8 +73,9 @@ import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.SequenceNumberGen;
 import com.incture.cherrywork.util.ServicesUtil;
-import com.incture.cherrywork.workflow.ApprovalworkflowTrigger;
-import com.incture.cherrywork.workflow.BlockTypeDeterminationService;
+import com.incture.cherrywork.workflow.services.ApprovalworkflowTrigger;
+import com.incture.cherrywork.workflow.services.BlockTypeDeterminationService;
+
 
 
 /**
@@ -91,15 +93,19 @@ public class ODataConsumingService {
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(ODataConsumingService.class);
 
+	@Lazy
 	@Autowired
 	private RequestMasterService requestMasterService;
 
+	@Lazy
 	@Autowired
 	private RequestMasterDao requestMasterDao;
 
+	@Lazy
 	@Autowired
 	private ApprovalworkflowTrigger approvalWorkflowTrigger;
 
+	@Lazy
 	@Autowired
 	private SalesOrderHistoryService salesOrderHistoryService;
 
@@ -463,10 +469,10 @@ public class ODataConsumingService {
 				SalesDocHeaderDto salesDocHeaderDto = new SalesDocHeaderDto();
 
 				salesDocHeaderDto.setSalesOrderNum(res.getString(DOC_NUMBER));
-				if (!res.isNull("DocDate")) {
-					salesDocHeaderDto.setSalesOrderDate(
-							new BigInteger(ServicesUtil.dateConversionFromECC(res.getString("DocDate")).toString()));
-				}
+//				if (!res.isNull("DocDate")) {
+//					salesDocHeaderDto.setSalesOrderDate(
+//							new BigInteger(ServicesUtil.dateConversionFromECC(res.getString("DocDate")).toString()));
+//				}
 				salesDocHeaderDto.setCreatedBy(res.getString("CreatedBy"));
 				salesDocHeaderDto.setOrderCategory(res.getString("SdDocCat"));
 				salesDocHeaderDto.setOrderType(res.getString("DocType"));
@@ -590,11 +596,11 @@ public class ODataConsumingService {
 				docItemDto.setItemCategText(res.getString("ItemCategText"));
 				docItemDto.setSalesTeam(res.getString("salesTeam"));
 				docItemDto.setSalesArea(res.getString("salesArea"));
-
-				if (!res.isNull("matExpiryDate")) {
-					docItemDto.setMatExpiryDate(new BigInteger(
-							ServicesUtil.dateConversionFromECC(res.getString("matExpiryDate")).toString()));
-				}
+//
+//				if (!res.isNull("matExpiryDate")) {
+//					docItemDto.setMatExpiryDate(new BigInteger(
+//							ServicesUtil.dateConversionFromECC(res.getString("matExpiryDate")).toString()));
+//				}
 				docItemDto.setSerialNumber(res.getString("serialNumber"));
 
 				salesDocItemDtoList.add(docItemDto);

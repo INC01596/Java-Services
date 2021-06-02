@@ -35,9 +35,7 @@ import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.CommentDaoImpl;
 import com.incture.cherrywork.dao.SalesDocHeaderDao;
 import com.incture.cherrywork.dao.SalesDocItemDao;
-import com.incture.cherrywork.dao.SalesOrderItemStatusDao;
-import com.incture.cherrywork.dao.SalesOrderLevelStatusDao;
-import com.incture.cherrywork.dao.SalesOrderTaskStatusDao;
+
 import com.incture.cherrywork.dto.new_workflow.ListOfChangedItemData;
 import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
@@ -54,15 +52,17 @@ import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHistoryDto;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
+import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
-import com.incture.cherrywork.services.SalesOrderHistoryServiceImpl;
-import com.incture.cherrywork.services.new_workflow.DlvBlockReleaseMapService;
+import com.incture.cherrywork.services.dlv_block.DlvBlockReleaseMapService;
 import com.incture.cherrywork.services.new_workflow.SalesOrderTaskStatusService;
 import com.incture.cherrywork.util.DestinationClient;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.ODataBatchUtil;
-import com.incture.cherrywork.workflow.ApprovalworkflowTrigger;
+import com.incture.cherrywork.workflow.services.ApprovalworkflowTrigger;
 import com.incture.cherrywork.tasksubmitdto.OdataBatchOnSubmitPayload;
 
 
@@ -855,7 +855,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 
 						// UPDATING WORKFLOW TASK STATUS TO COMPLETED
 
-						responseFromWorkflowApi = new HelperClass().completeTaskInWorkflowUsingOauthClient(salesOrderNum, sapTaskId);
+						//responseFromWorkflowApi = new HelperClass().completeTaskInWorkflowUsingOauthClient(salesOrderNum, sapTaskId);
 					} else {
 						salesOrderTaskDetail.setTaskStatus(StatusConstants.TASK_IN_PROGRESS);
 					}
@@ -1124,7 +1124,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 		}
 	}
 
-	private ResponseEntity updateSalesOrderVersionOnRejectCase(OnSubmitTaskDto submitTaskDto,
+	private void updateSalesOrderVersionOnRejectCase(OnSubmitTaskDto submitTaskDto,
 			SalesOrderItemStatusDto salesOrderItemStatusDto, ListOfChangedItemData effectedChangedItemData)
 			throws ExecutionFault {
 		// update reason of reject here
@@ -1153,10 +1153,10 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			salesOrderHistoryDto.setUpdatedBy(submitTaskDto.getLoggedInUserName());
 			salesOrderHistoryDto.setUpdatedOn(new Date());
 
-			return new SalesOrderHistoryServiceImpl().saveSalesOrderItem(salesOrderHistoryDto);
+			//return new SalesOrderHistoryServiceImpl().saveSalesOrderItem(salesOrderHistoryDto);
 
 		} else {
-			return new ResponseEntity("", HttpStatus.BAD_REQUEST, "Item Not found", ResponseStatus.FAILED);
+			return;
 		}
 	}
 

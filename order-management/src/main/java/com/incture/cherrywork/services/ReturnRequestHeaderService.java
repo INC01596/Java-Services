@@ -1,17 +1,22 @@
 package com.incture.cherrywork.services;
 
-import com.incture.cherrywork.dtos.ResponseEntity;
-import com.incture.cherrywork.dtos.ReturnRequestHeaderDto;
+
+import org.springframework.http.ResponseEntity;
+
+import com.incture.cherrywork.dtos.ReturnFilterDto;
+
 
 public interface ReturnRequestHeaderService {
 
-	public ResponseEntity saveOrUpdateReturnReqHeader(ReturnRequestHeaderDto returnRequestHeaderDto);
+	
 
-	public ResponseEntity listAllReturnReqHeaders();
+	
 
-	public ResponseEntity getReturnReqHeaderById(String returnReqNum);
+	  ResponseEntity<Object> listAllReturnReqHeaders(ReturnFilterDto dto);
 
-	public ResponseEntity deleteReturnReqHeaderById(String returnReqNum);
+	//public ResponseEntity<Object> getReturnReqHeaderById(String returnReqNum);
+
+	//public ResponseEntity<Object> deleteReturnReqHeaderById(String returnReqNum);
 
 }
 

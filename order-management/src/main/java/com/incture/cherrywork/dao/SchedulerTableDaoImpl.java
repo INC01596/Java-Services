@@ -7,40 +7,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dtos.SchedulerTableDto;
-
 import com.incture.cherrywork.entities.SchedulerTableDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
-import com.incture.cherrywork.repositories.ObjectMapperUtils;
-import com.incture.cherrywork.workflow.repo.ISchedulerRepository;
-
 
 
 /**
  * @author Mohit.Basak
  *
  */
-@SuppressWarnings("unused")
 @Repository
 @Component
 public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTableDto> implements SchedulerTableDao {
 
-	
-	@PersistenceContext
-	private EntityManager em;
-	
-	@Autowired
-	private ISchedulerRepository repo;
-	
 	@Override
 	public SchedulerTableDo importDto(SchedulerTableDto fromDto) {
 		SchedulerTableDo schedulerTableDo = null;
@@ -103,13 +87,12 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 	@Override
 	public String save(SchedulerTableDto schedulerTableDto) throws Exception {
 		try {
-			SchedulerTableDo schedulerTableDo = ObjectMapperUtils.map(schedulerTableDto, SchedulerTableDo.class);
-			
-			SchedulerTableDo save=repo.save(schedulerTableDo);
-			
-			return  "save to hana successfully";
+			SchedulerTableDo schedulerTableDo = importDto(schedulerTableDto);
+			getSession().saveOrUpdate(schedulerTableDo);
+			getSession().flush();
+			getSession().clear();
 
-			
+			return "Successfully updated in hana";
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		} catch (Exception e) {
@@ -118,24 +101,19 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<SchedulerTableDto> listAllLogs() {
-		
-		Query q=em.createQuery("from SchedulerTableDo st order by st.istTimeStamp desc");
-		
-		List<SchedulerTableDo>list=q.getResultList();
-		return ObjectMapperUtils.mapAll(list, SchedulerTableDto.class);
-		
+		return exportList(getSession()
+				.createQuery("from SchedulerTableDo st order by st.istTimeStamp desc", SchedulerTableDo.class).list());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<SchedulerTableDto> listAllLogsInIst(LocalDateTime startDate, LocalDateTime endDate) {
-		return exportList(em
+		return exportList(getSession()
 				.createQuery(
-						"from SchedulerTableDo st where istTimeStamp between :startDate and :endDate order by st.istTimeStamp desc")
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getResultList());
+						"from SchedulerTableDo st where istTimeStamp between :startDate and :endDate order by st.istTimeStamp desc",
+						SchedulerTableDo.class)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).list());
 
 	}
 }

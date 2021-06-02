@@ -1,7 +1,6 @@
 package com.incture.cherrywork.dao;
 
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,21 +18,20 @@ import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderInput;
+import com.incture.cherrywork.dtos.ScheduleLineDto;
 import com.incture.cherrywork.entities.SalesDocHeaderDo;
 import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
-import com.incture.cherrywork.entities.SalesOrderHeader;
+import com.incture.cherrywork.entities.ScheduleLineDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
-import com.incture.cherrywork.repositories.ObjectMapperUtils;
-
 
 
 
 @Repository
 @Component
 public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto> implements SalesDocItemDao {
-
-	
+  
+	@Lazy
 	@Autowired
 	private ScheduleLineDaoImpl scheduleLineRepo;
 
@@ -44,22 +42,184 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	@Autowired
 	private SessionFactory sessionfactory;
 
-	
+	@Override
 	public SalesDocItemDo importDto(SalesDocItemDto fromDto) {
-		SalesDocItemDo salesDocItemDo = ObjectMapperUtils.map(fromDto, SalesDocItemDo.class);
-		
+		SalesDocItemDo salesDocItemDo = null;
+		if (fromDto != null) {
+			salesDocItemDo = new SalesDocItemDo();
+
+			salesDocItemDo.setSapMaterialNum(fromDto.getSapMaterialNum());
+			salesDocItemDo.setBatchNum(fromDto.getBatchNum());
+			salesDocItemDo.setSplPrice(fromDto.getSplPrice());
+			salesDocItemDo.setMaterialGroup(fromDto.getMaterialGroup());
+			salesDocItemDo.setShortText(fromDto.getShortText());
+			salesDocItemDo.setItemCategory(fromDto.getItemCategory());
+			salesDocItemDo.setItemType(fromDto.getItemType());
+			salesDocItemDo.setSalesUnit(fromDto.getSalesUnit());
+			salesDocItemDo.setItemBillingBlock(fromDto.getItemBillingBlock());
+			salesDocItemDo.setItemDlvBlock(fromDto.getItemDlvBlock());
+			salesDocItemDo.setPartialDlv(fromDto.getPartialDlv());
+			salesDocItemDo.setRefDocNum(fromDto.getRefDocNum());
+			salesDocItemDo.setRefDocItem(fromDto.getRefDocItem());
+			salesDocItemDo.setPlant(fromDto.getPlant());
+			salesDocItemDo.setStorageLoc(fromDto.getStorageLoc());
+			salesDocItemDo.setNetPrice(Double.parseDouble(fromDto.getNetPrice()));
+			salesDocItemDo.setDocCurrency(fromDto.getDocCurrency());
+			salesDocItemDo.setPricingUnit(fromDto.getPricingUnit());
+			salesDocItemDo.setCoudUnit(fromDto.getCoudUnit());
+			salesDocItemDo.setNetWorth(Double.parseDouble(fromDto.getNetWorth()));
+			salesDocItemDo.setOverallStatus(fromDto.getOverallStatus());
+			salesDocItemDo.setDeliveryStatus(fromDto.getDeliveryStatus());
+			salesDocItemDo.setReasonForRejection(fromDto.getReasonForRejection());
+			salesDocItemDo.setReasonForRejectionText(fromDto.getReasonForRejectionText());
+			salesDocItemDo.setMaterialGroupFor(fromDto.getMaterialGroup4());
+			salesDocItemDo.setBaseUnit(fromDto.getBaseUnit());
+			salesDocItemDo.setHigherLevelItem(fromDto.getHigherLevelItem());
+			salesDocItemDo.setTaxAmount(fromDto.getTaxAmount());
+			salesDocItemDo.setOldMatCode(fromDto.getOldMatCode());
+			salesDocItemDo.setConvDen(fromDto.getConvDen());
+			salesDocItemDo.setConvNum(fromDto.getConvNum());
+			salesDocItemDo.setCuConfQtyBase(fromDto.getCuConfQtyBase());
+			salesDocItemDo.setCuConfQtySales(fromDto.getCuConfQtySales());
+			salesDocItemDo.setCuReqQtySales(fromDto.getCuReqQtySales());
+			salesDocItemDo.setOrderedQtySales(fromDto.getOrderedQtySales());
+			salesDocItemDo.setDecisionSetId(fromDto.getDecisionSetId());
+			salesDocItemDo.setItemStagingStatus(fromDto.getItemStagingStatus());
+			salesDocItemDo.setItemCategText(fromDto.getItemCategText());
+			salesDocItemDo.setSalesArea(fromDto.getSalesArea());
+			salesDocItemDo.setSalesTeam(fromDto.getSalesTeam());
+			salesDocItemDo.setMatExpiryDate(fromDto.getMatExpiryDate());
+			salesDocItemDo.setSerialNumber(fromDto.getSerialNumber());
+
+			// Converting list level to entity using import List method and
+			// checking the content of it
+			List<ScheduleLineDo> scheduleLineList = scheduleLineRepo.importList(fromDto.getScheduleLineList());
+			if (scheduleLineList != null && !scheduleLineList.isEmpty()) {
+				salesDocItemDo.setScheduleLineList(scheduleLineList);
+			}
+
+			// Converting Date from String
+			// salesDocItemDo.setFirstDeliveryDate(ConvertStringToDate(fromDto.getFirstDeliveryDate()));
+			salesDocItemDo.setFirstDeliveryDate(fromDto.getFirstDeliveryDate());
+
+			// Setting Composite Primary Key and Foreign Key
+			SalesDocHeaderDo salesDocHeaderDo = new SalesDocHeaderDo();
+			// Setting Foreign Key
+			salesDocHeaderDo.setSalesOrderNum(fromDto.getSalesHeaderNo());
+			// Setting Composite Primary Key
+			salesDocItemDo
+					.setSalesDocItemKey(new SalesDocItemPrimaryKeyDo(fromDto.getSalesItemOrderNo(), salesDocHeaderDo));
+
+			// try {
+			// // Setting Comment List from comment table
+			// saveCommentList(fromDto.getCommentDtoList(),
+			// fromDto.getReturnReqNum());
+			// } catch (ExecutionFault e) {
+			// return null;
+			// }
+
+		}
 		return salesDocItemDo;
 	}
 
-
+	@Override
 	public SalesDocItemDto exportDto(SalesDocItemDo entity) {
-		SalesDocItemDto salesDocItemDto =ObjectMapperUtils.map(entity, SalesDocItemDto.class); 
-		
+		SalesDocItemDto salesDocItemDto = null;
+		if (entity != null) {
+
+			salesDocItemDto = new SalesDocItemDto();
+
+			System.err.println("Item Entity data at DAO came for sales order num "
+					+ entity.getSalesDocItemKey().getSalesDocHeader().getSalesOrderNum() + " and item num is "
+					+ entity.getSalesDocItemKey().getSalesItemOrderNo());
+			salesDocItemDto.setSapMaterialNum(entity.getSapMaterialNum());
+			salesDocItemDto.setBatchNum(entity.getBatchNum());
+			salesDocItemDto.setSplPrice(entity.getSplPrice());
+			salesDocItemDto.setMaterialGroup(entity.getMaterialGroup());
+			salesDocItemDto.setShortText(entity.getShortText());
+			salesDocItemDto.setItemCategory(entity.getItemCategory());
+			salesDocItemDto.setItemType(entity.getItemType());
+			salesDocItemDto.setSalesUnit(entity.getSalesUnit());
+			salesDocItemDto.setItemBillingBlock(entity.getItemBillingBlock());
+			salesDocItemDto.setItemDlvBlock(entity.getItemDlvBlock());
+			salesDocItemDto.setPartialDlv(entity.getPartialDlv());
+			salesDocItemDto.setRefDocNum(entity.getRefDocNum());
+			salesDocItemDto.setRefDocItem(entity.getRefDocItem());
+			salesDocItemDto.setPlant(entity.getPlant());
+			salesDocItemDto.setStorageLoc(entity.getStorageLoc());
+			// Split net price and add zero
+			salesDocItemDto.setNetPrice(entity.getNetPrice().toString());
+
+			salesDocItemDto.setDocCurrency(entity.getDocCurrency());
+			salesDocItemDto.setPricingUnit(entity.getPricingUnit());
+			salesDocItemDto.setCoudUnit(entity.getCoudUnit());
+			salesDocItemDto.setOldMatCode(entity.getOldMatCode());
+			salesDocItemDto.setNetWorth(entity.getNetWorth().toString());
+			salesDocItemDto.setOverallStatus(entity.getOverallStatus());
+			salesDocItemDto.setDeliveryStatus(entity.getDeliveryStatus());
+			salesDocItemDto.setReasonForRejection(entity.getReasonForRejection());
+			salesDocItemDto.setReasonForRejectionText(entity.getReasonForRejectionText());
+			salesDocItemDto.setMaterialGroup4(entity.getMaterialGroupFor());
+			salesDocItemDto.setBaseUnit(entity.getBaseUnit());
+			salesDocItemDto.setHigherLevelItem(entity.getHigherLevelItem());
+			salesDocItemDto.setTaxAmount(entity.getTaxAmount());
+			salesDocItemDto.setConvDen(entity.getConvDen());
+			salesDocItemDto.setConvNum(entity.getConvNum());
+			salesDocItemDto.setCuConfQtyBase(entity.getCuConfQtyBase());
+			salesDocItemDto.setCuConfQtySales(entity.getCuConfQtySales());
+			salesDocItemDto.setCuReqQtySales(entity.getCuReqQtySales());
+			salesDocItemDto.setOrderedQtySales(entity.getOrderedQtySales());
+			salesDocItemDto.setDecisionSetId(entity.getDecisionSetId());
+			salesDocItemDto.setItemStagingStatus(entity.getItemStagingStatus());
+			salesDocItemDto.setItemCategText(entity.getItemCategText());
+			salesDocItemDto.setSalesArea(entity.getSalesArea());
+			salesDocItemDto.setSalesTeam(entity.getSalesTeam());
+			salesDocItemDto.setMatExpiryDate(entity.getMatExpiryDate());
+			salesDocItemDto.setSerialNumber(entity.getSerialNumber());
+
+			// Converting list level to entity using import List method and
+			// checking the content of it
+			List<ScheduleLineDto> scheduleLineList = scheduleLineRepo.exportList(entity.getScheduleLineList());
+			if (scheduleLineList != null && !scheduleLineList.isEmpty()) {
+				salesDocItemDto.setScheduleLineList(scheduleLineList);
+				StringBuilder itemDlvBlockCodes = new StringBuilder();
+				int size = 0;
+				for (ScheduleLineDto scheduleLineDto : scheduleLineList) {
+					size++;
+					if (scheduleLineDto.getSchlineDeliveryBlock() != null) {
+						itemDlvBlockCodes.append(scheduleLineDto.getSchlineDeliveryBlock());
+						if (size != scheduleLineList.size()) {
+							itemDlvBlockCodes.append(",");
+						}
+					}
+				}
+				salesDocItemDto.setItemDlvBlockText(scheduleLineList.get(0).getRelfordelText());
+				salesDocItemDto.setItemDlvBlock(itemDlvBlockCodes.toString());
+			}
+
+			// Converting String from Date
+			// salesDocItemDto.setFirstDeliveryDate(ConvertDateToString(entity.getFirstDeliveryDate()));
+			salesDocItemDto.setFirstDeliveryDate(entity.getFirstDeliveryDate());
+
+			// Setting Foreign Key with Composite Primary Key
+			salesDocItemDto.setSalesHeaderNo(entity.getSalesDocItemKey().getSalesDocHeader().getSalesOrderNum());
+			// Setting Primary Key
+			salesDocItemDto.setSalesItemOrderNo(entity.getSalesDocItemKey().getSalesItemOrderNo());
+
+			// Setting stock block logic
+			// If req qty is greater than conf Qty
+			if (entity.getCuReqQtySales() != null && entity.getCuConfQtySales() != null) {
+				if (entity.getCuReqQtySales() > entity.getCuConfQtySales()) {
+					salesDocItemDto.setItemStockBlock("ACTIVE");
+				}
+			}
+
+		}
 		return salesDocItemDto;
 
 	}
 
-	
+	@Override
 	public List<SalesDocItemDo> importList(List<SalesDocItemDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocItemDo> dtoList = new ArrayList<>();
@@ -72,7 +232,7 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 		return Collections.emptyList();
 	}
 
-	
+	@Override
 	public List<SalesDocItemDto> exportList(List<SalesDocItemDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocItemDto> dtoList = new ArrayList<>();
@@ -246,6 +406,5 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 				.setParameter("dsId", decisionSetId).getResultList());
 	}
 
-	
 }
 

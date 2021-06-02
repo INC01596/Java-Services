@@ -1,4 +1,7 @@
 package com.incture.cherrywork.dao;
+
+
+
 import java.util.List;
 
 import com.incture.cherrywork.dtos.SalesOrderHistoryDto;
@@ -16,4 +19,3 @@ public interface SalesOrderHistoryDao {
 			String salesOrderItemNum);
 
 }
-

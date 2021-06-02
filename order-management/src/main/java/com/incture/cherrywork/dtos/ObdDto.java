@@ -9,16 +9,38 @@ public class ObdDto {
 	
 	private int pageNo;
 	private String documentType;
-	private EnOrderActionStatus documentProcessStatus;
+	private String obdStatus;
 	private String salesHeaderId;
 	private String obdId;
 	private List<String> stpId;
 	private Date createdDateFrom;
 	private Date createdDateTo;
 	private String shipToParty;
+	private String pgiStatus;
+	private List<String>invoiceStatus ;
 	
+	
+	
+	public String getPgiStatus() {
+		return pgiStatus;
+	}
+	public void setPgiStatus(String pgiStatus) {
+		this.pgiStatus = pgiStatus;
+	}
+	public List<String> getInvoiceStatus() {
+		return invoiceStatus;
+	}
+	public void setInvoiceStatus(List<String> invoiceStatus) {
+		this.invoiceStatus = invoiceStatus;
+	}
 	public List<String> getStpId() {
 		return stpId;
+	}
+	public String getObdStatus() {
+		return obdStatus;
+	}
+	public void setObdStatus(String obdStatus) {
+		this.obdStatus = obdStatus;
 	}
 	public void setStpId(List<String> stpId) {
 		this.stpId = stpId;
@@ -42,12 +64,7 @@ public class ObdDto {
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
 	}
-	public EnOrderActionStatus getDocumentProcessStatus() {
-		return documentProcessStatus;
-	}
-	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
-		this.documentProcessStatus = documentProcessStatus;
-	}
+	
 	public String getSalesHeaderId() {
 		return salesHeaderId;
 	}
@@ -75,10 +92,9 @@ public class ObdDto {
 	}
 	@Override
 	public String toString() {
-		return "ObdDto [pageNo=" + pageNo + ", documentType=" + documentType + ", documentProcessStatus="
-				+ documentProcessStatus + ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId
-				+ ", createdDateFrom=" + createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty="
-				+ shipToParty + "]";
+		return "ObdDto [pageNo=" + pageNo + ", documentType=" + documentType + ", obdStatus=" + obdStatus
+				+ ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId + ", createdDateFrom="
+				+ createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty + "]";
 	}
 	
 	

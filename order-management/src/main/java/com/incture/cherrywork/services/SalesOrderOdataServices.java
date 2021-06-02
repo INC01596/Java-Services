@@ -207,9 +207,9 @@ public class SalesOrderOdataServices {
 	public static OdataMaterialStartDto materialScheduler() {
 
 		OdataMaterialStartDto odataMaterialStartDto = new OdataMaterialStartDto();
-		String URL = SalesOrderOdataConstants.BASE_URL + "getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
+		String URL = SalesOrderOdataConstants.BASE_URL_SCH + "getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
 		try {
-			String response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
 			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 			odataMaterialStartDto = gson.fromJson(response.toString(), OdataMaterialStartDto.class);
 
@@ -224,9 +224,9 @@ public class SalesOrderOdataServices {
 	public static String materialAckScheduler() {
 
 		String response = null;
-		String URL = SalesOrderOdataConstants.BASE_URL + "getMaterialTabSet?$filter=Zzkey%20eq%20'ACK'";
+		String URL = SalesOrderOdataConstants.BASE_URL_SCH + "getMaterialTabSet?$filter=Zzkey%20eq%20'ACK'";
 		try {
-			response = SalesOrderOdataUtilService.callOdata(URL, "GET", null, "fetch");
+			response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
 
 		} catch (Exception e) {
 

@@ -81,8 +81,7 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.readAll(search);
 	}
 
-	// <-----------------------Sandeep
-	// Kumar------------------------------git status---------->
+	// <-----------------------Sandeep Kumar---------------------------------------->
 
 	@PostMapping("/getHeaderById")
 	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
@@ -131,23 +130,20 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> getManageServiceInvo(@RequestBody InvoDto dto) {
 		return salesOrderHeaderService.getManageServiceInvo(dto);
 	}
+	
+	@PostMapping("/getByObd")
+	public ResponseEntity<Object> getByObd(@RequestParam String obdId) {
+		return salesOrderHeaderService.getByObd(obdId);
+	}
+	
+	@PostMapping("/getSOData")
+	public ResponseEntity<Object> getSOData(@RequestBody HeaderIdDto dto)
+	{
+		return salesOrderHeaderService.getSOData(dto);
+	}
 
-
-	//@PostMapping("/page/{pageNo}")
-
-
-
-	// @PostMapping("/page/{pageNo}")
-
-	//
-	/*
-	 * @GetMapping("/getUserDetailsBySTP/{stpId}") public ResponseEntity<Object>
-	 * getUserDetailsBySTP(@PathVariable("stpId") String stpId) { return
-	 * salesOrderHeaderService.getUserDetailsBySTP(stpId); }
-	 */
 
 	
-
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")

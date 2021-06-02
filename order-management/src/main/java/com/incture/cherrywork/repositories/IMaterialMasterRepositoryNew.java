@@ -84,24 +84,13 @@ public class IMaterialMasterRepositoryNew {
 	
 	//Sandeep Kumar
 	@SuppressWarnings("unchecked")
-	public List<MaterialPlantDto> getMaterialNames(){
-		List<MaterialPlantDto> materialList = new ArrayList<>();
+	public List<MaterialMaster> getMaterialNames(){
+		
 		try {
-			String query = "select distinct material, plant,itemNumber from MaterialMaster";
-			Query q = entityManager.createQuery(query);
-			List<Object[]> objList = q.getResultList();
-			System.err.println(objList);
-			for (Object[] obj : objList) {
-				MaterialPlantDto material = new MaterialPlantDto();
-				if (!ServicesUtil.isEmpty(obj[0]))
-					material.setMaterialDescription((String) obj[0]);
-				if (!ServicesUtil.isEmpty(obj[1]))
-					material.setPlant((String) obj[1]);
-				if (!ServicesUtil.isEmpty(obj[2]))
-					material.setItemNumber((String) obj[2]);
-				materialList.add(material);
-			}
-			return materialList;
+			
+		return mmrepo.findAll();
+			
+			
 		}catch (Exception e) 
 		{
 			e.printStackTrace();

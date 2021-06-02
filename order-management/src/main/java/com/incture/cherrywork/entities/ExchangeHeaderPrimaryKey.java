@@ -29,9 +29,9 @@ public @Data class ExchangeHeaderPrimaryKey implements Serializable {
 	@JsonManagedReference("task-exchangeHeader")
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "RETURN_REQ_NUM", nullable = false, referencedColumnName = "RETURN_REQ_NUM")
-	private ReturnRequestHeaderDo returnRequestHeaderDo;
+	private ReturnRequestHeader returnRequestHeaderDo;
 
-	public ExchangeHeaderPrimaryKey(String exchangeReqNum, ReturnRequestHeaderDo returnRequestHeaderDo) {
+	public ExchangeHeaderPrimaryKey(String exchangeReqNum, ReturnRequestHeader returnRequestHeaderDo) {
 		super();
 		this.exchangeReqNum = exchangeReqNum;
 		this.returnRequestHeaderDo = returnRequestHeaderDo;
@@ -45,11 +45,11 @@ public @Data class ExchangeHeaderPrimaryKey implements Serializable {
 		this.exchangeReqNum = exchangeReqNum;
 	}
 
-	public ReturnRequestHeaderDo getReturnRequestHeaderDo() {
+	public ReturnRequestHeader getReturnRequestHeaderDo() {
 		return returnRequestHeaderDo;
 	}
 
-	public void setReturnRequestHeaderDo(ReturnRequestHeaderDo returnRequestHeaderDo) {
+	public void setReturnRequestHeaderDo(ReturnRequestHeader returnRequestHeaderDo) {
 		this.returnRequestHeaderDo = returnRequestHeaderDo;
 	}
 
