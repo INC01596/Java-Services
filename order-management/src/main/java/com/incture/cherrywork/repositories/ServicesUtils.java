@@ -115,6 +115,8 @@ public class ServicesUtils {
 		return ResponseEntity.status(HttpStatus.SC_ACCEPTED).header("message", "Mail Sent Successfully to " + receiver)
 		.body(null);
 	}
+	
+	
 
 
 
