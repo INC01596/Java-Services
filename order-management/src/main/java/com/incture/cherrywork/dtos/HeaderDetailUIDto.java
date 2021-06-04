@@ -10,7 +10,7 @@ public class HeaderDetailUIDto {
 
 	private String salesHeaderId;
 	private String documentType;
-	private EnOrderActionStatus documentProcessStatus;
+	private List<EnOrderActionStatus> documentProcessStatus;
 	private String createdBy;
 	private Date createdDateFrom;
 	private Date createdDateTo;
@@ -94,10 +94,11 @@ public class HeaderDetailUIDto {
 		this.documentType = documentType;
 	}
 	
-	public EnOrderActionStatus getDocumentProcessStatus() {
+	
+	public List<EnOrderActionStatus> getDocumentProcessStatus() {
 		return documentProcessStatus;
 	}
-	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
+	public void setDocumentProcessStatus(List<EnOrderActionStatus> documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
 	}
 	public String getCreatedBy() {

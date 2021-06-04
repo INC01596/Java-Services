@@ -85,21 +85,17 @@ public interface ISalesOrderHeaderService {
 	
 
 	ResponseEntity<Object> getHeader(String stp);
-<<<<<<< HEAD
-	ResponseEntity<Object> getSOData(HeaderIdDto dto);
-	// List<SalesOrderHeader> getManage(HeaderDetailUIDto dto, Pageable
-	// pageable);
-	// Page<SalesOrderHeader> findPaginated(int pageNo, HeaderDetailUIDto dto);
-	//
-=======
-	
-
-	ResponseEntity<Object> getByObd(String obdId);
 
 	ResponseEntity<Object> getSOData(HeaderIdDto dto);
+	
+	
 
 	
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
+	
+
+	
+
 
 
 

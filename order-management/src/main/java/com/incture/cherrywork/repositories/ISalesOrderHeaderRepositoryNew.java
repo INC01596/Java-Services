@@ -222,20 +222,14 @@ public class ISalesOrderHeaderRepositoryNew {
 			System.err.println("Only OBD");
 			return repo.findAllD(dto.getObdId(), pageable);
 		}
-<<<<<<< HEAD
+
 
 		if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
 			System.err.println("Only salesHeaderId");
 			return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
 		}
 
-=======
 
-		if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-			System.err.println("Only salesHeaderId");
-			return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
-		}
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 		if (!ServicesUtils.isEmpty(dto.getPgiStatus()) && !ServicesUtils.isEmpty(dto.getInvoiceStatus())) {
 
 			System.err.println("OBD+PGI+INVOICE");
@@ -255,12 +249,12 @@ public class ISalesOrderHeaderRepositoryNew {
 				return repo.findAllObd2(dto.getDocumentType(), dto.getStpId(), dto.getObdStatus(), pageable);
 			} else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
 				System.err.println("Only cust+type+created");
-				return repo.findAll(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
+				return repo.findAll12(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
 						dto.getCreatedDateTo(), pageable);
 
 			} else {
 				System.err.println("only type+cust");
-				return repo.findAll(dto.getDocumentType(), dto.getStpId(), pageable);
+				return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
 			}
 
 		}
@@ -337,12 +331,12 @@ public class ISalesOrderHeaderRepositoryNew {
 				return repo.findAllInv2(dto.getDocumentType(), dto.getStpId(), dto.getInvoiceStatus(), pageable);
 			} else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
 				System.err.println("Only cust+type+created");
-				return repo.findAll(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
+				return repo.findAll12(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
 						dto.getCreatedDateTo(), pageable);
 
 			} else {
 				System.err.println("only type+cust");
-				return repo.findAll(dto.getDocumentType(), dto.getStpId(), pageable);
+				return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
 			}
 
 		}
@@ -394,9 +388,9 @@ public class ISalesOrderHeaderRepositoryNew {
 	public Page<SalesOrderHeader> getManageService(HeaderDetailUIDto dto, Pageable pageable) {
 
 		try {
-<<<<<<< HEAD
 
-=======
+
+
 			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
 				System.err.println("Only salesHeaderId");
 				return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
@@ -416,23 +410,17 @@ public class ISalesOrderHeaderRepositoryNew {
 							pageable);
 				} else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
 					System.err.println("Only cust+type+created");
-					return repo.findAll(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
+					return repo.findAll12(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
 							dto.getCreatedDateTo(), pageable);
 
 				} else {
 					System.err.println("only type+cust");
-					return repo.findAll(dto.getDocumentType(), dto.getStpId(), pageable);
+					return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
 				}
 
 			}
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
-			// When SalesHeaderId is given
-			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-				System.err.println("Only salesHeaderId");
-				return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
-			}
 
-<<<<<<< HEAD
+
 			if (!ServicesUtils.isEmpty(dto.getStpId())) {
 				if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())
 						&& !ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
@@ -447,18 +435,17 @@ public class ISalesOrderHeaderRepositoryNew {
 							pageable);
 				} else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
 					System.err.println("Only cust+type+created");
-					return repo.findAll(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
+					return repo.findAll12(dto.getDocumentType(), dto.getStpId(), dto.getCreatedDateFrom(),
 							dto.getCreatedDateTo(), pageable);
 
 				} else {
 					System.err.println("only type+cust");
-					return repo.findAll(dto.getDocumentType(), dto.getStpId(), pageable);
+					return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
 				}
 
 			}
 
-=======
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 			if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())) {
 				if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) && !ServicesUtil.isEmpty(dto.getShipToParty())) {
 					System.err.println("status+request+documentType+creat");
@@ -504,13 +491,9 @@ public class ISalesOrderHeaderRepositoryNew {
 				return repo.findAll(dto.getDocumentType(), pageable);
 
 			}
-<<<<<<< HEAD
-		} catch (Exception e) {
-=======
 
 		} catch (Exception e) {
-			System.err.println("tError");
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 			e.printStackTrace();
 		}
 		return null;
@@ -848,28 +831,14 @@ public class ISalesOrderHeaderRepositoryNew {
 	public TrackSOUIDto getSOData(HeaderIdDto dto) {
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
 		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
-<<<<<<< HEAD
+
 		int flagobd = 0;
 		int flagpgi = 0;
 		int flaginvoice = 0;
 		String pgiStatus;
 		int level = -1;
-		try {
-			StringBuffer headerQuery = new StringBuffer(
-					"select s from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId ");
-			Query hq = entityManager.createQuery(headerQuery.toString());
-			hq.setParameter("salesHeaderId", dto.getsalesHeaderId());
+		
 
-			headerEntityList = hq.getResultList();
-
-			for (SalesOrderHeader headerEntity : headerEntityList) {
-=======
-		int flagobd=0;
-		int flagpgi=0;
-		int flaginvoice=0;
-		String pgiStatus;
-		int level=-1;
-	
 		try {
 			StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId and documentType='OR'");
 			 Query hq = entityManager.createQuery(headerQuery.toString());
@@ -886,95 +855,95 @@ public class ISalesOrderHeaderRepositoryNew {
 				 System.err.println("list1"+list1.toString());
 				 
 				 
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 				TrackSOUIDto track = new TrackSOUIDto();
 				List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
 				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
 				headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
 
 				track.setHeaderDto(headerDto);
-<<<<<<< HEAD
-
-				try {
-
-					StringBuffer lineItemQuery = new StringBuffer(
-							"select i from SalesOrderItem i where i.salesHeaderId=:salesHeaderId ");
-					System.err.println(lineItemQuery.toString());
-					Query iq = entityManager.createQuery(lineItemQuery.toString());
-					iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
-					lineItemEntityList = iq.getResultList();
-					int length = lineItemEntityList.size();
-
-					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
-						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
-						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-
-						System.out.println(lineItemDto.getInvId());
-						System.out.println(lineItemDto.getOutBoundOrderId());
-
-						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-							lineItemDto.setPgiStatus("CREATED");
-						}
-						System.out.println(lineItemDto.toString());
-
-						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())) {
-							flagobd++;
-							level = 0;
-						}
-						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-							flagpgi++;
-						}
-						if (!ServicesUtils.isEmpty(lineItemDto.getInvId())) {
-							flaginvoice++;
-						}
-						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
-								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-							level = 1;
-						} else if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
-								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())
-								&& !ServicesUtils.isEmpty(lineItemDto.getInvId())) {
-							level = 2;
-						} else
-							level = -1;
-
-						lineItemDtoList.add(lineItemDto);
-
-					}
-
-					track.setLevel(level);
-					track.setLineItemList(lineItemDtoList);
-
-					if (flagobd == 0) {
-						track.setObdStatus("Pending");
-					} else if (flagobd == length) {
-						track.setObdStatus("Completed");
-					} else
-						track.setObdStatus("PartiallyCompleted");
-
-					if (flagpgi == 0) {
-						track.setPgiStatus("Pending");
-					} else if (flagpgi == length) {
-						track.setPgiStatus("Completed");
-					} else
-						track.setPgiStatus("PartiallyCompleted");
-
-					if (flaginvoice == 0) {
-						track.setInvoiceStatus("Pending");
-					} else if (flaginvoice == length) {
-						track.setInvoiceStatus("Completed");
-					} else
-						track.setInvoiceStatus("PartiallyCompleted");
-
-					if (flaginvoice == length) {
-						track.setHeaderStatus("Completed");
-					} else if (flagobd != 0) {
-						track.setHeaderStatus("InProcess");
-					} else
-						track.setHeaderStatus("CREATED");
-
-				} catch (Exception e) {
-
-=======
+//<<<<<<< HEAD
+//
+//				try {
+//
+//					StringBuffer lineItemQuery = new StringBuffer(
+//							"select i from SalesOrderItem i where i.salesHeaderId=:salesHeaderId ");
+//					System.err.println(lineItemQuery.toString());
+//					Query iq = entityManager.createQuery(lineItemQuery.toString());
+//					iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
+//					lineItemEntityList = iq.getResultList();
+//					int length = lineItemEntityList.size();
+//
+//					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
+//						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
+//						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
+//
+//						System.out.println(lineItemDto.getInvId());
+//						System.out.println(lineItemDto.getOutBoundOrderId());
+//
+//						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
+//							lineItemDto.setPgiStatus("CREATED");
+//						}
+//						System.out.println(lineItemDto.toString());
+//
+//						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())) {
+//							flagobd++;
+//							level = 0;
+//						}
+//						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
+//							flagpgi++;
+//						}
+//						if (!ServicesUtils.isEmpty(lineItemDto.getInvId())) {
+//							flaginvoice++;
+//						}
+//						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
+//								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
+//							level = 1;
+//						} else if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
+//								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())
+//								&& !ServicesUtils.isEmpty(lineItemDto.getInvId())) {
+//							level = 2;
+//						} else
+//							level = -1;
+//
+//						lineItemDtoList.add(lineItemDto);
+//
+//					}
+//
+//					track.setLevel(level);
+//					track.setLineItemList(lineItemDtoList);
+//
+//					if (flagobd == 0) {
+//						track.setObdStatus("Pending");
+//					} else if (flagobd == length) {
+//						track.setObdStatus("Completed");
+//					} else
+//						track.setObdStatus("PartiallyCompleted");
+//
+//					if (flagpgi == 0) {
+//						track.setPgiStatus("Pending");
+//					} else if (flagpgi == length) {
+//						track.setPgiStatus("Completed");
+//					} else
+//						track.setPgiStatus("PartiallyCompleted");
+//
+//					if (flaginvoice == 0) {
+//						track.setInvoiceStatus("Pending");
+//					} else if (flaginvoice == length) {
+//						track.setInvoiceStatus("Completed");
+//					} else
+//						track.setInvoiceStatus("PartiallyCompleted");
+//
+//					if (flaginvoice == length) {
+//						track.setHeaderStatus("Completed");
+//					} else if (flagobd != 0) {
+//						track.setHeaderStatus("InProcess");
+//					} else
+//						track.setHeaderStatus("CREATED");
+//
+//				} catch (Exception e) {
+//
+//=======
 				System.err.println("track"+track.toString());
 				List<SalesOrderItemDto> list=getDetails(dto.getsalesHeaderId());
 				try {
@@ -1086,31 +1055,25 @@ public class ISalesOrderHeaderRepositoryNew {
 				}
 				}catch (Exception e) {
 					
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 					e.printStackTrace();
 				}
 				System.err.println(track.toString());
 				return track;
 			}
 		} catch (Exception e) {
-<<<<<<< HEAD
 
-=======
-			 
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 			e.printStackTrace();
 			return null;
 		}
 		return null;
-<<<<<<< HEAD
+
 
 	}
-=======
-		
-	
-	}
-
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
 }
+
+
+
+	
 	
 

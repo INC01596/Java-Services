@@ -1,11 +1,15 @@
-<<<<<<< HEAD
+
 package com.incture.cherrywork.repositories;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,44 +76,65 @@ public interface IReturnRequestHeaderRepository extends JpaRepository<ReturnRequ
 	Integer getItemStatus(String itemSerialId);
 
 
+
+      //Sandeep  Kumar Khatri
+ 
+//     @Query("from ReturnRequestHeader r where r.returnReqNum=:reqNo")
+//     Page<ReturnRequestHeader>findAll1(@Param("reqNo") String reqNo,Pageable pageable);
+//     
+//     @Query("from ReturnRequestHeader r where r.division=:division")
+//     Page<ReturnRequestHeader>findAllD(@Param("division") String division,Pageable pageable);
+//     
+//     @Query("from ReturnRequestHeader r where r.salesOrg=:salesOrg")
+//     Page<ReturnRequestHeader>findAllS(@Param("salesOrg")String salesOrg,Pageable pageable);
+//     
+//      @Query("from ReturnRequestHeader r where r.customerId=:cust")
+//     Page<ReturnRequestHeader>findAllC(@Param("cust")String cust,Pageable pageable);
+//     
+//      @Query("from ReturnRequestHeader r where r.createdDate=:stDate")
+//      Page<ReturnRequestHeader>findAllD(@Param("stDate") Date stDate,Pageable pageable);
+//     
+//     @Query("from ReturnRequestHeader r where r.distributionChannel=:channel")
+//     Page<ReturnRequestHeader>findAllCha(@Param("channel") String channel,Pageable pageable);
+//     
+////     @Query("from ReturnRequestHeader r where r.returnReason=:reason")
+////     Page<ReturnRequestHeader>findAllR(@Param("reason") String reason,Pageable pageable);
+////     
+//     
+//     @Query("from ReturnRequestHeader r where r.division=:division and r.distributionChannel=:channel")
+//     Page<ReturnRequestHeader>findAll(@Param("division")String division ,@Param("channel") String channel,Pageable pageable);
+//     
+//     
+//     
+//
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust and r.distributionChannel=:channel and r.divison=:div and r.returnReason=:returnReason and r.salesOrg=:salesOrg and r.createdDate=:stdate")
+//	Page<ReturnRequestHeader> findByAll(@Param("cust")String cust, @Param("channel")String channel,@Param("div") String div,@Param("returnReason")String returnReason,@Param("salesOrg") String salesOrg, @Param("stdate") Date stdate, Pageable pageable);
+//    
+//     //without created date rest all
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust and r.distributionChannel=:channel and r.divison=:div and r.returnReason=:returnReason and r.salesOrg=:salesOrg ")
+// 	Page<ReturnRequestHeader> findAll5C(@Param("cust")String cust, @Param("channel")String channel,@Param("div") String div,@Param("returnReason")String returnReason,@Param("salesOrg") String salesOrg, Pageable pageable);
+//     
+//     //withoput customerId
+//     @Query("from ReturnRequestHeader r where r.distributionChannel=:channel and r.divison=:div and r.returnReason=:returnReason and r.salesOrg=:salesOrg and r.createdDate=:stdate")
+// 	Page<ReturnRequestHeader> findAll5Cu(@Param("channel")String channel,@Param("div") String div,@Param("returnReason")String returnReason,@Param("salesOrg") String salesOrg, @Param("stdate") Date stdate, Pageable pageable);
+//   
+//     // without distribution channel
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust  and r.divison=:div and r.returnReason=:returnReason and r.salesOrg=:salesOrg and r.createdDate=:stdate")
+//  	Page<ReturnRequestHeader> findAll5Cha(@Param("cust")String cust,@Param("div") String div,@Param("returnReason")String returnReason,@Param("salesOrg") String salesOrg, @Param("stdate") Date stdate, Pageable pageable);
+//      
+//    // withoutDiv
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust and r.distributionChannel=:channel  and r.returnReason=:returnReason and r.salesOrg=:salesOrg and r.createdDate=:stdate")
+// 	Page<ReturnRequestHeader> findAll5Div(@Param("cust")String cust, @Param("channel")String channel,@Param("returnReason")String returnReason,@Param("salesOrg") String salesOrg, @Param("stdate") Date stdate, Pageable pageable);
+//     
+//     //without returnReason
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust and r.distributionChannel=:channel and r.divison=:div and  r.salesOrg=:salesOrg and r.createdDate=:stdate")
+// 	Page<ReturnRequestHeader> findAll5R(@Param("cust")String cust, @Param("channel")String channel,@Param("div") String div,@Param("salesOrg") String salesOrg, @Param("stdate") Date stdate, Pageable pageable);
+//    
+//     
+//     //without SalesOrg
+//     @Query("from ReturnRequestHeader r where r.customerId=:cust and r.distributionChannel=:channel and r.divison=:div and r.returnReason=:returnReason  and r.createdDate=:stdate")
+// 	Page<ReturnRequestHeader> findAll5S(@Param("cust")String cust, @Param("channel")String channel,@Param("div") String div,@Param("returnReason")String returnReason, @Param("stdate") Date stdate, Pageable pageable);
+//     
 }
-=======
-package com.incture.cherrywork.repositories;
 
-
-
-
-
-import java.util.List;
-
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
-
-import com.incture.cherrywork.entities.ReturnRequestHeader;
-
-@Repository
-public interface IReturnRequestHeaderRepository extends JpaRepository<ReturnRequestHeader, String>
-{
-
-     @Query("from ReturnRequestHeader r where r.returnReqNum=:reqNo")
-     List<ReturnRequestHeader>findAll1(@Param("reqNo") String reqNo);
-     
-     @Query("from ReturnRequestHeader r where r.division=:division")
-     List<ReturnRequestHeader>findAll(@Param("division") String division);
-     
-     @Query("from ReturnRequestHeader r where r.division=:division and r.distributionChannel=:channel")
-     List<ReturnRequestHeader>findAll(@Param("division")String division ,@Param("channel") String channel);
-     
-     
-     
-}
-<<<<<<< HEAD
-	
-=======
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
->>>>>>> refs/remotes/origin/master
+  

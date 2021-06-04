@@ -71,18 +71,7 @@ public class MaterialMasterServices implements IMaterialMasterServices {
 	public ResponseEntity<Object> getMaterialNames() {
 		try{
 			List<MaterialMaster> materialList=mrepo.getMaterialNames();
-<<<<<<< HEAD
-=======
-			List<MaterialPlantDto> list=new ArrayList();
-			for(MaterialMaster m1:materialList)
-			{
-				MaterialPlantDto m=new MaterialPlantDto();
-				m.setItemNumber(m1.getItemNumber());
-				m.setPlant(m1.getPlant());
-				m.setMaterialDescription(m1.getMaterial());
-				list.add(m);
-			}  
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 			return ResponseEntity.ok(materialList);
 		   }catch (Exception e) {
 			System.err.println("try found exception");

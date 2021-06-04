@@ -1,10 +1,10 @@
-<<<<<<< HEAD
+
 package com.incture.cherrywork.dtos;
 
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
+
 
 import com.incture.cherrywork.entities.Address;
 import com.incture.cherrywork.entities.Attachment;
@@ -71,211 +71,348 @@ public class ReturnRequestHeaderDto {
 	private List<Attachment> listAttachementDo;
 	private List<Address> listAddressDo;
 	private ExchangeHeaderDto exchangeDto;
-
-}
-=======
-package com.incture.cherrywork.dtos;
-
-import java.util.Date;
-import java.util.List;
-
-import com.incture.cherrywork.exceptions.InvalidInputFault;
-import com.incture.cherrywork.sales.constants.EnOperation;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-
-@EqualsAndHashCode(callSuper = false)
-public @Data class ReturnRequestHeaderDto extends BaseDto {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private String returnReqNum;
-
-	private String workflowInstance;
-
-	private String requestedBy;
-
-	private Date requestDate;
-
-	private String requestCategory;
-
-	private String requestType;
-
-	private String requestStatusCode;
-
-	private String referenceDocType;
-
-	private String refDocNum;
-
-	private String requestShortText;
-
-	private String orderReason;
-
-	private ExchangeHeaderDto exchangeHeaderDto;
-
-	private List<ReturnItemDto> returnItemList;
-
-	public ReturnRequestHeaderDto() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public ReturnRequestHeaderDto(String returnReqNum, String workflowInstance, String requestedBy, Date requestDate,
-			String requestCategory, String requestType, String requestStatusCode, String referenceDocType,
-			String refDocNum, String requestShortText, String orderReason, ExchangeHeaderDto exchangeHeaderDto,
-			List<ReturnItemDto> returnItemList, List<CommentDto> commentDtoList) {
-		super();
-		this.returnReqNum = returnReqNum;
-		this.workflowInstance = workflowInstance;
-		this.requestedBy = requestedBy;
-		this.requestDate = requestDate;
-		this.requestCategory = requestCategory;
-		this.requestType = requestType;
-		this.requestStatusCode = requestStatusCode;
-		this.referenceDocType = referenceDocType;
-		this.refDocNum = refDocNum;
-		this.requestShortText = requestShortText;
-		this.orderReason = orderReason;
-		this.exchangeHeaderDto = exchangeHeaderDto;
-		this.returnItemList = returnItemList;
-		this.commentDtoList = commentDtoList;
-	}
-
-	private List<CommentDto> commentDtoList;
-
 	public String getReturnReqNum() {
 		return returnReqNum;
 	}
-
 	public void setReturnReqNum(String returnReqNum) {
 		this.returnReqNum = returnReqNum;
 	}
-
-	public String getWorkflowInstance() {
-		return workflowInstance;
+	public String getRoType() {
+		return roType;
 	}
-
-	public void setWorkflowInstance(String workflowInstance) {
-		this.workflowInstance = workflowInstance;
+	public void setRoType(String roType) {
+		this.roType = roType;
 	}
-
-	public String getRequestedBy() {
-		return requestedBy;
-	}
-
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
-	}
-
-	public Date getRequestDate() {
-		return requestDate;
-	}
-
-	public void setRequestDate(Date requestDate) {
-		this.requestDate = requestDate;
-	}
-
-	public String getRequestCategory() {
-		return requestCategory;
-	}
-
-	public void setRequestCategory(String requestCategory) {
-		this.requestCategory = requestCategory;
-	}
-
 	public String getRequestType() {
 		return requestType;
 	}
-
 	public void setRequestType(String requestType) {
 		this.requestType = requestType;
 	}
-
-	public String getRequestStatusCode() {
-		return requestStatusCode;
+	public String getOrderType() {
+		return orderType;
 	}
-
-	public void setRequestStatusCode(String requestStatusCode) {
-		this.requestStatusCode = requestStatusCode;
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
 	}
-
-	public String getReferenceDocType() {
-		return referenceDocType;
+	public String getSalesOrg() {
+		return salesOrg;
 	}
-
-	public void setReferenceDocType(String referenceDocType) {
-		this.referenceDocType = referenceDocType;
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
 	}
-
-	public String getRefDocNum() {
-		return refDocNum;
+	public String getDistributionChannel() {
+		return distributionChannel;
 	}
-
-	public void setRefDocNum(String refDocNum) {
-		this.refDocNum = refDocNum;
+	public void setDistributionChannel(String distributionChannel) {
+		this.distributionChannel = distributionChannel;
 	}
-
-	public String getRequestShortText() {
-		return requestShortText;
+	public String getDivision() {
+		return division;
 	}
-
-	public void setRequestShortText(String requestShortText) {
-		this.requestShortText = requestShortText;
+	public void setDivision(String division) {
+		this.division = division;
 	}
-
+	public String getSoldToParty() {
+		return soldToParty;
+	}
+	public void setSoldToParty(String soldToParty) {
+		this.soldToParty = soldToParty;
+	}
+	public String getShipToParty() {
+		return shipToParty;
+	}
+	public void setShipToParty(String shipToParty) {
+		this.shipToParty = shipToParty;
+	}
+	public String getBillToParty() {
+		return billToParty;
+	}
+	public void setBillToParty(String billToParty) {
+		this.billToParty = billToParty;
+	}
+	public String getPayer() {
+		return payer;
+	}
+	public void setPayer(String payer) {
+		this.payer = payer;
+	}
+	public String getContactPerson() {
+		return contactPerson;
+	}
+	public void setContactPerson(String contactPerson) {
+		this.contactPerson = contactPerson;
+	}
+	public String getContactDivision() {
+		return contactDivision;
+	}
+	public void setContactDivision(String contactDivision) {
+		this.contactDivision = contactDivision;
+	}
+	public String getContactTelephone() {
+		return contactTelephone;
+	}
+	public void setContactTelephone(String contactTelephone) {
+		this.contactTelephone = contactTelephone;
+	}
+	public String getReferenceNum() {
+		return referenceNum;
+	}
+	public void setReferenceNum(String referenceNum) {
+		this.referenceNum = referenceNum;
+	}
 	public String getOrderReason() {
 		return orderReason;
 	}
-
 	public void setOrderReason(String orderReason) {
 		this.orderReason = orderReason;
 	}
-
-	public ExchangeHeaderDto getExchangeHeaderDto() {
-		return exchangeHeaderDto;
+	public String getOrderReasonText() {
+		return orderReasonText;
 	}
-
-	public void setExchangeHeaderDto(ExchangeHeaderDto exchangeHeaderDto) {
-		this.exchangeHeaderDto = exchangeHeaderDto;
+	public void setOrderReasonText(String orderReasonText) {
+		this.orderReasonText = orderReasonText;
 	}
-
-	public List<ReturnItemDto> getReturnItemList() {
-		return returnItemList;
+	public String getReasonOwner() {
+		return reasonOwner;
 	}
-
-	public void setReturnItemList(List<ReturnItemDto> returnItemList) {
-		this.returnItemList = returnItemList;
+	public void setReasonOwner(String reasonOwner) {
+		this.reasonOwner = reasonOwner;
 	}
-
-	public List<CommentDto> getCommentDtoList() {
-		return commentDtoList;
+	public String getReasonOwnerDesc() {
+		return reasonOwnerDesc;
 	}
-
-	public void setCommentDtoList(List<CommentDto> commentDtoList) {
-		this.commentDtoList = commentDtoList;
+	public void setReasonOwnerDesc(String reasonOwnerDesc) {
+		this.reasonOwnerDesc = reasonOwnerDesc;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getRequestRemark() {
+		return requestRemark;
 	}
-
-	@Override
-	public Boolean getValidForUsage() {
-		return null;
+	public void setRequestRemark(String requestRemark) {
+		this.requestRemark = requestRemark;
 	}
-
-	@Override
-	public void validate(EnOperation enOperation) throws InvalidInputFault {
-		throw new UnsupportedOperationException();
+	public String getWorkflowInstance() {
+		return workflowInstance;
+	}
+	public void setWorkflowInstance(String workflowInstance) {
+		this.workflowInstance = workflowInstance;
+	}
+	public String getOverallWorkflowStatus() {
+		return overallWorkflowStatus;
+	}
+	public void setOverallWorkflowStatus(String overallWorkflowStatus) {
+		this.overallWorkflowStatus = overallWorkflowStatus;
+	}
+	public String getRequestedBy() {
+		return requestedBy;
+	}
+	public void setRequestedBy(String requestedBy) {
+		this.requestedBy = requestedBy;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public String getProcessingStatus() {
+		return processingStatus;
+	}
+	public void setProcessingStatus(String processingStatus) {
+		this.processingStatus = processingStatus;
+	}
+	public String getLogisticalStatus() {
+		return logisticalStatus;
+	}
+	public void setLogisticalStatus(String logisticalStatus) {
+		this.logisticalStatus = logisticalStatus;
+	}
+	public boolean isCreationStatus() {
+		return creationStatus;
+	}
+	public void setCreationStatus(boolean creationStatus) {
+		this.creationStatus = creationStatus;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public String getDocVersion() {
+		return docVersion;
+	}
+	public void setDocVersion(String docVersion) {
+		this.docVersion = docVersion;
+	}
+	public String getRoTypeText() {
+		return roTypeText;
+	}
+	public void setRoTypeText(String roTypeText) {
+		this.roTypeText = roTypeText;
+	}
+	public String getTotalRoAmount() {
+		return totalRoAmount;
+	}
+	public void setTotalRoAmount(String totalRoAmount) {
+		this.totalRoAmount = totalRoAmount;
+	}
+	public String getRequestorName() {
+		return requestorName;
+	}
+	public void setRequestorName(String requestorName) {
+		this.requestorName = requestorName;
+	}
+	public String getOrderTypeText() {
+		return orderTypeText;
+	}
+	public void setOrderTypeText(String orderTypeText) {
+		this.orderTypeText = orderTypeText;
+	}
+	public String getReferenceInvDate() {
+		return referenceInvDate;
+	}
+	public void setReferenceInvDate(String referenceInvDate) {
+		this.referenceInvDate = referenceInvDate;
+	}
+	public String getCustomerPo() {
+		return customerPo;
+	}
+	public void setCustomerPo(String customerPo) {
+		this.customerPo = customerPo;
+	}
+	public String getSoldToPartyDesc() {
+		return soldToPartyDesc;
+	}
+	public void setSoldToPartyDesc(String soldToPartyDesc) {
+		this.soldToPartyDesc = soldToPartyDesc;
+	}
+	public String getShipToPartyDesc() {
+		return shipToPartyDesc;
+	}
+	public void setShipToPartyDesc(String shipToPartyDesc) {
+		this.shipToPartyDesc = shipToPartyDesc;
+	}
+	public String getBillToDesc() {
+		return billToDesc;
+	}
+	public void setBillToDesc(String billToDesc) {
+		this.billToDesc = billToDesc;
+	}
+	public String getPayerDesc() {
+		return payerDesc;
+	}
+	public void setPayerDesc(String payerDesc) {
+		this.payerDesc = payerDesc;
+	}
+	public String getRequestorEmail() {
+		return requestorEmail;
+	}
+	public void setRequestorEmail(String requestorEmail) {
+		this.requestorEmail = requestorEmail;
+	}
+	public String getReturnTotalAmt() {
+		return returnTotalAmt;
+	}
+	public void setReturnTotalAmt(String returnTotalAmt) {
+		this.returnTotalAmt = returnTotalAmt;
+	}
+	public String getFlagRoSo() {
+		return flagRoSo;
+	}
+	public void setFlagRoSo(String flagRoSo) {
+		this.flagRoSo = flagRoSo;
+	}
+	public String getMappingId() {
+		return mappingId;
+	}
+	public void setMappingId(String mappingId) {
+		this.mappingId = mappingId;
+	}
+	public String getExchangeOrderType() {
+		return exchangeOrderType;
+	}
+	public void setExchangeOrderType(String exchangeOrderType) {
+		this.exchangeOrderType = exchangeOrderType;
+	}
+	public String getEmailTrigger() {
+		return emailTrigger;
+	}
+	public void setEmailTrigger(String emailTrigger) {
+		this.emailTrigger = emailTrigger;
+	}
+	public String getDivisionDesc() {
+		return divisionDesc;
+	}
+	public void setDivisionDesc(String divisionDesc) {
+		this.divisionDesc = divisionDesc;
+	}
+	public String getSalesOrgDesc() {
+		return salesOrgDesc;
+	}
+	public void setSalesOrgDesc(String salesOrgDesc) {
+		this.salesOrgDesc = salesOrgDesc;
+	}
+	public String getDistributionChannelDesc() {
+		return distributionChannelDesc;
+	}
+	public void setDistributionChannelDesc(String distributionChannelDesc) {
+		this.distributionChannelDesc = distributionChannelDesc;
+	}
+	public String getDocumentUrl() {
+		return documentUrl;
+	}
+	public void setDocumentUrl(String documentUrl) {
+		this.documentUrl = documentUrl;
+	}
+	public Boolean getSmsTrigger() {
+		return smsTrigger;
+	}
+	public void setSmsTrigger(Boolean smsTrigger) {
+		this.smsTrigger = smsTrigger;
+	}
+	public String getSmsFrom() {
+		return smsFrom;
+	}
+	public void setSmsFrom(String smsFrom) {
+		this.smsFrom = smsFrom;
+	}
+	public List<ReturnItemDto> getListItemDto() {
+		return listItemDto;
+	}
+	public void setListItemDto(List<ReturnItemDto> listItemDto) {
+		this.listItemDto = listItemDto;
+	}
+	public List<Attachment> getListAttachementDo() {
+		return listAttachementDo;
+	}
+	public void setListAttachementDo(List<Attachment> listAttachementDo) {
+		this.listAttachementDo = listAttachementDo;
+	}
+	public List<Address> getListAddressDo() {
+		return listAddressDo;
+	}
+	public void setListAddressDo(List<Address> listAddressDo) {
+		this.listAddressDo = listAddressDo;
+	}
+	public ExchangeHeaderDto getExchangeDto() {
+		return exchangeDto;
+	}
+	public void setExchangeDto(ExchangeHeaderDto exchangeDto) {
+		this.exchangeDto = exchangeDto;
 	}
 
 }
 
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0

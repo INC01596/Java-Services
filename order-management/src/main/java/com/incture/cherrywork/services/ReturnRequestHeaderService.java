@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.incture.cherrywork.services;
 
 import java.io.IOException;
@@ -20,6 +20,10 @@ import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,7 @@ import com.incture.cherrywork.dtos.OrderHdrToOrderCondition;
 import com.incture.cherrywork.dtos.OrderHdrToOrderItem;
 import com.incture.cherrywork.dtos.OrderHdrToOrderPartner;
 import com.incture.cherrywork.dtos.OrderHdrToOrderPartnerDto;
+import com.incture.cherrywork.dtos.ReturnFilterDto;
 import com.incture.cherrywork.dtos.ReturnItemDto;
 import com.incture.cherrywork.dtos.ReturnOrder;
 import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
@@ -62,6 +67,7 @@ import com.incture.cherrywork.repositories.IExchangeItemRepository;
 import com.incture.cherrywork.repositories.IReturnRequestHeaderRepository;
 import com.incture.cherrywork.repositories.IReturnRequestItemRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
+import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.MailAlertUtil;
 import com.incture.cherrywork.util.ReturnExchangeConstants;
@@ -647,7 +653,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 						List<ReturnItem> returnItemList = new ArrayList<>();
 
 						for (ReturnOrderResponsePojo returnResponsePojo : responseObject.getReturnResponsePojo()) {
-							List<ODataBatchItem> itemList = returnResponsePojo.getOrderHdrToOrderItem().getResults();
+							List<ODataBatchItem> itemList=new ArrayList<>() ;//= returnResponsePojo.getOrderHdrToOrderItem().getResults();
 							returnItemListDo = ObjectMapperUtils.mapAll(itemList, ReturnItem.class);
 							List<ReturnItem> listReturnUpdate = new ArrayList<>(1);
 							if (!returnResponsePojo.getName().contains("/")) {
@@ -1394,32 +1400,252 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 		}
 	}
 
+	  @Override
+		public ResponseEntity<Object>findAll(int pageNo)
+		{
+			
+		
+	    Pageable pageable=PageRequest.of(pageNo,10);
+		List<ReturnRequestHeader>list=returnHeaderRepo.findAll();
+		int start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+		 int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (pageable.getPageSize() * pageable.getPageNumber());
+			Page<ReturnRequestHeader>page= new PageImpl<>(list.subList(start, end),pageable,list.size());
+		 return ResponseEntity.ok().body(page);
+			
+		}
+
+
+
+
+
+
+	@Override
+	public ResponseEntity<Object> listAllReturn(ReturnFilterDto dto) {
+		
+		Pageable pageable=PageRequest.of(dto.getPageNo(),10);
+		List<ReturnRequestHeader> list = new ArrayList<>();
+		
+		StringBuffer headerQuery = new StringBuffer("select r from ReturnRequestHeader r where flag is null");
+		
+		if(!ServicesUtils.isEmpty(dto.getReturnReqNumber()))
+		{
+			headerQuery.append(" and r.returnReqNum=:req");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getShipToParty()))
+		{
+			headerQuery.append(" and r.shipToParty=:STP");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getRequestedBy()))
+		{
+			headerQuery.append(" and r.requestedBy=:request");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
+		{
+			headerQuery.append(" and r.customerId=:customer");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getDistributionChannel()))
+		{
+			headerQuery.append(" and r.distributionChannel=:channel");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getDivision()))
+		{
+			headerQuery.append(" and r.division=:divison");
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getSalesOrg()))
+		{
+			headerQuery.append(" and r.salesOrg=:salesOrg");
+		}
+		
+		Query hq = entityManager.createQuery(headerQuery.toString());
+		
+		if(!ServicesUtils.isEmpty(dto.getReturnReqNumber()))
+		{
+			hq.setParameter("req", dto.getReturnReqNumber());
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getShipToParty()))
+		{
+			hq.setParameter("STP", dto.getShipToParty());
+		}
+		
+		if(!ServicesUtils.isEmpty(dto.getRequestedBy()))
+		{
+			hq.setParameter("request", dto.getRequestedBy());
+		}
+		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
+		{
+			hq.setParameter("customer", dto.getCustomerId());
+			
+		}
+		if(!ServicesUtils.isEmpty(dto.getDistributionChannel()))
+		{
+			hq.setParameter("channel", dto.getDistributionChannel());
+			
+		}
+		if(!ServicesUtils.isEmpty(dto.getDivision()))
+		{
+			hq.setParameter("division", dto.getDivision());
+			
+		}
+		if(!ServicesUtils.isEmpty(dto.getSalesOrg()))
+		{
+			hq.setParameter("salesOrg", dto.getSalesOrg());
+		}
+		list=hq.getResultList();
+		
+		
+		int start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+		 int end = (start + pageable.getPageSize()) > list.size() ? list.size() : (pageable.getPageSize() * pageable.getPageNumber());
+			Page<ReturnRequestHeader>page= new PageImpl<>(list.subList(start, end),pageable,list.size());
+		 return ResponseEntity.ok().body(page);
+		
+		 //Only By Return RequestNUmber
+//		 if(!ServicesUtils.isEmpty(dto.getReturnReqNumber()))
+//	         {
+//		
+//	                  Page<ReturnRequestHeader>list=returnHeaderRepo.findAll1(dto.getReturnReqNumber(),pageable);
+//		              return ResponseEntity.ok().body(list);
+//	        }
+//		 
+//		 
+//		 
+//		 
+//		 
+//		 //ALl
+//		 if(!ServicesUtils.isEmpty(dto.getCustomerId())&&!ServicesUtils.isEmpty(dto.getDistributionChannel())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getSalesOrg())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//		 
+//		 {
+//			 
+//			 Page<ReturnRequestHeader>list=returnHeaderRepo.findByAll(dto.getCustomerId(),dto.getDistributionChannel(),dto.getDivision(),dto.getReturnReason(),dto.getSalesOrg(),dto.getCreatedDate(),pageable);
+//				return ResponseEntity.ok().body(list);
+//			 
+//		 }//without createdDate
+//		 else if(!ServicesUtils.isEmpty(dto.getCustomerId())&&!ServicesUtils.isEmpty(dto.getDistributionChannel())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getSalesOrg()))
+//			 {
+//			 
+//			 Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5C(dto.getCustomerId(),dto.getDistributionChannel(),dto.getDivision(),dto.getReturnReason(),dto.getSalesOrg(),pageable);
+//				return ResponseEntity.ok().body(list);
+//			 
+//			 
+//			 
+//			 
+//		   }//without customerId
+//		 else if(!ServicesUtils.isEmpty(dto.getDistributionChannel())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getSalesOrg())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//		 {
+//		 
+//		 Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5Cu(dto.getDistributionChannel(),dto.getDivision(),dto.getReturnReason(),dto.getSalesOrg(),dto.getCreatedDate(),pageable);
+//			return ResponseEntity.ok().body(list);
+//		 
+//		 
+//		 
+//		 
+//	   }//without Channel
+//	   else if(!ServicesUtils.isEmpty(dto.getCustomerId())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getSalesOrg())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//			 
+//		 {
+//			 
+//			 Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5Cha(dto.getCustomerId(),dto.getDivision(),dto.getReturnReason(),dto.getSalesOrg(),dto.getCreatedDate(),pageable);
+//				return ResponseEntity.ok().body(list);
+//			 
+//				
+//				
+//		 }
+//		 //without divison
+//	    else if(!ServicesUtils.isEmpty(dto.getCustomerId())&&!ServicesUtils.isEmpty(dto.getDistributionChannel())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getSalesOrg())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//		 {
+//			 Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5Div(dto.getCustomerId(),dto.getDistributionChannel(),dto.getReturnReason(),dto.getSalesOrg(),dto.getCreatedDate(),pageable);
+//				return ResponseEntity.ok().body(list);
+//		 }//without returnReason
+//	    else if(!ServicesUtils.isEmpty(dto.getCustomerId())&&!ServicesUtils.isEmpty(dto.getDistributionChannel())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getSalesOrg())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//	    { 
+//	    	Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5R(dto.getCustomerId(),dto.getDistributionChannel(),dto.getDivision(),dto.getSalesOrg(),dto.getCreatedDate(),pageable);
+//			return ResponseEntity.ok().body(list);
+//		 
+//	    }//withoutSales
+//	    else if(!ServicesUtils.isEmpty(dto.getCustomerId())&&!ServicesUtils.isEmpty(dto.getDistributionChannel())&& !ServicesUtils.isEmpty(dto.getDivision())&&!ServicesUtils.isEmpty(dto.getReturnReason())&&!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//	    {
+//	    	Page<ReturnRequestHeader>list=returnHeaderRepo.findAll5S(dto.getCustomerId(),dto.getDistributionChannel(),dto.getDivision(),dto.getReturnReason(),dto.getCreatedDate(),pageable);
+//			return ResponseEntity.ok().body(list);
+//	    }
+//		 
+//		 //Divison+Channel
+//		 
+//		if(!ServicesUtils.isEmpty(dto.getDivision())) {
+//			
+//		if(!ServicesUtils.isEmpty(dto.getDistributionChannel()))
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAll(dto.getDivision(),dto.getDistributionChannel(),pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		else
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllD(dto.getDivision(),pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		}
+//		
+//		
+//		
+//		//Only SalesOrg
+//		if(!ServicesUtils.isEmpty(dto.getSalesOrg()))
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllS(dto.getSalesOrg(), pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		
+//		
+//		//Only CustomerId
+//		
+//		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllC(dto.getCustomerId(), pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		
+//		//Only division
+//		if(!ServicesUtils.isEmpty(dto.getDivision())){
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllD(dto.getDivision(),pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		
+//		//Only CreatedDate
+//		if(!ServicesUtils.isEmpty(dto.getCreatedDate()))
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllD(dto.getCreatedDate(), pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//		
+////		if(!ServicesUtils.isEmpty(dto.getReturnReason()))
+////		{
+////			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllR(dto.getReturnReason(), pageable);
+////			return ResponseEntity.ok().body(list);
+////		}
+//		if(!ServicesUtils.isEmpty(dto.getDistributionChannel()))
+//		{
+//			Page<ReturnRequestHeader>list=returnHeaderRepo.findAllCha(dto.getDistributionChannel(), pageable);
+//			return ResponseEntity.ok().body(list);
+//		}
+//
+//		
+		
+	}
+
+
 		
 }
-=======
-package com.incture.cherrywork.services;
 
 
 
-import org.springframework.http.ResponseEntity;
 
-import com.incture.cherrywork.dtos.ReturnFilterDto;
-
-
-
-public interface ReturnRequestHeaderService {
 
 	
 
 	
 
-	  ResponseEntity<Object> listAllReturnReqHeaders();
-	  ResponseEntity<Object> listAllReturn(ReturnFilterDto dto);
-	//public ResponseEntity<Object> getReturnReqHeaderById(String returnReqNum);
-	  ResponseEntity<Object> findAll(int pageNo);
-
-	//public ResponseEntity<Object> deleteReturnReqHeaderById(String returnReqNum);
-
-}
-
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+	  

@@ -1223,19 +1223,19 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		return salesOrderHeaderRepository.updateError(dto.getTemp_id(), dto.getValue(), docType);
 	}
 
-<<<<<<< HEAD
-	@Override
-	public ResponseEntity<Object> getByObd(String obdId) {
 
-		try {
-			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
-
-			return ResponseEntity.ok().body(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
-		}
-	}
+//	@Override
+//	public ResponseEntity<Object> getByObd(String obdId) {
+//
+//		try {
+//			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
+//
+//			return ResponseEntity.ok().body(result);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return ResponseEntity.badRequest().build();
+//		}
+//	}
 
 	public ResponseEntity<Object> getList() {
 		String query = "from SalesOrderHeader s   order by s.postingDate desc";
@@ -1280,21 +1280,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		q2.setParameter("s4docId", list1.get(0).getS4DocumentId());
 		List<SalesOrderItem> list2 = q2.getResultList();
 		System.err.println("list2 size " + list2.size());
-=======
-		@Override
-		public ResponseEntity<Object> getSOData(HeaderIdDto dto) {
-		  try{
-			  TrackSOUIDto dt= repo.getSOData(dto);
-			  return ResponseEntity.ok().body(dt);
-		  }
-		  catch(Exception e){
-			  return null; 
-		  }
-		
-		}
 
-		
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
+
 
 		
 		List<SalesOrderItemDto> result = new ArrayList<>();
