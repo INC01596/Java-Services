@@ -165,10 +165,7 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
 	}
 	
-	@PostMapping("/getByObd")
-    public ResponseEntity<Object> getByObd(@RequestParam String obdId) {
-        return salesOrderHeaderService.getByObd(obdId);
-    }
+	
 	@GetMapping("/getList")
 	public ResponseEntity<Object> getList(){
 		return salesOrderHeaderService.getList();

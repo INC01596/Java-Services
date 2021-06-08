@@ -1,7 +1,5 @@
 package com.incture.cherrywork.services;
 
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,8 +37,6 @@ import org.cloudfoundry.identity.uaa.oauth.token.CompositeAccessToken;
 //import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-
-
 import com.incture.cherrywork.sales.constants.SalesOrderOdataConstants;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
@@ -49,29 +45,33 @@ import com.incture.cherrywork.util.ReturnExchangeConstants;
 @Service
 public class SalesOrderOdataUtilService {
 
-	//private static Logger logger = LoggerFactory.getLogger(OdataUtilService.class);
+	// private static Logger logger =
+	// LoggerFactory.getLogger(OdataUtilService.class);
 
 	public static String callOdata(String URL, String methodType, String body, String csrfToken) {
-		//logger.debug("[OdataUtilService][callOdata] Started");
+		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
-			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize").tokenPath("/oauth/token");
+			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
+					.tokenPath("/oauth/token");
 			TokenRequest tokenRequest = factory.tokenRequest();
 			tokenRequest.setGrantType(GrantType.CLIENT_CREDENTIALS);
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
 			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
 				CompositeAccessToken accessToken = xsuaaContext.getToken();
 				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL);
 				HttpURLConnection conn_GET = (HttpURLConnection) proxyURL_GET.openConnection(proxy);
-				//logger.debug("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
+				// logger.debug("[OdataUtilService][callOdata] connection GET :
+				// " + conn_GET.toString());
 				System.err.println("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
 				conn_GET.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 				conn_GET.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
@@ -79,10 +79,10 @@ public class SalesOrderOdataUtilService {
 						"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
 				conn_GET.setRequestProperty("x-csrf-token", "fetch");
 				conn_GET.setRequestMethod("GET");
-				conn_GET.connect();   //Timed out on console.
-				
-				
-				//logger.debug("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
+				conn_GET.connect(); // Timed out on console.
+
+				// logger.debug("[OdataUtilService][callOdata] GET response code
+				// : " + conn_GET.getResponseCode());
 				System.err.println("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
 				if (conn_GET.getResponseCode() == HttpURLConnection.HTTP_OK) {
 					System.out.println("in [callOdata] response code is 200 and setting x-csrf-token and cookie..");
@@ -91,30 +91,32 @@ public class SalesOrderOdataUtilService {
 				}
 				conn_GET.disconnect();
 			}
-			//logger.debug("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
-			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
+			// logger.debug("[OdataUtilService][callOdata] csrf, cookie : " +
+			// XCSRF+" : "+cookie);
+			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF + " : " + cookie);
 			CompositeAccessToken accessToken = xsuaaContext.getToken();
 			URL requestURL = new URL(URL);
-			//logger.debug("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
-			
+			// logger.debug("[OdataUtilService][callOdata] proxyURL : " +
+			// requestURL.toString());
+
 			System.err.println("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
 			HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection(proxy);
-			//logger.debug("[OdataUtilService][callOdata] connection : " + conn.toString());
+			// logger.debug("[OdataUtilService][callOdata] connection : " +
+			// conn.toString());
 			System.err.println("[OdataUtilService][callOdata] connection : " + conn.toString());
-			
-			
-			//Here prints 407
-			//System.err.println("[OdataUtilService][callOdata] first conn response code : " + conn.getResponseCode());
+
+			// Here prints 407
+			// System.err.println("[OdataUtilService][callOdata] first conn
+			// response code : " + conn.getResponseCode());
 			conn.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
 			conn.setRequestProperty("Authorization",
 					"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
-			if (methodType.equals("POST")){
+			if (methodType.equals("POST")) {
 				System.out.println("[callodata] x-csrf-token and cookie setting again..");
 				conn.setRequestProperty("x-csrf-token", XCSRF);
 				conn.setRequestProperty("Cookie", cookie);
-			}
-			else
+			} else
 				conn.setRequestProperty("x-csrf-token", "fetch");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
@@ -123,78 +125,90 @@ public class SalesOrderOdataUtilService {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Cache-Control", "no-cache");
 			conn.connect();
-			//System.err.println("[OdataUtilService][callOdata] second conn response code : " + conn.getResponseCode());
+			// System.err.println("[OdataUtilService][callOdata] second conn
+			// response code : " + conn.getResponseCode());
 			if (methodType.equals("POST")) {
 				try (OutputStream os = conn.getOutputStream()) {
 					os.write(body.getBytes());
 					System.out.println("in [callodata] body writing byte by byte..");
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
+					// logger.error("[OdataUtilService][PostCall] Exception in
+					// OutputStream: " + e.getMessage());
 					System.err.println("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
-			//\System.err.println("[OdataUtilService][callOdata] third conn response code : " + conn.getResponseCode());
+			// \System.err.println("[OdataUtilService][callOdata] third conn
+			// response code : " + conn.getResponseCode());
 			if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 207) {
 				System.out.println("[in call odata] again conn-code is 200..");
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 					String responseLine = null;
-					
-					System.out.println("in[call odata] reading inputstream on conn br: "+br.toString());
+
+					System.out.println("in[call odata] reading inputstream on conn br: " + br.toString());
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
-					System.err.println("response line reading inputstream on Http URL COnnection: "+responseLine);
+					System.err.println("response line reading inputstream on Http URL COnnection: " + responseLine);
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: "+br.toString());
+					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: " + br.toString());
 					String responseLine = null;
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
 			conn.disconnect();
 		} catch (Exception e) {
-			//logger.error("[OdataUtilService][callOdata] Exception : " + e.getMessage());
+			// logger.error("[OdataUtilService][callOdata] Exception : " +
+			// e.getMessage());
 			System.err.println("[OdataUtilService][callOdata] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
-		//logger.debug("[OdataUtilService][callOdata] Closed : " + response.toString());
+		// logger.debug("[OdataUtilService][callOdata] Closed : " +
+		// response.toString());
 		System.err.println("[OdataUtilService][callOdata] Closed : " + response.toString());
 		return response.toString();
 	}
-	
+
 	public static String callOdataObd(String URL, String methodType, String body, String csrfToken) {
-		//logger.debug("[OdataUtilService][callOdata] Started");
+		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
-			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize").tokenPath("/oauth/token");
+			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
+					.tokenPath("/oauth/token");
 			TokenRequest tokenRequest = factory.tokenRequest();
 			tokenRequest.setGrantType(GrantType.CLIENT_CREDENTIALS);
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
 			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
 				CompositeAccessToken accessToken = xsuaaContext.getToken();
 				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL_OBD);
 				HttpURLConnection conn_GET = (HttpURLConnection) proxyURL_GET.openConnection(proxy);
-				//logger.debug("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
+				// logger.debug("[OdataUtilService][callOdata] connection GET :
+				// " + conn_GET.toString());
 				System.err.println("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
 				conn_GET.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 				conn_GET.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
@@ -202,10 +216,10 @@ public class SalesOrderOdataUtilService {
 						"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
 				conn_GET.setRequestProperty("x-csrf-token", "fetch");
 				conn_GET.setRequestMethod("GET");
-				conn_GET.connect();   //Timed out on console.
-				
-				
-				//logger.debug("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
+				conn_GET.connect(); // Timed out on console.
+
+				// logger.debug("[OdataUtilService][callOdata] GET response code
+				// : " + conn_GET.getResponseCode());
 				System.err.println("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
 				if (conn_GET.getResponseCode() == HttpURLConnection.HTTP_OK) {
 					System.out.println("in [callOdata] response code is 200 and setting x-csrf-token and cookie..");
@@ -214,30 +228,32 @@ public class SalesOrderOdataUtilService {
 				}
 				conn_GET.disconnect();
 			}
-			//logger.debug("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
-			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
+			// logger.debug("[OdataUtilService][callOdata] csrf, cookie : " +
+			// XCSRF+" : "+cookie);
+			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF + " : " + cookie);
 			CompositeAccessToken accessToken = xsuaaContext.getToken();
 			URL requestURL = new URL(URL);
-			//logger.debug("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
-			
+			// logger.debug("[OdataUtilService][callOdata] proxyURL : " +
+			// requestURL.toString());
+
 			System.err.println("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
 			HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection(proxy);
-			//logger.debug("[OdataUtilService][callOdata] connection : " + conn.toString());
+			// logger.debug("[OdataUtilService][callOdata] connection : " +
+			// conn.toString());
 			System.err.println("[OdataUtilService][callOdata] connection : " + conn.toString());
-			
-			
-			//Here prints 407
-			//System.err.println("[OdataUtilService][callOdata] first conn response code : " + conn.getResponseCode());
+
+			// Here prints 407
+			// System.err.println("[OdataUtilService][callOdata] first conn
+			// response code : " + conn.getResponseCode());
 			conn.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
 			conn.setRequestProperty("Authorization",
 					"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
-			if (methodType.equals("POST")){
+			if (methodType.equals("POST")) {
 				System.out.println("[callodata] x-csrf-token and cookie setting again..");
 				conn.setRequestProperty("x-csrf-token", XCSRF);
 				conn.setRequestProperty("Cookie", cookie);
-			}
-			else
+			} else
 				conn.setRequestProperty("x-csrf-token", "fetch");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
@@ -246,78 +262,90 @@ public class SalesOrderOdataUtilService {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Cache-Control", "no-cache");
 			conn.connect();
-			//System.err.println("[OdataUtilService][callOdata] second conn response code : " + conn.getResponseCode());
+			// System.err.println("[OdataUtilService][callOdata] second conn
+			// response code : " + conn.getResponseCode());
 			if (methodType.equals("POST")) {
 				try (OutputStream os = conn.getOutputStream()) {
 					os.write(body.getBytes());
 					System.out.println("in [callodata] body writing byte by byte..");
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
+					// logger.error("[OdataUtilService][PostCall] Exception in
+					// OutputStream: " + e.getMessage());
 					System.err.println("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
-			//\System.err.println("[OdataUtilService][callOdata] third conn response code : " + conn.getResponseCode());
+			// \System.err.println("[OdataUtilService][callOdata] third conn
+			// response code : " + conn.getResponseCode());
 			if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 207) {
 				System.out.println("[in call odata] again conn-code is 200..");
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 					String responseLine = null;
-					
-					System.out.println("in[call odata] reading inputstream on conn br: "+br.toString());
+
+					System.out.println("in[call odata] reading inputstream on conn br: " + br.toString());
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
-					System.err.println("response line reading inputstream on Http URL COnnection: "+responseLine);
+					System.err.println("response line reading inputstream on Http URL COnnection: " + responseLine);
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: "+br.toString());
+					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: " + br.toString());
 					String responseLine = null;
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
 			conn.disconnect();
 		} catch (Exception e) {
-			//logger.error("[OdataUtilService][callOdata] Exception : " + e.getMessage());
+			// logger.error("[OdataUtilService][callOdata] Exception : " +
+			// e.getMessage());
 			System.err.println("[OdataUtilService][callOdata] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
-		//logger.debug("[OdataUtilService][callOdata] Closed : " + response.toString());
+		// logger.debug("[OdataUtilService][callOdata] Closed : " +
+		// response.toString());
 		System.err.println("[OdataUtilService][callOdata] Closed : " + response.toString());
 		return response.toString();
 	}
 
 	public static String callOdataSch(String URL, String methodType, String body, String csrfToken) {
-		//logger.debug("[OdataUtilService][callOdata] Started");
+		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
-			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize").tokenPath("/oauth/token");
+			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
+					.tokenPath("/oauth/token");
 			TokenRequest tokenRequest = factory.tokenRequest();
 			tokenRequest.setGrantType(GrantType.CLIENT_CREDENTIALS);
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
 			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
 				CompositeAccessToken accessToken = xsuaaContext.getToken();
 				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL_SCH);
 				HttpURLConnection conn_GET = (HttpURLConnection) proxyURL_GET.openConnection(proxy);
-				//logger.debug("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
+				// logger.debug("[OdataUtilService][callOdata] connection GET :
+				// " + conn_GET.toString());
 				System.err.println("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
 				conn_GET.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 				conn_GET.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
@@ -325,10 +353,10 @@ public class SalesOrderOdataUtilService {
 						"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
 				conn_GET.setRequestProperty("x-csrf-token", "fetch");
 				conn_GET.setRequestMethod("GET");
-				conn_GET.connect();   //Timed out on console.
-				
-				
-				//logger.debug("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
+				conn_GET.connect(); // Timed out on console.
+
+				// logger.debug("[OdataUtilService][callOdata] GET response code
+				// : " + conn_GET.getResponseCode());
 				System.err.println("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
 				if (conn_GET.getResponseCode() == HttpURLConnection.HTTP_OK) {
 					System.out.println("in [callOdata] response code is 200 and setting x-csrf-token and cookie..");
@@ -337,30 +365,32 @@ public class SalesOrderOdataUtilService {
 				}
 				conn_GET.disconnect();
 			}
-			//logger.debug("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
-			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
+			// logger.debug("[OdataUtilService][callOdata] csrf, cookie : " +
+			// XCSRF+" : "+cookie);
+			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF + " : " + cookie);
 			CompositeAccessToken accessToken = xsuaaContext.getToken();
 			URL requestURL = new URL(URL);
-			//logger.debug("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
-			
+			// logger.debug("[OdataUtilService][callOdata] proxyURL : " +
+			// requestURL.toString());
+
 			System.err.println("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
 			HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection(proxy);
-			//logger.debug("[OdataUtilService][callOdata] connection : " + conn.toString());
+			// logger.debug("[OdataUtilService][callOdata] connection : " +
+			// conn.toString());
 			System.err.println("[OdataUtilService][callOdata] connection : " + conn.toString());
-			
-			
-			//Here prints 407
-			//System.err.println("[OdataUtilService][callOdata] first conn response code : " + conn.getResponseCode());
+
+			// Here prints 407
+			// System.err.println("[OdataUtilService][callOdata] first conn
+			// response code : " + conn.getResponseCode());
 			conn.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
 			conn.setRequestProperty("Authorization",
 					"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
-			if (methodType.equals("POST")){
+			if (methodType.equals("POST")) {
 				System.out.println("[callodata] x-csrf-token and cookie setting again..");
 				conn.setRequestProperty("x-csrf-token", XCSRF);
 				conn.setRequestProperty("Cookie", cookie);
-			}
-			else
+			} else
 				conn.setRequestProperty("x-csrf-token", "fetch");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
@@ -369,78 +399,91 @@ public class SalesOrderOdataUtilService {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Cache-Control", "no-cache");
 			conn.connect();
-			//System.err.println("[OdataUtilService][callOdata] second conn response code : " + conn.getResponseCode());
+			// System.err.println("[OdataUtilService][callOdata] second conn
+			// response code : " + conn.getResponseCode());
 			if (methodType.equals("POST")) {
 				try (OutputStream os = conn.getOutputStream()) {
 					os.write(body.getBytes());
 					System.out.println("in [callodata] body writing byte by byte..");
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
+					// logger.error("[OdataUtilService][PostCall] Exception in
+					// OutputStream: " + e.getMessage());
 					System.err.println("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
-			//\System.err.println("[OdataUtilService][callOdata] third conn response code : " + conn.getResponseCode());
+			// \System.err.println("[OdataUtilService][callOdata] third conn
+			// response code : " + conn.getResponseCode());
 			if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 207) {
 				System.out.println("[in call odata] again conn-code is 200..");
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 					String responseLine = null;
-					
-					System.out.println("in[call odata] reading inputstream on conn br: "+br.toString());
+
+					System.out.println("in[call odata] reading inputstream on conn br: " + br.toString());
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
-					System.err.println("response line reading inputstream on Http URL COnnection: "+responseLine);
+					System.err.println("response line reading inputstream on Http URL COnnection: " + responseLine);
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: "+br.toString());
+					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: " + br.toString());
 					String responseLine = null;
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
 			conn.disconnect();
 		} catch (Exception e) {
-			//logger.error("[OdataUtilService][callOdata] Exception : " + e.getMessage());
+			// logger.error("[OdataUtilService][callOdata] Exception : " +
+			// e.getMessage());
 			System.err.println("[OdataUtilService][callOdata] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
-		//logger.debug("[OdataUtilService][callOdata] Closed : " + response.toString());
+		// logger.debug("[OdataUtilService][callOdata] Closed : " +
+		// response.toString());
 		System.err.println("[OdataUtilService][callOdata] Closed : " + response.toString());
 		return response.toString();
 	}
 
-	public static String callOdataReturnExchange(String URL, String methodType, String body, String csrfToken, String batchGuId) {
-		//logger.debug("[OdataUtilService][callOdata] Started");
+	public static String callOdataReturnExchange(String URL, String methodType, String body, String csrfToken,
+			String batchGuId) {
+		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
-			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize").tokenPath("/oauth/token");
+			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
+					.tokenPath("/oauth/token");
 			TokenRequest tokenRequest = factory.tokenRequest();
 			tokenRequest.setGrantType(GrantType.CLIENT_CREDENTIALS);
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
 			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
 				CompositeAccessToken accessToken = xsuaaContext.getToken();
 				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL_RETURN);
 				HttpURLConnection conn_GET = (HttpURLConnection) proxyURL_GET.openConnection(proxy);
-				//logger.debug("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
+				// logger.debug("[OdataUtilService][callOdata] connection GET :
+				// " + conn_GET.toString());
 				System.err.println("[OdataUtilService][callOdata] connection GET : " + conn_GET.toString());
 				conn_GET.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 				conn_GET.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
@@ -448,10 +491,10 @@ public class SalesOrderOdataUtilService {
 						"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
 				conn_GET.setRequestProperty("x-csrf-token", "fetch");
 				conn_GET.setRequestMethod("GET");
-				conn_GET.connect();   //Timed out on console.
-				
-				
-				//logger.debug("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
+				conn_GET.connect(); // Timed out on console.
+
+				// logger.debug("[OdataUtilService][callOdata] GET response code
+				// : " + conn_GET.getResponseCode());
 				System.err.println("[OdataUtilService][callOdata] GET response code : " + conn_GET.getResponseCode());
 				if (conn_GET.getResponseCode() == HttpURLConnection.HTTP_OK) {
 					System.out.println("in [callOdata] response code is 200 and setting x-csrf-token and cookie..");
@@ -460,30 +503,32 @@ public class SalesOrderOdataUtilService {
 				}
 				conn_GET.disconnect();
 			}
-			//logger.debug("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
-			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF+" : "+cookie);
+			// logger.debug("[OdataUtilService][callOdata] csrf, cookie : " +
+			// XCSRF+" : "+cookie);
+			System.err.println("[OdataUtilService][callOdata] csrf, cookie : " + XCSRF + " : " + cookie);
 			CompositeAccessToken accessToken = xsuaaContext.getToken();
 			URL requestURL = new URL(URL);
-			//logger.debug("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
-			
+			// logger.debug("[OdataUtilService][callOdata] proxyURL : " +
+			// requestURL.toString());
+
 			System.err.println("[OdataUtilService][callOdata] proxyURL : " + requestURL.toString());
 			HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection(proxy);
-			//logger.debug("[OdataUtilService][callOdata] connection : " + conn.toString());
+			// logger.debug("[OdataUtilService][callOdata] connection : " +
+			// conn.toString());
 			System.err.println("[OdataUtilService][callOdata] connection : " + conn.toString());
-			
-			
-			//Here prints 407
-			//System.err.println("[OdataUtilService][callOdata] first conn response code : " + conn.getResponseCode());
+
+			// Here prints 407
+			// System.err.println("[OdataUtilService][callOdata] first conn
+			// response code : " + conn.getResponseCode());
 			conn.setRequestProperty("Proxy-Authorization", "Bearer " + accessToken);
 			conn.setRequestProperty("SAP-Connectivity-SCC-Location_ID", SalesOrderOdataConstants.LOCATION);
 			conn.setRequestProperty("Authorization",
 					"BASIC " + javax.xml.bind.DatatypeConverter.printBase64Binary(userPassword.getBytes()));
-			if (methodType.equals("POST")){
+			if (methodType.equals("POST")) {
 				System.out.println("[callodata] x-csrf-token and cookie setting again..");
 				conn.setRequestProperty("x-csrf-token", XCSRF);
 				conn.setRequestProperty("Cookie", cookie);
-			}
-			else
+			} else
 				conn.setRequestProperty("x-csrf-token", "fetch");
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
@@ -492,118 +537,126 @@ public class SalesOrderOdataUtilService {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Cache-Control", "no-cache");
 			conn.connect();
-			//System.err.println("[OdataUtilService][callOdata] second conn response code : " + conn.getResponseCode());
+			// System.err.println("[OdataUtilService][callOdata] second conn
+			// response code : " + conn.getResponseCode());
 			if (methodType.equals("POST")) {
 				try (OutputStream os = conn.getOutputStream()) {
 					os.write(body.getBytes());
 					System.out.println("in [callodata] body writing byte by byte..");
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
+					// logger.error("[OdataUtilService][PostCall] Exception in
+					// OutputStream: " + e.getMessage());
 					System.err.println("[OdataUtilService][PostCall] Exception in OutputStream: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
-			//\System.err.println("[OdataUtilService][callOdata] third conn response code : " + conn.getResponseCode());
+			// \System.err.println("[OdataUtilService][callOdata] third conn
+			// response code : " + conn.getResponseCode());
 			if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 207) {
 				System.out.println("[in call odata] again conn-code is 200..");
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
 					String responseLine = null;
-					
-					System.out.println("in[call odata] reading inputstream on conn br: "+br.toString());
+
+					System.out.println("in[call odata] reading inputstream on conn br: " + br.toString());
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
-					System.err.println("response line reading inputstream on Http URL COnnection: "+responseLine);
+					System.err.println("response line reading inputstream on Http URL COnnection: " + responseLine);
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream in if: " + e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()))) {
-					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: "+br.toString());
+					System.out.println("in [callodata] again conn-code is not 200 and br(error) is: " + br.toString());
 					String responseLine = null;
 					while ((responseLine = br.readLine()) != null) {
 						response.append(responseLine.trim());
 					}
 				} catch (Exception e) {
-					//logger.error("[OdataUtilService][callOdata] Exception in InputStream: " + e.getMessage());
-					System.err.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
+					// logger.error("[OdataUtilService][callOdata] Exception in
+					// InputStream: " + e.getMessage());
+					System.err
+							.println("[OdataUtilService][callOdata] Exception in InputStream else: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
 			conn.disconnect();
 		} catch (Exception e) {
-			//logger.error("[OdataUtilService][callOdata] Exception : " + e.getMessage());
+			// logger.error("[OdataUtilService][callOdata] Exception : " +
+			// e.getMessage());
 			System.err.println("[OdataUtilService][callOdata] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
-		//logger.debug("[OdataUtilService][callOdata] Closed : " + response.toString());
+		// logger.debug("[OdataUtilService][callOdata] Closed : " +
+		// response.toString());
 		System.err.println("[OdataUtilService][callOdata] Closed : " + response.toString());
 		return response.toString();
 	}
 
-public static String roBatchPost(String batchRequest, String batchGuid, String endPoint) throws IOException {
-		
+	public static String roBatchPost(String batchRequest, String batchGuid, String endPoint) throws IOException {
+
+		String responseFromECC = null;
+
 		try {
-		
-			
-			
+
 			String proxyHost = "connectivityproxy.internal.cf.eu10.hana.ondemand.com";
-					//System.getenv("HC_OP_HTTP_PROXY_HOST");
+			// System.getenv("HC_OP_HTTP_PROXY_HOST");
 			System.err.println("proxyHost-- " + proxyHost);
 
 			int proxyPort = 20003;
-					//Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
+			// Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
 			System.err.println("proxyPort-- " + proxyPort);
-			
-			//JSONObject jsonObj = new JSONObject(System.getenv("VCAP_SERVICES"));
-			
-			//System.err.println("116 - jsonObj =" + jsonObj);
-			
-			//JSONArray jsonArr = jsonObj.getJSONArray("<service name, not the instance name>"); JSONObject credentials = jsonArr.getJSONObject(0).getJSONObject("credentials");
-			
+
+			// JSONObject jsonObj = new
+			// JSONObject(System.getenv("VCAP_SERVICES"));
+
+			// System.err.println("116 - jsonObj =" + jsonObj);
+
+			// JSONArray jsonArr = jsonObj.getJSONArray("<service name, not the
+			// instance name>"); JSONObject credentials =
+			// jsonArr.getJSONObject(0).getJSONObject("credentials");
+
 			Map<String, Object> map = DestinationReaderUtil
 					.getDestination(ReturnExchangeConstants.COM_ODATA_DESTINATION_NAME);
-			
-			        String jwToken = DestinationReaderUtil.getConectivityProxy();
-			        
-			        
+
+			String jwToken = DestinationReaderUtil.getConectivityProxy();
 
 			String url = map.get("URL") + endPoint;
 			System.err.println("url-- " + url);
 			CredentialsProvider credsProvider = new BasicCredentialsProvider();
-			
-		credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
-					    new UsernamePasswordCredentials( (String) map.get("User"), (String) map.get("Password"))); 
-			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-			
-			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
-			   .setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
-			   .setDefaultCredentialsProvider(credsProvider) 
-			   .disableCookieManagement();
-			
-			HttpClient client = clientBuilder.build();
-			
-			System.err.println( "client "+ client);
 
-		
+			credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
+					new UsernamePasswordCredentials((String) map.get("User"), (String) map.get("Password")));
+			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+
+			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
+					.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+					.setDefaultCredentialsProvider(credsProvider).disableCookieManagement();
+
+			HttpClient client = clientBuilder.build();
+
+			System.err.println("client " + client);
 
 			// Hard-Coded salesDocument for Testing
 			String tokenUrl = "/sap/opu/odata/sap/ZCOM_RETURNS_MANAGEMENT_SRV/orderHeaderSet('0060000244')?$expand=OrderHdrToOrderItem&$format=json";
 			// http://kuldb11d.dksh.com:8005/sap/opu/odata/sap/ZDKSH_CC_RETURNS_MANAGEMENT_SRV/orderHeaderSet(salesDocument='5700000629')?$expand=OrderHdrToOrderItem&$format=json
 
-			
 			map.forEach((k, v) -> System.err.println((k + ":" + v)));
 
 			// Get SharePoint Access Token
-//			Header[] headers = getAccessToken((String) map.get("URL") + tokenUrl, (String) map.get("User"),
-//					(String) map.get("Password"), client, tenantctx, proxyHost, proxyPort,
-//					(String) map.get("sap-client"));
-			
+			// Header[] headers = getAccessToken((String) map.get("URL") +
+			// tokenUrl, (String) map.get("User"),
+			// (String) map.get("Password"), client, tenantctx, proxyHost,
+			// proxyPort,
+			// (String) map.get("sap-client"));
+
 			Header[] headers = getAccessToken((String) map.get("URL") + tokenUrl, (String) map.get("User"),
-					(String) map.get("Password"), client, proxyHost, proxyPort,
-					(String) map.get("sap-client"),jwToken);
+					(String) map.get("Password"), client, proxyHost, proxyPort, (String) map.get("sap-client"),
+					jwToken);
 
 			/*
 			 * Header[] headers = getAccessToken(map.get("URL") + tokenUrl,
@@ -616,9 +669,10 @@ public static String roBatchPost(String batchRequest, String batchGuid, String e
 			if (headers.length != 0) {
 
 				HttpPost httpPost = new HttpPost(url);
-//				if (tenantctx != null) {
-//					httpPost.addHeader("SAP-Connectivity-ConsumerAccount", tenantctx.getTenant().getAccount().getId());
-//				}
+				// if (tenantctx != null) {
+				// httpPost.addHeader("SAP-Connectivity-ConsumerAccount",
+				// tenantctx.getTenant().getAccount().getId());
+				// }
 				String token = null;
 				List<String> cookies = new ArrayList<>();
 				for (Header header : headers) {
@@ -635,14 +689,14 @@ public static String roBatchPost(String batchRequest, String batchGuid, String e
 				}
 
 				if (token == null) {
-					return "xsrf-token failed to fetch ";
+					System.err.println("xsrf-token failed to fetch ");
 				}
 
 				String auth = HelperClass.encodeUsernameAndPassword((String) map.get("User"),
 						(String) map.get("Password"));
 				httpPost.addHeader("Authorization", auth);
-				httpPost.setHeader("Proxy-Authorization","Bearer " +jwToken);
-				httpPost.addHeader("SAP-Connectivity-SCC-Location_ID","incture");
+				httpPost.setHeader("Proxy-Authorization", "Bearer " + jwToken);
+				httpPost.addHeader("SAP-Connectivity-SCC-Location_ID", "incture");
 				System.err.println("Token for update in ECC : " + token);
 
 				if (token != null) {
@@ -679,52 +733,49 @@ public static String roBatchPost(String batchRequest, String batchGuid, String e
 
 				// HttpResponse response = client.execute(httpPost);
 
-				String responseFromECC = HelperClass.getDataFromStream(response.getEntity().getContent());
+				responseFromECC = HelperClass.getDataFromStream(response.getEntity().getContent());
 
 				System.err.println("> responseFromECC : " + responseFromECC);
 
-				return responseFromECC;
 			} else {
 				System.err.println("> Failed to execute due to no Headers.");
-				return "Failed to execute due to no xscrf token found";
+
 			}
 
 		} catch (Exception e) {
-               System.err.println("failed due to "+ e);
-			return "failed due to " + e;
+			System.err.println("failed due to Exception" + e);
+			
 		}
+		return responseFromECC;
 
 	}
-private static Header[] getAccessToken(String url, String username, String password, HttpClient client,
-		String proxyHost, int proxyPort, String sapClient,String token)
-		throws ClientProtocolException, IOException {
 
+	private static Header[] getAccessToken(String url, String username, String password, HttpClient client,
+			String proxyHost, int proxyPort, String sapClient, String token)
+			throws ClientProtocolException, IOException {
 
-	HttpGet httpGet = new HttpGet(url);
-	
-   String userpass = username + ":" + password;
-   
-   httpGet.setHeader("Proxy-Authorization","Bearer " +token);
-    httpGet.setHeader(HttpHeaders.AUTHORIZATION,
-                                    "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes()));
-	// Encoding username and password
-	httpGet.addHeader("X-CSRF-Token", "Fetch");
-	httpGet.addHeader("Content-Type", "application/json");
-	httpGet.addHeader("sap-client", sapClient);
-	httpGet.addHeader("SAP-Connectivity-SCC-Location_ID","incture");
+		HttpGet httpGet = new HttpGet(url);
 
+		String userpass = username + ":" + password;
 
-	HttpResponse response = client.execute(httpGet);
-	//HttpResponse response = client.execute( httpGet);
-	
-	System.err.println("313 response "+ response);
+		httpGet.setHeader("Proxy-Authorization", "Bearer " + token);
+		httpGet.setHeader(HttpHeaders.AUTHORIZATION,
+				"Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes()));
+		// Encoding username and password
+		httpGet.addHeader("X-CSRF-Token", "Fetch");
+		httpGet.addHeader("Content-Type", "application/json");
+		httpGet.addHeader("sap-client", sapClient);
+		httpGet.addHeader("SAP-Connectivity-SCC-Location_ID", "incture");
 
-	// HttpResponse response = client.execute(httpGet);
+		HttpResponse response = client.execute(httpGet);
+		// HttpResponse response = client.execute( httpGet);
 
-	return response.getAllHeaders();
+		System.err.println("313 response " + response);
 
-}
+		// HttpResponse response = client.execute(httpGet);
 
+		return response.getAllHeaders();
 
-	
+	}
+
 }

@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -229,7 +230,8 @@ public class SalesOrderOdataServices {
 			System.err.println("> batchContents :: " + batchContents);
 
 		} catch (Exception e) {
-			return "failed" + e;
+			return e.getMessage();
+			
 		}
 		// End of: Prepare Bulk Request Format for SharePoint Bulk-Insert-Query
 		// ----------------

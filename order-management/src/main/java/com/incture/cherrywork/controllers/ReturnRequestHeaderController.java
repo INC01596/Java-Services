@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.incture.cherrywork.controllers;
 
 import java.io.ByteArrayOutputStream;
@@ -19,8 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.incture.cherrywork.dtos.ReturnFilterDto;
 import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
 import com.incture.cherrywork.entities.Attachment;
 import com.incture.cherrywork.services.IAttachmentService;
@@ -34,10 +35,9 @@ public class ReturnRequestHeaderController {
 
 	@Autowired
 	private IReturnRequestHeaderService service;
-	
+
 	@Autowired
 	private IAttachmentService dbFileStorageService;
-
 
 	@PostMapping("/createReturnRequest/saveAsDraft")
 	@ApiOperation(value = "/createReturnRequest/saveAsDraft")
@@ -99,7 +99,7 @@ public class ReturnRequestHeaderController {
 		return baos.toByteArray();
 
 	}
-	
+
 	@DeleteMapping(value = "/deleteAttachment/{docId}")
 	@ApiOperation(value = "/deleteAttachment/{docId}")
 	public ResponseEntity<?> deleteAttachement(@PathVariable(name = "docId") String docId) {
@@ -115,51 +115,21 @@ public class ReturnRequestHeaderController {
 
 	}
 
-
-}
-=======
-package com.incture.cherrywork.controllers;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import com.incture.cherrywork.dtos.ReturnFilterDto;
-import com.incture.cherrywork.services.ReturnRequestHeaderService;
-
-
-
-@RestController
-@RequestMapping("/retReqHead")
-
-public class ReturnRequestHeaderController {
-
-	@Autowired
-	private ReturnRequestHeaderService services;
-
 	@GetMapping("/test")
 	public String test() {
 		return "Hello";
 	}
 
-	
-	@PostMapping("/list")
-	public ResponseEntity<Object> listAllReturnRequestHeaders(@RequestBody ReturnFilterDto dto) {
-		System.err.println("Inside ReturnRequestHeaders List");
-		System.err.println(dto.getReturnReqNumber());
-		System.err.println(dto.getPageNo());
-   return services.listAllReturnReqHeaders(dto);
+	@GetMapping("/getReturnOrder/Message/{returnReqNum}")
+	public ResponseEntity<Object> getMessageOfReturnOrderCreation(
+			@PathVariable(name = "returnReqNum") String returnReqNum) {
+		return service.getReturnOrderCreationMessage(returnReqNum);
 	}
 
+	@PostMapping("/list")
+	public ResponseEntity<?> listAllReturnRequestHeaders(@RequestBody ReturnFilterDto dto) {
+		System.err.println("Inside ReturnRequestHeaders List");
 
-
+		return service.listAllReturn(dto);
+	}
 }
-
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0

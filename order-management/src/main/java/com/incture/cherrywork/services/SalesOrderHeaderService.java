@@ -162,13 +162,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	// Sandeep
-	
-	
-	
-	
+
 	@Override
 	public ResponseEntity<Object> getByObd(String obdId) {
-		
+
 		try {
 			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
 
@@ -178,11 +175,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-
-		
-	
-
-
 
 	@Override
 	public ResponseEntity<Object> getHeaderById(HeaderIdDto dto) {
@@ -215,14 +207,17 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	@Override
-	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
+    public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 
-		Pageable pageable = PageRequest.of(dto.getPageNo() - 1, 10);
-		Page<SalesOrderHeader> p = repo.getManageService(dto, pageable);
-		return ResponseEntity.ok().body(p);
+ 
 
-	}
+        Pageable pageable = PageRequest.of(dto.getPageNo(), 10);
+    repo.getManageService(dto, pageable);
+        return ResponseEntity.ok().body(repo.getManageService(dto, pageable));
 
+ 
+
+    }
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 
@@ -1223,20 +1218,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		return salesOrderHeaderRepository.updateError(dto.getTemp_id(), dto.getValue(), docType);
 	}
 
-<<<<<<< HEAD
-	@Override
-	public ResponseEntity<Object> getByObd(String obdId) {
-
-		try {
-			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
-
-			return ResponseEntity.ok().body(result);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.badRequest().build();
-		}
-	}
-
 	public ResponseEntity<Object> getList() {
 		String query = "from SalesOrderHeader s   order by s.postingDate desc";
 		Query q1 = entityManager.createQuery(query);
@@ -1280,27 +1261,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		q2.setParameter("s4docId", list1.get(0).getS4DocumentId());
 		List<SalesOrderItem> list2 = q2.getResultList();
 		System.err.println("list2 size " + list2.size());
-=======
-		@Override
-		public ResponseEntity<Object> getSOData(HeaderIdDto dto) {
-		  try{
-			  TrackSOUIDto dt= repo.getSOData(dto);
-			  return ResponseEntity.ok().body(dt);
-		  }
-		  catch(Exception e){
-			  return null; 
-		  }
-		
-		}
 
-		
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
-
-		
 		List<SalesOrderItemDto> result = new ArrayList<>();
 
-		
-		
 		for (SalesOrderItem item1 : list2) {
 			SalesOrderItemDto item = ObjectMapperUtils.map(item1, SalesOrderItemDto.class);
 			String query3 = "from SalesOrderItem i where i.orderItemId=:oid";
@@ -1308,9 +1271,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			q3.setParameter("oid", item.getSalesItemId());
 			List<SalesOrderItem> list3 = q3.getResultList();
 			System.err.println("list3 size" + list3.size());
-			item.setOutBoundOrderId(list3.get(0).getOutBoundOrderId());
-			item.setPgiId(list3.get(0).getPgiId());
-			item.setInvId(list3.get(0).getInvId());
+			if (list3.size() > 0) {
+				item.setOutBoundOrderId(list3.get(0).getOutBoundOrderId());
+				item.setPgiId(list3.get(0).getPgiId());
+				item.setInvId(list3.get(0).getInvId());
+			}
 
 			result.add(item);
 		}

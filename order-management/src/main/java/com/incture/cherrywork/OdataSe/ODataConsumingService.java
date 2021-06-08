@@ -1,8 +1,5 @@
 package com.incture.cherrywork.OdataSe;
 
-
-
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -76,8 +73,6 @@ import com.incture.cherrywork.util.ServicesUtil;
 import com.incture.cherrywork.workflow.services.ApprovalworkflowTrigger;
 import com.incture.cherrywork.workflow.services.BlockTypeDeterminationService;
 
-
-
 /**
  * @author Mohit.Basak
  *
@@ -123,10 +118,10 @@ public class ODataConsumingService {
 
 	@Autowired
 	private BlockTypeDeterminationService btdService;
-	
+
 	@Autowired
 	private SessionFactory sf;
-	
+
 	private SequenceNumberGen seqNumGenRepo;
 
 	public void mainScheduler() {
@@ -136,7 +131,7 @@ public class ODataConsumingService {
 
 			Map<String, Object> destinationInfo = DestinationReaderUtil
 					.getDestination(Constants.ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME);
-			System.err.println( destinationInfo);
+			System.err.println("[scheduler controller][main scheduler]destinationInfo: " + destinationInfo);
 
 			// get list of salesOrder from Odata service using ODATA service1
 			String url1 = destinationInfo.get("URL") + createUrlToGetListOfSalesOrder();
@@ -156,6 +151,8 @@ public class ODataConsumingService {
 			System.err.println("STEP 3:First url generated for bringing list of SO = " + url1);
 
 			jsonObjectcontainingListOfSo = consumingOdataService(url1, "", "GET", destinationInfo);
+			System.err.println("[scheduler controller][main scheduler]jsonObjectcontainingListOfSo: "
+					+ jsonObjectcontainingListOfSo.toString());
 
 			schedulerLogService.saveInDB(new SchedulerTableDto(
 					"Sales orders came from First odata service : " + jsonObjectcontainingListOfSo.toString(),
@@ -430,20 +427,45 @@ public class ODataConsumingService {
 		 * "%27&$expand=NAVTOBLOCKEDORDER&$format=json";
 		 * 
 		 */
-		String odata = "/sap/opu/odata/sap/ZDKSH_CC_BLOCKED_SO_SRV/OrderSet?$"
-				+ "filter=(Sotype%20eq%20%27TG%27%20or%20Sotype%20eq%20%27COM%27%20or%20Sotype%20eq%20%27OR%27%20)%20"
-				+ "and%20Startdate%20eq%20datetime%27" + startDate + "%27%20and%20Enddate%20eq%20datetime%27" + endDate1
-				+ "%27%20and%20Starttime%20eq%20time%27" + startTime + "%27%20and%20Endtime%20eq%20time%27" + endTime
-				+ "%27&$expand=NAVTOBLOCKEDORDER&$format=json";
+		//Awadhesh Kumar This is combination of DKSH and what got from Sai for COM.
+		String odata = 
+				  "/sap/opu/odata/sap/ZCOM_CC_BLOCKED_SO_SRV/OrderSet?$"
+				  +
+				  "filter=(Sotype%20eq%20%27TG%27%20or%20Sotype%20eq%20%27COM%27%20or%20Sotype%20eq%20%27OR%27%20)%20"
+				  + "and%20Startdate%20eq%20datetime%27" + startDate +
+				  "%27%20and%20Enddate%20eq%20datetime%27" + endDate1 +
+				  "%27%20and%20Starttime%20eq%20time%27" + startTime +
+				  "%27%20and%20Endtime%20eq%20time%27" + endTime +
+				  "%27&$expand=NAVTOBLOCKEDORDER&$format=json";
+		//This was uncommented because of above one this got commented.
+				 
+		/*String odata = 
+						 * "/sap/opu/odata/sap/ZDKSH_CC_BLOCKED_SO_SRV/OrderSet?$"
+						 * +
+						 * "filter=(Sotype%20eq%20%27TG%27%20or%20Sotype%20eq%20%27COM%27%20or%20Sotype%20eq%20%27OR%27%20)%20"
+						 * + "and%20Startdate%20eq%20datetime%27" + startDate +
+						 * "%27%20and%20Enddate%20eq%20datetime%27" + endDate1 +
+						 * "%27%20and%20Starttime%20eq%20time%27" + startTime +
+						 * "%27%20and%20Endtime%20eq%20time%27" + endTime +
+						 * "%27&$expand=NAVTOBLOCKEDORDER&$format=json";
+						 */
+			//Awadhesh Kumar this got from Sai for COM.
+			/*String odata=	"/sap/opu/odata/sap/ZCOM_CC_BLOCKED_SO_SRV/OrderSet?$"
+				+ "filter=(Sotype eq 'TG' or Sotype eq 'COM' or Sotype eq 'OR' ) "
+				+ "and Startdate eq datetime'"+startDate+"' and "
+				+ "Enddate eq datetime'"+endDate1+"' and Starttime eq "
+				+ "time'"+startTime+"' and Endtime eq "
+				+ "time'"+endTime+"'&$expand=NAVTOBLOCKEDORDER&$format=json";*/
 
 		System.err.println("ODATA generated URL = " + odata);
 
-		schedulerLogService.saveInDB(new SchedulerTableDto(
+		ResponseEntity res1 = schedulerLogService.saveInDB(new SchedulerTableDto(
 				"First URL created for odata as malaysian time  : with startDate = " + startDate + " , endDate = "
 						+ endDate1 + " , startTime = " + startTime + " , endTime = " + endTime + " = Complete URL =   "
 
 						+ odata.toString(),
 				new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+		System.err.println("[odata consuming service] res1: " + res1.toString());
 		return odata;
 
 	}
@@ -469,10 +491,11 @@ public class ODataConsumingService {
 				SalesDocHeaderDto salesDocHeaderDto = new SalesDocHeaderDto();
 
 				salesDocHeaderDto.setSalesOrderNum(res.getString(DOC_NUMBER));
-//				if (!res.isNull("DocDate")) {
-//					salesDocHeaderDto.setSalesOrderDate(
-//							new BigInteger(ServicesUtil.dateConversionFromECC(res.getString("DocDate")).toString()));
-//				}
+				// if (!res.isNull("DocDate")) {
+				// salesDocHeaderDto.setSalesOrderDate(
+				// new
+				// BigInteger(ServicesUtil.dateConversionFromECC(res.getString("DocDate")).toString()));
+				// }
 				salesDocHeaderDto.setCreatedBy(res.getString("CreatedBy"));
 				salesDocHeaderDto.setOrderCategory(res.getString("SdDocCat"));
 				salesDocHeaderDto.setOrderType(res.getString("DocType"));
@@ -493,16 +516,16 @@ public class ODataConsumingService {
 				salesDocHeaderDto.setDocTypeText(res.getString("DocTypeText"));
 				salesDocHeaderDto.setOrdererNA(res.getString("PurchNoC"));
 				salesDocHeaderDto.setCustomerPo(res.getString("ordererNA"));
-				if(salesDocHeaderDto.getCustomerPo() == null || salesDocHeaderDto.getCustomerPo().isEmpty()){
-				Session session = sf.openSession();
-				// if its of Blocked sales order type
-				String decisionSetId = seqNumGenRepo.getNextSeqNumber("BSO_", 6, session);
-				session.close();
-				 String crNumber= decisionSetId.substring(3);
-				salesDocHeaderDto.setCustomerPo("CR"+crNumber);
-				System.err.println("495 CustomerPo" + salesDocHeaderDto.getCustomerPo());
+				if (salesDocHeaderDto.getCustomerPo() == null || salesDocHeaderDto.getCustomerPo().isEmpty()) {
+					Session session = sf.openSession();
+					// if its of Blocked sales order type
+					String decisionSetId = seqNumGenRepo.getNextSeqNumber("BSO_", 6, session);
+					session.close();
+					String crNumber = decisionSetId.substring(3);
+					salesDocHeaderDto.setCustomerPo("CR" + crNumber);
+					System.err.println("495 CustomerPo" + salesDocHeaderDto.getCustomerPo());
 				}
-				
+
 				// salesDocHeaderDto.setCustomerPo(res.getString("PurchNoC"));
 				salesDocHeaderDto.setCondGroup5Text(res.getString("condGroup5Desc"));
 				salesDocHeaderDto.setAttachmentUrl(res.getString("attachmentUrl"));
@@ -596,11 +619,11 @@ public class ODataConsumingService {
 				docItemDto.setItemCategText(res.getString("ItemCategText"));
 				docItemDto.setSalesTeam(res.getString("salesTeam"));
 				docItemDto.setSalesArea(res.getString("salesArea"));
-//
-//				if (!res.isNull("matExpiryDate")) {
-//					docItemDto.setMatExpiryDate(new BigInteger(
-//							ServicesUtil.dateConversionFromECC(res.getString("matExpiryDate")).toString()));
-//				}
+				//
+				// if (!res.isNull("matExpiryDate")) {
+				// docItemDto.setMatExpiryDate(new BigInteger(
+				// ServicesUtil.dateConversionFromECC(res.getString("matExpiryDate")).toString()));
+				// }
 				docItemDto.setSerialNumber(res.getString("serialNumber"));
 
 				salesDocItemDtoList.add(docItemDto);
@@ -1452,38 +1475,38 @@ public class ODataConsumingService {
 	public JSONObject consumingOdataService(String url, String entity, String method,
 			Map<String, Object> destinationInfo) throws IOException, URISyntaxException {
 
-		//TenantContext tenantctx = new HelperClass().getTenantInformation();
+		// TenantContext tenantctx = new HelperClass().getTenantInformation();
 
 		System.err.println("com.incture.utils.HelperClass  + Inside consumingOdataService==================");
-		//String proxyHost = System.getenv("HC_OP_HTTP_PROXY_HOST");
-		
+		// String proxyHost = System.getenv("HC_OP_HTTP_PROXY_HOST");
+
 		String proxyHost = "connectivityproxy.internal.cf.eu10.hana.ondemand.com";
 		System.err.println("proxyHost-- " + proxyHost);
-		//int proxyPort = Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
+		// int proxyPort =
+		// Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
 		int proxyPort = 20003;
 		System.err.println("proxyPort-- " + proxyPort);
-		
-		JSONObject jsonObj = new JSONObject(System.getenv("VCAP_SERVICES"));
-		
-		System.err.println("116 - jsonObj =" + jsonObj);
+
+		// JSONObject jsonObj = new JSONObject(System.getenv("VCAP_SERVICES"));
+
+		// System.err.println("116 - jsonObj =" + jsonObj);
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
-			    new UsernamePasswordCredentials( (String) destinationInfo.get("User"), (String) destinationInfo.get("Password"))); 
-		
-		HttpClientBuilder clientBuilder =  HttpClientBuilder.create();
-		
+		credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(
+				(String) destinationInfo.get("User"), (String) destinationInfo.get("Password")));
+
+		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+
 		clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
-		   .setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
-		   .setDefaultCredentialsProvider(credsProvider) 
-		   .disableCookieManagement();
-		
+				.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+				.setDefaultCredentialsProvider(credsProvider).disableCookieManagement();
+
 		CloseableHttpClient httpClient = clientBuilder.build();
 		HttpRequestBase httpRequestBase = null;
 		CloseableHttpResponse httpResponse = null;
 		StringEntity input = null;
 		String json = null;
 		JSONObject obj = null;
-		 String jwToken = DestinationReaderUtil.getConectivityProxy();
+		String jwToken = DestinationReaderUtil.getConectivityProxy();
 		if (url != null) {
 			if (method.equalsIgnoreCase("GET")) {
 				httpRequestBase = new HttpGet(url);
@@ -1506,17 +1529,16 @@ public class ODataConsumingService {
 				String encoded = HelperClass.encodeUsernameAndPassword((String) destinationInfo.get("User"),
 						(String) destinationInfo.get("Password"));
 				httpRequestBase.addHeader("Authorization", encoded);
-				httpRequestBase.setHeader("Proxy-Authorization","Bearer " +jwToken);
-				httpRequestBase.addHeader("SAP-Connectivity-SCC-Location_ID","incture");
-				
+				httpRequestBase.setHeader("Proxy-Authorization", "Bearer " + jwToken);
+				httpRequestBase.addHeader("SAP-Connectivity-SCC-Location_ID", "incture");
+
 			}
-//			if (tenantctx != null) {
-//				httpRequestBase.addHeader("SAP-Connectivity-ConsumerAccount",
-//						tenantctx.getTenant().getAccount().getId());
-//			}
+			// if (tenantctx != null) {
+			// httpRequestBase.addHeader("SAP-Connectivity-ConsumerAccount",
+			// tenantctx.getTenant().getAccount().getId());
+			// }
 			try {
-				
-				
+
 				System.err.println("this is requestBase ============" + Arrays.asList(httpRequestBase));
 				httpResponse = httpClient.execute(new HttpHost(proxyHost, proxyPort), httpRequestBase);
 				System.err.println(
@@ -1720,9 +1742,8 @@ public class ODataConsumingService {
 							RequestMasterDto requestMasterDto = requestMasterDtoList.get(0);
 
 							// Workflow is active
-							if (requestMasterDto.getRequestStatusCode() != null
-									&& requestMasterDto.getRequestStatusCode()
-											.equals(StatusConstants.REQUEST_IN_PROGRESS.toString())) {
+							if (requestMasterDto.getRequestStatusCode() != null && requestMasterDto
+									.getRequestStatusCode().equals(StatusConstants.REQUEST_IN_PROGRESS.toString())) {
 
 								salesOrderNumListWithRunningWorkflow.add(salesOrderNum);
 
@@ -1829,4 +1850,3 @@ public class ODataConsumingService {
 	}
 
 }
-

@@ -77,8 +77,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	@Autowired
 	private SalesOrderItemStatusDao salesOrderItemStatusDao;
 
-	@Autowired
-	private WorkflowTrigger workflowtrigger;
+//	@Autowired
+//	private WorkflowTrigger workflowtrigger;
 
 //	@Autowired
 //	 private TriggerImeDestinationService triggerImeService;
@@ -372,13 +372,13 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 
 							System.err.print("decisionSet 306");
 
-							response = workflowtrigger.DecisionSetWorkflowTrigger(soInput.getSalesOrderHeaderId(),
-									soInput.getRequestId(), entry.getKey(), approverDtoList, threshold,
-									decisionSetAmount, soInput.getHeaderBlocReas(), soInput.getSoCreatedECC(),
-									soInput.getCountry(), soInput.getCustomerPo(), soInput.getRequestType(),
-									soInput.getRequestCategory(), soInput.getSalesOrderType(), soInput.getSoldToParty(),
-									soInput.getShipToParty(), soInput.getDivision(), soInput.getDistributionChannel(),
-									soInput.getSalesOrg(), soInput.getReturnReason());
+//							response = workflowtrigger.DecisionSetWorkflowTrigger(soInput.getSalesOrderHeaderId(),
+//									soInput.getRequestId(), entry.getKey(), approverDtoList, threshold,
+//									decisionSetAmount, soInput.getHeaderBlocReas(), soInput.getSoCreatedECC(),
+//									soInput.getCountry(), soInput.getCustomerPo(), soInput.getRequestType(),
+//									soInput.getRequestCategory(), soInput.getSalesOrderType(), soInput.getSoldToParty(),
+//									soInput.getShipToParty(), soInput.getDivision(), soInput.getDistributionChannel(),
+//									soInput.getSalesOrg(), soInput.getReturnReason());
 
 							System.err.print("workflowtrigger.DecisionSetWorkflowTrigger =" + response);
 
