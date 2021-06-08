@@ -29,10 +29,6 @@ import com.incture.cherrywork.services.SchedulerTableService;
 
 
 
-/**
- * @author Mohit.Basak
- *
- */
 
 @Configuration
 @EnableScheduling
@@ -42,9 +38,9 @@ public class SchedulerController {
 
 	private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
-	static boolean schedulerSwitch = false;
+	static boolean schedulerSwitch = true;
 
-	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+08:00")).plusMinutes(30);
+	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:50")).plusMinutes(30);
 
 	@Autowired
 	private ODataConsumingService oDataConsumingService;
@@ -52,11 +48,13 @@ public class SchedulerController {
 	@Autowired
 	private SchedulerTableService schedulerTableService;
 
+	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
 	  @Scheduled(cron = "0 0/5 * * * ?")
+	//@Scheduled(cron = "0 12 * * * ?")
 	public void schedulerTrigger() {
 		System.err.println("STEP 1 SCHEDULER ENTER time " + "=" + LocalDateTime.now(ZoneId.of("GMT+08:00"))
-				+ "  according to Malasiya " + "com.incture.controllers.SchedulerController*****************");
+				+ " " + "com.incture.controllers.SchedulerController*****************");
 
 		/*
 		 * schedulerTableService.saveInDB( new
