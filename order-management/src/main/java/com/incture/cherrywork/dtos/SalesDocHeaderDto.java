@@ -12,7 +12,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 @EqualsAndHashCode(callSuper = false)
 public @Data class SalesDocHeaderDto extends BaseDto {
 
@@ -21,6 +20,7 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private String returnReqNum;
 	private String salesOrderNum;
 
 	private String reqMasterId;
@@ -128,6 +128,26 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 	private List<SalesDocItemDto> salesDocItemList;
 
 	private List<String> specialClientListForHeader;
+	private String totalRoAmount;
+	private BigInteger createdOn;
+	private String headerDeliveryBlockText;
+	private String requestRemark;
+	private String returnReasonText;
+	private String headerDeliveryBlockCode;
+
+	private String distributionChannelText;
+
+	private String roType;
+
+	private String roTypeText;
+
+	private String returnReason;
+
+	private String documentUrl;
+
+	private String purchNum;
+
+	private List<ItemDataInReturnOrderDto> listOfItemsInReturn;
 
 	@Override
 	public Boolean getValidForUsage() {
@@ -150,457 +170,76 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getSalesOrderNum() {
-		return salesOrderNum;
-	}
-
-	public void setSalesOrderNum(String salesOrderNum) {
-		this.salesOrderNum = salesOrderNum;
-	}
-
-	public String getReqMasterId() {
-		return reqMasterId;
-	}
-
-	public void setReqMasterId(String reqMasterId) {
-		this.reqMasterId = reqMasterId;
-	}
-
-	public BigInteger getSalesOrderDate() {
-		return salesOrderDate;
-	}
-
-	public void setSalesOrderDate(BigInteger salesOrderDate) {
-		this.salesOrderDate = salesOrderDate;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public String getOrderCategory() {
-		return orderCategory;
-	}
-
-	public void setOrderCategory(String orderCategory) {
-		this.orderCategory = orderCategory;
-	}
-
-	public String getOrderType() {
-		return orderType;
-	}
-
-	public void setOrderType(String orderType) {
-		this.orderType = orderType;
-	}
-
-	public String getOrderTypeText() {
-		return orderTypeText;
-	}
-
-	public void setOrderTypeText(String orderTypeText) {
-		this.orderTypeText = orderTypeText;
-	}
-
-	public String getDecisionSetId() {
-		return decisionSetId;
-	}
-
-	public void setDecisionSetId(String decisionSetId) {
-		this.decisionSetId = decisionSetId;
-	}
-
-	public String getBillToParty() {
-		return billToParty;
-	}
-
-	public void setBillToParty(String billToParty) {
-		this.billToParty = billToParty;
-	}
-
-	public String getBillToPartyText() {
-		return billToPartyText;
-	}
-
-	public void setBillToPartyText(String billToPartyText) {
-		this.billToPartyText = billToPartyText;
-	}
-
-	public String getPayer() {
-		return payer;
-	}
-
-	public void setPayer(String payer) {
-		this.payer = payer;
-	}
-
-	public String getPayerText() {
-		return payerText;
-	}
-
-	public void setPayerText(String payerText) {
-		this.payerText = payerText;
-	}
-
-	public String getSalesman() {
-		return salesman;
-	}
-
-	public void setSalesman(String salesman) {
-		this.salesman = salesman;
-	}
-
-	public String getLevelNum() {
-		return levelNum;
-	}
-
-	public void setLevelNum(String levelNum) {
-		this.levelNum = levelNum;
-	}
-
-	public String getHeaderMsg() {
-		return headerMsg;
-	}
-
-	public void setHeaderMsg(String headerMsg) {
-		this.headerMsg = headerMsg;
-	}
-
-	public String getSalesOrg() {
-		return salesOrg;
-	}
-
-	public void setSalesOrg(String salesOrg) {
-		this.salesOrg = salesOrg;
-	}
-
-	public Double getDecisionSetAmount() {
-		return decisionSetAmount;
-	}
-
-	public void setDecisionSetAmount(Double decisionSetAmount) {
-		this.decisionSetAmount = decisionSetAmount;
-	}
-
-	public Double getSalesOrderAmount() {
-		return salesOrderAmount;
-	}
-
-	public void setSalesOrderAmount(Double salesOrderAmount) {
-		this.salesOrderAmount = salesOrderAmount;
-	}
-
-	public String getDistributionChannel() {
-		return distributionChannel;
-	}
-
-	public void setDistributionChannel(String distributionChannel) {
-		this.distributionChannel = distributionChannel;
-	}
-
-	public String getDivision() {
-		return division;
-	}
-
-	public void setDivision(String division) {
-		this.division = division;
-	}
-
-	public String getSalesOrgText() {
-		return salesOrgText;
-	}
-
-	public void setSalesOrgText(String salesOrgText) {
-		this.salesOrgText = salesOrgText;
-	}
-
-	public String getDistrChanText() {
-		return distrChanText;
-	}
-
-	public void setDistrChanText(String distrChanText) {
-		this.distrChanText = distrChanText;
-	}
-
-	public String getDivisionText() {
-		return divisionText;
-	}
-
-	public void setDivisionText(String divisionText) {
-		this.divisionText = divisionText;
-	}
-
-	public String getOrderReason() {
-		return orderReason;
-	}
-
-	public void setOrderReason(String orderReason) {
-		this.orderReason = orderReason;
-	}
-
-	public String getCustomerPo() {
-		return customerPo;
-	}
-
-	public void setCustomerPo(String customerPo) {
-		this.customerPo = customerPo;
-	}
-
-	public Date getCustomerPoDate() {
-		return customerPoDate;
-	}
-
-	public void setCustomerPoDate(Date customerPoDate) {
-		this.customerPoDate = customerPoDate;
-	}
-
-	public String getCustomerPoType() {
-		return customerPoType;
-	}
-
-	public void setCustomerPoType(String customerPoType) {
-		this.customerPoType = customerPoType;
-	}
-
-	public String getSoldToParty() {
-		return soldToParty;
-	}
-
-	public void setSoldToParty(String soldToParty) {
-		this.soldToParty = soldToParty;
-	}
-
-	public String getSoldToPartyText() {
-		return soldToPartyText;
-	}
-
-	public void setSoldToPartyText(String soldToPartyText) {
-		this.soldToPartyText = soldToPartyText;
-	}
-
-	public String getShipToParty() {
-		return shipToParty;
-	}
-
-	public void setShipToParty(String shipToParty) {
-		this.shipToParty = shipToParty;
-	}
-
-	public String getShipToPartyText() {
-		return shipToPartyText;
-	}
-
-	public void setShipToPartyText(String shipToPartyText) {
-		this.shipToPartyText = shipToPartyText;
-	}
-
-	public Double getTotalNetAmount() {
-		return totalNetAmount;
-	}
-
-	public void setTotalNetAmount(Double totalNetAmount) {
-		this.totalNetAmount = totalNetAmount;
-	}
-
-	public String getDocCurrency() {
-		return docCurrency;
-	}
-
-	public void setDocCurrency(String docCurrency) {
-		this.docCurrency = docCurrency;
-	}
-
-	public String getOverallStatus() {
-		return overallStatus;
-	}
-
-	public void setOverallStatus(String overallStatus) {
-		this.overallStatus = overallStatus;
-	}
-
-	public String getRejectionStatus() {
-		return rejectionStatus;
-	}
-
-	public void setRejectionStatus(String rejectionStatus) {
-		this.rejectionStatus = rejectionStatus;
-	}
-
-	public String getDeliveryStatus() {
-		return deliveryStatus;
-	}
-
-	public void setDeliveryStatus(String deliveryStatus) {
-		this.deliveryStatus = deliveryStatus;
-	}
-
-	public String getCreditStatus() {
-		return creditStatus;
-	}
-
-	public void setCreditStatus(String creditStatus) {
-		this.creditStatus = creditStatus;
-	}
-
-	public String getHeaderBillBlockCode() {
-		return headerBillBlockCode;
-	}
-
-	public void setHeaderBillBlockCode(String headerBillBlockCode) {
-		this.headerBillBlockCode = headerBillBlockCode;
-	}
-
-	public String getHeaderBillBlockCodeText() {
-		return headerBillBlockCodeText;
-	}
-
-	public void setHeaderBillBlockCodeText(String headerBillBlockCodeText) {
-		this.headerBillBlockCodeText = headerBillBlockCodeText;
-	}
-
-	public String getDeliveryBlockCode() {
-		return deliveryBlockCode;
-	}
-
-	public void setDeliveryBlockCode(String deliveryBlockCode) {
-		this.deliveryBlockCode = deliveryBlockCode;
-	}
-
-	public String getDeliveryBlockCodeText() {
-		return deliveryBlockCodeText;
-	}
-
-	public void setDeliveryBlockCodeText(String deliveryBlockCodeText) {
-		this.deliveryBlockCodeText = deliveryBlockCodeText;
-	}
-
-	public String getCreditBlock() {
-		return creditBlock;
-	}
-
-	public void setCreditBlock(String creditBlock) {
-		this.creditBlock = creditBlock;
-	}
-
-	public String getApprovalStatus() {
-		return approvalStatus;
-	}
-
-	public void setApprovalStatus(String approvalStatus) {
-		this.approvalStatus = approvalStatus;
-	}
-
-	public String getSdProcessStatus() {
-		return sdProcessStatus;
-	}
-
-	public void setSdProcessStatus(String sdProcessStatus) {
-		this.sdProcessStatus = sdProcessStatus;
-	}
-
-	public String getOrderApprovalReason() {
-		return orderApprovalReason;
-	}
-
-	public void setOrderApprovalReason(String orderApprovalReason) {
-		this.orderApprovalReason = orderApprovalReason;
-	}
-
-	public String getFlagFromScheduler() {
-		return flagFromScheduler;
-	}
-
-	public void setFlagFromScheduler(String flagFromScheduler) {
-		this.flagFromScheduler = flagFromScheduler;
-	}
-
-	public String getDocTypeText() {
-		return docTypeText;
-	}
-
-	public void setDocTypeText(String docTypeText) {
-		this.docTypeText = docTypeText;
-	}
-
-	public String getOrderReasonText() {
-		return orderReasonText;
-	}
-
-	public void setOrderReasonText(String orderReasonText) {
-		this.orderReasonText = orderReasonText;
-	}
-
-	public String getCondGroup5() {
-		return condGroup5;
-	}
-
-	public void setCondGroup5(String condGroup5) {
-		this.condGroup5 = condGroup5;
-	}
-
-	public String getOrderRemark() {
-		return orderRemark;
-	}
-
-	public void setOrderRemark(String orderRemark) {
-		this.orderRemark = orderRemark;
-	}
-
-	public String getOrdererNA() {
-		return ordererNA;
-	}
-
-	public void setOrdererNA(String ordererNA) {
-		this.ordererNA = ordererNA;
-	}
-
-	public String getCondGroup5Text() {
-		return condGroup5Text;
-	}
-
-	public void setCondGroup5Text(String condGroup5Text) {
-		this.condGroup5Text = condGroup5Text;
-	}
-
-	public String getAttachmentUrl() {
-		return attachmentUrl;
-	}
-
-	public void setAttachmentUrl(String attachmentUrl) {
-		this.attachmentUrl = attachmentUrl;
-	}
-
-	public String getRequestedBy() {
-		return requestedBy;
-	}
-
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
-	}
-
-	public List<SalesDocItemDto> getSalesDocItemList() {
-		return salesDocItemList;
-	}
-
-	public void setSalesDocItemList(List<SalesDocItemDto> salesDocItemList) {
-		this.salesDocItemList = salesDocItemList;
-	}
-
-	public List<String> getSpecialClientListForHeader() {
-		return specialClientListForHeader;
-	}
-
-	public void setSpecialClientListForHeader(List<String> specialClientListForHeader) {
-		this.specialClientListForHeader = specialClientListForHeader;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-}
+	public SalesDocHeaderDto(String requested_by, String order_remark, String order_reason_text, String order_category,
+			String order_type, String doc_type_text, String sales_org, String distribution_channel, String division,
+			String customer_po, String sold_to_party, String sold_to_party_text, String ship_to_party,
+			String ship_to_party_text, String doc_currency, String delivery_block_code, String dlv_block_text,
+			String cond_group5, String cond_group5_text, BigInteger sales_order_date, String order_reason,
+			String orderer_na, String created_by, String attachment_url, String approval_status, String overall_status,
+			String sales_org_text, String distribution_channel_text, String division_text, String payer,
+			String payer_text, String bill_to_party, String bill_to_party_text) {
+		super();
+		this.orderCategory = order_category;
+		this.orderType = order_type;
+		this.salesOrg = sales_org;
+		this.salesOrgText = sales_org_text;
+		this.distributionChannel = distribution_channel;
+		this.distributionChannelText = distribution_channel_text;
+		this.division = division;
+		this.divisionText = division_text;
+		this.payer = payer;
+		this.payerText = payer_text;
+		this.billToParty = bill_to_party;
+		this.billToPartyText = bill_to_party_text;
+		this.returnReqNum = customer_po;
+		this.soldToParty = sold_to_party;
+		this.soldToPartyText = sold_to_party_text;
+		this.shipToParty = ship_to_party;
+		this.shipToPartyText = ship_to_party_text;
+		this.docCurrency = doc_currency;
+		this.headerDeliveryBlockCode = delivery_block_code;
+		this.approvalStatus = approval_status;
+		this.overallStatus = overall_status;
+		this.headerDeliveryBlockText = dlv_block_text;
+		this.orderTypeText = doc_type_text;
+		this.requestRemark = order_remark;
+		this.returnReasonText = order_reason_text;
+		this.returnReason = order_reason;
+		this.roType = cond_group5;
+		this.roTypeText = cond_group5_text;
+		this.createdOn = sales_order_date;
+		this.requestedBy = requested_by;
+		this.documentUrl = attachment_url;
+		this.purchNum = orderer_na;
+	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((returnReqNum == null) ? 0 : returnReqNum.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SalesDocHeaderDto other = (SalesDocHeaderDto) obj;
+		if (returnReqNum == null) {
+			if (other.returnReqNum != null)
+				return false;
+		} else if (!returnReqNum.equals(other.returnReqNum))
+			return false;
+		return true;
+	}
+
+}

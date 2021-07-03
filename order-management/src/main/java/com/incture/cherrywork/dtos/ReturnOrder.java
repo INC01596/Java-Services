@@ -63,6 +63,8 @@ public class ReturnOrder {
 	private String message;
 	private String updatedBy;
 	private String country;
+	private String createdBy;
+	private String createdByDesc;
 	private List<Attachment> attachment;
 	private List<Address> address;
 	private List<ReturnItem> items;

@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.ScheduleLineDto;
 import com.incture.cherrywork.entities.SalesDocHeaderDo;
@@ -20,8 +22,8 @@ import com.incture.cherrywork.entities.ScheduleLinePrimaryKeyDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 
 
-@Component
-@Repository
+@Service
+@Transactional
 public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto> implements ScheduleLineDao {
 
 	@Override

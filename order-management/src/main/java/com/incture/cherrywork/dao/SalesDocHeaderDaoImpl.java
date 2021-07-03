@@ -1,7 +1,5 @@
 package com.incture.cherrywork.dao;
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,8 +8,9 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
@@ -26,27 +26,33 @@ import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.ScheduleLineDto;
 import com.incture.cherrywork.entities.SalesDocHeaderDo;
 import com.incture.cherrywork.entities.SalesDocItemDo;
+import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
+import com.incture.cherrywork.entities.SalesOrderHeader;
+import com.incture.cherrywork.entities.ScheduleLineDo;
+import com.incture.cherrywork.entities.ScheduleLinePrimaryKeyDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.ISalesDocHeaderRepository;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.util.HelperClass;
-
-
+import com.incture.cherrywork.util.ServicesUtil;
+import com.incture.cherrywork.workflow.repositories.ISalesDocItemRepository;
+import com.incture.cherrywork.workflow.repositories.IScheduleLineRepository;
 
 @SuppressWarnings("deprecation")
-@Repository
-@Component
+@Service
+@Transactional
 public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHeaderDto> implements SalesDocHeaderDao {
 
 	// Control the list of Items here by flag
 	private Boolean listofItemTrigger = Boolean.FALSE;
-    @Lazy
+	@Lazy
 	@Autowired
 	private SalesDocItemDaoImpl salesDocItemDao;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	public Session getSession()
-	{
+
+	public Session getSession() {
 		Session session = entityManager.unwrap(Session.class);
 		return session;
 	}
@@ -54,8 +60,18 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	@Autowired
 	private SessionFactory sessionfactory;
 
+	@Autowired
+	private ISalesDocHeaderRepository salesDocHeaderRepository;
+
+	@Autowired
+	private IScheduleLineRepository scheduleLineRepository;
+
+	@Autowired
+	private ISalesDocItemRepository salesDocItemRepository;
+
 	@Override
 	public String saveSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault {
+		System.err.println("Final save start..");
 		try {
 			// Enabling the list of Items here by flag
 			listofItemTrigger = Boolean.TRUE;
@@ -75,23 +91,63 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 							// Setting Foreign Key for Schedule Line Level
 							schLine.setSalesHeaderNo(salesDocItemDto.getSalesHeaderNo());
 							schLine.setSalesItemOrderNo(salesDocItemDto.getSalesItemOrderNo());
+							ScheduleLineDo scheduleLineDo = ObjectMapperUtils.map(schLine, ScheduleLineDo.class);
+							// System.err.println("ScheduleLineKey:
+							// "+scheduleLineDo.getScheduleLineKey());
+							// if(scheduleLineDo.getScheduleLineKey() == null){
+							// scheduleLineDo.setScheduleLineKey(new
+							// ScheduleLinePrimaryKeyDo(ServicesUtil.randomId(),ObjectMapperUtils.map(salesDocItemDto,
+							// SalesDocItemDo.class)));
+							// }
+							// System.err.println("ScheduleLineKey:
+							// "+scheduleLineDo.getScheduleLineKey());
+							// ScheduleLineDo savedScheduleLineDo =
+							// scheduleLineRepository.save(scheduleLineDo);
+							// System.err.println("[salesDocHeaderDaoImpl][saveSalesDocHeader]
+							// savedScheduleLineDo
+							// "+savedScheduleLineDo.toString());
 						});
 					}
+					// SalesDocItemDo salesDocItemDo =
+					// ObjectMapperUtils.map(salesDocItemDto,
+					// SalesDocItemDo.class);
+					// System.err.println("salesDocItemKey:
+					// "+salesDocItemDo.getSalesDocItemKey());
+					// if(salesDocItemDo.getSalesDocItemKey() == null){
+					// SalesDocHeaderDo salesDocHeader =
+					// ObjectMapperUtils.map(salesDocHeaderDto,
+					// SalesDocHeaderDo.class);
+					// salesDocItemDo.setSalesDocItemKey(new
+					// SalesDocItemPrimaryKeyDo(ServicesUtil.randomId(),
+					// salesDocHeader));
+					// }
+					// System.err.println("salesDocItemKey:
+					// "+salesDocItemDo.getSalesDocItemKey());
+					// SalesDocItemDo savedSalesDocItemDo =
+					// salesDocItemRepository.save(salesDocItemDo);
+					// System.err.println("[salesDocHeaderDaoImpl][saveSalesDocHeader]
+					// savedSalesDocItemDo "+savedSalesDocItemDo.toString());
 				}
 			}
 
 			SalesDocHeaderDo salesDocHeaderDo = importDto(salesDocHeaderDto);
-			getSession().saveOrUpdate(salesDocHeaderDo);
+			// salesDocHeaderDo.setRequestId(ServicesUtil.randomId());
+			SalesDocHeaderDo savedSalesDocHeaderDo = salesDocHeaderRepository.save(salesDocHeaderDo);
+			System.err.println("[salesDocHeaderDaoImpl][saveSalesDocHeader] savedSalesDocHeaderDo "
+					+ savedSalesDocHeaderDo.toString());
+			System.err.println("Saved Sales Doc Header");
 
 			// save was throwing constraint violation exception
 			// getSession().save(salesDocHeaderDo);
-			getSession().flush();
-			getSession().clear();
 
 			return "Sales Document Header is created with " + salesDocHeaderDo.getSalesOrderNum();
 		} catch (NoResultException | NullPointerException e) {
+			System.err.println("[saveSalesDocHeader] Exception " + e.getMessage());
+			e.printStackTrace();
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		} catch (Exception e) {
+			System.err.println("[saveSalesDocHeader] Exception " + e.getMessage());
+			e.printStackTrace();
 			throw e;
 		}
 
@@ -307,6 +363,96 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 
 	}
 
+	public SalesDocHeaderDto exportSOHtoSDH(SalesOrderHeader entity) {
+		SalesDocHeaderDto salesDocHeaderDto = null;
+		// if (entity != null) {
+		// salesDocHeaderDto = new SalesDocHeaderDto();
+		//
+		// System.err.println("Header Entity data at DAO came for sales order
+		// num " + entity.getSalesHeaderId());
+
+		// salesDocHeaderDto.setCreatedBy(entity.getCreatedBy());
+		// salesDocHeaderDto.setCreditStatus(entity.getCreditStatus());
+		// salesDocHeaderDto.setCustomerPo(entity.getCustomerPo());
+		// salesDocHeaderDto.setCustomerPoType(entity.getCustomerPoType());
+		// salesDocHeaderDto.setDeliveryStatus(entity.getDeliveryStatus());
+		// salesDocHeaderDto.setDistributionChannel(entity.getDistributionChannel());
+		// salesDocHeaderDto.setDivision(entity.getDivision());
+		// salesDocHeaderDto.setDocCurrency(entity.getDocCurrency());
+		// salesDocHeaderDto.setOrderCategory(entity.getOrderCategory());
+		// salesDocHeaderDto.setOrderReason(entity.getOrderReason());
+		// salesDocHeaderDto.setOrderType(entity.getOrderType());
+		// salesDocHeaderDto.setOverallStatus(entity.getOverallStatus());
+		// salesDocHeaderDto.setRejectionStatus(entity.getRejectionStatus());
+		// salesDocHeaderDto.setCreditBlock(entity.getCreditBlock());
+		// salesDocHeaderDto.setHeaderBillBlockCode(entity.getHeaderBillBlockCode());
+		// salesDocHeaderDto.setDeliveryBlockCode(entity.getDeliveryBlockCode());
+		// salesDocHeaderDto.setSalesOrg(entity.getSalesOrg());
+		// salesDocHeaderDto.setOrderReasonText(entity.getOrderReasonText());
+		// salesDocHeaderDto.setOrderRemark(entity.getOrderRemark());
+		// salesDocHeaderDto.setSoldToParty(entity.getSoldToParty());
+		// salesDocHeaderDto.setShipToParty(entity.getShipToParty());
+		// salesDocHeaderDto.setDeliveryBlockCodeText(entity.getDeliveryBlockText());
+		// salesDocHeaderDto.setDocTypeText(entity.getDocTypeText());
+		// salesDocHeaderDto.setSoldToPartyText(entity.getSoldToPartyText());
+		// salesDocHeaderDto.setShipToPartyText(entity.getShipToPartyText());
+		// salesDocHeaderDto.setSalesman(entity.getSalesman());
+		// salesDocHeaderDto.setCondGroup5(entity.getCondGroup5());
+		// salesDocHeaderDto.setBillToParty(entity.getBillToParty());
+		// salesDocHeaderDto.setBillToPartyText(entity.getBillToPartyText());
+		// salesDocHeaderDto.setPayer(entity.getPayer());
+		// salesDocHeaderDto.setPayerText(entity.getPayerText());
+		// salesDocHeaderDto.setDivisionText(entity.getDivisionText());
+		// salesDocHeaderDto.setDistrChanText(entity.getDistributionChannelText());
+		// salesDocHeaderDto.setSalesOrgText(entity.getSalesOrgText());
+		// salesDocHeaderDto.setApprovalStatus(entity.getApprovalStatus());
+		// salesDocHeaderDto.setSdProcessStatus(entity.getSdProcessStatus());
+		// salesDocHeaderDto.setOrderApprovalReason(entity.getOrderApprovalReason());
+		// salesDocHeaderDto.setTotalNetAmount(entity.getTotalNetAmount());
+		// salesDocHeaderDto.setOrdererNA(entity.getOrdererNA());
+		// salesDocHeaderDto.setCondGroup5Text(entity.getCondGroup5Text());
+		// salesDocHeaderDto.setAttachmentUrl(entity.getAttachmentUrl());
+		// salesDocHeaderDto.setRequestedBy(entity.getRequestedBy());
+		//
+		// // Setting Primary Key
+		// if (entity.getSalesOrderNum() != null) {
+		// salesDocHeaderDto.setSalesOrderNum(entity.getSalesOrderNum());
+		// }
+		//
+		// // Setting Foreign Key
+		// //
+		// salesDocHeaderDto.setReqMasterId(entity.getReqMaster().getRequestId());
+		// salesDocHeaderDto.setReqMasterId(entity.getRequestId());
+		//
+		// // Converting String from Date
+		// //
+		// salesDocHeaderDto.setSalesOrderDate(ConvertDateToString(entity.getSalesOrderDate()));
+		//
+		// salesDocHeaderDto.setSalesOrderDate(entity.getSalesOrderDate());
+		//
+		// System.err.println(
+		// "listofItemTrigger for sales order " + entity.getSalesOrderNum() + "
+		// is : " + listofItemTrigger);
+		//
+		// // Converting list level to dto using export List method and
+		// // checking the content of it
+		// // Item level list for SO header
+		// if (listofItemTrigger) {
+		// System.err.println("inside fetching item list data");
+		// List<SalesDocItemDto> salesDocItemDtoList =
+		// salesDocItemDao.exportList(entity.getSalesDocItemList());
+		// System.err
+		// .println("sales order " + entity.getSalesOrderNum() + " item data is
+		// : " + salesDocItemDtoList);
+		// if (salesDocItemDtoList != null && !salesDocItemDtoList.isEmpty()) {
+		// salesDocHeaderDto.setSalesDocItemList(salesDocItemDtoList);
+		// }
+		// }
+		// }
+		return salesDocHeaderDto;
+
+	}
+
 	@Override
 	public List<SalesDocHeaderDo> importList(List<SalesDocHeaderDto> list) {
 		if (list != null && !list.isEmpty()) {
@@ -407,6 +553,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	@Override
 	public SalesDocHeaderDto getSalesDocHeaderByIdWithOutFlag(String salesHeaderOrderId) {
 		return exportDtoWithOutFlag(getSession().get(SalesDocHeaderDo.class, salesHeaderOrderId));
+
 	}
 
 	private SalesDocHeaderDto exportDtoWithOutFlag(SalesDocHeaderDo entity) {
@@ -485,11 +632,24 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		return salesDocHeaderDto;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SalesDocHeaderDto getSalesDocHeaderWithoutItemsById(String salesHeaderOrderId) {
 		// Disabling the list of Items here by flag
+		System.err.println("salesHeaderOrderId " + salesHeaderOrderId);
 		listofItemTrigger = Boolean.FALSE;
-		return exportDto(getSession().get(SalesDocHeaderDo.class, salesHeaderOrderId));
+		SalesDocHeaderDto salesDocHeaderDto = null;
+		String query = "from SalesDocHeaderDo where salesOrderNum=:soNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderOrderId);
+
+		List<SalesDocHeaderDo> list = q1.getResultList();
+
+		if (list.size() == 0) {
+			System.err.println("[SalesDocHeaderDaoImpl][getSalesDocHeaderWithoutItemsById]No SalesOrder");
+			return salesDocHeaderDto;
+		}
+		return ObjectMapperUtils.map(list.get(0), SalesDocHeaderDto.class);
 	}
 
 	@Override
@@ -540,10 +700,15 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	public String getRequestIdWithSoHeader(String salesHeaderOrderId) {
 		// Disabling the list of Items here by flag
 		listofItemTrigger = Boolean.FALSE;
-		return getSession()
-				.createQuery("select h.reqMaster.requestId from SalesDocHeaderDo h where h.salesOrderNum = :soNum",
-						String.class)
-				.setParameter("soNum", salesHeaderOrderId).getSingleResult();
+		String query = "select h.reqMaster.requestId from SalesOrderHeader h where h.salesOrderNum = :soNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderOrderId);
+		return (String) q1.getSingleResult();
+		// return getSession()
+		// .createQuery("select h.reqMaster.requestId from SalesDocHeaderDo h
+		// where h.salesOrderNum = :soNum",
+		// String.class)
+		// .setParameter("soNum", salesHeaderOrderId).getSingleResult();
 	}
 
 	@Override
@@ -551,13 +716,19 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		try {
 			// when all fields are either null or empty
 			if (HelperClass.checkString(filterData.getStatus()) && HelperClass.checkString(filterData.getCustomerCode())
-					&& HelperClass.checkString(filterData.getSalesDocNumInitial()) && HelperClass.checkString(filterData.getSalesDocNumEnd())
-					&& HelperClass.checkString(filterData.getMaterialGroupFor()) && HelperClass.checkString(filterData.getDistributionChannel())
+					&& HelperClass.checkString(filterData.getSalesDocNumInitial())
+					&& HelperClass.checkString(filterData.getSalesDocNumEnd())
+					&& HelperClass.checkString(filterData.getMaterialGroupFor())
+					&& HelperClass.checkString(filterData.getDistributionChannel())
 					&& filterData.getInitialDate() == null && filterData.getEndDate() == null
-					&& HelperClass.checkString(filterData.getSalesOrg()) && HelperClass.checkString(filterData.getDivision())
-					&& HelperClass.checkString(filterData.getMaterialGroup()) && HelperClass.checkString(filterData.getCustomerPo())
-					&& HelperClass.checkString(filterData.getItemDlvBlock()) && HelperClass.checkString(filterData.getShipToParty())
-					&& HelperClass.checkString(filterData.getHeaderDlvBlock()) && HelperClass.checkString(filterData.getSapMaterialNum())) {
+					&& HelperClass.checkString(filterData.getSalesOrg())
+					&& HelperClass.checkString(filterData.getDivision())
+					&& HelperClass.checkString(filterData.getMaterialGroup())
+					&& HelperClass.checkString(filterData.getCustomerPo())
+					&& HelperClass.checkString(filterData.getItemDlvBlock())
+					&& HelperClass.checkString(filterData.getShipToParty())
+					&& HelperClass.checkString(filterData.getHeaderDlvBlock())
+					&& HelperClass.checkString(filterData.getSapMaterialNum())) {
 
 				System.err.println("For First time Login");
 				// getting list of so based on initial rights of login user
@@ -587,7 +758,8 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		System.err.println("createQueryforRights");
 		Map<String, String> map = null;
 		try {
-			//map = (Map<String, String>) HelperClass.fetchUserInfoInIdp(filterData.getUserPID());
+			// map = (Map<String, String>)
+			// HelperClass.fetchUserInfoInIdp(filterData.getUserPID());
 			if (map.isEmpty()) {
 				return null;
 			}
@@ -596,7 +768,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		}
 
 		// checking if logged in person have all rights
-		boolean checkIfAllRights=false;
+		boolean checkIfAllRights = false;
 		if (checkIfAllRights) {
 			// if logged person have all rights then return all sales order
 			return getSession().createQuery(
@@ -1117,4 +1289,3 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	}
 
 }
-

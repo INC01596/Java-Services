@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dao.BaseDao;
 import com.incture.cherrywork.dtos.DlvBlockClientMapDo;
@@ -17,8 +19,8 @@ import com.incture.cherrywork.dtos.DlvBlockClientMapDto;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 
 
-@Repository
-@Component
+@Service
+@Transactional
 public class DlvBlockClientMapDaoImpl extends BaseDao<DlvBlockClientMapDo, DlvBlockClientMapDto>
 		implements DlvBlockClientMapDao {
 
