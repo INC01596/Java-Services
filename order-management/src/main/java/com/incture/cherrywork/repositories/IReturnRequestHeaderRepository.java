@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.incture.cherrywork.repositories;
 
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,33 +72,15 @@ public interface IReturnRequestHeaderRepository extends JpaRepository<ReturnRequ
 	@Query(value = "select item_status from so_item_status where item_status_serial_id =?1", nativeQuery = true)
 	Integer getItemStatus(String itemSerialId);
 
-
-}
-=======
-package com.incture.cherrywork.repositories;
-
-
-
-
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import org.springframework.data.jpa.repository.Query;
-
-
-import org.springframework.stereotype.Repository;
-
-
-import com.incture.cherrywork.entities.ReturnRequestHeader;
-
-@Repository
-public interface IReturnRequestHeaderRepository extends JpaRepository<ReturnRequestHeader, String>
-{
-
-	@Query("from ReturnRequestHeader r  ")
-	public Page<ReturnRequestHeader> findAll(Pageable pageable);
 	
+	
+	 @Query("from ReturnRequestHeader r where r.returnReqNum=:reqNo")
+     List<ReturnRequestHeader>findAll1(@Param("reqNo") String reqNo);
+    
+     @Query("from ReturnRequestHeader r where r.division=:division")
+     List<ReturnRequestHeader>findAll(@Param("division") String division);
+    
+     @Query("from ReturnRequestHeader r where r.division=:division and r.distributionChannel=:channel")
+     List<ReturnRequestHeader>findAll(@Param("division")String division ,@Param("channel") String channel);
+
 }
->>>>>>> 7d779a97118c12d1811378be9f7c83fdeaf836f0
