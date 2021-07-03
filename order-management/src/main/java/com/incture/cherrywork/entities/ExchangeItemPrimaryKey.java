@@ -31,7 +31,7 @@ public @Data class ExchangeItemPrimaryKey implements Serializable {
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "EXCHANGE_REQ_NUM", nullable = false, referencedColumnName = "EXCHANGE_REQ_NUM"),
 			@JoinColumn(name = "RETURN_REQ_NUM", nullable = false, referencedColumnName = "RETURN_REQ_NUM") })
-	private ExchangeHeaderDo exchangeHeaderDo;
+	private ExchangeHeader exchangeHeaderDo;
 
 	public String getExchangeReqItemid() {
 		return exchangeReqItemid;
@@ -41,11 +41,11 @@ public @Data class ExchangeItemPrimaryKey implements Serializable {
 		this.exchangeReqItemid = exchangeReqItemid;
 	}
 
-	public ExchangeHeaderDo getExchangeHeaderDo() {
+	public ExchangeHeader getExchangeHeaderDo() {
 		return exchangeHeaderDo;
 	}
 
-	public void setExchangeHeaderDo(ExchangeHeaderDo exchangeHeaderDo) {
+	public void setExchangeHeader(ExchangeHeader exchangeHeaderDo) {
 		this.exchangeHeaderDo = exchangeHeaderDo;
 	}
 
@@ -53,7 +53,7 @@ public @Data class ExchangeItemPrimaryKey implements Serializable {
 		return serialVersionUID;
 	}
 
-	public ExchangeItemPrimaryKey(String exchangeReqItemid, ExchangeHeaderDo exchangeHeaderDo) {
+	public ExchangeItemPrimaryKey(String exchangeReqItemid, ExchangeHeader exchangeHeaderDo) {
 		super();
 		this.exchangeReqItemid = exchangeReqItemid;
 		this.exchangeHeaderDo = exchangeHeaderDo;

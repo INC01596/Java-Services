@@ -16,13 +16,12 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 public @Data class ScheduleLinePrimaryKeyDo implements Serializable {
-	public ScheduleLinePrimaryKeyDo(String scheduleLineId, SalesDocItemDo salesDocItemDo) {
-		// TODO Auto-generated constructor stub
-	}
-
+	
 	/**
 	* 
 	*/
+	
+	
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SCHEDULE_LINE_ID", length = 100)
@@ -53,6 +52,18 @@ public @Data class ScheduleLinePrimaryKeyDo implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public ScheduleLinePrimaryKeyDo() {
+		super();
+	}
+
+	public ScheduleLinePrimaryKeyDo(String scheduleLineNum, SalesDocItemDo soItem) {
+		super();
+		this.scheduleLineNum = scheduleLineNum;
+		this.soItem = soItem;
+	}
+
+	
 	
 
 }

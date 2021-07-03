@@ -1,6 +1,5 @@
 package com.incture.cherrywork.entities;
 
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,6 +14,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "REQUEST_MASTER")
 public @Data class RequestMasterDo implements BaseDo {
 	/**
@@ -68,105 +69,6 @@ public @Data class RequestMasterDo implements BaseDo {
 	@Override
 	public Object getPrimaryKey() {
 		return requestId;
-		
-		
-	}
-
-	public RequestMasterDo() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public RequestMasterDo(String requestId, String requestedBy, Date requestDate, String requestCategory,
-			String requestType, String requestStatusCode, String referenceDocType, String refDocNum,
-			String requestShortText) {
-		super();
-		this.requestId = requestId;
-		this.requestedBy = requestedBy;
-		this.requestDate = requestDate;
-		this.requestCategory = requestCategory;
-		this.requestType = requestType;
-		this.requestStatusCode = requestStatusCode;
-		this.referenceDocType = referenceDocType;
-		this.refDocNum = refDocNum;
-		this.requestShortText = requestShortText;
-	}
-
-	public String getRequestId() {
-		return requestId;
-	}
-
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
-
-	public String getRequestedBy() {
-		return requestedBy;
-	}
-
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
-	}
-
-	public Date getRequestDate() {
-		return requestDate;
-	}
-
-	public void setRequestDate(Date requestDate) {
-		this.requestDate = requestDate;
-	}
-
-	public String getRequestCategory() {
-		return requestCategory;
-	}
-
-	public void setRequestCategory(String requestCategory) {
-		this.requestCategory = requestCategory;
-	}
-
-	public String getRequestType() {
-		return requestType;
-	}
-
-	public void setRequestType(String requestType) {
-		this.requestType = requestType;
-	}
-
-	public String getRequestStatusCode() {
-		return requestStatusCode;
-	}
-
-	public void setRequestStatusCode(String requestStatusCode) {
-		this.requestStatusCode = requestStatusCode;
-	}
-
-	public String getReferenceDocType() {
-		return referenceDocType;
-	}
-
-	public void setReferenceDocType(String referenceDocType) {
-		this.referenceDocType = referenceDocType;
-	}
-
-	public String getRefDocNum() {
-		return refDocNum;
-	}
-
-	public void setRefDocNum(String refDocNum) {
-		this.refDocNum = refDocNum;
-	}
-
-	public String getRequestShortText() {
-		return requestShortText;
-	}
-
-	public void setRequestShortText(String requestShortText) {
-		this.requestShortText = requestShortText;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }
-

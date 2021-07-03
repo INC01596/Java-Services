@@ -16,10 +16,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public @Data class SalesDocItemPrimaryKeyDo implements Serializable {
 
-	public SalesDocItemPrimaryKeyDo(String salesItemId, SalesDocHeaderDo salesDocHeader2) {
-		// TODO Auto-generated constructor stub
-	}
-
+	
 	/**
 	 * 
 	 */
@@ -52,6 +49,19 @@ public @Data class SalesDocItemPrimaryKeyDo implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public SalesDocItemPrimaryKeyDo() {
+		super();
+	}
+
+	public SalesDocItemPrimaryKeyDo(String salesItemOrderNo, SalesDocHeaderDo salesDocHeader) {
+		super();
+		this.salesItemOrderNo = salesItemOrderNo;
+		this.salesDocHeader = salesDocHeader;
+	}
+
+	
+	
 	
 }
 

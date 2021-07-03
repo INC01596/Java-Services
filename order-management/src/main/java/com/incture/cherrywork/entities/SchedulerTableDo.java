@@ -88,4 +88,5 @@ public @Data class SchedulerTableDo implements BaseDo {
 		return serialVersionUID;
 	}
 
+	
 }

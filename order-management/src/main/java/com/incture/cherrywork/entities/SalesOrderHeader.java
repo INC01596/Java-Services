@@ -744,6 +744,34 @@ public class SalesOrderHeader {
 	public void setAmount(String amount) {
 		this.amount = amount;
 	}
+
+	@Override
+	public String toString() {
+		return "SalesOrderHeader [clientSpecific=" + clientSpecific + ", s4DocumentId=" + s4DocumentId
+				+ ", documentCategory=" + documentCategory + ", documentType=" + documentType + ", salesOrg=" + salesOrg
+				+ ", distributionChannel=" + distributionChannel + ", division=" + division + ", salesOffice="
+				+ salesOffice + ", salesGroup=" + salesGroup + ", soldToParty=" + soldToParty + ", shipToParty="
+				+ shipToParty + ", customerPoNum=" + customerPoNum + ", customerPoDate=" + customerPoDate
+				+ ", requestDeliveryDate=" + requestDeliveryDate + ", shippingType=" + shippingType
+				+ ", totalSoQuantity=" + totalSoQuantity + ", netValue=" + netValue + ", deliveredQuantity="
+				+ deliveredQuantity + ", outstandingQuantity=" + outstandingQuantity + ", createdDate=" + createdDate
+				+ ", paymentChqDetail=" + paymentChqDetail + ", overallDocumentStatus=" + overallDocumentStatus
+				+ ", deliveryStatus=" + deliveryStatus + ", deliveryTolerance=" + deliveryTolerance + ", colorCoding="
+				+ colorCoding + ", comments=" + comments + ", bankName=" + bankName + ", projectName=" + projectName
+				+ ", poTypeField=" + poTypeField + ", pieceGuarantee=" + pieceGuarantee + ", acknowledgementStatus="
+				+ acknowledgementStatus + ", updateIndicator=" + updateIndicator + ", lastUpdatedOn=" + lastUpdatedOn
+				+ ", syncStatus=" + syncStatus + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+				+ ", lastChangedBy=" + lastChangedBy + ", lastChangedOn=" + lastChangedOn + ", salesOrderItemList="
+				+ salesOrderItemList + ", postingDate=" + postingDate + ", postingError=" + postingError
+				+ ", postedFrom=" + postedFrom + ", postingStatus=" + postingStatus + ", salesHeaderId=" + salesHeaderId
+				+ ", plant=" + plant + ", documentProcessStatus=" + documentProcessStatus + ", overDeliveryTolerance="
+				+ overDeliveryTolerance + ", underDeliveryTolerance=" + underDeliveryTolerance + ", emailId=" + emailId
+				+ ", incoTerms1=" + incoTerms1 + ", incoTerms2=" + incoTerms2 + ", paymentTerms=" + paymentTerms
+				+ ", weight=" + weight + ", workflowID=" + workflowID + ", customerName=" + customerName
+				+ ", referenceDocument=" + referenceDocument + ", blocked=" + blocked + ", obdStatus=" + obdStatus
+				+ ", pgiStatus=" + pgiStatus + ", invoiceStatus=" + invoiceStatus + ", obdId=" + obdId + ", pgiId="
+				+ pgiId + ", invId=" + invId + ", amount=" + amount + "]";
+	}
 	
 	
 
