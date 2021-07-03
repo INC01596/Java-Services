@@ -4,8 +4,8 @@ package com.incture.cherrywork.new_workflow.dao;
 import java.util.List;
 
 import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
-import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
 
 
 

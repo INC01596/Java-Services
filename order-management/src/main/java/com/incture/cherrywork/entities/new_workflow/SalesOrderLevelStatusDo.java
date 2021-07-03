@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.incture.cherrywork.entities.BaseDo;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

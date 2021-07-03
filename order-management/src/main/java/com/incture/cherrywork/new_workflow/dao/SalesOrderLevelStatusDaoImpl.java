@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.BaseDao;
@@ -27,8 +29,8 @@ import com.incture.cherrywork.exceptions.ExecutionFault;
 
 
 
-@Repository
-@Component
+@Service
+@Transactional
 public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusDo, SalesOrderLevelStatusDto>
 		implements SalesOrderLevelStatusDao {
 

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,17 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.BaseDao;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
-import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
 
 
-@Repository
-@Component
+@Service
+@Transactional
 public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo, SalesOrderTaskStatusDto>
 		implements SalesOrderTaskStatusDao {
 

@@ -17,6 +17,11 @@ public class Content {
 	
 	private Date createdAt;
 	private String requestedBy;
+	private String docVersion;
+    private String totalRoAmount;
+    private String orderReasonText;
+    private String salesOrgDesc;
+    private String soldToPartyDesc;
 
 	public String getRequestedBy() {
 		return requestedBy;
@@ -969,7 +974,16 @@ public class Content {
 	}
 
 	// sandeep
+	
 	private EnOrderActionStatus documentProcessStatus;
+
+	public String getSoldToPartyDesc() {
+		return soldToPartyDesc;
+	}
+
+	public void setSoldToPartyDesc(String soldToPartyDesc) {
+		this.soldToPartyDesc = soldToPartyDesc;
+	}
 
 	public EnOrderActionStatus getDocumentProcessStatus() {
 		return documentProcessStatus;
@@ -978,6 +992,40 @@ public class Content {
 	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
 		this.documentProcessStatus = documentProcessStatus;
 	}
+
+	public String getDocVersion() {
+		return docVersion;
+	}
+
+	public void setDocVersion(String docVersion) {
+		this.docVersion = docVersion;
+	}
+
+	public String getTotalRoAmount() {
+		return totalRoAmount;
+	}
+
+	public void setTotalRoAmount(String totalRoAmount) {
+		this.totalRoAmount = totalRoAmount;
+	}
+
+	public String getOrderReasonText() {
+		return orderReasonText;
+	}
+
+	public void setOrderReasonText(String orderReasonText) {
+		this.orderReasonText = orderReasonText;
+	}
+
+	public String getSalesOrgDesc() {
+		return salesOrgDesc;
+	}
+
+	public void setSalesOrgDesc(String salesOrgDesc) {
+		this.salesOrgDesc = salesOrgDesc;
+	}
+	
+	
 
 	// @Override
 	// public String toString() {
@@ -1035,5 +1083,6 @@ public class Content {
 	// }
 
 	// UPDATE THE toString METHOD AFTER EACH UPDATION OF FIELDS
+	
 
 }
