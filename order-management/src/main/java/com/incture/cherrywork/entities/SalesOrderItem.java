@@ -23,7 +23,11 @@ public class SalesOrderItem {
 	private String salesItemId;
 
 	
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	public String getSalesItemId() {
 		return salesItemId;
 	}

@@ -9,6 +9,10 @@ public class ObdDto {
 
 	private int pageNo;
 	private String documentType;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	private String obdStatus;
 
 	private String salesHeaderId;
@@ -17,14 +21,25 @@ public class ObdDto {
 	private Date createdDateFrom;
 	private Date createdDateTo;
 	private String shipToParty;
+<<<<<<< HEAD
+=======
+
+	
+	private String pgiStatus;
+    private List<String>invoiceStatus ;
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 
 	
 	
 
+<<<<<<< HEAD
 	private String pgiStatus;
 	private List<String>invoiceStatus ;
 	
 	
+=======
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	
 	public String getPgiStatus() {
 		return pgiStatus;
@@ -38,9 +53,7 @@ public class ObdDto {
 	public void setInvoiceStatus(List<String> invoiceStatus) {
 		this.invoiceStatus = invoiceStatus;
 	}
-	public List<String> getStpId() {
-		return stpId;
-	}
+	
 	public String getObdStatus() {
 		return obdStatus;
 	}
@@ -75,6 +88,10 @@ public class ObdDto {
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	public String getSalesHeaderId() {
 		return salesHeaderId;
 	}
@@ -83,10 +100,15 @@ public class ObdDto {
 		this.salesHeaderId = salesHeaderId;
 	}
 
+
+<<<<<<< HEAD
+=======
 	public String getObdId() {
 		return obdId;
 	}
 
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	public void setObdId(String obdId) {
 		this.obdId = obdId;
 	}
@@ -106,6 +128,7 @@ public class ObdDto {
 	public void setCreatedDateTo(Date createdDateTo) {
 		this.createdDateTo = createdDateTo;
 	}
+<<<<<<< HEAD
 
 
 		
@@ -117,5 +140,24 @@ public class ObdDto {
 				+ ", obdId=" + obdId + ", stpId=" + stpId + ", createdDateFrom=" + createdDateFrom + ", createdDateTo="
 				+ createdDateTo + ", shipToParty=" + shipToParty + ", obdStatus=" + obdStatus + "]";
 	}
+=======
+
+
+	
+
+	@Override
+	public String toString() {
+		return "ObdDto [pageNo=" + pageNo + ", documentType=" + documentType + ", obdStatus=" + obdStatus
+				+ ", salesHeaderId=" + salesHeaderId + ", obdId=" + obdId + ", stpId=" + stpId + ", createdDateFrom="
+				+ createdDateFrom + ", createdDateTo=" + createdDateTo + ", shipToParty=" + shipToParty + "]";
+
+	}
+	
+	
+
+	
+
+	
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 
 }

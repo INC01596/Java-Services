@@ -186,11 +186,16 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 					}
 				}
+<<<<<<< HEAD
 
+=======
+				
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 				item.setOutBoundOrderId(dto.getHeaderDto().getObdId());
 				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
 				item.setSalesOrderHeader(header);
 				String str = itemNumber.toString();
+<<<<<<< HEAD
 				if (str.length() == 2)
 					str = "0000" + str;
 				else if (str.length() == 3)
@@ -199,11 +204,25 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 					str = "00" + str;
 				else if (str.length() == 5)
 					str = "0" + str;
+=======
+				if(str.length()==2)
+					str = "0000"+str;
+				else if(str.length()==3)
+					str = "000"+str;
+				else if(str.length()==4)
+					str = "00"+str;
+				else if(str.length()==5)
+					str = "0"+str;
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 				item.setItemNumber(str);
 				// item.setObdStatus("Draft");
 				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
 				salesOrderItemRepository.save(Item);
+<<<<<<< HEAD
 				itemNumber += 10;
+=======
+				itemNumber+=10;
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 
 			}
 
@@ -234,8 +253,13 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 						Query q2 = entityManager.createQuery(query2);
 						q2.setParameter("s4doc", s4DocumentId);
 						List<String> obdID = q2.getResultList();
+<<<<<<< HEAD
 						if (obdID != null)
 							dto.getHeaderDto().setObdId(obdID.get(0));
+=======
+						if(obdID != null)
+						dto.getHeaderDto().setObdId(obdID.get(0));
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 						dto.getHeaderDto().setPgiStatus("PENDING");
 						dto.getHeaderDto().setInvoiceStatus("PENDING");
 						// String str = res1.getBody().toString();
@@ -247,13 +271,21 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 						q3.setParameter("salesHeaderId", dto.getHeaderDto().getSalesOrderId());
 						q3.setParameter("dType", "OR");
 						List<SalesOrderHeader> list = q3.getResultList();
+<<<<<<< HEAD
 						if (list.size() > 0) {
+=======
+						if(list.size()>0){
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 							SalesOrderHeader header1 = list.get(0);
 							header1.setDocumentProcessStatus(EnOrderActionStatus.PROCESSING);
 						}
 					} else {
 						dto.getHeaderDto().setObdStatus("FAILED");
+<<<<<<< HEAD
 						dto.getHeaderDto().setPostingError((String) res1.getBody());
+=======
+						dto.getHeaderDto().setPostingError((String)res1.getBody());
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 						// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
 						salesOrderHeaderRepository
 								.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
@@ -419,7 +451,11 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			} else {
 				dto.getHeaderDto().setPgiStatus("FAILED");
+<<<<<<< HEAD
 				dto.getHeaderDto().setPostingError((String) res1.getBody());
+=======
+				dto.getHeaderDto().setPostingError((String)res1.getBody());
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
@@ -580,6 +616,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				Query q2 = entityManager.createQuery(query2);
 				q2.setParameter("s4doc", dto.getHeaderDto().getS4DocumentId());
 				List<String> invID = q2.getResultList();
+<<<<<<< HEAD
 				if (invID != null)
 					dto.getHeaderDto().setInvId(invID.get(0));
 				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
@@ -590,6 +627,18 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				dto.getHeaderDto().setInvoiceStatus("FAILED");
 				dto.getHeaderDto().setPostingError((String) res1.getBody());
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
+=======
+				if(invID != null)
+				dto.getHeaderDto().setInvId(invID.get(0));
+				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
+				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
+				ServicesUtil.mailZippedInv(dto);
+			} else {
+				dto.getHeaderDto().setInvoiceStatus("FAILED");
+				dto.getHeaderDto().setPostingError((String)res1.getBody());
+				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
+				setStatusAsClosed(obdId);
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
 		}
@@ -898,6 +947,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Fetched Invoice detail").body(dto);
 
 	}
+<<<<<<< HEAD
 
 	public void mailService(SalesOrderHeaderItemDto dto) {
 		ServicesUtil.mailZippedInv(dto);
@@ -1001,3 +1051,53 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 	}
 
 }
+=======
+	public void mailService(SalesOrderHeaderItemDto dto){
+		ServicesUtil.mailZippedInv(dto);
+	}
+	public void printService(SalesOrderHeaderItemDto dto){
+		ServicesUtil.printInv(dto);
+	}
+	public int setStatusAsClosed(String obdId){
+		
+		String query = "from SalesOrderHeader where obdId=:obdId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("obdId", obdId);
+		List<SalesOrderHeader> List = q1.getResultList();
+		String s4DocumentId = null;
+		if(List.size()>0)
+			s4DocumentId = List.get(0).getS4DocumentId();
+		String query2 = "select salesItemId from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4docId";
+		Query q2 = entityManager.createQuery(query2);
+		q2.setParameter("s4docId", s4DocumentId);
+		List<String> itemIdList = q2.getResultList();
+		for(String itemId:itemIdList){
+			String query3 = "select invId from SalesOrderItem i where i.orderItemId=:itemId and i.outBoundOrderId=:obdId";
+			Query q3 = entityManager.createQuery(query3);
+			q3.setParameter("itemId", itemId);
+			q3.setParameter("obdId", obdId);
+			List<String> invIdList = q3.getResultList();
+			if(invIdList.size()>0){
+				String invId = invIdList.get(0);
+				String prefix = invId.substring(0,3);
+				if(prefix.equals("PGI"))
+					return 0;
+			}
+		}
+		String query4 = "from SalesOrderHeader where salesHeaderId=:salesHeaderId and documentType=:dType";
+		Query q4 = entityManager.createQuery(query4);
+		q4.setParameter("salesHeaderId", List.get(0).getSalesHeaderId());
+		q4.setParameter("dType", "OR");
+		List<SalesOrderHeader> headerList = q4.getResultList();
+		if(headerList.size()>0){
+			SalesOrderHeader header1 = headerList.get(0);
+			header1.setDocumentProcessStatus(EnOrderActionStatus.DELIVERY_IN_TRANSIT);
+			salesOrderHeaderRepository.save(header1);
+		}
+		return 1;
+	}
+	
+}
+
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233

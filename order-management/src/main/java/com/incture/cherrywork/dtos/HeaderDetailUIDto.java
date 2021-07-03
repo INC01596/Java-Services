@@ -95,6 +95,15 @@ public class HeaderDetailUIDto {
 	}
 	
 	
+<<<<<<< HEAD
+=======
+	public List<EnOrderActionStatus> getDocumentProcessStatus() {
+		return documentProcessStatus;
+	}
+	public void setDocumentProcessStatus(List<EnOrderActionStatus> documentProcessStatus) {
+		this.documentProcessStatus = documentProcessStatus;
+	}
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	public String getCreatedBy() {
 		return createdBy;
 	}

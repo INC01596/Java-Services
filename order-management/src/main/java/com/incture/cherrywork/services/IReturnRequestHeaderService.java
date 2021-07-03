@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.incture.cherrywork.services;
 
 import java.util.Map;
@@ -40,3 +41,23 @@ public interface IReturnRequestHeaderService {
 	ResponseEntity<?> getInstanceIdByWorkflowInstanceId(String workflowInstaceId);
 	
 }
+=======
+package com.incture.cherrywork.services;
+
+import org.springframework.http.ResponseEntity;
+
+import com.incture.cherrywork.dtos.ReturnFilterDto;
+import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
+
+
+
+public interface IReturnRequestHeaderService {
+	ResponseEntity<Object> saveAsDraft(ReturnOrderRequestPojo requestData);
+	ResponseEntity<Object> createReturnRequest(ReturnOrderRequestPojo requestData);
+	ResponseEntity<Object> findByReturnReqNum(String returnReqNum);
+	ResponseEntity<Object> findAll(int pageNo);
+	ResponseEntity<Object> listAllReturn(ReturnFilterDto dto);
+	
+
+}
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233

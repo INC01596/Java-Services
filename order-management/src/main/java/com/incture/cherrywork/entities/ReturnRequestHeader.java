@@ -196,6 +196,17 @@ public @Data class ReturnRequestHeader implements Serializable {
 
 	@Column(name = "SMS_FROM")
 	private String smsFrom;
+	
+	@Column(name="Flag")
+	private String flag;
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 
 	@Column(name = "CREATED_BY")
 	private String createdBy;
@@ -208,4 +219,83 @@ public @Data class ReturnRequestHeader implements Serializable {
 		return serialVersionUID;
 	}
 
+<<<<<<< HEAD
+=======
+	public ReturnRequestHeader() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public ReturnRequestHeader(String returnReqNum, String roType, String requestType, String orderType,
+			String salesOrg, String mappingId, String distributionChannel, String division, String soldToParty,
+			String shipToParty, String billToParty, String payer, String contactPerson, String contactDivision,
+			String contactTelephone, String referenceNum, String orderReason, String orderReasonText,
+			String reasonOwner, String reasonOwnerDesc, String requestRemark, String workflowInstance,
+			String overallWorkflowStatus, String requestedBy, Date createdAt, String updatedAt, String updatedBy,
+			String processingStatus, String logisticalStatus, boolean creationStatus, String message, String docVersion,
+			String roTypeText, String totalRoAmount, String requestorName, String orderTypeText,
+			String exchangeOrderType, String currency, String customerPo, String soldToPartyDesc,
+			String shipToPartyDesc, String billToDesc, String payerDesc, String requestorEmail, String returnTotalAmt,
+			String flagRoSo, Date referenceInvDate, Boolean emailTrigger, String divisionDesc, String salesOrgDesc,
+			String distributionChannelDesc, String documentUrl, Boolean smsTrigger, String smsFrom) {
+		super();
+		this.returnReqNum = returnReqNum;
+		this.roType = roType;
+		this.requestType = requestType;
+		this.orderType = orderType;
+		this.salesOrg = salesOrg;
+		this.mappingId = mappingId;
+		this.distributionChannel = distributionChannel;
+		this.division = division;
+		this.soldToParty = soldToParty;
+		this.shipToParty = shipToParty;
+		this.billToParty = billToParty;
+		this.payer = payer;
+		this.contactPerson = contactPerson;
+		this.contactDivision = contactDivision;
+		this.contactTelephone = contactTelephone;
+		this.referenceNum = referenceNum;
+		this.orderReason = orderReason;
+		this.orderReasonText = orderReasonText;
+		this.reasonOwner = reasonOwner;
+		this.reasonOwnerDesc = reasonOwnerDesc;
+		this.requestRemark = requestRemark;
+		this.workflowInstance = workflowInstance;
+		this.overallWorkflowStatus = overallWorkflowStatus;
+		this.requestedBy = requestedBy;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.updatedBy = updatedBy;
+		this.processingStatus = processingStatus;
+		this.logisticalStatus = logisticalStatus;
+		this.creationStatus = creationStatus;
+		this.message = message;
+		this.docVersion = docVersion;
+		this.roTypeText = roTypeText;
+		this.totalRoAmount = totalRoAmount;
+		this.requestorName = requestorName;
+		this.orderTypeText = orderTypeText;
+		this.exchangeOrderType = exchangeOrderType;
+		this.currency = currency;
+		this.customerPo = customerPo;
+		this.soldToPartyDesc = soldToPartyDesc;
+		this.shipToPartyDesc = shipToPartyDesc;
+		this.billToDesc = billToDesc;
+		this.payerDesc = payerDesc;
+		this.requestorEmail = requestorEmail;
+		this.returnTotalAmt = returnTotalAmt;
+		this.flagRoSo = flagRoSo;
+		this.referenceInvDate = referenceInvDate;
+		this.emailTrigger = emailTrigger;
+		this.divisionDesc = divisionDesc;
+		this.salesOrgDesc = salesOrgDesc;
+		this.distributionChannelDesc = distributionChannelDesc;
+		this.documentUrl = documentUrl;
+		this.smsTrigger = smsTrigger;
+		this.smsFrom = smsFrom;
+	}
+	
+	
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 }

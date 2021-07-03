@@ -84,6 +84,7 @@ public class IMaterialMasterRepositoryNew {
 	
 	//Sandeep Kumar
 	@SuppressWarnings("unchecked")
+<<<<<<< HEAD
 	public List<MaterialMaster> getMaterialNames(){
 		
 		try {
@@ -98,6 +99,24 @@ public class IMaterialMasterRepositoryNew {
 		}
 		
 	}
+=======
+    public List<MaterialMaster> getMaterialNames(){
+       
+        try {
+           
+        return mmrepo.findAll();
+           
+           
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+       
+    }	
+	
+
+>>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 
 public List<SalesOrderMaterialMasterDto> getMaterialByDesc(MaterialContainerDto materialContainerDto) {
 		

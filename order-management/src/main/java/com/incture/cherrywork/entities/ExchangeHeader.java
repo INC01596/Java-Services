@@ -14,8 +14,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @IdClass(ExchangeHeaderPk.class)
 @Table(name = "EXCHANGE_HEADER")
 public @Data class ExchangeHeader implements Serializable {
@@ -502,6 +500,67 @@ public @Data class ExchangeHeader implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public ExchangeHeader(String exchangeReqNum, String returnReqNum, String createdBy, Date createdAt,
+			String orderCategory, String orderType, String salesOrg, String distributionChannel, String division,
+			String customerPo, String customerPoType, String soldToParty, Double totalNetAmount, String docCurrency,
+			String deliveryBlock, String billingBlock, String overallStatus, String rejectionStatus,
+			String deliveryStatus, String creditStatus, String overallWorkflowStatus, boolean creationStatus,
+			String message, String docVersion, String totalExchangeAmount, String currency, String roType, String payer,
+			String referenceNum, String reasonOwner, String requestRemark, String billToParty, String soldToPartyDesc,
+			String shipToParty, String shipToPartyDesc, String remarks, String delComplete, String ordReason,
+			String flagRoSo, String orderTypeText, String payerDescription, String billToPartyDesc,
+			String documentUrl) {
+		super();
+		this.exchangeReqNum = exchangeReqNum;
+		this.returnReqNum = returnReqNum;
+		this.createdBy = createdBy;
+		this.createdAt = createdAt;
+		this.orderCategory = orderCategory;
+		this.orderType = orderType;
+		this.salesOrg = salesOrg;
+		this.distributionChannel = distributionChannel;
+		this.division = division;
+		this.customerPo = customerPo;
+		this.customerPoType = customerPoType;
+		this.soldToParty = soldToParty;
+		this.totalNetAmount = totalNetAmount;
+		this.docCurrency = docCurrency;
+		this.deliveryBlock = deliveryBlock;
+		this.billingBlock = billingBlock;
+		this.overallStatus = overallStatus;
+		this.rejectionStatus = rejectionStatus;
+		this.deliveryStatus = deliveryStatus;
+		this.creditStatus = creditStatus;
+		this.overallWorkflowStatus = overallWorkflowStatus;
+		this.creationStatus = creationStatus;
+		this.message = message;
+		this.docVersion = docVersion;
+		this.totalExchangeAmount = totalExchangeAmount;
+		this.currency = currency;
+		this.roType = roType;
+		this.payer = payer;
+		this.referenceNum = referenceNum;
+		this.reasonOwner = reasonOwner;
+		this.requestRemark = requestRemark;
+		this.billToParty = billToParty;
+		this.soldToPartyDesc = soldToPartyDesc;
+		this.shipToParty = shipToParty;
+		this.shipToPartyDesc = shipToPartyDesc;
+		this.remarks = remarks;
+		this.delComplete = delComplete;
+		this.ordReason = ordReason;
+		this.flagRoSo = flagRoSo;
+		this.orderTypeText = orderTypeText;
+		this.payerDescription = payerDescription;
+		this.billToPartyDesc = billToPartyDesc;
+		this.documentUrl = documentUrl;
+	}
+
+	public ExchangeHeader() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 
