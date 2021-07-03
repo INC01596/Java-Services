@@ -20,7 +20,7 @@ import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
 import com.incture.cherrywork.dto.new_workflow.TaskItemDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
-import com.incture.cherrywork.services.new_workflow.SalesOrderItemStatusService;
+import com.incture.cherrywork.workflow.services.SalesOrderItemStatusService;
 
 
 

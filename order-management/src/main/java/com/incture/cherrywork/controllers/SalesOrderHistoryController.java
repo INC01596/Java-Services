@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesOrderHistoryDto;
-import com.incture.cherrywork.services.SalesOrderHistoryService;
+import com.incture.cherrywork.workflow.services.SalesOrderHistoryService;
 
 
 @RestController

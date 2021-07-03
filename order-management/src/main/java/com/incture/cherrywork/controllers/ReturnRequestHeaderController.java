@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
 import com.incture.cherrywork.dtos.ReturnFilterDto;
+import com.incture.cherrywork.dtos.ReturnOrderDto;
 import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
 import com.incture.cherrywork.entities.Attachment;
 import com.incture.cherrywork.services.IAttachmentService;
@@ -109,6 +111,7 @@ public class ReturnRequestHeaderController {
 	}
 
 	@GetMapping("getByReqNum/{reqNum}")
+	@ApiOperation(value = "getByReqNum/{reqNum}")
 	public ResponseEntity<?> getByReturnReqNum(@PathVariable(name = "reqNum") String reqNum) {
 
 		return service.findByReturnReqNum(reqNum);
@@ -121,11 +124,42 @@ public class ReturnRequestHeaderController {
 	}
 
 	@GetMapping("/getReturnOrder/Message/{returnReqNum}")
+	@ApiOperation(value = "/getReturnOrder/Message/{returnReqNum}")
 	public ResponseEntity<Object> getMessageOfReturnOrderCreation(
 			@PathVariable(name = "returnReqNum") String returnReqNum) {
 		return service.getReturnOrderCreationMessage(returnReqNum);
 	}
 
+	@PostMapping(path = "/fetchReturnHeaderListForUserNewDac")
+	@ApiOperation(value = "/fetchReturnHeaderListForUserNewDac")
+	public ResponseEntity<Object> fetchReturnHeaderListForUserWhichHasTasksForNewDac(
+			@RequestBody FilterOnReturnHeaderDto filterDto) {
+
+		return service.fetchReturnHeaderListForUserWhichHasTasksForNewDac(filterDto, filterDto.getIndexNum(),
+				filterDto.getCount());
+
+	}
+
+	@GetMapping("/fetchReturnOrderTaskItemsNewDac/{userId}&{projectCode}&{customerPo}")
+	@ApiOperation(value = "/fetch Return Order Task Items New Dac")
+	public ResponseEntity<Object> fetchItemDataInReturnOrderHavingTaskDtoListForNewDac(
+			@PathVariable(name = "userId") String userId, @PathVariable(name = "projectCode") String projectCode,
+			@PathVariable(name = "customerPo") String customerPo) {
+
+		return service.fetchItemDataInReturnOrderHavingTaskDtoListForNewDac(userId, customerPo, projectCode);
+
+	}
+
+
+	@PostMapping(path = "/onSubmitReturnApproval")
+	@ApiOperation(value = "/onSubmitReturnApproval")
+	public ResponseEntity<Object> returnApprovalOnSubmit(@RequestBody ReturnOrderDto returnOrderDto) {
+
+		return service.returnApprovalOnSubmit(returnOrderDto);
+	}
+
+
+	
 	@PostMapping("/list")
 	public ResponseEntity<?> listAllReturnRequestHeaders(@RequestBody ReturnFilterDto dto) {
 		System.err.println("Inside ReturnRequestHeaders List");

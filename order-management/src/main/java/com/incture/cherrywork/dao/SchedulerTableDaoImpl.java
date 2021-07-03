@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.SchedulerTableDto;
 import com.incture.cherrywork.entities.SchedulerTableDo;
@@ -21,10 +25,12 @@ import com.incture.cherrywork.exceptions.ExecutionFault;
  * @author Mohit.Basak
  *
  */
-@Repository
-@Component
+@Service
+@Transactional
 public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTableDto> implements SchedulerTableDao {
-
+	
+	
+	
 	@Override
 	public SchedulerTableDo importDto(SchedulerTableDto fromDto) {
 		SchedulerTableDo schedulerTableDo = null;

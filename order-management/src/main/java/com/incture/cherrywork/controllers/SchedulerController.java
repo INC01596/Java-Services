@@ -21,22 +21,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.Odat.Dto.WorkflowTriggerInputDto;
-import com.incture.cherrywork.OdataSe.ODataConsumingService;
 import com.incture.cherrywork.dtos.ResponseEntity;
+import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SchedulerTimeDto;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
-import com.incture.cherrywork.services.SchedulerTableService;
+import com.incture.cherrywork.workflow.services.ODataConsumingService;
+import com.incture.cherrywork.workflow.services.SchedulerTableService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 
 
 
-@Configuration
+
 @EnableScheduling
 @RestController
+@Api(value = "Scheduler Controller", tags = { "Approval" })
 @RequestMapping("/scheduler")
 public class SchedulerController {
 
-	private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
+	//private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
 	static boolean schedulerSwitch = true;
 
@@ -47,10 +52,13 @@ public class SchedulerController {
 
 	@Autowired
 	private SchedulerTableService schedulerTableService;
+	
+	@Autowired
+	private ODataConsumingService odataConsumingService;
 
 	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
-	  @Scheduled(cron = "0 0/5 * * * ?")
+	  @Scheduled(cron = "0 0/15 * * * ?")
 	//@Scheduled(cron = "0 12 * * * ?")
 	public void schedulerTrigger() {
 		System.err.println("STEP 1 SCHEDULER ENTER time " + "=" + LocalDateTime.now(ZoneId.of("GMT+08:00"))
@@ -79,6 +87,7 @@ public class SchedulerController {
 	}
 
 	@GetMapping("/schedulerSwitch/{parameter}")
+	@ApiOperation(value = "/schedulerSwitch/{parameter}")
 	public static ResponseEntity turnOffOnScheduler(@PathVariable boolean parameter) {
 		if (!parameter) {
 			schedulerSwitch = parameter;
@@ -133,6 +142,10 @@ public class SchedulerController {
 			return oDataConsumingService.manualScheduler(dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
 					dto.getEndTime());
 		
+	}
+	@PostMapping("/saveDataToHanaDb")
+	public void saveDataToHanaDb(@RequestBody List<SalesDocHeaderDto> list){
+		odataConsumingService.saveDataToHanaDb(list);
 	}
 
 }

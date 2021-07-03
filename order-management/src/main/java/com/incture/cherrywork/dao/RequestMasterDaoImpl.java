@@ -1,12 +1,14 @@
 package com.incture.cherrywork.dao;
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,23 +17,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.RequestMasterDto;
 import com.incture.cherrywork.entities.RequestMasterDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
+import com.incture.cherrywork.workflow.repositories.IRequestMasterRepository;
 
-
-
-@Repository
-@Component
+@Service
+@Transactional
 public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMasterDto> implements RequestMasterDao {
-    
-	 @Lazy
-	 @Autowired
-	 private CommentDao commentRepo;
+
+	@Lazy
+	@Autowired
+	private CommentDao commentRepo;
 
 	@Autowired
 	private SessionFactory sessionfactory;
+
+	@Autowired
+	private IRequestMasterRepository requestMasterRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public RequestMasterDo importDto(RequestMasterDto fromDto) {
@@ -119,15 +128,10 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 
 	@Override
 	public String saveOrUpdateRequestMaster(RequestMasterDto reqMasterDto) throws ExecutionFault {
-		try (Session session = sessionfactory.openSession()) {
-			Transaction tx = session.beginTransaction();
+		try {
 
 			RequestMasterDo requestDo = importDto(reqMasterDto);
-			getSession().saveOrUpdate(requestDo);
-			// getSession().flush();
-			// getSession().clear();
-			tx.commit();
-			session.close();
+			requestMasterRepository.save(requestDo);
 
 			return requestDo.getRequestId();
 		} catch (NoResultException | NullPointerException e) {
@@ -139,31 +143,44 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 
 	@Override
 	public List<RequestMasterDto> listAllRequests() {
-		return exportList(getSession().createQuery("from RequestMasterDo", RequestMasterDo.class).list());
+		String query = "from RequestMasterDo";
+		Query q1 = entityManager.createQuery(query);
+		return exportList(q1.getResultList());
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<RequestMasterDto> getRequestMasterById(String reqId) {
-		return exportList(
-				getSession().createQuery("from RequestMasterDo r where r.requestId = :reqId", RequestMasterDo.class)
-						.setParameter("reqId", reqId).getResultList());
+
+		String query = "from RequestMasterDo r where r.requestId = :reqId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("reqId", reqId);
+		List<RequestMasterDo> list = q1.getResultList();
+		if (list == null)
+			return null;
+		return ObjectMapperUtils.mapAll(list, RequestMasterDto.class);
 	}
 
 	// fetch single record based on the
 	// refDocNumber/salesDocNumber/salesHeaderId
 	@Override
 	public RequestMasterDto getRequestMasterByRefDocNumber(String refDocNumebr) {
-		return exportDto(
-				getSession().createQuery("from RequestMasterDo r where r.refDocNum = :refDocNum", RequestMasterDo.class)
-						.setParameter("refDocNum", refDocNumebr).getSingleResult());
+		String query = "from RequestMasterDo r where r.refDocNum = :refDocNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("refDocNum", refDocNumebr);
+		return exportDto((RequestMasterDo) q1.getSingleResult());
 	}
 
 	@Override
 	public String deleteRequestMasterById(String reqId) throws ExecutionFault {
 		try {
-			RequestMasterDo reqMasterDo = getSession().byId(RequestMasterDo.class).load(reqId);
+
+			String query = "from RequestMasterDo r where r.requestId = :reqId";
+			Query q1 = entityManager.createQuery(query);
+			q1.setParameter("reqId", reqId);
+			RequestMasterDo reqMasterDo = (RequestMasterDo) q1.getSingleResult();
 			if (reqMasterDo != null) {
-				getSession().delete(reqMasterDo);
+				requestMasterRepository.delete(reqMasterDo);
 				return "Request master is completedly removed";
 			} else {
 				return "Request master is not found on Request id : " + reqId;
@@ -176,11 +193,13 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 	@Override
 	public String deleteRequestMasterByRefDocNum(String salesOrderNum) throws ExecutionFault {
 		try {
-			List<RequestMasterDo> reqMasterDo = getSession()
-					.createQuery("from RequestMasterDo r where r.refDocNum = :refDocNum", RequestMasterDo.class)
-					.setParameter("refDocNum", salesOrderNum).getResultList();
+			String query = "from RequestMasterDo r where r.refDocNum = :refDocNum";
+			Query q1 = entityManager.createQuery(query);
+			q1.setParameter("refDocNum", salesOrderNum);
+
+			List<RequestMasterDo> reqMasterDo = q1.getResultList();
 			if (reqMasterDo != null && !reqMasterDo.isEmpty()) {
-				reqMasterDo.forEach(req -> getSession().delete(req));
+				reqMasterDo.forEach(req -> requestMasterRepository.delete(req));
 				return "Request master is completedly removed";
 			} else {
 				return "Request master is not found on Sales Order Num : " + salesOrderNum;
@@ -194,9 +213,7 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 	public String saveOrUpdateRequestMasterStatus(RequestMasterDto reqMasterDto) throws ExecutionFault {
 		try {
 			RequestMasterDo requestDo = importDto(reqMasterDto);
-			getSession().merge(requestDo);
-			getSession().flush();
-			getSession().clear();
+			requestMasterRepository.save(requestDo);
 			return requestDo.getRequestId();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -207,16 +224,12 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 
 	@Override
 	public String UpdateRequestMaster(RequestMasterDto reqMasterDto) throws ExecutionFault {
-		try (Session session = sessionfactory.openSession()) {
-			Transaction tx = session.beginTransaction();
-
+		try {
 			RequestMasterDo requestDo = importDto(reqMasterDto);
-			getSession().saveOrUpdate(requestDo);
+			requestMasterRepository.save(requestDo);
 			// getSession().flush();
 			// getSession().clear();
-			tx.commit();
-			session.close();
-
+			
 			return requestDo.getRequestId();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);

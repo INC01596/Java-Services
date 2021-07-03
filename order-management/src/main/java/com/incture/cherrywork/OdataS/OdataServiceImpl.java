@@ -53,9 +53,9 @@ import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.services.SalesDocItemService;
-import com.incture.cherrywork.services.SalesOrderHistoryServiceImpl;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
+import com.incture.cherrywork.workflow.services.SalesOrderHistoryServiceImpl;
 
 
 @Service

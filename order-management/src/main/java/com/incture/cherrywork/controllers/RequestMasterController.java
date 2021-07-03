@@ -18,7 +18,8 @@ import com.incture.cherrywork.dtos.RequestMasterDto;
 import com.incture.cherrywork.dtos.RequestMasterInsertDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
-import com.incture.cherrywork.services.RequestMasterService;
+
+import com.incture.cherrywork.workflow.services.IRequestMasterService;
 
 
 @RestController
@@ -32,7 +33,7 @@ public class RequestMasterController {
 	}
 
 	@Autowired
-	private RequestMasterService services;
+	private IRequestMasterService services;
 
 	@PostMapping(path = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity createRequest(@RequestBody RequestMasterDto requestMasterDto) {
@@ -67,7 +68,7 @@ public class RequestMasterController {
 	@GetMapping("/findById/{reqId}")
 	public ResponseEntity findRequestMasterById(@PathVariable("reqId") String reqId) {
 		System.err.println("Inside Request Master find by Id method");
-		return services.getRequestMasterById(reqId);
+		return services.getRequestMasterById1(reqId);
 	}
 	
 	

@@ -1,20 +1,23 @@
 package com.incture.cherrywork.dao;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderInput;
@@ -24,13 +27,12 @@ import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
 import com.incture.cherrywork.entities.ScheduleLineDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.workflow.repositories.ISalesDocItemRepository;
 
-
-
-@Repository
-@Component
+@Service
+@Transactional
 public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto> implements SalesDocItemDao {
-  
+
 	@Lazy
 	@Autowired
 	private ScheduleLineDaoImpl scheduleLineRepo;
@@ -40,7 +42,13 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	private SalesDocHeaderDaoImpl salesDocHeaderRepo;
 
 	@Autowired
+	ISalesDocItemRepository salesDocItemRepository;
+
+	@Autowired
 	private SessionFactory sessionfactory;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public SalesDocItemDo importDto(SalesDocItemDto fromDto) {
@@ -249,9 +257,7 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	public String saveOrUpdateSalesDocItem(SalesDocItemDto salesDocItemDto) throws ExecutionFault {
 		try {
 			SalesDocItemDo salesDocItemDo = importDto(salesDocItemDto);
-			getSession().merge(salesDocItemDo);
-			getSession().flush();
-			getSession().clear();
+			salesDocItemRepository.save(salesDocItemDo);
 			return "Sales Document Item is successfully created with =" + salesDocItemDo.getSalesDocItemKey();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -266,14 +272,10 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	public String saveOrUpdateSalesDocItemForDS(SalesDocItemDto salesDocItemDto) throws ExecutionFault {
 
 		try {
-			Session session = sessionfactory.openSession();
-			Transaction tx = session.beginTransaction();
 
 			SalesDocItemDo salesDocItemDo = importDto(salesDocItemDto);
-			session.saveOrUpdate(salesDocItemDo);
+			salesDocItemRepository.save(salesDocItemDo);
 
-			tx.commit();
-			session.close();
 			return "Sales Document Item is successfully created with =" + salesDocItemDo.getSalesDocItemKey();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -284,7 +286,9 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 	@Override
 	public List<SalesDocItemDto> listAllSalesDocItems() {
-		return exportList(getSession().createQuery("from SalesDocItemDo", SalesDocItemDo.class).list());
+		String query = "from SalesDocItemDo";
+		Query q1 = entityManager.createQuery(query);
+		return exportList(q1.getResultList());
 	}
 
 	@Override
@@ -293,10 +297,12 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 		SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
 		// Setting Sales Header Primary Key
 		salesDocHeader.setSalesOrderNum(salesHeaderId);
-		return exportDto(
-				getSession().get(SalesDocItemDo.class, new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader)));
+		return null;
+//		return exportDto(
+//				getSession().get(SalesDocItemDo.class, new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader)));
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public String deleteSalesDocItemById(String salesItemId, String salesHeaderId) throws ExecutionFault {
 		try {
@@ -304,10 +310,11 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 			SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
 			// Setting Sales Header Primary Key
 			salesDocHeader.setSalesOrderNum(salesHeaderId);
-			SalesDocItemDo salesDocItemDo = getSession().byId(SalesDocItemDo.class)
-					.load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
+			SalesDocItemDo salesDocItemDo = null;
+//			SalesDocItemDo salesDocItemDo = getSession().byId(SalesDocItemDo.class)
+//					.load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
 			if (salesDocItemDo != null) {
-				getSession().delete(salesDocItemDo);
+				salesDocItemRepository.delete(salesDocItemDo);
 				return "Sales Document Item is completedly removed";
 			} else {
 				return "Sales Document Item is not found on Item id : " + salesItemId;
@@ -319,17 +326,20 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 	@Override
 	public List<SalesDocItemDto> listOfItemsInSalesOrder(String salesHeaderId) {
-		return exportList(getSession().createQuery(
-				"select item from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum =: salesHeaderId",
-				SalesDocItemDo.class).setParameter("salesHeaderId", salesHeaderId).getResultList());
+		
+		String query = "select item from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum =: salesHeaderId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("salesHeaderId", salesHeaderId);
+		return exportList(q1.getResultList());
 	}
 
 	@Override
 	public List<String> getDSBySalesHeaderID(String salesHeaderId) {
 
-		return getSession().createQuery(
-				"select distinct ds.decisionSetId from SalesDocItemDo ds where ds.salesDocItemKey.salesDocHeader.salesOrderNum = :salesOrderNum and ds.decisionSetId is not null",
-				String.class).setParameter("salesOrderNum", salesHeaderId).getResultList();
+		String query = "select distinct ds.decisionSetId from SalesDocItemDo ds where ds.salesDocItemKey.salesDocHeader.salesOrderNum = :salesOrderNum and ds.decisionSetId is not null";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("salesOrderNum", salesHeaderId);
+		return q1.getResultList();
 	}
 
 	@Override
@@ -359,19 +369,18 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 					.load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
 			if (salesDocItemDo != null) {
 
-				Transaction tx = session.beginTransaction();
-				Query<String> query = session.createQuery("update SalesDocItemDo s set s.decisionSetId =: decisionSetId"
+				String query = "update SalesDocItemDo s set s.decisionSetId =: decisionSetId"
 						+ " where s.salesDocItemKey.salesItemOrderNo =: salesItemOrderNo"
-						+ " and s.salesDocItemKey.salesDocHeader.salesOrderNum =: salesOrderNum");
+						+ " and s.salesDocItemKey.salesDocHeader.salesOrderNum =: salesOrderNum";
+				Query q1 = entityManager.createQuery(query);
+				
 
-				query.setParameter("decisionSetId", decisionSet);
-				query.setParameter("salesItemOrderNo", salesItemId);
-				query.setParameter("salesOrderNum", salesHeaderId);
+				q1.setParameter("decisionSetId", decisionSet);
+				q1.setParameter("salesItemOrderNo", salesItemId);
+				q1.setParameter("salesOrderNum", salesHeaderId);
 
-				query.executeUpdate();
-				tx.commit();
-				session.clear();
-				session.close();
+				q1.executeUpdate();
+				
 
 				return "Sales Document Item is updated with decision set : " + decisionSet;
 			} else {
@@ -387,10 +396,11 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	@Override
 	public List<String> getItemListByDataSet(String dataSet) {
 		if (dataSet != null) {
-
-			return getSession().createQuery(
-					"select item.salesDocItemKey.salesItemOrderNo from SalesDocItemDo item where item.decisionSetId = :decisionSetId",
-					String.class).setParameter("decisionSetId", dataSet).getResultList();
+			
+			String query = "select item.salesDocItemKey.salesItemOrderNo from SalesDocItemDo item where item.decisionSetId = :decisionSetId";
+			Query q1 = entityManager.createQuery(query);
+			q1.setParameter("decisionSetId", dataSet);		
+			return q1.getResultList();
 
 		} else {
 			return null;
@@ -399,12 +409,13 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SalesDocItemDto> getSalesDocItemsByDecisionSetId(String decisionSetId) {
-		return exportList(getSession()
-				.createQuery("from SalesDocItemDo item where item.decisionSetId = :dsId", SalesDocItemDo.class)
-				.setParameter("dsId", decisionSetId).getResultList());
+		String query = "from SalesDocItemDo item where item.decisionSetId = :dsId";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("dsId", decisionSetId);
+		return exportList(q1.getResultList());
 	}
 
 }
-
