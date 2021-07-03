@@ -26,10 +26,19 @@ public class BlockTypeDeterminationServiceImpl implements BlockTypeDetermination
 
 	@Override
 	public ResponseEntity blockTypeFilterBasedOnSoId(String salesOrderHeaderNo) {
+		System.err.println("blockTypeFilterBasedOnSoId starts..");
 		try {
-			Map<DkshBlockConstant, Object> map = blockTypeDeterminationRepo
+			Map<DkshBlockConstant, Object> map = null;
+			try{
+			map = blockTypeDeterminationRepo
 					.blockTypeFilterBasedOnSoId(salesOrderHeaderNo);
+			}
+			catch(Exception e){
+				System.err.println("[BlockTypeDeterminationServiceImpl][blockTypeFilterBasedOnSoId] Exception: "+e.getMessage());
+				e.printStackTrace();
+			}
 			System.err.println("BTD map at service : " + map);
+			try{
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			Gson gson = gsonBuilder.create();
 			
@@ -37,6 +46,11 @@ public class BlockTypeDeterminationServiceImpl implements BlockTypeDetermination
 			String idb = gson.toJson(map);
 			
 			System.err.println("idb ="+idb);
+			}
+			catch(Exception e){
+				System.err.println("[BlockTypeDeterminationServiceImpl][blockTypeFilterBasedOnSoId] Exception: "+e.getMessage());
+				e.printStackTrace();
+			}
 			
 			if (map == null || map.isEmpty()) {
 				return new ResponseEntity(salesOrderHeaderNo, HttpStatus.NO_CONTENT,
@@ -47,6 +61,7 @@ public class BlockTypeDeterminationServiceImpl implements BlockTypeDetermination
 			}
 		} catch (Exception e) {
 			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			e.printStackTrace();
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}

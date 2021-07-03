@@ -1,4 +1,4 @@
-package com.incture.cherrywork.services;
+package com.incture.cherrywork.workflow.services;
 
 
 import java.util.List;
@@ -65,10 +65,10 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 				// "Entered Request ID already Registered, Use another one!!",
 				// ResponseStatus.FAILED);
 				// } else {
-				RequestMasterDto reqMasterDto = new RequestMasterDto();
-				reqMasterDto.setRequestId(salesDocHeaderDto.getReqMasterId());
+				//RequestMasterDto reqMasterDto = new RequestMasterDto();
+				//reqMasterDto.setRequestId(salesDocHeaderDto.getReqMasterId());
 				// Saving data here
-				return savingSalesDocHeader(salesDocHeaderDto, Stream.of(reqMasterDto).collect(Collectors.toList()));
+				return savingSalesDocHeader(salesDocHeaderDto, /*Stream.of(reqMasterDto).collect(Collectors.toList())*/null);
 				// }
 				// }
 			} else {
@@ -77,6 +77,8 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 			}
 		} catch (Exception e) {
 			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			System.err.println("[saveSalesDocHeader] exception"+e.getMessage());
+			e.printStackTrace();
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}
@@ -274,6 +276,7 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 
 	private ResponseEntity savingSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto,
 			List<RequestMasterDto> reqMasterDtoList) throws ExecutionFault {
+		System.err.println("savingSalesDocHeader starts..");
 		if (!HelperClass.checkString(salesDocHeaderDto.getSalesOrderNum())) {
 			String msg = salesDocHeaderRepo.saveSalesDocHeader(salesDocHeaderDto);
 			if (msg == null) {
@@ -283,19 +286,23 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 			}
 
 			// Assigning ref doc num to req master from so dto no
-			reqMasterDtoList.forEach(req -> {
-				if (salesDocHeaderDto.getCustomerPo().contains("CR")) {
-
-					req.setRequestCategory("PR");
-					req.setRequestType("05");
-				}
-
-				req.setRefDocNum(salesDocHeaderDto.getSalesOrderNum());
-				req.setRequestStatusCode(StatusConstants.REQUEST_NEW.toString());
-			});
+			//below lines commented by Awadhesh for request Master issue
+//			if(reqMasterDtoList != null && reqMasterDtoList.size()>0){
+//			reqMasterDtoList.forEach(req -> {
+//				if (salesDocHeaderDto.getCustomerPo().contains("CR")) {
+//
+//					req.setRequestCategory("PR");
+//					req.setRequestType("05");
+//				}
+//
+//				req.setRefDocNum(salesDocHeaderDto.getSalesOrderNum());
+//				req.setRequestStatusCode(StatusConstants.REQUEST_NEW.toString());
+//			});
 
 			// Saving ref doc id in req master here
-			requestMasterRepo.saveOrUpdateRequestMaster(reqMasterDtoList.get(0));
+			//Commented below line by Awadhesh Kumar
+//			requestMasterRepo.saveOrUpdateRequestMaster(reqMasterDtoList.get(0));
+//			}
 
 			return new ResponseEntity(salesDocHeaderDto, HttpStatus.CREATED, msg, ResponseStatus.SUCCESS);
 		} else {
@@ -370,7 +377,12 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 
 	@Override
 	public ResponseEntity getSalesDocHeadersWithoutItems(String salesOrderNum) {
+		System.err.println("getSalesDocHeadersWithoutItems starts..");
 		try {
+//			return new ResponseEntity(null, HttpStatus.NO_CONTENT,
+//					"Sales Document Header is not available for Sales Order Number : " + salesOrderNum,
+//					ResponseStatus.FAILED);
+			//Commented by Awadhesh Kumar
 			if (!HelperClass.checkString(salesOrderNum)) {
 				SalesDocHeaderDto salesDocHeaderDto = salesDocHeaderRepo
 						.getSalesDocHeaderWithoutItemsById(salesOrderNum);
@@ -379,7 +391,8 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 							"Sales Document Header is found for Sales Order Number : " + salesOrderNum,
 							ResponseStatus.SUCCESS);
 				} else {
-					return new ResponseEntity(null, HttpStatus.NO_CONTENT,
+					System.err.println("salesDocHeaderDto is null ");
+					return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR,
 							"Sales Document Header is not available for Sales Order Number : " + salesOrderNum,
 							ResponseStatus.FAILED);
 				}
@@ -389,6 +402,7 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 			}
 		} catch (Exception e) {
 			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			e.printStackTrace();
 			return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR, "EXCEPTION_FAILED + e",
 					ResponseStatus.FAILED);
 		}

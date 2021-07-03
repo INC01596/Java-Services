@@ -1,4 +1,4 @@
-package com.incture.cherrywork.services.new_workflow;
+package com.incture.cherrywork.workflow.services;
 
 import java.util.List;
 

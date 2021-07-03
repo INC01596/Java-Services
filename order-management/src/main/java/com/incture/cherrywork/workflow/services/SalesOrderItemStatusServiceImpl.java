@@ -1,4 +1,4 @@
-package com.incture.cherrywork.services.new_workflow;
+package com.incture.cherrywork.workflow.services;
 
 
 
@@ -26,13 +26,13 @@ import com.incture.cherrywork.dto.new_workflow.TaskItemDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderItemStatusDo;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
-import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.HelperClass;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
 
 import static com.incture.cherrywork.WConstants.Constants.DATA_FOUND;
 import static com.incture.cherrywork.WConstants.Constants.EMPTY_LIST;
