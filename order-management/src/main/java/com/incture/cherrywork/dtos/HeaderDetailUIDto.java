@@ -10,7 +10,7 @@ public class HeaderDetailUIDto {
 
 	private String salesHeaderId;
 	private String documentType;
-	private EnOrderActionStatus documentProcessStatus;
+	private List<EnOrderActionStatus> documentProcessStatus;
 	private String createdBy;
 	private Date createdDateFrom;
 	private Date createdDateTo;
@@ -94,12 +94,7 @@ public class HeaderDetailUIDto {
 		this.documentType = documentType;
 	}
 	
-	public EnOrderActionStatus getDocumentProcessStatus() {
-		return documentProcessStatus;
-	}
-	public void setDocumentProcessStatus(EnOrderActionStatus documentProcessStatus) {
-		this.documentProcessStatus = documentProcessStatus;
-	}
+	
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -130,6 +125,16 @@ public class HeaderDetailUIDto {
 	}
 	public void setSalesGroup(String salesGroup) {
 		this.salesGroup = salesGroup;
+	}
+	
+	
+	public void setDocumentProcessStatus(List<EnOrderActionStatus> documentProcessStatus) {
+		this.documentProcessStatus = documentProcessStatus;
+	}
+	
+	
+	public List<EnOrderActionStatus> getDocumentProcessStatus() {
+		return documentProcessStatus;
 	}
 	@Override
 	public String toString() {
