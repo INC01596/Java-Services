@@ -1,11 +1,14 @@
 
 package com.incture.cherrywork.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -1025,5 +1028,30 @@ public class ServicesUtil {
 		}
 
 	}
+	
+	public static String convertStreamToString(InputStream is) {
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		} catch (IOException e) {
+			// logger.error("contverStreamToString Output " + e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				// logger.error("contverStreamToString Output " + e +
+				// sb.toString());
+			}
+		}
+
+		return sb.toString();
+	}
+
 	
 }

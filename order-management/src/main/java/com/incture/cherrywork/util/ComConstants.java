@@ -1,5 +1,8 @@
 package com.incture.cherrywork.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class ComConstants {
 
 	private ComConstants() {
@@ -44,6 +47,7 @@ public final class ComConstants {
 	public static final String WORKFLOW_X_CSRF_TOKEN_GEN_URL = "https://bpmworkflowruntimecbbe88bff-uk81qreeol.ap1.hana.ondemand.com/workflow-service/rest/v1/xsrf-token";
 
 	public static final String ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME = "COM_OdataServices";
+	public static final String COM_ODATA_DESTINATION_NAME = "COM_OdataServices";
 	public static final String USERS_FROM_GROUP_IN_IDP_DESTINATION_NAME = "idpServices";
 	public static final String SUCCESSFULLY_UPDATED_IN_ECC = "Successfully Updated in ECC";
 
@@ -61,6 +65,11 @@ public final class ComConstants {
 	public static final String PENDING_DS_LEVELS = "Pending Decision Sets or Pending Levels";
 
 	public static final String SALES_HEADER_ITEM_ID_MANDATORY = "Sales header id and Sales item id fields are mandatory";
+	
+	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT = "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/$batch ";
+	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT_TAG = "soheaderSet";
+	public static final String RETURN_REQUEST_BATCH_TAG = "orderHeaderSet";
+	
 
 	// Number of spaces from the starting for JSON
 	public static final int PRETTY_PRINT_INDENT_FACTOR = 4;
@@ -74,5 +83,38 @@ public final class ComConstants {
 	public static final String RETUN_ORDER_EXCHANGE = "XC";
 
 	public static final String RETURN_EXCHANGE = "XC";
+	
+	public static final Map<Integer, String> MAP_TO_PRINT_ITEM_STATUS = new HashMap<Integer, String>() {
+		private static final long serialVersionUID = -6703344640406100704L;
+		{
+			put(22, "Pending Approval");
+			put(23, "Pending Approval by previous level");
+			put(24, "Approved");
+			put(25, "Rejected");
+			put(27, "Rejected by Previous Level");
+			put(32, "Display Only");
+			put(70, "Rejected from ECC");
+		}
+	};
+	
+	public static final Integer LEVEL_NEW = 1;
+	public static final Integer LEVEL_READY = 2;
+	public static final Integer LEVEL_IN_PROGRESS = 3;
+	public static final Integer LEVEL_COMPLETE = 4;
+	public static final Integer TASK_NEW = 5;
+	public static final Integer TASK_READY = 6;
+	public static final Integer TASK_IN_PROGRESS = 7;
+	public static final Integer TASK_COMPLETE = 8;
+	public static final Integer BLOCKED = 9;
+	public static final Integer ITEM_APPROVE = 10;
+	public static final Integer ITEM_REJECT = 11;
+	public static final Integer ITEM_INDIRECT_REJECT = 12;
+	public static final Integer VISIBLITY_ACTIVE = 13;
+	public static final Integer VISIBLITY_INACTIVE = 14;
+	public static final Integer VISIBLITY_INACTIVE_INDIRECT_REJECT = 15;
+	public static final Integer DISPLAY_ONLY_ITEM = 19;
+	public static final Integer REJECTED_FROM_ECC = 35;
+
+
 
 }

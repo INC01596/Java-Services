@@ -15,8 +15,8 @@ import com.incture.cherrywork.dao.BaseDao;
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusKeyDto;
 import com.incture.cherrywork.dto.workflow.SalesOrderTaskStatusesDto;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusPrimaryKey;
-import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusesDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusesDo;
 
 
 

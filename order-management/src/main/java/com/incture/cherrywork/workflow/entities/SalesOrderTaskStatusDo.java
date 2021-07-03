@@ -1,4 +1,4 @@
-package com.incture.cherrywork.entities.new_workflow;
+package com.incture.cherrywork.workflow.entities;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.incture.cherrywork.entities.BaseDo;
+import com.incture.cherrywork.entities.new_workflow.SalesOrderItemStatusDo;
+import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

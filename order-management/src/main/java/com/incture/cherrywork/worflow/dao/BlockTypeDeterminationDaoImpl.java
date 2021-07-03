@@ -7,9 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dao.SalesDocHeaderDao;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
@@ -21,8 +24,8 @@ import com.incture.cherrywork.util.HelperClass;
 
 
 
-@Repository
-@Component
+@Service
+@Transactional
 public class BlockTypeDeterminationDaoImpl implements BlockTypeDeterminationDao {
 
 	@Autowired
@@ -33,17 +36,35 @@ public class BlockTypeDeterminationDaoImpl implements BlockTypeDeterminationDao 
 		try {
 
 			Map<DkshBlockConstant, Object> map = new LinkedHashMap<>();
-			SalesDocHeaderDto headerWithItems = salesDocHeaderRepo.getSalesDocHeaderByIdWithOutFlag(salesOrderHeaderNo);
+			SalesDocHeaderDto headerWithItems = null;
+			try{
+			headerWithItems = salesDocHeaderRepo.getSalesDocHeaderByIdWithOutFlag(salesOrderHeaderNo);
+			}
+			catch(Exception e){
+				System.err.println("[BlockTypeDeterminationDaoImpl][blockTypeFilterBasedOnSoId] getSalesDocHeaderByIdWithOutFlag Exception: "+e.getMessage());
+				e.printStackTrace();
+			}
 
 			System.err.println("Sales order data for " + salesOrderHeaderNo + " is : " + headerWithItems);
 
 			if (headerWithItems != null) {
+				try{
 
 				checkingHeaderPart(map, headerWithItems);
-
+				}
+				catch(Exception e){
+					System.err.println("[BlockTypeDeterminationDaompl][blockTypeFilterBasedOnSoId] checkingHeaderPart Exception: "+e.getMessage());
+					e.printStackTrace();
+				}
 				if (headerWithItems.getSalesDocItemList() != null) {
 					List<SalesDocItemDto> itemsList = headerWithItems.getSalesDocItemList();
+					try{
 					checkingItemPart(map, itemsList);
+					}
+					catch(Exception e){
+						System.err.println("[BlockTypeDeterminationDaompl][blockTypeFilterBasedOnSoId] checkingItemPart Exception: "+e.getMessage());
+						e.printStackTrace();
+					}
 				}
 				System.err.println("BTD map at DAO : " + map);
 				return map;
@@ -65,6 +86,7 @@ public class BlockTypeDeterminationDaoImpl implements BlockTypeDeterminationDao 
 		List<String> itemNumList = new ArrayList<>();
 
 		for (SalesDocItemDto item : itemsList) {
+			idb.add(item.getSalesItemOrderNo());
 
 			if (!HelperClass.checkString(item.getItemBillingBlock())) {
 				ibb.add(item.getSalesItemOrderNo());
@@ -82,7 +104,9 @@ public class BlockTypeDeterminationDaoImpl implements BlockTypeDeterminationDao 
 				}
 			}
 			itemNumList.add(item.getSalesItemOrderNo());
+			
 		}
+		
 		map.put(DkshBlockConstant.INP, itemNumList);
 		map.put(DkshBlockConstant.IBB, ibb);
 		map.put(DkshBlockConstant.IDB, idb);

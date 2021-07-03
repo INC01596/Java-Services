@@ -1,4 +1,4 @@
-package com.incture.cherrywork.entities.new_workflow;
+package com.incture.cherrywork.workflow.entities;
 
 
 
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.incture.cherrywork.entities.BaseDo;
-
+import com.incture.cherrywork.entities.new_workflow.SalesOrderTaskStatusPrimaryKey;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
