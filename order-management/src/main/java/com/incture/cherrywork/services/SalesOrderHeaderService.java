@@ -207,17 +207,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	}
 
 	@Override
-    public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
+	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto) {
 
- 
+		Pageable pageable = PageRequest.of(dto.getPageNo(), 10);
+		repo.getManageService(dto, pageable);
+		return ResponseEntity.ok().body(repo.getManageService(dto, pageable));
 
-        Pageable pageable = PageRequest.of(dto.getPageNo(), 10);
-    repo.getManageService(dto, pageable);
-        return ResponseEntity.ok().body(repo.getManageService(dto, pageable));
+	}
 
- 
-
-    }
 	@Override
 	public ResponseEntity<Object> getHeader(String stp) {
 
@@ -225,7 +222,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			List<String> l = repo.getHeader(stp);
 			HeaderIdDto dto = new HeaderIdDto();
 			for (String d : l) {
-				dto.setsalesHeaderId(d);
+				dto.setSalesHeaderId(d);
 				repo.deleteDraftedVersion(dto);
 			}
 			return new ResponseEntity<>(l, HttpStatus.OK);
@@ -330,6 +327,40 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			for (SalesOrderItemDto d : l)
 
 			{
+				d.setInspection(false);
+				d.setBendTest(false);
+				d.setImpactTest(false);
+				d.setUltralightTest(false);
+				d.setIsElementBoronRequired(false);
+				if (d.getQualityTestList().contains("3.2 INSPECTION")) {
+					d.setInspection(true);
+				}
+
+				if (d.getQualityTestList().contains("BEND TEST")) {
+					d.setBendTest(true);
+
+				}
+
+				if (d.getQualityTestList().contains("IMPACT TEST")) {
+					d.setImpactTest(true);
+
+				}
+
+				if (d.getQualityTestList().contains("ULTRASONIC TEST")) {
+					d.setUltralightTest(true);
+
+				}
+
+				if (d.getQualityTestList().contains("HARDNESS TEST")) {
+					d.setHardnessTest(true);
+
+				}
+
+				if (d.getQualityTestList().contains("BORON REQUIRED")) {
+					d.setIsElementBoronRequired(true);
+
+				}
+
 				String s = UUID.randomUUID().toString().replace("-", "");
 				s = s.length() > 10 ? s.substring(0, 9) : s;
 				d.setSalesItemId(s);
