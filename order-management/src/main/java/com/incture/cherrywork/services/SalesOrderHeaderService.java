@@ -1249,23 +1249,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		return salesOrderHeaderRepository.updateError(dto.getTemp_id(), dto.getValue(), docType);
 	}
 
-<<<<<<< HEAD
-=======
-
-//	@Override
-//	public ResponseEntity<Object> getByObd(String obdId) {
-//
-//		try {
-//			SalesOrderHeaderItemDto result = repo.getByObdId(obdId);
-//
-//			return ResponseEntity.ok().body(result);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return ResponseEntity.badRequest().build();
-//		}
-//	}
-
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 	public ResponseEntity<Object> getList() {
 		String query = "from SalesOrderHeader s   order by s.postingDate desc";
 		Query q1 = entityManager.createQuery(query);
@@ -1310,12 +1293,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		List<SalesOrderItem> list2 = q2.getResultList();
 		System.err.println("list2 size " + list2.size());
 
-<<<<<<< HEAD
-=======
-
-
-		
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 		List<SalesOrderItemDto> result = new ArrayList<>();
 
 		for (SalesOrderItem item1 : list2) {

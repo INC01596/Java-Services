@@ -224,20 +224,12 @@ public class ISalesOrderHeaderRepositoryNew {
 			System.err.println("Only OBD");
 			return repo.findAllD(dto.getObdId(), pageable);
 		}
-<<<<<<< HEAD
-=======
-
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 
 		if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
 			System.err.println("Only salesHeaderId");
 			return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
 		}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 		if (!ServicesUtils.isEmpty(dto.getPgiStatus()) && !ServicesUtils.isEmpty(dto.getInvoiceStatus())) {
 
 			System.err.println("OBD+PGI+INVOICE");
@@ -393,170 +385,11 @@ public class ISalesOrderHeaderRepositoryNew {
 
 	}
 
-<<<<<<< HEAD
-	// public Page<SalesOrderHeader> getManageService(HeaderDetailUIDto dto,
-	// Pageable pageable) {
-	//
-	// try {
-	//
-	//
-	//
-	// if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-	// System.err.println("Only salesHeaderId");
-	// return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(),
-	// pageable);
-	// }
-	//
-	// if (!ServicesUtils.isEmpty(dto.getStpId())) {
-	// if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())
-	// && !ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	//
-	// System.err.println("Only cust+type+status+created");
-	// return repo.findAll(dto.getDocumentType(), dto.getStpId(),
-	// dto.getDocumentProcessStatus(),
-	// dto.getCreatedDateFrom(), dto.getCreatedDateTo(), pageable);
-	//
-	// } else if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())) {
-	// System.err.println("Only cust+type+status");
-	// return repo.findAll(dto.getDocumentType(), dto.getStpId(),
-	// dto.getDocumentProcessStatus(),
-	// pageable);
-	// } else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	// System.err.println("Only cust+type+created");
-	// return repo.findAll12(dto.getDocumentType(), dto.getStpId(),
-	// dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(), pageable);
-	//
-	// } else {
-	// System.err.println("only type+cust");
-	// return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
-	// }
-	//
-	// }
-	//
-	//
-	// if (!ServicesUtils.isEmpty(dto.getStpId())) {
-	// if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())
-	// && !ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	//
-	// System.err.println("Only cust+type+status+created");
-	// return repo.findAll(dto.getDocumentType(), dto.getStpId(),
-	// dto.getDocumentProcessStatus(),
-	// dto.getCreatedDateFrom(), dto.getCreatedDateTo(), pageable);
-	//
-	// } else if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())) {
-	// System.err.println("Only cust+type+status");
-	// return repo.findAll(dto.getDocumentType(), dto.getStpId(),
-	// dto.getDocumentProcessStatus(),
-	// pageable);
-	// } else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	// System.err.println("Only cust+type+created");
-	// return repo.findAll12(dto.getDocumentType(), dto.getStpId(),
-	// dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(), pageable);
-	//
-	// } else {
-	// System.err.println("only type+cust");
-	// return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
-	// }
-	//
-	// }
-	//
-	//
-	// if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())) {
-	// if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) &&
-	// !ServicesUtil.isEmpty(dto.getShipToParty())) {
-	// System.err.println("status+request+documentType+creat");
-	// return repo.findAll(dto.getDocumentType(),
-	// dto.getDocumentProcessStatus(), dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(), dto.getShipToParty(), pageable);
-	// } else if (!ServicesUtil.isEmpty(dto.getShipToParty())
-	// && ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	// System.err.println("status+request+documentType");
-	// return repo.findAll1(dto.getDocumentType(),
-	// dto.getDocumentProcessStatus(), dto.getShipToParty(),
-	// pageable);
-	// } else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())
-	// && ServicesUtil.isEmpty(dto.getShipToParty())) {
-	// // status+created
-	// System.err.println("status+created+documentType");
-	// return repo.findAll(dto.getDocumentType(),
-	// dto.getDocumentProcessStatus(), dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(), pageable);
-	// } else {
-	// // status only
-	// System.err.println("Only status+documentType");
-	// return repo.findAll(dto.getDocumentType(),
-	// dto.getDocumentProcessStatus(), pageable);
-	// }
-	//
-	// } else if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
-	//
-	// if (!ServicesUtil.isEmpty(dto.getShipToParty())) {
-	// System.err.println("Only createdDate+documentType+shipToParty");
-	//
-	// return repo.findAll(dto.getDocumentType(), dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(),
-	// dto.getShipToParty(), pageable);
-	// } else {
-	// System.err.println("Only createdDate+documentType");
-	// return repo.findAll(dto.getDocumentType(), dto.getCreatedDateFrom(),
-	// dto.getCreatedDateTo(),
-	// pageable);
-	// }
-	//
-	// } else if (!ServicesUtil.isEmpty(dto.getShipToParty())) {
-	// System.err.println("Only doctype+delivery");
-	//
-	// return repo.findAll1(dto.getDocumentType(), dto.getShipToParty(),
-	// pageable);
-	//
-	// } else {
-	// System.err.println("Only documentType");
-	// return repo.findAll(dto.getDocumentType(), pageable);
-	//
-	// }
-	//
-	// } catch (Exception e) {
-	//
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-
-	public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto, Pageable pageable) {
-		
-		
-		String strsales=dto.getSalesHeaderId();
-        if(!ServicesUtils.isEmpty(dto.getSalesHeaderId())){
-        if(dto.getSalesHeaderId().length()<10)
-        {
-            int l=dto.getSalesHeaderId().length();
-            strsales=dto.getSalesHeaderId();
-            while(l<10)
-            {
-                strsales="0"+strsales;
-                l++;
-            }
-       
-        }
-        }
-        dto.setSalesHeaderId(strsales);
-		System.err.println(dto.getCreatedDateFrom());
-		String DOC = null;
-
-		if (!ServicesUtils.isEmpty(dto.getStpId())) {
-			DOC = listToString(dto.getStpId());
-		}
-
-		StringBuffer str = new StringBuffer("select s from SalesOrderHeader s where s.documentType=:docType");
-=======
 	public Page<SalesOrderHeader> getManageService(HeaderDetailUIDto dto, Pageable pageable) {
 
 		try {
 
-
-
+			StringBuffer str = new StringBuffer();
 			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
 				System.err.println("Only salesHeaderId");
 				return repo.findAllS1(dto.getSalesHeaderId(), dto.getDocumentType(), pageable);
@@ -586,7 +419,6 @@ public class ISalesOrderHeaderRepositoryNew {
 
 			}
 
-
 			if (!ServicesUtils.isEmpty(dto.getStpId())) {
 				if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())
 						&& !ServicesUtil.isEmpty(dto.getCreatedDateFrom())) {
@@ -608,20 +440,14 @@ public class ISalesOrderHeaderRepositoryNew {
 					System.err.println("only type+cust");
 					return repo.findAll123(dto.getDocumentType(), dto.getStpId(), pageable);
 				}
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
+			}
 
-		if (!ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
-			str.append(" and s.salesHeaderId=:id");
-		}
-		if (!ServicesUtils.isEmpty(dto.getCreatedDateFrom()) && !ServicesUtils.isEmpty(dto.getCreatedDateTo())) {
-			str.append(" and s.createdDate between :stdate and :enddate");
-		}
-
-<<<<<<< HEAD
-		if (!ServicesUtils.isEmpty(dto.getStpId())) {
-			str.append(" and s.soldToParty in (" + DOC + ") ");
-		}
-=======
+			if (!ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+				str.append(" and s.salesHeaderId=:id");
+			}
+			if (!ServicesUtils.isEmpty(dto.getCreatedDateFrom()) && !ServicesUtils.isEmpty(dto.getCreatedDateTo())) {
+				str.append(" and s.createdDate between :stdate and :enddate");
+			}
 
 			if (!ServicesUtil.isEmpty(dto.getDocumentProcessStatus())) {
 				if (!ServicesUtil.isEmpty(dto.getCreatedDateFrom()) && !ServicesUtil.isEmpty(dto.getShipToParty())) {
@@ -644,75 +470,51 @@ public class ISalesOrderHeaderRepositoryNew {
 					System.err.println("Only status+documentType");
 					return repo.findAll(dto.getDocumentType(), dto.getDocumentProcessStatus(), pageable);
 				}
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
+			}
 
-		if (!ServicesUtils.isEmpty(dto.getDocumentProcessStatus())) {
-			str.append(" and s.documentProcessStatus in :list");
-		}
+			if (!ServicesUtils.isEmpty(dto.getDocumentProcessStatus())) {
+				str.append(" and s.documentProcessStatus in :list");
+			}
 
-		if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateFrom())
-				&& !ServicesUtils.isEmpty(dto.getRequestDeliveryDateTo())) {
-			str.append(" and s.requestDeliveryDate between :st1date and :end1date");
-		}
-		str.append("  order by createdDate desc");
-		Query q = entityManager.createQuery(str.toString());
+			if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateFrom())
+					&& !ServicesUtils.isEmpty(dto.getRequestDeliveryDateTo())) {
+				str.append(" and s.requestDeliveryDate between :st1date and :end1date");
+			}
+			str.append("  order by createdDate desc");
+			Query q = entityManager.createQuery(str.toString());
 
-		if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
-			q.setParameter("docType", dto.getDocumentType());
-		}
-		if (!ServicesUtils.isEmpty(dto.getDocumentProcessStatus())) {
-			q.setParameter("list", dto.getDocumentProcessStatus());
-		}
-		if (!ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
-			q.setParameter("id", dto.getSalesHeaderId());
-		}
+			if (!ServicesUtils.isEmpty(dto.getDocumentType())) {
+				q.setParameter("docType", dto.getDocumentType());
+			}
+			if (!ServicesUtils.isEmpty(dto.getDocumentProcessStatus())) {
+				q.setParameter("list", dto.getDocumentProcessStatus());
+			}
+			if (!ServicesUtils.isEmpty(dto.getSalesHeaderId())) {
+				q.setParameter("id", dto.getSalesHeaderId());
+			}
 
-		if (!ServicesUtils.isEmpty(dto.getCreatedDateFrom())) {
-			q.setParameter("stdate", dto.getCreatedDateFrom());
-		}
-		if (!ServicesUtils.isEmpty(dto.getCreatedDateTo())) {
-			q.setParameter("enddate", dto.getCreatedDateTo());
-		}
-		if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateFrom())) {
+			if (!ServicesUtils.isEmpty(dto.getCreatedDateFrom())) {
+				q.setParameter("stdate", dto.getCreatedDateFrom());
+			}
+			if (!ServicesUtils.isEmpty(dto.getCreatedDateTo())) {
+				q.setParameter("enddate", dto.getCreatedDateTo());
+			}
+			if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateFrom())) {
 
-			q.setParameter("st1date", dto.getRequestDeliveryDateFrom());
-		}
+				q.setParameter("st1date", dto.getRequestDeliveryDateFrom());
+			}
 
-		if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateTo())) {
+			if (!ServicesUtils.isEmpty(dto.getRequestDeliveryDateTo())) {
 
-<<<<<<< HEAD
-			q.setParameter("end1date", dto.getRequestDeliveryDateTo());
-		}
-		List<SalesOrderHeader> list = q.getResultList();
-		if (list.size() > 0 && list.size() < 10) {
-
-			Root root = new Root();
-
-			root.setContent(ObjectMapperUtils.mapAll(list, Content.class));
-			root.setFirst(true);
-			root.setLast(true);
-			root.setTotalElements(list.size());
-			root.setNumberOfElements(list.size());
-			root.setTotalPages(1);
-			root.setEmpty(false);
-			root.setNumber(1);
-			root.setSize(10);
-			return ResponseEntity.ok().body(root);
-		} else {
-
-			int start = (pageable.getPageNumber() - 1) * pageable.getPageSize();
-			int end = (start + pageable.getPageSize()) > list.size() ? list.size()
-					: (pageable.getPageSize() * pageable.getPageNumber());
-			Page<SalesOrderHeader> page = new PageImpl<>(list.subList(start, end), pageable, list.size());
-			return ResponseEntity.ok().body(page);
-=======
 			}
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
+
 		}
+		
+		return null;
 
 	}
 
@@ -786,212 +588,209 @@ public class ISalesOrderHeaderRepositoryNew {
 	}
 
 	// Sandeep Kumar Get Sales Header Details of saved one
-//	@SuppressWarnings("unchecked")
-//	public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto) {
-//
-//		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
-//		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
-//		try {
-//			StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where ");
-//			if (!ServicesUtil.isEmpty(dto.gets4DocumentId()))
-//				headerQuery.append("s.s4DocumentId=:s4DocumentId");
-//			if (!ServicesUtil.isEmpty(dto.getsalesHeaderId())) {
-//				if (!ServicesUtil.isEmpty(dto.gets4DocumentId())) {
-//
-//					headerQuery.append(" and s.salesHeaderId=:salesHeaderId");
-//				} else
-//					headerQuery.append("s.salesHeaderId=:salesHeaderId");
-//
-//			}
-//
-//			Query hq = entityManager.createQuery(headerQuery.toString());
-//			if (!ServicesUtil.isEmpty(dto.gets4DocumentId()))
-//				hq.setParameter("s4DocumentId", dto.gets4DocumentId());
-//			if (!ServicesUtil.isEmpty(dto.getsalesHeaderId()))
-//				hq.setParameter("salesHeaderId", dto.getsalesHeaderId());
-//			headerEntityList = hq.getResultList();
-//
-//			;
-//			for (SalesOrderHeader headerEntity : headerEntityList) {
-//				SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
-//				List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
-//				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
-//				headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
-//
-//				salesHeaderItemDto.setHeaderDto(headerDto);
-//
-//				System.err.println(salesHeaderItemDto.toString());
-//				try {
-//					System.err.println("try found exception");
-//					StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where ");
-//					if (!ServicesUtil.isEmpty(headerDto.getS4DocumentId()))
-//						lineItemQuery.append("i.salesOrderHeader.s4DocumentId=:s4DocumentId");
-//					else
-//						lineItemQuery.append("i.salesHeaderId=:salesHeaderId");
-//					System.err.println("try found exception 3");
-//					/*
-//					 * lineItemQuery.append(" and i.updateIndicator !=" +
-//					 * EnUpdateIndicator.DELETE.ordinal() +
-//					 * " order by i.lineItemNumber asc");
-//					 */
-//
-//					System.err.println(lineItemQuery.toString());
-//					Query iq = entityManager.createQuery(lineItemQuery.toString());
-//					if (!ServicesUtil.isEmpty(headerDto.getS4DocumentId())) {
-//
-//						iq.setParameter("s4DocumentId", headerDto.getS4DocumentId());
-//					} else {
-//						iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
-//					}
-//
-//					lineItemEntityList = iq.getResultList();
-//					System.err.println(lineItemEntityList.toString());
-//					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
-//						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
-//						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-//						
-//						if(lineItemDto.getOutBoundOrderId()!=null )
-//						{
-//							StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:CREATED");
-//	                        Query q=entityManager.createQuery(str.toString());
-//	                        q.setParameter("id", lineItemDto.getOutBoundOrderId());
-//	                        q.setParameter("CREATED", "CREATED");
-//	                        List<SalesOrderHeader> l=q.getResultList();
-//	                        SalesOrderHeader s=new SalesOrderHeader();
-//	                        if(l.size()>0)
-//	                        {
-//	                            s=l.get(0);
-//	                        }
-//	                        if(s.getObdStatus()=="CREATED")
-//	                        {
-//	                        	lineItemDto.setObdStatus("CREATED");
-//	                        }
-//							
-//						}
-//						if(lineItemDto.getPgiId()!=null )
-//						{
-//							StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.pgiId=:id and s.pgiStatus=:CREATED");
-//	                        Query q=entityManager.createQuery(str.toString());
-//	                        q.setParameter("id", lineItemDto.getPgiId());
-//	                        q.setParameter("CREATED", "CREATED");
-//	                        List<SalesOrderHeader> l=q.getResultList();
-//	                        SalesOrderHeader s=new SalesOrderHeader();
-//	                        if(l.size()>0)
-//	                        {
-//	                            s=l.get(0);
-//	                        }
-//	                        if(s.getPgiStatus()=="CREATED")
-//	                        {
-//	                        	lineItemDto.setPgiStatus("CREATED");
-//	                        	
-//	                        }
-//							
-//						}
-//						if(lineItemDto.getInvId()!=null )
-//						{
-//							StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.invId=:id and s.invoiceStatus=:CREATED");
-//	                        Query q=entityManager.createQuery(str.toString());
-//	                        q.setParameter("id", lineItemDto.getInvId());
-//	                        q.setParameter("CREATED", "CREATED");
-//	                        List<SalesOrderHeader> l=q.getResultList();
-//	                        SalesOrderHeader s=new SalesOrderHeader();
-//	                        if(l.size()>0)
-//	                        {
-//	                            s=l.get(0);
-//	                        }
-//	                        if(s.getInvoiceStatus()=="CREATED")
-//	                        {
-//	                        	lineItemDto.setInvoiceStatus("CREATED");
-//	                        	
-//	                        }
-//							
-//						}
-//						
-//						if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
-//							lineItemDto.setQualityTestList(setQualityTest(lineItemDto.getQualityTest()));
-//						else
-//							lineItemDto.setQualityTestList(new ArrayList<String>());
-//						if (!ServicesUtil.isEmpty(lineItemDto.getDefaultQualityTest()))
-//							lineItemDto.setDefaultQualityTestList(setQualityTest(lineItemDto.getDefaultQualityTest()));
-//						else
-//							lineItemDto.setDefaultQualityTestList(new ArrayList<String>());
-//						lineItemDtoList.add(lineItemDto);
-//
-//						System.out.println("***3**");
-//					}
-//
-//					salesHeaderItemDto.setLineItemList(lineItemDtoList);
-//					System.out.println("***5**");
-//				} catch (Exception e) {
-//					System.err.println("try found exception123");
-//					e.printStackTrace();
-//				}
-//				System.err.println(salesHeaderItemDto.toString());
-//				return salesHeaderItemDto;
-//			}
-//		} catch (Exception e) {
-//			System.err.println("try found exception");
-//			e.printStackTrace();
-//			return null;
-//		}
-//		return null;
-//
-//	}	// Sandeep Kumar
+	// @SuppressWarnings("unchecked")
+	// public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto) {
+	//
+	// List<SalesOrderHeader> headerEntityList = new ArrayList<>();
+	// List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
+	// try {
+	// StringBuffer headerQuery = new StringBuffer("select s from
+	// SalesOrderHeader s where ");
+	// if (!ServicesUtil.isEmpty(dto.gets4DocumentId()))
+	// headerQuery.append("s.s4DocumentId=:s4DocumentId");
+	// if (!ServicesUtil.isEmpty(dto.getsalesHeaderId())) {
+	// if (!ServicesUtil.isEmpty(dto.gets4DocumentId())) {
+	//
+	// headerQuery.append(" and s.salesHeaderId=:salesHeaderId");
+	// } else
+	// headerQuery.append("s.salesHeaderId=:salesHeaderId");
+	//
+	// }
+	//
+	// Query hq = entityManager.createQuery(headerQuery.toString());
+	// if (!ServicesUtil.isEmpty(dto.gets4DocumentId()))
+	// hq.setParameter("s4DocumentId", dto.gets4DocumentId());
+	// if (!ServicesUtil.isEmpty(dto.getsalesHeaderId()))
+	// hq.setParameter("salesHeaderId", dto.getsalesHeaderId());
+	// headerEntityList = hq.getResultList();
+	//
+	// ;
+	// for (SalesOrderHeader headerEntity : headerEntityList) {
+	// SalesOrderHeaderItemDto salesHeaderItemDto = new
+	// SalesOrderHeaderItemDto();
+	// List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
+	// SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
+	// headerDto = ObjectMapperUtils.map(headerEntity,
+	// SalesOrderHeaderDto.class);
+	//
+	// salesHeaderItemDto.setHeaderDto(headerDto);
+	//
+	// System.err.println(salesHeaderItemDto.toString());
+	// try {
+	// System.err.println("try found exception");
+	// StringBuffer lineItemQuery = new StringBuffer("select i from
+	// SalesOrderItem i where ");
+	// if (!ServicesUtil.isEmpty(headerDto.getS4DocumentId()))
+	// lineItemQuery.append("i.salesOrderHeader.s4DocumentId=:s4DocumentId");
+	// else
+	// lineItemQuery.append("i.salesHeaderId=:salesHeaderId");
+	// System.err.println("try found exception 3");
+	// /*
+	// * lineItemQuery.append(" and i.updateIndicator !=" +
+	// * EnUpdateIndicator.DELETE.ordinal() +
+	// * " order by i.lineItemNumber asc");
+	// */
+	//
+	// System.err.println(lineItemQuery.toString());
+	// Query iq = entityManager.createQuery(lineItemQuery.toString());
+	// if (!ServicesUtil.isEmpty(headerDto.getS4DocumentId())) {
+	//
+	// iq.setParameter("s4DocumentId", headerDto.getS4DocumentId());
+	// } else {
+	// iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
+	// }
+	//
+	// lineItemEntityList = iq.getResultList();
+	// System.err.println(lineItemEntityList.toString());
+	// for (SalesOrderItem lineItemEntity : lineItemEntityList) {
+	// SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
+	// lineItemDto = ObjectMapperUtils.map(lineItemEntity,
+	// SalesOrderItemDto.class);
+	//
+	// if(lineItemDto.getOutBoundOrderId()!=null )
+	// {
+	// StringBuffer str=new StringBuffer("from SalesOrderHeader s where
+	// s.obdId=:id and s.obdStatus=:CREATED");
+	// Query q=entityManager.createQuery(str.toString());
+	// q.setParameter("id", lineItemDto.getOutBoundOrderId());
+	// q.setParameter("CREATED", "CREATED");
+	// List<SalesOrderHeader> l=q.getResultList();
+	// SalesOrderHeader s=new SalesOrderHeader();
+	// if(l.size()>0)
+	// {
+	// s=l.get(0);
+	// }
+	// if(s.getObdStatus()=="CREATED")
+	// {
+	// lineItemDto.setObdStatus("CREATED");
+	// }
+	//
+	// }
+	// if(lineItemDto.getPgiId()!=null )
+	// {
+	// StringBuffer str=new StringBuffer("from SalesOrderHeader s where
+	// s.pgiId=:id and s.pgiStatus=:CREATED");
+	// Query q=entityManager.createQuery(str.toString());
+	// q.setParameter("id", lineItemDto.getPgiId());
+	// q.setParameter("CREATED", "CREATED");
+	// List<SalesOrderHeader> l=q.getResultList();
+	// SalesOrderHeader s=new SalesOrderHeader();
+	// if(l.size()>0)
+	// {
+	// s=l.get(0);
+	// }
+	// if(s.getPgiStatus()=="CREATED")
+	// {
+	// lineItemDto.setPgiStatus("CREATED");
+	//
+	// }
+	//
+	// }
+	// if(lineItemDto.getInvId()!=null )
+	// {
+	// StringBuffer str=new StringBuffer("from SalesOrderHeader s where
+	// s.invId=:id and s.invoiceStatus=:CREATED");
+	// Query q=entityManager.createQuery(str.toString());
+	// q.setParameter("id", lineItemDto.getInvId());
+	// q.setParameter("CREATED", "CREATED");
+	// List<SalesOrderHeader> l=q.getResultList();
+	// SalesOrderHeader s=new SalesOrderHeader();
+	// if(l.size()>0)
+	// {
+	// s=l.get(0);
+	// }
+	// if(s.getInvoiceStatus()=="CREATED")
+	// {
+	// lineItemDto.setInvoiceStatus("CREATED");
+	//
+	// }
+	//
+	// }
+	//
+	// if (!ServicesUtil.isEmpty(lineItemDto.getQualityTest()))
+	// lineItemDto.setQualityTestList(setQualityTest(lineItemDto.getQualityTest()));
+	// else
+	// lineItemDto.setQualityTestList(new ArrayList<String>());
+	// if (!ServicesUtil.isEmpty(lineItemDto.getDefaultQualityTest()))
+	// lineItemDto.setDefaultQualityTestList(setQualityTest(lineItemDto.getDefaultQualityTest()));
+	// else
+	// lineItemDto.setDefaultQualityTestList(new ArrayList<String>());
+	// lineItemDtoList.add(lineItemDto);
+	//
+	// System.out.println("***3**");
+	// }
+	//
+	// salesHeaderItemDto.setLineItemList(lineItemDtoList);
+	// System.out.println("***5**");
+	// } catch (Exception e) {
+	// System.err.println("try found exception123");
+	// e.printStackTrace();
+	// }
+	// System.err.println(salesHeaderItemDto.toString());
+	// return salesHeaderItemDto;
+	// }
+	// } catch (Exception e) {
+	// System.err.println("try found exception");
+	// e.printStackTrace();
+	// return null;
+	// }
+	// return null;
+	//
+	// } // Sandeep Kumar
 
 	// Sandeep KUmar
-	
 
-	public String getItems(String salesHeaderId)
-	{
-		
-	
-	List<SalesOrderHeader> headerEntityList = new ArrayList<>();
-	List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
-	List<String>listItemNo=new ArrayList<>();
-	String result="";
-	try{
-    	StringBuffer str=new StringBuffer("from SalesOrderItem s where s.salesHeaderId=:salesHeaderId");
-    	
-    	Query q=entityManager.createQuery(str.toString());
-    	
-    	if(!ServicesUtils.isEmpty(salesHeaderId))
-    	{
-    		q.setParameter("salesHeaderId",salesHeaderId);
-    	}
-    	
-    	List<SalesOrderItem> item=q.getResultList();
-    	System.err.println("item.size() "+item.size());
-    	
-    	for(SalesOrderItem i:item)
-    	{
-    		
-    		listItemNo.add(i.getLineItemNumber());
-    		
-    		System.err.println("i.getItemNumber()"+i.getLineItemNumber());
-    	}
-    	
-    	
-    	for(String s:listItemNo)
-    	{
-    		if(s.length()>1)
-    		{
-    			int i=s.length();
-    			result=s.substring(i-1);
-    		}
-    	}
-    	System.err.println("result"+result);
-    			
-    	return result;		
-    }catch(Exception e)
-	{
-		e.printStackTrace();
-		return null;
-	}
-		
+	public String getItems(String salesHeaderId) {
+
+		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
+		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
+		List<String> listItemNo = new ArrayList<>();
+		String result = "";
+		try {
+			StringBuffer str = new StringBuffer("from SalesOrderItem s where s.salesHeaderId=:salesHeaderId");
+
+			Query q = entityManager.createQuery(str.toString());
+
+			if (!ServicesUtils.isEmpty(salesHeaderId)) {
+				q.setParameter("salesHeaderId", salesHeaderId);
+			}
+
+			List<SalesOrderItem> item = q.getResultList();
+			System.err.println("item.size() " + item.size());
+
+			for (SalesOrderItem i : item) {
+
+				listItemNo.add(i.getLineItemNumber());
+
+				System.err.println("i.getItemNumber()" + i.getLineItemNumber());
+			}
+
+			for (String s : listItemNo) {
+				if (s.length() > 1) {
+					int i = s.length();
+					result = s.substring(i - 1);
+				}
+			}
+			System.err.println("result" + result);
+
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
-
-	
 	@SuppressWarnings("unchecked")
 	public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto) {
 
@@ -999,164 +798,150 @@ public class ISalesOrderHeaderRepositoryNew {
 		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
 		try {
 			StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where ");
-		
+
 			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
-				
-					headerQuery.append("s.salesHeaderId=:salesHeaderId");
+
+				headerQuery.append("s.salesHeaderId=:salesHeaderId");
 
 			}
 
 			Query hq = entityManager.createQuery(headerQuery.toString());
-			
+
 			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId()))
 				hq.setParameter("salesHeaderId", dto.getSalesHeaderId());
-			
+
 			headerEntityList = hq.getResultList();
-			
-			
-            SalesOrderHeader headerEntity=new SalesOrderHeader();
-			if(headerEntityList.size()>0)
-			{
-				headerEntity=headerEntityList.get(0);
+
+			SalesOrderHeader headerEntity = new SalesOrderHeader();
+			if (headerEntityList.size() > 0) {
+				headerEntity = headerEntityList.get(0);
 			}
-		
-				SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
-				List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
-				
-				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
-				
-				headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
 
-				salesHeaderItemDto.setHeaderDto(headerDto);
+			SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
+			List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
 
-				
-				try {
-					
-					StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where");
-					
-				
-                     lineItemQuery.append(" i.salesHeaderId=:salesHeaderId");
-					
-				
-					Query iq = entityManager.createQuery(lineItemQuery.toString());
-				
-					if(!ServicesUtils.isEmpty(headerDto.getSalesHeaderId()))
-					{
-						iq.setParameter("salesHeaderId",headerDto.getSalesHeaderId());
-					}
+			SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
 
-					lineItemEntityList = iq.getResultList();
-					System.err.println("lineItemEntityList size"+lineItemEntityList.size()	);
+			headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
 
-					
-					
-					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
-						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
-						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-						System.err.println(lineItemDto.getSalesHeaderId());
-						if(lineItemDto.getLineItemNumber().equalsIgnoreCase(getItems(lineItemDto.getSalesHeaderId())))
-						{
-							
-							System.err.println("Hello");
-							continue;
-						}
-						else
-						{
-						if(lineItemDto.getOutBoundOrderId()!=null )
-						{
-							StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:CREATED");
-                            Query q=entityManager.createQuery(str.toString());
-	                        q.setParameter("id", lineItemDto.getOutBoundOrderId());
-                             q.setParameter("CREATED", "CREATED");
-	                        List<SalesOrderHeader> l=q.getResultList();
-	                        SalesOrderHeader s=new SalesOrderHeader();
-                           if(l.size()>0)
-	                        {
-	                            s=l.get(0);
-	                           
-	                        }
-                          
-	                        if(!ServicesUtils.isEmpty(s.getObdStatus()))
-	                        {
-	                        	lineItemDto.setObdStatus(s.getObdStatus());
-	                        	
-                            }
-	                        
-							
-						}
-						if(lineItemDto.getPgiId()!=null )
-					     {
-					 		StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.pgiId=:id and s.pgiStatus=:CREATED");
-	                        Query q=entityManager.createQuery(str.toString());
-	                        q.setParameter("id", lineItemDto.getPgiId());
-	                        q.setParameter("CREATED", "CREATED");
-	                        List<SalesOrderHeader> l=q.getResultList();
-	                        SalesOrderHeader s=new SalesOrderHeader();
-	                        if(l.size()>0)
-	                        {
-                              s=l.get(0);
-	                        }
-	                        if(!ServicesUtils.isEmpty(s.getPgiStatus()))
-	                        {
-	                        	lineItemDto.setPgiStatus(s.getPgiStatus());	                        		                        }						
-						}
-						if(lineItemDto.getInvId()!=null )
-						{
-						   StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.invId=:id and s.invoiceStatus=:CREATED");
-	                        Query q=entityManager.createQuery(str.toString());
-	                        q.setParameter("id", lineItemDto.getInvId());
-	                        q.setParameter("CREATED", "CREATED");
-                          List<SalesOrderHeader> l=q.getResultList();
-                          SalesOrderHeader s=new SalesOrderHeader();
-	                        if(l.size()>0)
-                               {
-	                            s=l.get(0);
-	                        }
-	                        if(!ServicesUtils.isEmpty(s.getInvoiceStatus()))
-                             {
-	                        	lineItemDto.setInvoiceStatus(s.getInvoiceStatus());
-	                        	
-                             }
-							
-						  }
-						
-				if (lineItemDto.getInspection()!=null)
-						lineItemDto.setQualityTestList(setQualityTest("3.2 INSPECTION"));
-//						else if(lineItemDto.getBendTest())
-//							lineItemDto.setQualityTestList(setQualityTest("BEND TEST"));
-//						else if(lineItemDto.getHardnessTest())
-//							lineItemDto.setQualityTestList(setQualityTest("HARDNESS TEST"));
-//						else if(lineItemDto.getIsElementBoronRequired())
-//							lineItemDto.setQualityTestList(setQualityTest("BORON REQUIRED"));
-//						else if(lineItemDto.getImpactTest())
-//							lineItemDto.setQualityTestList(setQualityTest("IMPACT TEST"));
-//						else
-//							lineItemDto.setQualityTestList(new ArrayList<>());
-						
-						
-					lineItemDtoList.add(lineItemDto);
+			salesHeaderItemDto.setHeaderDto(headerDto);
 
-						
-					}
-						}
+			try {
 
-					salesHeaderItemDto.setLineItemList(lineItemDtoList);
-					
-				} catch (Exception e) {
-					System.err.println("try found exception123");
-					e.printStackTrace();
-					
+				StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where");
+
+				lineItemQuery.append(" i.salesHeaderId=:salesHeaderId");
+
+				Query iq = entityManager.createQuery(lineItemQuery.toString());
+
+				if (!ServicesUtils.isEmpty(headerDto.getSalesHeaderId())) {
+					iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
 				}
-				System.err.println(salesHeaderItemDto);
-				return salesHeaderItemDto;
-			
+
+				lineItemEntityList = iq.getResultList();
+				System.err.println("lineItemEntityList size" + lineItemEntityList.size());
+
+				for (SalesOrderItem lineItemEntity : lineItemEntityList) {
+					SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
+					lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
+					System.err.println(lineItemDto.getSalesHeaderId());
+					if (lineItemDto.getLineItemNumber().equalsIgnoreCase(getItems(lineItemDto.getSalesHeaderId()))) {
+
+						System.err.println("Hello");
+						continue;
+					} else {
+						if (lineItemDto.getOutBoundOrderId() != null) {
+							StringBuffer str = new StringBuffer(
+									"from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:CREATED");
+							Query q = entityManager.createQuery(str.toString());
+							q.setParameter("id", lineItemDto.getOutBoundOrderId());
+							q.setParameter("CREATED", "CREATED");
+							List<SalesOrderHeader> l = q.getResultList();
+							SalesOrderHeader s = new SalesOrderHeader();
+							if (l.size() > 0) {
+								s = l.get(0);
+
+							}
+
+							if (!ServicesUtils.isEmpty(s.getObdStatus())) {
+								lineItemDto.setObdStatus(s.getObdStatus());
+
+							}
+
+						}
+						if (lineItemDto.getPgiId() != null) {
+							StringBuffer str = new StringBuffer(
+									"from SalesOrderHeader s where s.pgiId=:id and s.pgiStatus=:CREATED");
+							Query q = entityManager.createQuery(str.toString());
+							q.setParameter("id", lineItemDto.getPgiId());
+							q.setParameter("CREATED", "CREATED");
+							List<SalesOrderHeader> l = q.getResultList();
+							SalesOrderHeader s = new SalesOrderHeader();
+							if (l.size() > 0) {
+								s = l.get(0);
+							}
+							if (!ServicesUtils.isEmpty(s.getPgiStatus())) {
+								lineItemDto.setPgiStatus(s.getPgiStatus());
+							}
+						}
+						if (lineItemDto.getInvId() != null) {
+							StringBuffer str = new StringBuffer(
+									"from SalesOrderHeader s where s.invId=:id and s.invoiceStatus=:CREATED");
+							Query q = entityManager.createQuery(str.toString());
+							q.setParameter("id", lineItemDto.getInvId());
+							q.setParameter("CREATED", "CREATED");
+							List<SalesOrderHeader> l = q.getResultList();
+							SalesOrderHeader s = new SalesOrderHeader();
+							if (l.size() > 0) {
+								s = l.get(0);
+							}
+							if (!ServicesUtils.isEmpty(s.getInvoiceStatus())) {
+								lineItemDto.setInvoiceStatus(s.getInvoiceStatus());
+
+							}
+
+						}
+
+						if (lineItemDto.getInspection() != null)
+							lineItemDto.setQualityTestList(setQualityTest("3.2 INSPECTION"));
+						// else if(lineItemDto.getBendTest())
+						// lineItemDto.setQualityTestList(setQualityTest("BEND
+						// TEST"));
+						// else if(lineItemDto.getHardnessTest())
+						// lineItemDto.setQualityTestList(setQualityTest("HARDNESS
+						// TEST"));
+						// else if(lineItemDto.getIsElementBoronRequired())
+						// lineItemDto.setQualityTestList(setQualityTest("BORON
+						// REQUIRED"));
+						// else if(lineItemDto.getImpactTest())
+						// lineItemDto.setQualityTestList(setQualityTest("IMPACT
+						// TEST"));
+						// else
+						// lineItemDto.setQualityTestList(new ArrayList<>());
+
+						lineItemDtoList.add(lineItemDto);
+
+					}
+				}
+
+				salesHeaderItemDto.setLineItemList(lineItemDtoList);
+
+			} catch (Exception e) {
+				System.err.println("try found exception123");
+				e.printStackTrace();
+
+			}
+			System.err.println(salesHeaderItemDto);
+			return salesHeaderItemDto;
+
 		} catch (Exception e) {
 			System.err.println("try found exception");
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
+
 	public static String listToString(List<String> list) {
 		String response = "";
 		try {
@@ -1279,44 +1064,6 @@ public class ISalesOrderHeaderRepositoryNew {
 		return null;
 
 	}
-	public List<SalesOrderItemDto> getDetails(String salesHeaderId) {
-		System.err.println("salesHeaderId " + salesHeaderId);
-		String query1 = "from SalesOrderHeader where salesHeaderId=:sid and documentType=:dType";
-		Query q1 = entityManager.createQuery(query1);
-		q1.setParameter("sid", salesHeaderId);
-		String docType = "OR";
-		q1.setParameter("dType", docType);
-
-		List<SalesOrderHeader> list1 = q1.getResultList();
-		System.err.println("list1 size " + list1.size());
-		String query2 = "from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4docId";
-		Query q2 = entityManager.createQuery(query2);
-		q2.setParameter("s4docId", list1.get(0).getS4DocumentId());
-		List<SalesOrderItem> list2 = q2.getResultList();
-		System.err.println("list2 size " + list2.size());
-
-		
-		List<SalesOrderItemDto> result = new ArrayList<>();
-
-		
-		
-		for (SalesOrderItem item1 : list2) {
-			SalesOrderItemDto item = ObjectMapperUtils.map(item1, SalesOrderItemDto.class);
-			String query3 = "from SalesOrderItem i where i.orderItemId=:oid";
-			Query q3 = entityManager.createQuery(query3);
-			q3.setParameter("oid", item.getSalesItemId());
-			List<SalesOrderItem> list3 = q3.getResultList();
-			System.err.println("list3 size" + list3.size());
-			item.setOutBoundOrderId(list3.get(0).getOutBoundOrderId());
-			item.setPgiId(list3.get(0).getPgiId());
-			item.setInvId(list3.get(0).getInvId());
-
-			result.add(item);
-		}
-
-		return result;
-	}
-
 
 	public List<SalesOrderItemDto> getDetails(String salesHeaderId) {
 		System.err.println("salesHeaderId " + salesHeaderId);
@@ -1377,16 +1124,12 @@ public class ISalesOrderHeaderRepositoryNew {
 	public TrackSOUIDto getSOData(HeaderIdDto dto) {
 		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
 		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
-<<<<<<< HEAD
-=======
-
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 		int flagobd = 0;
 		int flagpgi = 0;
 		int flaginvoice = 0;
 		String pgiStatus;
 		int level = -1;
-<<<<<<< HEAD
+
 		TrackSOUIDto track = new TrackSOUIDto();
 		DocDto res = null;
 		List<DocDto> res1 = new ArrayList<>();
@@ -1432,52 +1175,51 @@ public class ISalesOrderHeaderRepositoryNew {
 
 					if (lineItemDto.getOutBoundOrderId() != null) {
 						res = new DocDto();
-						StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:"
-								+ "CREATED");
-                        Query q=entityManager.createQuery(str.toString());
-                        q.setParameter("id", lineItemDto.getOutBoundOrderId());
-                        q.setParameter("CREATED", "CREATED");
-                        List<SalesOrderHeader> l=q.getResultList();
-                        SalesOrderHeader s=new SalesOrderHeader();
-                        if(l.size()>0)
-                        {
-                            s=l.get(0);
-                        }
-                        res.setCreatedBy(s.getCreatedBy());
-                        res.setCreatedDate(s.getCreatedDate());
-                        res.setDocumentType("OBD");
-                        res.setDocumentId(lineItemDto.getOutBoundOrderId());
-                        res1.add(res);
-                        flagobd++;
-                        level = 0;
+						StringBuffer str = new StringBuffer(
+								"from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:" + "CREATED");
+						Query q = entityManager.createQuery(str.toString());
+						q.setParameter("id", lineItemDto.getOutBoundOrderId());
+						q.setParameter("CREATED", "CREATED");
+						List<SalesOrderHeader> l = q.getResultList();
+						SalesOrderHeader s = new SalesOrderHeader();
+						if (l.size() > 0) {
+							s = l.get(0);
+						}
+						res.setCreatedBy(s.getCreatedBy());
+						res.setCreatedDate(s.getCreatedDate());
+						res.setDocumentType("OBD");
+						res.setDocumentId(lineItemDto.getOutBoundOrderId());
+						res1.add(res);
+						flagobd++;
+						level = 0;
 					}
 					if (lineItemDto.getPgiId() != null) {
 						flagpgi++;
-//						res = new DocDto();
-//						res.setCreatedBy(lineItemDto.getCreatedBy());
-//						res.setCreatedDate(lineItemDto.getCreatedOn());
-//						res.setDocumentType("PGI");
-//						res.setDocumentId(lineItemDto.getPgiId());
-//						res1.add(res);
+						// res = new DocDto();
+						// res.setCreatedBy(lineItemDto.getCreatedBy());
+						// res.setCreatedDate(lineItemDto.getCreatedOn());
+						// res.setDocumentType("PGI");
+						// res.setDocumentId(lineItemDto.getPgiId());
+						// res1.add(res);
 					}
 					if (lineItemDto.getInvId() != null) {
 						res = new DocDto();
 						flaginvoice++;
-                        StringBuffer str=new StringBuffer("from SalesOrderHeader s where s.invId=:id and invoiceStatus=:CREATED");
-                        Query q=entityManager.createQuery(str.toString());
-                        q.setParameter("id", lineItemDto.getInvId());
-                        q.setParameter("CREATED", "CREATED");
-                        List<SalesOrderHeader> l=q.getResultList();
-                        SalesOrderHeader s=new SalesOrderHeader();
-                        if(l.size()>0)
-                        {
-                            s=l.get(0);
-                        }
-                        res.setCreatedBy(s.getCreatedBy());
-                        res.setCreatedDate(s.getCreatedDate());
-                        res.setDocumentType("Invoice");
-                        res.setDocumentId(lineItemDto.getInvId());
-                        res1.add(res);
+						StringBuffer str = new StringBuffer(
+								"from SalesOrderHeader s where s.invId=:id and invoiceStatus=:CREATED");
+						Query q = entityManager.createQuery(str.toString());
+						q.setParameter("id", lineItemDto.getInvId());
+						q.setParameter("CREATED", "CREATED");
+						List<SalesOrderHeader> l = q.getResultList();
+						SalesOrderHeader s = new SalesOrderHeader();
+						if (l.size() > 0) {
+							s = l.get(0);
+						}
+						res.setCreatedBy(s.getCreatedBy());
+						res.setCreatedDate(s.getCreatedDate());
+						res.setDocumentType("Invoice");
+						res.setDocumentId(lineItemDto.getInvId());
+						res1.add(res);
 					}
 					if (lineItemDto.getOutBoundOrderId() != null && lineItemDto.getPgiId() != null) {
 						level = 1;
@@ -1534,255 +1276,15 @@ public class ISalesOrderHeaderRepositoryNew {
 
 				e.printStackTrace();
 				return null;
-=======
-		
-
-		try {
-			StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where s.salesHeaderId=:salesHeaderId and documentType='OR'");
-			 Query hq = entityManager.createQuery(headerQuery.toString());
-	         hq.setParameter("salesHeaderId", dto.getsalesHeaderId());
-	         headerEntityList = hq.getResultList();
-                System.err.println("headerEntity"+headerEntityList.toString());
-			
-			for (SalesOrderHeader headerEntity : headerEntityList) {
-				String query2 = "select i from SalesOrderItem i where i.salesOrderHeader.s4DocumentId=:s4docId";
-				Query q2 = entityManager.createQuery(query2);
-				
-				q2.setParameter("s4docId", headerEntity.getS4DocumentId());
-				List<SalesOrderItem> list1 = q2.getResultList();
-				 System.err.println("list1"+list1.toString());
-				 
-				 
-
-				TrackSOUIDto track = new TrackSOUIDto();
-				List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
-				SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
-				headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
-
-				track.setHeaderDto(headerDto);
-//<<<<<<< HEAD
-//
-//				try {
-//
-//					StringBuffer lineItemQuery = new StringBuffer(
-//							"select i from SalesOrderItem i where i.salesHeaderId=:salesHeaderId ");
-//					System.err.println(lineItemQuery.toString());
-//					Query iq = entityManager.createQuery(lineItemQuery.toString());
-//					iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
-//					lineItemEntityList = iq.getResultList();
-//					int length = lineItemEntityList.size();
-//
-//					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
-//						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
-//						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-//
-//						System.out.println(lineItemDto.getInvId());
-//						System.out.println(lineItemDto.getOutBoundOrderId());
-//
-//						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-//							lineItemDto.setPgiStatus("CREATED");
-//						}
-//						System.out.println(lineItemDto.toString());
-//
-//						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())) {
-//							flagobd++;
-//							level = 0;
-//						}
-//						if (!ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-//							flagpgi++;
-//						}
-//						if (!ServicesUtils.isEmpty(lineItemDto.getInvId())) {
-//							flaginvoice++;
-//						}
-//						if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
-//								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())) {
-//							level = 1;
-//						} else if (!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())
-//								&& !ServicesUtils.isEmpty(lineItemDto.getPgiId())
-//								&& !ServicesUtils.isEmpty(lineItemDto.getInvId())) {
-//							level = 2;
-//						} else
-//							level = -1;
-//
-//						lineItemDtoList.add(lineItemDto);
-//
-//					}
-//
-//					track.setLevel(level);
-//					track.setLineItemList(lineItemDtoList);
-//
-//					if (flagobd == 0) {
-//						track.setObdStatus("Pending");
-//					} else if (flagobd == length) {
-//						track.setObdStatus("Completed");
-//					} else
-//						track.setObdStatus("PartiallyCompleted");
-//
-//					if (flagpgi == 0) {
-//						track.setPgiStatus("Pending");
-//					} else if (flagpgi == length) {
-//						track.setPgiStatus("Completed");
-//					} else
-//						track.setPgiStatus("PartiallyCompleted");
-//
-//					if (flaginvoice == 0) {
-//						track.setInvoiceStatus("Pending");
-//					} else if (flaginvoice == length) {
-//						track.setInvoiceStatus("Completed");
-//					} else
-//						track.setInvoiceStatus("PartiallyCompleted");
-//
-//					if (flaginvoice == length) {
-//						track.setHeaderStatus("Completed");
-//					} else if (flagobd != 0) {
-//						track.setHeaderStatus("InProcess");
-//					} else
-//						track.setHeaderStatus("CREATED");
-//
-//				} catch (Exception e) {
-//
-//=======
-				System.err.println("track"+track.toString());
-				List<SalesOrderItemDto> list=getDetails(dto.getsalesHeaderId());
-				try {
-					for(SalesOrderItemDto item:list){
-					StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where  i.orderItemId=:oid");
-				     Query q3 = entityManager.createQuery(lineItemQuery.toString());
-				   q3.setParameter("oid", item.getSalesItemId());
-				   lineItemEntityList = q2.getResultList();
-				   System.err.println("lineItemEntityList"+lineItemEntityList.toString());
-					
-					int length=lineItemEntityList.size();
-					
-					for (SalesOrderItem lineItemEntity : lineItemEntityList) {
-						SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
-						lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
-						
-						
-						 System.err.println("inside Item");
-						if(!ServicesUtils.isEmpty(lineItemDto.getPgiId()))
-						{
-							lineItemDto.setPgiStatus("CREATED");
-						}
-						System.out.println(lineItemDto.toString());
-						
-						if(!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId()) )
-						{
-						    flagobd++;
-						    level=0;
-						}
-						if(!ServicesUtils.isEmpty(lineItemDto.getPgiId()))
-						{
-							flagpgi++;
-						}
-						if(!ServicesUtils.isEmpty(lineItemDto.getInvId()))
-						{
-							flaginvoice++;
-						}
-					   if(!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId())&& !ServicesUtils.isEmpty(lineItemDto.getPgiId()) )
-						{
-							level=1;
-						}
-						else if(!ServicesUtils.isEmpty(lineItemDto.getOutBoundOrderId()) &&!ServicesUtils.isEmpty(lineItemDto.getPgiId())  && !ServicesUtils.isEmpty(lineItemDto.getInvId()))
-						{
-							level=2;
-						}
-						else
-							level=-1;
-						
-						
-						lineItemDtoList.add(lineItemDto);
-						 System.err.println("lineItemDto");
-						
-					}
-					
-					track.setLevel(level);
-					track.setLineItemList(lineItemDtoList);
-					
-					
-					if(flagobd==0){
-					track.setObdStatus("Pending");
-					}
-					else if(flagobd==length){
-						track.setObdStatus("Completed");
-					}
-					else
-						track.setObdStatus("PartiallyCompleted");
-					
-					if(flagpgi==0)
-					{
-						track.setPgiStatus("Pending");
-						}
-						else if(flagpgi==length){
-						track.setPgiStatus("Completed");
-						}
-						else
-							track.setPgiStatus("PartiallyCompleted");
-					
-					
-					
-					if(flaginvoice==0){
-					track.setInvoiceStatus("Pending");
-						}
-						else if(flaginvoice==length){
-							track.setInvoiceStatus("Completed");
-						}
-						else
-						track.setInvoiceStatus("PartiallyCompleted");
-					
-					if(flaginvoice==length)
-					{
-						track.setHeaderStatus("Completed");
-					}
-					else if(flagobd!=0) {
-						track.setHeaderStatus("InProcess");
-						}
-					else
-						track.setHeaderStatus("CREATED");
-					if (flaginvoice==length) 
-						{
-						track.setDeliveryStatus("Completed");
-						
-						}
-                           else 
-					{
-                        	   track.setDeliveryStatus("Pending");
-				    }
-					
-					
-				}
-				}catch (Exception e) {
-					
-
-					e.printStackTrace();
-				}
-				System.err.println(track.toString());
-				return track;
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
 			}
-			System.err.println(track.toString());
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
 			return null;
 		}
-<<<<<<< HEAD
 
 		return track;
-
 	}
 
 }
-=======
-		return null;
-
-
-	}
-}
-
-
-
-	
-	
-
->>>>>>> 4f9ece72921128022d6557ffd6e9087b19e57233
