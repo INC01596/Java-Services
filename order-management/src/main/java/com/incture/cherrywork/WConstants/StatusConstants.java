@@ -37,7 +37,7 @@ public class StatusConstants {
 	public static final Integer REQUEST_IN_PROGRESS = 34;
 	public static final Integer REJECTED_FROM_ECC = 35;
 	public static final String COM_ODATA_DESTINATION_NAME = "DKSHODataService";
-	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT = "/sap/opu/odata/sap/ZCC_SALESORDER_DATA_SRV/$batch";
+	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT = "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/$batch";
 	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT_TAG = "soheaderSet";
 	public static final Map<Integer, String> MAP_TO_PRINT_ITEM_STATUS = new HashMap<Integer, String>() {
 		private static final long serialVersionUID = -6703344640406100704L;

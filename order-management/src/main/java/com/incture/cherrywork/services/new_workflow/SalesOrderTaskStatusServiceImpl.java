@@ -202,6 +202,7 @@ public class SalesOrderTaskStatusServiceImpl implements SalesOrderTaskStatusServ
 	@Override
 	public ResponseEntity getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus(String decisionSetId,
 			String levelNum) {
+		System.err.println("getAllTasksFromDecisionSetAndLevelAndEvaluteCumulativeItemStatus starts.");
 		try {
 			if (!HelperClass.checkString(decisionSetId) && !HelperClass.checkString(levelNum)) {
 				List<SalesOrderTaskStatusDto> list = soTaskStatusRepo.getAllTasksFromDecisionSetAndLevel(decisionSetId,

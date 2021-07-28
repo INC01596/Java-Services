@@ -30,6 +30,7 @@ import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderTaskStatusDao;
+import com.incture.cherrywork.repositories.ISalesOrderItemStatusRepository;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
@@ -56,7 +57,7 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 	private SalesOrderLevelStatusDao soLevelStatusRepo;
 
 	@Autowired
-	private SessionFactory sessionfactory;
+	private ISalesOrderItemStatusRepository salesOrderItemStatusRepository;
 
 	@Override
 	public ResponseEntity saveOrUpdateSalesOrderItemStatus(SalesOrderItemStatusDto salesOrderItemStatusDto) {
@@ -341,13 +342,16 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			throws ExecutionFault {
 		try {
 
+			System.err.println("[saveOrUpdateSalesOrderItemStatusSynchronised] salesOrderItemStatusDto: "+salesOrderItemStatusDto.toString());
 			SalesOrderItemStatusDo salesOrderItemStatusDo = new SalesOrderItemStatusDo();
 
 			SalesOrderTaskStatusDo salesOrderTaskStatusDo = soTaskStatusRepo
 					.getSalesOrderTaskStatusDoById(salesOrderItemStatusDto.getTaskStatusSerialId());
+			System.err.println("[saveOrUpdateSalesOrderItemStatusSynchronised] salesOrderTaskStatusDo: "+salesOrderTaskStatusDo.toString());
 
 			SalesOrderLevelStatusDo salesOrderLevelStatusDo = soLevelStatusRepo.getSalesOrderLevelStatusDoById(
 					salesOrderTaskStatusDo.getSalesOrderLevelStatus().getLevelStatusSerialId());
+			System.err.println("[saveOrUpdateSalesOrderItemStatusSynchronised] salesOrderLevelStatusDo: "+salesOrderLevelStatusDo.toString());
 
 			salesOrderTaskStatusDo.setSalesOrderLevelStatus(salesOrderLevelStatusDo);
 			salesOrderItemStatusDo.setSalesOrderTaskStatus(salesOrderTaskStatusDo);
@@ -355,12 +359,8 @@ public class SalesOrderItemStatusServiceImpl implements SalesOrderItemStatusServ
 			salesOrderItemStatusDo.setItemStatus(salesOrderItemStatusDto.getItemStatus());
 			salesOrderItemStatusDo.setVisiblity(salesOrderItemStatusDto.getVisiblity());
 
-			Session session = sessionfactory.openSession();
-			Transaction tx1 = session.beginTransaction();
-			session.saveOrUpdate(salesOrderItemStatusDo);
-			tx1.commit();
-			session.clear();
-			session.close();
+			salesOrderItemStatusRepository.save(salesOrderItemStatusDo);
+			
 			return salesOrderItemStatusDo.getItemStatusSerialId();
 
 		} catch (NoResultException | NullPointerException e) {

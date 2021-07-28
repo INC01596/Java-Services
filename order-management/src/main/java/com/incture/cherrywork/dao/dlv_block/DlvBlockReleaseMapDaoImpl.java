@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -17,13 +21,19 @@ import com.incture.cherrywork.dao.BaseDao;
 import com.incture.cherrywork.dtos.DlvBlockReleaseMapDto;
 import com.incture.cherrywork.entities.DlvBlockReleaseMapDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.IDlvBlockReleaseMapRepository;
 
 
 
 @Service
 @Transactional
-public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, DlvBlockReleaseMapDto>
-		implements DlvBlockReleaseMapDao {
+public class DlvBlockReleaseMapDaoImpl implements DlvBlockReleaseMapDao {
+
+	@Autowired
+	private IDlvBlockReleaseMapRepository dlvBlockReleaseMapRepository;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	
 	public DlvBlockReleaseMapDo importDto(DlvBlockReleaseMapDto dto) {
@@ -45,7 +55,7 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 		return dlvBlockReleaseMapDo;
 	}
 
-	@Override
+	
 	public DlvBlockReleaseMapDto exportDto(DlvBlockReleaseMapDo entity) {
 		DlvBlockReleaseMapDto dlvBlockReleaseMapDto = null;
 		if (entity != null) {
@@ -66,7 +76,7 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 		return dlvBlockReleaseMapDto;
 	}
 
-	@Override
+	
 	public List<DlvBlockReleaseMapDo> importList(List<DlvBlockReleaseMapDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<DlvBlockReleaseMapDo> dtoList = new ArrayList<>();
@@ -79,7 +89,7 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 		return Collections.emptyList();
 	}
 
-	@Override
+	
 	public List<DlvBlockReleaseMapDto> exportList(List<DlvBlockReleaseMapDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<DlvBlockReleaseMapDto> dtoList = new ArrayList<>();
@@ -96,9 +106,7 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 	public String saveOrUpdateDlvBlockReleaseMap(DlvBlockReleaseMapDto dlvBlockReleaseMapDto) throws ExecutionFault {
 		try {
 			DlvBlockReleaseMapDo dlvBlockReleaseMapDo = importDto(dlvBlockReleaseMapDto);
-			getSession().saveOrUpdate(dlvBlockReleaseMapDo);
-			getSession().flush();
-			getSession().clear();
+			dlvBlockReleaseMapRepository.save(dlvBlockReleaseMapDo);
 			return "DlvBlockReleaseMap is successfully created with =" + dlvBlockReleaseMapDo.getPrimaryKey();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -109,22 +117,21 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 
 	@Override
 	public List<DlvBlockReleaseMapDto> listAllDlvBlockReleaseMaps() {
-		return exportList(getSession().createQuery("from DlvBlockReleaseMapDo", DlvBlockReleaseMapDo.class).list());
+		return exportList(dlvBlockReleaseMapRepository.findAll());
 	}
 
 	@Override
 	public DlvBlockReleaseMapDto getDlvBlockReleaseMapById(String releaseMapId) {
 
-		return exportDto(getSession().get(DlvBlockReleaseMapDo.class, releaseMapId));
+		return exportDto(dlvBlockReleaseMapRepository.getOne(releaseMapId));
 	}
 
 	@Override
 	public String deleteDlvBlockReleaseMapById(String releaseMapId) throws ExecutionFault {
 		try {
-			DlvBlockReleaseMapDo dlvBlockReleaseMapDo = getSession().byId(DlvBlockReleaseMapDo.class)
-					.load(releaseMapId);
+			DlvBlockReleaseMapDo dlvBlockReleaseMapDo = dlvBlockReleaseMapRepository.getOne(releaseMapId);
 			if (dlvBlockReleaseMapDo != null) {
-				getSession().delete(dlvBlockReleaseMapDo);
+				dlvBlockReleaseMapRepository.delete(dlvBlockReleaseMapDo);
 				return "DlvBlockReleaseMap is completedly removed";
 			} else {
 				return "DlvBlockReleaseMap is not found on release map id : " + releaseMapId;
@@ -137,12 +144,12 @@ public class DlvBlockReleaseMapDaoImpl extends BaseDao<DlvBlockReleaseMapDo, Dlv
 	@Override
 	public DlvBlockReleaseMapDto getDlvBlockReleaseMapBydlvBlockCode(String dlvBlockCode) throws ExecutionFault {
 
-		return exportDto(
-				getSession()
-						.createQuery("from DlvBlockReleaseMapDo dlv where dlv.dlvBlockCode = :dlvBlockCode",
-								DlvBlockReleaseMapDo.class)
-						.setParameter("dlvBlockCode", dlvBlockCode).getSingleResult());
-
+		dlvBlockCode = dlvBlockCode.substring(0,2)+dlvBlockCode.substring(2,dlvBlockCode.length());
+		System.err.println("[getDlvBlockReleaseMapBydlvBlockCode] dlvBlockCode: "+dlvBlockCode);
+		String query = "from DlvBlockReleaseMapDo dlv where dlv.dlvBlockCode=\'"+dlvBlockCode+"\'";
+		Query q1 = entityManager.createQuery(query);
+		return exportDto((DlvBlockReleaseMapDo)q1.getSingleResult());
+		
 	}
 
 }

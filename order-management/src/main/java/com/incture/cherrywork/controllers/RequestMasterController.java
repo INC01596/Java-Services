@@ -23,8 +23,6 @@ import com.incture.cherrywork.workflow.services.IRequestMasterService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/reqMaster")
 public class RequestMasterController {
 

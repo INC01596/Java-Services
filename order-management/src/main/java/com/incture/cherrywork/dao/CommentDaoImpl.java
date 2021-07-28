@@ -1,26 +1,34 @@
 package com.incture.cherrywork.dao;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.CommentDto;
 import com.incture.cherrywork.entities.CommentDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.ICommentRepository;
 
+@Service
+@Transactional
+public class CommentDaoImpl implements CommentDao {
 
-
-@Repository
-@Component
-public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements CommentDao {
-
+	@Autowired
+	private ICommentRepository commentRepository;
 	
+	@PersistenceContext
+	private EntityManager entityManager;
+
+
 	public CommentDo importDto(CommentDto dto) {
 		CommentDo commentDo = null;
 		if (dto != null) {
@@ -41,7 +49,6 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 		return commentDo;
 	}
 
-	@Override
 	public CommentDto exportDto(CommentDo entity) {
 		CommentDto commentDto = null;
 		if (entity != null) {
@@ -62,7 +69,6 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 		return commentDto;
 	}
 
-	@Override
 	public List<CommentDo> importList(List<CommentDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<CommentDo> dtoList = new ArrayList<>();
@@ -75,7 +81,6 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<CommentDto> exportList(List<CommentDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<CommentDto> dtoList = new ArrayList<>();
@@ -92,9 +97,7 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 	public String saveOrUpdateComment(CommentDto commentDto) throws ExecutionFault {
 		try {
 			CommentDo commentDo = importDto(commentDto);
-			getSession().saveOrUpdate(commentDo);
-			getSession().flush();
-			getSession().clear();
+			commentRepository.save(commentDo);
 			return "Comment is successfully created with =" + commentDo.getCommentId();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -105,20 +108,20 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 
 	@Override
 	public List<CommentDto> listAllComments() {
-		return exportList(getSession().createQuery("from CommentDo", CommentDo.class).list());
+		return exportList(commentRepository.findAll());
 	}
 
 	@Override
 	public CommentDto getCommentById(String commentId) {
-		return exportDto(getSession().get(CommentDo.class, commentId));
+		return exportDto(commentRepository.getOne(commentId));
 	}
 
 	@Override
 	public String deleteCommentById(String commentId) throws ExecutionFault {
 		try {
-			CommentDo commentDo = getSession().byId(CommentDo.class).load(commentId);
+			CommentDo commentDo = commentRepository.getOne(commentId);
 			if (commentDo != null) {
-				getSession().delete(commentDo);
+				commentRepository.delete(commentDo);
 				return "Comment is completedly removed";
 			} else {
 				return "Comment is not found on Comment id : " + commentId;
@@ -130,9 +133,8 @@ public class CommentDaoImpl extends BaseDao<CommentDo, CommentDto> implements Co
 
 	@Override
 	public List<CommentDto> getCommentListByRefId(String refId) {
-		return exportList(getSession().createQuery("from CommentDo c where c.refDocNum = :refDocId", CommentDo.class)
-				.setParameter("refDocId", refId).list());
+		return exportList(entityManager.createQuery("from CommentDo c where c.refDocNum = :refDocId", CommentDo.class)
+				.setParameter("refDocId", refId).getResultList());
 	}
-
 
 }

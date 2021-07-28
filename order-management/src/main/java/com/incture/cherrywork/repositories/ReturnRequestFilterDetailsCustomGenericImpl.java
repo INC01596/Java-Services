@@ -226,15 +226,15 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 	private void formingQueryAndAppendingDataFromFilterDetails(FilterDetailDto filterDetailDto, StringBuilder query) {
 		// Date will change query accordingly
 		if ((filterDetailDto.getCreatedAtStart() != null && filterDetailDto.getCreatedAtEnd() != null)) {
-			query.append(" h.CREATED_AT between '" + filterDetailDto.getCreatedAtStart() + "' and '"
-					+ filterDetailDto.getCreatedAtEnd() + "' ");
+			query.append(" h.CREATED_AT between \'" + filterDetailDto.getCreatedAtStart() + "\' and \'"
+					+ filterDetailDto.getCreatedAtEnd() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getCreatedBy())) {
 			if ((filterDetailDto.getCreatedAtStart() != null && filterDetailDto.getCreatedAtEnd() != null)) {
 				query.append(AND);
 			}
-			query.append(" h.CREATED_BY = '" + filterDetailDto.getCreatedBy() + "' ");
+			query.append(" h.CREATED_BY = \'" + filterDetailDto.getCreatedBy() + "\' ");
 		}
 
 		if (filterDetailDto.getDistributionChannelList() != null
@@ -312,7 +312,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| (filterDetailDto.getSalesOrgList() != null && !filterDetailDto.getSalesOrgList().isEmpty())) {
 				query.append(AND);
 			}
-			query.append(" h.RETURN_REQ_NUM = '" + filterDetailDto.getReturnReqNum() + "' ");
+			query.append(" h.RETURN_REQ_NUM = \'" + filterDetailDto.getReturnReqNum() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getOrderType())) {
@@ -325,7 +325,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getReturnReqNum())) {
 				query.append(AND);
 			}
-			query.append(" h.ORDER_TYPE = '" + filterDetailDto.getOrderType() + "' ");
+			query.append(" h.ORDER_TYPE = \'" + filterDetailDto.getOrderType() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getSoldToParty())) {
@@ -339,7 +339,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getOrderType())) {
 				query.append(AND);
 			}
-			query.append(" h.SOLD_TO_PARTY = '" + filterDetailDto.getSoldToParty() + "' ");
+			query.append(" h.SOLD_TO_PARTY = \'" + filterDetailDto.getSoldToParty() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getShipToParty())) {
@@ -354,7 +354,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getSoldToParty())) {
 				query.append(AND);
 			}
-			query.append(" h.SHIP_TO_PARTY = '" + filterDetailDto.getShipToParty() + "' ");
+			query.append(" h.SHIP_TO_PARTY = \'" + filterDetailDto.getShipToParty() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getRefDocNum())) {
@@ -370,7 +370,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getShipToParty())) {
 				query.append(AND);
 			}
-			query.append(" i.REF_DOC_NUM = '" + filterDetailDto.getRefDocNum() + "' ");
+			query.append(" i.REF_DOC_NUM = \'" + filterDetailDto.getRefDocNum() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getMaterialGroup())) {
@@ -387,7 +387,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getRefDocNum())) {
 				query.append(AND);
 			}
-			query.append(" i.MATERIAL_GROUP = '" + filterDetailDto.getMaterialGroup() + "' ");
+			query.append(" i.MATERIAL_GROUP = \'" + filterDetailDto.getMaterialGroup() + "\' ");
 		}
 
 		if (!HelperClass.checkString(filterDetailDto.getMaterialGroup4())) {
@@ -405,7 +405,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 					|| !HelperClass.checkString(filterDetailDto.getMaterialGroup())) {
 				query.append(AND);
 			}
-			query.append(" i.MATERIAL_GROUP_4 = '" + filterDetailDto.getMaterialGroup4() + "' ");
+			query.append(" i.MATERIAL_GROUP_4 = \'" + filterDetailDto.getMaterialGroup4() + "\' ");
 		}
 	}
 
@@ -417,22 +417,25 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 			System.err.println(
 					"fetchSalesOrdersFromCustomerPoList starts and customerPoList size: " + customerPoList.size());
 			System.err.println("fetchSalesOrdersFromCustomerPoList starts and customerPoList: " + customerPoList);
-			String query = "from SalesDocHeaderDo h where h.customerPo in ("
-					+ generateInQueryInputForDacAttributes(customerPoList) + ")";
-			List<SalesDocHeaderDo> list1 = null;
-			try{
-			Query q1 = entityManager.createQuery(query);
+			String query = "from SalesDocHeaderDo h where h.customerPo in (:list) order by customerPo desc";
+			List<SalesDocHeaderDo> list1 = new ArrayList<>();
+			try {
+				Query q1 = entityManager.createQuery(query);
+				q1.setParameter("list", customerPoList);
 
-			list1 = q1.getResultList();
-			}
-			catch(Exception e) {
+				list1 = q1.getResultList();
+			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
-			if (list1.size() > 0)
-				System.err.println("[fetchSalesOrdersFromCustomerPoList] list1.get(0)" + list1.get(0).toString());
+			if (list1.size() > 0) {
+			}
+			// System.err.println("[fetchSalesOrdersFromCustomerPoList]
+			// list1.get(0)" + list1.get(0).toString());
 			System.err.println("[fetchSalesOrdersFromCustomerPoList] list1 size: " + list1.size());
-			return ObjectMapperUtils.mapAll(list1, SalesDocHeaderDto.class);
+			List<SalesDocHeaderDto> list2 = ObjectMapperUtils.mapAll(list1, SalesDocHeaderDto.class);
+			System.err.println("list2: " + list2);
+			return list2;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -705,13 +708,16 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 						+ userId
 						+ "%' and LEVEL_STATUS_SERIAL_ID in (select LEVEL_STATUS_SERIAL_ID from so_level_status where "
 						+ "decision_set_id in (select distinct decision_set_id from sales_doc_item where sales_order_num "
-						+ "in (" + generateInQueryInputForDacAttributes(salesOrderNumList)
-						+ ")))) ORDER BY item.sales_order_num DESC,i.so_item_num ASC");
+						+ "in (" + generateInQueryInputForDacAttributes(salesOrderNumList) + ")))) "
+						+ " ORDER BY item.sales_order_num DESC,i.so_item_num ASC");
 
 		logger.error("query : " + query);
+		List<ItemDataInReturnOrderDto> list = entityManager
+				.createNativeQuery(query.toString(), NativeSqlResultMapping.ITEM_RESULT).getResultList();
 
-		Query q1 = entityManager.createNativeQuery(query.toString());
-		return q1.getResultList();
+		System.err.println("list size in [fetchItemDataInReturnOrderHavingTaskDtoListForNewDac]:" + list.size());
+
+		return list;
 	}
 
 	@Override
@@ -766,8 +772,8 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 
 		return entityManager.createNativeQuery(
 				"select task.* from so_task_status task join so_level_status l on "
-						+ "l.LEVEL_STATUS_SERIAL_ID = task.LEVEL_STATUS_SERIAL_ID where l.decision_set_id = '"
-						+ decisionSet + "' and l.level = '" + level + "'",
+						+ "l.LEVEL_STATUS_SERIAL_ID = task.LEVEL_STATUS_SERIAL_ID where l.decision_set_id = \'"
+						+ decisionSet + "\' and l.level = \'" + level + "\'",
 				NativeSqlResultMapping.SALES_DOC_TASK_STATUS_DATA).getResultList();
 	}
 
@@ -775,7 +781,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 	public List<SalesOrderItemStatusDto> getItemStatusDataUsingTaskSerialId(String taskSerialId) {
 
 		return entityManager.createNativeQuery(
-				"select item.* from so_item_status item where item.TASK_STATUS_SERIAL_ID = '" + taskSerialId + "'",
+				"select item.* from so_item_status item where item.TASK_STATUS_SERIAL_ID = \'" + taskSerialId + "\'",
 				NativeSqlResultMapping.SALES_DOC_ITEM_STATUS_DATA).getResultList();
 	}
 
@@ -807,8 +813,8 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 				.createNativeQuery("select i.* "
 						+ "from so_level_status l join so_task_status t on l.LEVEL_STATUS_SERIAL_ID = t.LEVEL_STATUS_SERIAL_ID "
 						+ "join so_item_status i on i.TASK_STATUS_SERIAL_ID = t.TASK_STATUS_SERIAL_ID "
-						+ "where l.decision_set_id = '" + decisionSetId + "'and i.item_status = '"
-						+ ComConstants.BLOCKED + "'", NativeSqlResultMapping.SALES_DOC_ITEM_STATUS_DATA)
+						+ "where l.decision_set_id = \'" + decisionSetId + "\'and i.item_status = \'"
+						+ ComConstants.BLOCKED + "\'", NativeSqlResultMapping.SALES_DOC_ITEM_STATUS_DATA)
 				.getResultList();
 
 	}
@@ -851,11 +857,13 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 	}
 
 	@Override
-	public Double findTotalAmountOnCustomerPo(String customerPo) {
-		String query = "select sum(i.net_worth) from sales_doc_header h join sales_doc_item i on "
-				+ "h.sales_order_num = i.sales_order_num where h.customer_po = '" + customerPo + "'";
+	public Double findTotalAmountOnCustomerPo(String salesOrderNum) {
+		System.err.println("findTotalAmountOnCustomerPo starts with salesOrderNum: " + salesOrderNum);
+		String query = "select sum(i.net_worth) from sales_doc_item i " + " where i.sales_order_num = \'"
+				+ salesOrderNum + "\'";
 		Query q1 = entityManager.createNativeQuery(query);
 		Double amount = (Double) q1.getSingleResult();
+		System.err.println("[findTotalAmountOnCustomerPo] amount: " + amount);
 		return amount;
 	}
 
@@ -937,7 +945,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 
 		}
 		// add a query to fetch the data from return header table .
-		query.insert(0, "SELECT * FROM RETURN_REQUEST  WHERE REQUESTED_BY = " + "'" + userId + "'");
+		query.insert(0, "SELECT * FROM RETURN_REQUEST  WHERE REQUESTED_BY = " + "\'" + userId + "\'");
 
 		query.append(" ORDER BY CREATED_AT DESC");
 		logger.error("query : " + query);
@@ -1025,8 +1033,8 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 		}
 
 		// add a query to fetch the data from return header table .
-		query.insert(0, "SELECT * FROM RETURN_REQUEST  WHERE REQUESTED_BY =" + "'" + userId + "'"
-				+ " AND RETURN_REQ_NUM =" + "'" + retunRequestNum + "'");
+		query.insert(0, "SELECT * FROM RETURN_REQUEST  WHERE REQUESTED_BY =" + "\'" + userId + "\'"
+				+ " AND RETURN_REQ_NUM =" + "\'" + retunRequestNum + "\'");
 
 		query.append(" ORDER BY CREATED_AT DESC");
 		logger.error("query : " + query);
@@ -1093,7 +1101,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 		}
 
 		// add a query to fetch the data from item table .
-		query.insert(0, "SELECT * FROM RETURN_ITEM  WHERE RETURN_REQ_NUM = " + "'" + returnReqNum + "'");
+		query.insert(0, "SELECT * FROM RETURN_ITEM  WHERE RETURN_REQ_NUM = " + "\'" + returnReqNum + "\'");
 		logger.error("query : " + query);
 		return entityManager.createNativeQuery(query.toString() + "", ReturnItem.class).getResultList();
 
@@ -1154,7 +1162,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 		}
 
 		// add a query to fetch the data from item table .
-		query.insert(0, "SELECT * FROM EXCHANGE_ITEM  WHERE RETURN_REQ_NUM = " + "'" + returnReqNum + "'");
+		query.insert(0, "SELECT * FROM EXCHANGE_ITEM  WHERE RETURN_REQ_NUM = " + "\'" + returnReqNum + "\'");
 		logger.error("query : " + query);
 		return entityManager.createNativeQuery(query.toString(), ExchangeItem.class).getResultList();
 
@@ -1208,35 +1216,38 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 	// NativeSqlResultMapping.SALES_DOC_HEADER_DATA).getResultList();
 	// }
 	//
-	// @Override
-	// public List<SupportUserFunctionTaskItemDataDto>
-	// fetchItemDataFromItemNumList(List<String> itemNumList,
-	// String orderNum) {
-	//
-	// String query = "select i.sales_order_num,
-	// i.sales_order_item_num,i.sap_material_num,i.ordered_qty_sales,"
-	// +
-	// "i.spl_price,i.sales_unit,i.net_price,i.doc_currency,i.net_worth,i.reason_for_rejection,i.reason_for_rejection_text,"
-	// + "i.material_group_for,i.base_unit, i.material_group,i.item_dlv_block,"
-	// + "sl.relfordel_text,i.ref_doc_num,i.ref_doc_item, i.short_text from
-	// sales_doc_item i "
-	// + "join schedule_line sl on sl.SALES_ORDER_NUM = i.SALES_ORDER_NUM and "
-	// + "sl.SALES_ORDER_ITEM_NUM = i.SALES_ORDER_ITEM_NUM where
-	// i.SALES_ORDER_NUM = '" + orderNum
-	// + "' and i.SALES_ORDER_ITEM_NUM IN (" +
-	// generateInQueryInputForDacAttributes(itemNumList)
-	// + ") ORDER BY i.sales_order_item_num ASC";
-	// System.err.println("query : " + query);
-	//
-	// return entityManager.createNativeQuery(query,
-	// NativeSqlResultMapping.SALES_ORDER_ITEM_DATA).getResultList();
-	// }
-	//
+//	@Override
+//	 public List<SupportUserFunctionTaskItemDataDto>
+//	 fetchItemDataFromItemNumList(List<String> itemNumList,
+//	 String orderNum) {
+//	
+//	 String query = "select i.sales_order_num,
+//	 i.sales_order_item_num,i.sap_material_num,i.ordered_qty_sales,"
+//	 +
+//	 "i.spl_price,i.sales_unit,i.net_price,i.doc_currency,i.net_worth,i.reason_for_rejection,i.reason_for_rejection_text,"
+//	 + "i.material_group_for,i.base_unit, i.material_group,i.item_dlv_block,"
+//	 + "sl.relfordel_text,i.ref_doc_num,i.ref_doc_item, i.short_text from
+//	 sales_doc_item i "
+////	 + "join schedule_line sl on sl.SALES_ORDER_NUM = i.SALES_ORDER_NUM and "
+//	 + "sl.SALES_ORDER_ITEM_NUM = i.SALES_ORDER_ITEM_NUM where
+//	 i.SALES_ORDER_NUM = '" + orderNum
+//	 + "' and i.SALES_ORDER_ITEM_NUM IN (" +
+//	 generateInQueryInputForDacAttributes(itemNumList)
+//	 + ") ORDER BY i.sales_order_item_num ASC";
+//	 System.err.println("query : " + query);
+//	
+//	 return entityManager.createNativeQuery(query,
+//	 NativeSqlResultMapping.SALES_ORDER_ITEM_DATA).getResultList();
+//	 }
+
 	@Override
 	public SalesOrderLevelStatusDto fetchLevelStatusDtoFromDecisionSetAndLevel(String decisionSetId, String levelId) {
+		System.err.println("[fetchLevelStatusDtoFromDecisionSetAndLevel] decisionSetId: "+decisionSetId+" levelId: "+levelId);
+		String query = "select * from so_level_status where decision_set_id = '" + decisionSetId
+				+ "' and level = '" + levelId + "'";
+		System.err.println("[fetchLevelStatusDtoFromDecisionSetAndLevel] query: "+query);
 		return (SalesOrderLevelStatusDto) entityManager
-				.createNativeQuery("select * from so_level_status where decision_set_id = '" + decisionSetId
-						+ "' and level = '" + levelId + "' ", NativeSqlResultMapping.LEVEL_STATUS_DATA)
+				.createNativeQuery(query, NativeSqlResultMapping.LEVEL_STATUS_DATA)
 				.getSingleResult();
 	}
 

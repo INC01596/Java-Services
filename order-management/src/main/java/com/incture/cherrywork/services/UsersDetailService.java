@@ -85,6 +85,7 @@ public class UsersDetailService implements IUsersDetailService{
 										.collect(Collectors.toMap(AttributeDetailsDo::getAttributeDetailsGuid,
 												attrDetails -> attrDetails, (oldValue, newValue) -> newValue));
 
+								System.err.println("attributeDetailsDoMap size: "+attributeDetailsDoMap.size());
 								if (!attributeDetailsDoMap.isEmpty()) {
 
 									Map<String, Set<String>> mapOfAttributesGuidWithValues = permissionObjectDetailsList

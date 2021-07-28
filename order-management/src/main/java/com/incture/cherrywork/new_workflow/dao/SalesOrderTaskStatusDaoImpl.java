@@ -1,18 +1,14 @@
 package com.incture.cherrywork.new_workflow.dao;
 
-
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -25,12 +21,11 @@ import com.incture.cherrywork.dto.new_workflow.SalesOrderTaskStatusDto;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
-
+import com.incture.cherrywork.workflow.repositories.ISalesOrderTaskStatusRepository;
 
 @Service
 @Transactional
-public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo, SalesOrderTaskStatusDto>
-		implements SalesOrderTaskStatusDao {
+public class SalesOrderTaskStatusDaoImpl implements SalesOrderTaskStatusDao {
 
 	// @Autowired
 	// private SalesOrderItemStatusDaoImpl soItemStatusDao;
@@ -39,13 +34,15 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 	private SalesOrderLevelStatusDao soLevelStatusDao;
 
 	@Autowired
-	private SessionFactory sessionfactory;
+	private ISalesOrderTaskStatusRepository salesOrderTaskStatusRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Lazy
 	@Autowired
 	private SalesOrderItemStatusDao soItemStatusRepo;
 
-	@Override
 	public SalesOrderTaskStatusDo importDto(SalesOrderTaskStatusDto dto) {
 		SalesOrderTaskStatusDo salesOrderTaskStatusDo = null;
 		if (dto != null) {
@@ -114,7 +111,6 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 		return salesOrderTaskStatusDo;
 	}
 
-	@Override
 	public SalesOrderTaskStatusDto exportDto(SalesOrderTaskStatusDo entity) {
 		SalesOrderTaskStatusDto salesOrderTaskStatusDto = null;
 		if (entity != null) {
@@ -147,7 +143,6 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 
 	}
 
-	@Override
 	public List<SalesOrderTaskStatusDo> importList(List<SalesOrderTaskStatusDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesOrderTaskStatusDo> doList = new ArrayList<>();
@@ -160,7 +155,6 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<SalesOrderTaskStatusDto> exportList(List<SalesOrderTaskStatusDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesOrderTaskStatusDto> dtoList = new ArrayList<>();
@@ -179,9 +173,8 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 		try {
 			SalesOrderTaskStatusDo salesOrderTaskStatusDo = importDto(salesOrderTaskStatusDto);
 			if (salesOrderTaskStatusDo != null) {
-				getSession().merge(salesOrderTaskStatusDo);
-				getSession().flush();
-				getSession().clear();
+				salesOrderTaskStatusRepository.save(salesOrderTaskStatusDo);
+
 				return salesOrderTaskStatusDo.getTaskStatusSerialId();
 			} else {
 				return null;
@@ -201,21 +194,19 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 			SalesOrderTaskStatusDo salesOrderTaskStatusDo = null;
 			salesOrderTaskStatusDo = importDto(salesOrderTaskStatusDto);
 			if (salesOrderTaskStatusDo != null) {
-				Session session = sessionfactory.openSession();
-				Transaction tx1 = session.beginTransaction();
-				session.saveOrUpdate(salesOrderTaskStatusDo);
-				tx1.commit();
-				session.clear();
-				session.close();
+
+				salesOrderTaskStatusRepository.save(salesOrderTaskStatusDo);
 
 				return salesOrderTaskStatusDo.getTaskStatusSerialId();
 			} else {
 				return null;
 			}
 		} catch (NoResultException | NullPointerException | IllegalStateException e) {
+			System.err.println("Excepton while saving sales order task status: "+e.getMessage());
 			throw e;
 			// throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		} catch (Exception e) {
+			System.err.println("Excepton while saving sales order task status: "+e.getMessage());
 			throw e;
 		}
 	}
@@ -228,9 +219,7 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 			salesOrderTaskStatusDo = importDto(salesOrderTaskStatusDto);
 			if (salesOrderTaskStatusDo != null) {
 
-				getSession().update(salesOrderTaskStatusDo);
-				getSession().flush();
-				getSession().clear();
+				salesOrderTaskStatusRepository.save(salesOrderTaskStatusDo);
 
 				return salesOrderTaskStatusDo.getTaskStatusSerialId();
 			} else {
@@ -246,27 +235,28 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 
 	@Override
 	public List<SalesOrderTaskStatusDto> listAllSalesOrderTaskStatuses() {
-		return exportList(getSession().createQuery("from SalesOrderTaskStatusDo", SalesOrderTaskStatusDo.class).list());
+		return exportList(
+				entityManager.createQuery("from SalesOrderTaskStatusDo", SalesOrderTaskStatusDo.class).getResultList());
 	}
 
 	@Override
 	public SalesOrderTaskStatusDto getSalesOrderTaskStatusById(String salesOrderTaskStatusId) {
-		return exportDto(getSession().get(SalesOrderTaskStatusDo.class, salesOrderTaskStatusId));
+		return exportDto(salesOrderTaskStatusRepository.getOne(salesOrderTaskStatusId));
 	}
 
 	@Override
 	public SalesOrderTaskStatusDo getSalesOrderTaskStatusDoById(String salesOrderTaskStatusId) {
 
-		return getSession().get(SalesOrderTaskStatusDo.class, salesOrderTaskStatusId);
+		return salesOrderTaskStatusRepository.findById(salesOrderTaskStatusId).get();
 	}
 
 	@Override
 	public String deleteSalesOrderTaskStatusById(String salesOrderTaskStatusId) throws ExecutionFault {
 		try {
-			SalesOrderTaskStatusDo salesOrderTaskStatusDo = getSession().byId(SalesOrderTaskStatusDo.class)
-					.load(salesOrderTaskStatusId);
+			SalesOrderTaskStatusDo salesOrderTaskStatusDo = salesOrderTaskStatusRepository
+					.getOne(salesOrderTaskStatusId);
 			if (salesOrderTaskStatusDo != null) {
-				getSession().delete(salesOrderTaskStatusDo);
+				salesOrderTaskStatusRepository.delete(salesOrderTaskStatusDo);
 				return "Sales Order Task Status is completedly removed";
 			} else {
 				return "Sales Order Task Status is not found on Order id : " + salesOrderTaskStatusId;
@@ -279,18 +269,18 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksFromDecisionSetAndLevel(String decisionSetId, String level) {
 
-		return exportList(getSession()
+		return exportList(entityManager
 				.createQuery(
-						"select task from SalesOrderTaskStatusDo task join SalesOrderLevelStatusDo l on "
+						"from SalesOrderTaskStatusDo task join SalesOrderLevelStatusDo l on "
 								+ "l.levelStatusSerialId = task.salesOrderLevelStatus.levelStatusSerialId where l.decisionSetId = :dsId and l.level = :lvl",
 						SalesOrderTaskStatusDo.class)
-				.setParameter("dsId", decisionSetId).setParameter("lvl", level).list());
+				.setParameter("dsId", decisionSetId).setParameter("lvl", level).getResultList());
 	}
 
 	@Override
 	public SalesOrderTaskStatusDto getTasksFromDecisionSetAndLevel(String decisionSet, String level) {
 
-		return exportDto(getSession()
+		return exportDto(entityManager
 				.createQuery(
 						"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.decisionSetId = :dsId and task.salesOrderLevelStatus.level = :lvl",
 						SalesOrderTaskStatusDo.class)
@@ -300,30 +290,30 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getTasksIdFromDecisionSetAndLevel(String decisionSet) {
-		return getSession()
+		return entityManager
 				.createQuery(
 						"select task.taskId from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.decisionSetId = :decisionSetId and task.salesOrderLevelStatus.levelStatus = :levelStatus")
 				.setParameter("decisionSetId", decisionSet)
-				.setParameter("levelStatus", StatusConstants.LEVEL_IN_PROGRESS).list();
+				.setParameter("levelStatus", StatusConstants.LEVEL_IN_PROGRESS).getResultList();
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksFromSapTaskId(String taskId) {
 
-		return exportList(getSession().createQuery("from SalesOrderTaskStatusDo task where task.taskId = :taskId",
-				SalesOrderTaskStatusDo.class).setParameter("taskId", taskId).list());
+		return exportList(entityManager.createQuery("from SalesOrderTaskStatusDo task where task.taskId = :taskId",
+				SalesOrderTaskStatusDo.class).setParameter("taskId", taskId).getResultList());
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDo> getAllTasksFromSapTaskIdDo(String taskId) {
-		return getSession().createQuery("from SalesOrderTaskStatusDo task where task.taskId = :taskId",
-				SalesOrderTaskStatusDo.class).setParameter("taskId", taskId).list();
+		return entityManager.createQuery("from SalesOrderTaskStatusDo task where task.taskId = :taskId",
+				SalesOrderTaskStatusDo.class).setParameter("taskId", taskId).getResultList();
 	}
 
 	@Override
 	public SalesOrderTaskStatusDto getAllTasksFromLevelStatusSerialId(String levelStatusSerialId) {
 
-		return exportDto(getSession()
+		return exportDto((SalesOrderTaskStatusDo)entityManager
 				.createQuery(
 						"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.levelStatusSerialId = :levelStatusSerialId",
 						SalesOrderTaskStatusDo.class)
@@ -333,57 +323,54 @@ public class SalesOrderTaskStatusDaoImpl extends BaseDao<SalesOrderTaskStatusDo,
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksListFromLevelStatusSerialId(String levelStatusSerialId) {
 
-		return exportList(
-				getSession()
-						.createQuery(
-								"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.levelStatusSerialId = :levelStatusSerialId",
-								SalesOrderTaskStatusDo.class)
-						.setParameter("levelStatusSerialId", levelStatusSerialId).list());
+		return exportList(entityManager
+				.createQuery(
+						"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.levelStatusSerialId = :levelStatusSerialId",
+						SalesOrderTaskStatusDo.class)
+				.setParameter("levelStatusSerialId", levelStatusSerialId).getResultList());
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksFromDecisionSet(String decisionSetId) {
 
-		return exportList((getSession()
+		return exportList((entityManager
 				.createQuery("from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.decisionSetId = :dsId ",
 						SalesOrderTaskStatusDo.class)
-				.setParameter("dsId", decisionSetId).list()));
+				.setParameter("dsId", decisionSetId).getResultList()));
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksFromDecisionSetAndLevelAndItemNum(String decisionSetId,
 			String level, String itemNum) {
 
-		return exportList(getSession()
+		return exportList(entityManager
 				.createQuery(
 						"select task from SalesOrderTaskStatusDo task join SalesOrderItemStatusDo item on task.taskStatusSerialId = item.salesOrderTaskStatus.taskStatusSerialId where "
 								+ "task.salesOrderLevelStatus.decisionSetId = :dsId and task.salesOrderLevelStatus.level = :lvl and item.salesOrderItemNum = :itemNum",
 						SalesOrderTaskStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("lvl", level).setParameter("itemNum", itemNum)
-				.list());
+				.getResultList());
 
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTaskByTaskSerialId(List<String> taskSerialId) {
 
-		return exportList(getSession()
+		return exportList(entityManager
 				.createQuery("from SalesOrderTaskStatusDo task where task.taskStatusSerialId in (:taskStatusSerialId)",
 						SalesOrderTaskStatusDo.class)
-				.setParameterList("taskStatusSerialId", taskSerialId).list());
+				.setParameter("taskStatusSerialId", taskSerialId).getResultList());
 
 	}
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getListOfAllTasksFromLevelStatusSerialId(String levelStatusSerialId) {
 
-		return exportList(
-				getSession()
-						.createQuery(
-								"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.levelStatusSerialId = :levelStatusSerialId",
-								SalesOrderTaskStatusDo.class)
-						.setParameter("levelStatusSerialId", levelStatusSerialId).list());
+		return exportList(entityManager
+				.createQuery(
+						"from SalesOrderTaskStatusDo task where task.salesOrderLevelStatus.levelStatusSerialId = :levelStatusSerialId",
+						SalesOrderTaskStatusDo.class)
+				.setParameter("levelStatusSerialId", levelStatusSerialId).getResultList());
 	}
 
 }
-

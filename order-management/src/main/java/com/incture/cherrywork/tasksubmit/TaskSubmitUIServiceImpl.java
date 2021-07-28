@@ -1,8 +1,5 @@
 package com.incture.cherrywork.tasksubmit;
 
-
-
-
 import static com.incture.cherrywork.WConstants.Constants.INVALID_INPUT;
 import static com.incture.cherrywork.WConstants.StatusConstants.LEVEL_COMPLETE;
 import static com.incture.cherrywork.WConstants.StatusConstants.LEVEL_IN_PROGRESS;
@@ -21,13 +18,13 @@ import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.incture.cherrywork.OdataS.OdataService;
 import com.incture.cherrywork.WConstants.Constants;
@@ -51,6 +48,7 @@ import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHistoryDto;
+import com.incture.cherrywork.dtos.WorkflowResponseEntity;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderItemStatusDao;
 import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
@@ -62,10 +60,10 @@ import com.incture.cherrywork.util.DestinationClient;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.ODataBatchUtil;
+import com.incture.cherrywork.util.ServicesUtil;
 import com.incture.cherrywork.workflow.services.ApprovalworkflowTrigger;
 import com.incture.cherrywork.workflow.services.TriggerImeDestinationService;
 import com.incture.cherrywork.tasksubmitdto.OdataBatchOnSubmitPayload;
-
 
 @Service
 @Transactional
@@ -123,7 +121,8 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			List<String> effecteditemNumberList = new ArrayList<>();
 
 			if (submitTaskDto != null && !HelperClass.checkString(submitTaskDto.getTaskId())
-					&& !HelperClass.checkString(submitTaskDto.getLevelNum()) && !HelperClass.checkString(submitTaskDto.getDecisionSetId())
+					&& !HelperClass.checkString(submitTaskDto.getLevelNum())
+					&& !HelperClass.checkString(submitTaskDto.getDecisionSetId())
 					&& !HelperClass.checkString(submitTaskDto.getWorkflowId())) {
 
 				if (submitTaskDto.getListOfChangedItemData() != null
@@ -198,7 +197,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			}
 		} catch (Exception e) {
 			logger.error(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 
@@ -237,7 +236,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				Constants.DATA_NOT_FOUND + ", Failed at Trigger ime for fetching level status dto not found",
+					Constants.DATA_NOT_FOUND + ", Failed at Trigger ime for fetching level status dto not found",
 					ResponseStatus.FAILED);
 		}
 		if (soLevelStatusDto != null && soTaskStatusDtoForTaskIdList != null && !effecteditemList.isEmpty()) {
@@ -515,7 +514,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 						triggerImeService.triggerIme(submitTaskDto.getDecisionSetId());
 					}
 				} catch (Exception e) {
-					return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.TRIGGER_FAILED,
+					return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.TRIGGER_FAILED,
 							ResponseStatus.FAILED);
 				}
 
@@ -538,7 +537,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 									"Level triggered at next level default status on " + new Date().toGMTString());
 							triggerImeService.triggerIme(decisionSetId);
 						} catch (Exception e) {
-							return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.TRIGGER_FAILED,
+							return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.TRIGGER_FAILED,
 									ResponseStatus.FAILED);
 						}
 
@@ -562,7 +561,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 							}
 
 						} catch (Exception e) {
-							return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.TRIGGER_FAILED,
+							return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.TRIGGER_FAILED,
 									ResponseStatus.FAILED);
 						}
 
@@ -572,7 +571,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 						System.err.println("Level triggered at last level on " + new Date().toGMTString());
 						triggerImeService.triggerIme(decisionSetId);
 					} catch (Exception e) {
-						return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.TRIGGER_FAILED,
+						return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.TRIGGER_FAILED,
 								ResponseStatus.FAILED);
 					}
 				}
@@ -647,7 +646,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.DATA_NOT_FOUND, ResponseStatus.FAILED);
+			return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.DATA_NOT_FOUND, ResponseStatus.FAILED);
 		}
 
 		if (soLevelStatusDto != null && soTaskStatusDtoForTaskIdList != null && !effecteditemList.isEmpty()) {
@@ -657,7 +656,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 
 			} catch (Exception e) {
 				logger.error(e.getMessage());
-				return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+				return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 						ResponseStatus.FAILED);
 			}
 		} else {
@@ -676,21 +675,23 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			if (!HelperClass.checkString(item.getAcceptOrReject())) {
 				effecteditemNumberList.add(item.getSalesItemOrderNo());
 
-			/*	if (!HelperClass.checkString(item.getComments())) {
-
-					// Setting Comment List from comment table
-					List<CommentDto> commentDtoList = new ArrayList<>();
-					CommentDto commentDto = new CommentDto();
-					commentDto.setComments(item.getComments());
-					commentDto.setUpdatedBy(submitTaskDto.getLoggedInUserName());
-					commentDtoList.add(commentDto);
-					for(List<CommentDto>commentDtoList :commentDto){
-					commentRepo.saveOrUpdateComment(commentDto
-							submitTaskDto.getRequestId() + "," + submitTaskDto.getDecisionSetId() + ","
-									+ submitTaskDto.getLevelNum() + "," + item.getSalesItemOrderNo());
-					}
-
-				}*/
+				/*
+				 * if (!HelperClass.checkString(item.getComments())) {
+				 * 
+				 * // Setting Comment List from comment table List<CommentDto>
+				 * commentDtoList = new ArrayList<>(); CommentDto commentDto =
+				 * new CommentDto(); commentDto.setComments(item.getComments());
+				 * commentDto.setUpdatedBy(submitTaskDto.getLoggedInUserName());
+				 * commentDtoList.add(commentDto);
+				 * for(List<CommentDto>commentDtoList :commentDto){
+				 * commentRepo.saveOrUpdateComment(commentDto
+				 * submitTaskDto.getRequestId() + "," +
+				 * submitTaskDto.getDecisionSetId() + "," +
+				 * submitTaskDto.getLevelNum() + "," +
+				 * item.getSalesItemOrderNo()); }
+				 * 
+				 * }
+				 */
 			}
 		}
 	}
@@ -823,6 +824,8 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 	private ResponseEntity updatingTaskStatusForUpcomingLevelTasks(
 			List<SalesOrderTaskStatusDto> soTaskStatusDtoForTaskIdList, String salesOrderNum, String sapTaskId)
 			throws ExecutionFault {
+		System.err.println("[updatingTaskStatusForUpcomingLevelTasks] soTaskStatusDtoForTaskIdList: "
+				+ soTaskStatusDtoForTaskIdList + " salesOrderNum: " + salesOrderNum + " sapTaskId: " + sapTaskId);
 		if (soTaskStatusDtoForTaskIdList != null && !soTaskStatusDtoForTaskIdList.isEmpty()) {
 			SalesOrderTaskStatusDto salesOrderTaskDetail = soTaskStatusDtoForTaskIdList.get(0);
 			if (salesOrderTaskDetail != null) {
@@ -835,6 +838,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 					// List of item status from task serial id
 					List<SalesOrderItemStatusDto> itemList = soItemStatusRepo
 							.getItemStatusDataUsingTaskSerialId(taskStatusSerialId);
+					System.err.println("[updatingTaskStatusForUpcomingLevelTasks]itemList: "+itemList);
 
 					for (SalesOrderItemStatusDto salesOrderItemStatusDto : itemList) {
 						// if the item is Blocked and visibility is Active or
@@ -856,7 +860,9 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 
 						// UPDATING WORKFLOW TASK STATUS TO COMPLETED
 
-						//responseFromWorkflowApi = new HelperClass().completeTaskInWorkflowUsingOauthClient(salesOrderNum, sapTaskId);
+						// responseFromWorkflowApi = new
+						// HelperClass().completeTaskInWorkflowUsingOauthClient(salesOrderNum,
+						// sapTaskId);
 					} else {
 						salesOrderTaskDetail.setTaskStatus(StatusConstants.TASK_IN_PROGRESS);
 					}
@@ -883,11 +889,17 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 		try {
 			List<SalesOrderLevelStatusDto> upcomingLevelStatusList = null;
 			ResponseEntity taskStatusRes = null;
+			Map<String, String> mapOfTaskId = null;
 
 			// Map of workflow id (DB) and sap task id
 			@SuppressWarnings("unchecked")
-			Map<String, String> mapOfTaskId = (Map<String, String>) approvalWorkflow
-					.workflowTaskInstanceIdByDecisionSetAndLevel(decisionSet).getData();
+			WorkflowResponseEntity response1 = new WorkflowResponseEntity("", 200, "", ResponseStatus.FAILED, null,
+					null, "");
+			response1 = approvalWorkflow.workflowTaskInstanceIdByDecisionSetAndLevel(decisionSet);
+			System.err.println("response1.getData().getClassName()" + response1.getData().getClass());
+			if (response1.getData() != null && !ServicesUtil.isEmpty(response1.getData())
+					&& !response1.getData().equals(""))
+				mapOfTaskId = (Map<String, String>) response1.getData();
 
 			// Upcoming levels with in progess status
 			upcomingLevelStatusList = soLevelStatusRepo
@@ -906,7 +918,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 						for (SalesOrderTaskStatusDto salesOrderTaskStatusDto : salesOrderLevelStatusDto
 								.getTaskStatusList()) {
 
-							if (salesOrderTaskStatusDto.getTaskStatus() !=StatusConstants.TASK_NEW) {
+							if (salesOrderTaskStatusDto.getTaskStatus() != StatusConstants.TASK_NEW) {
 
 								/*
 								 * PARAM list of taskStatus, sales order num and
@@ -920,7 +932,8 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 							}
 
 						}
-						if (taskStatusRes.getStatus().toString().equalsIgnoreCase(ResponseStatus.SUCCESS.toString())) {
+						if ((taskStatusRes != null && (taskStatusRes.getStatus() != null)) && taskStatusRes.getStatus()
+								.toString().equalsIgnoreCase(ResponseStatus.SUCCESS.toString())) {
 
 							// Updating Level Status now
 							SalesOrderLevelStatusDto levelStatusDto = updatingLevelStatus(
@@ -941,7 +954,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			}
 		} catch (Exception e) {
 			logger.error(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 
@@ -1154,7 +1167,8 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			salesOrderHistoryDto.setUpdatedBy(submitTaskDto.getLoggedInUserName());
 			salesOrderHistoryDto.setUpdatedOn(new Date());
 
-			//return new SalesOrderHistoryServiceImpl().saveSalesOrderItem(salesOrderHistoryDto);
+			// return new
+			// SalesOrderHistoryServiceImpl().saveSalesOrderItem(salesOrderHistoryDto);
 
 		} else {
 			return;
@@ -1165,8 +1179,8 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 	public ResponseEntity validateSalesOrder(String salesOrderNum, String decisionSetId, String sapTaskId,
 			String levelNum) {
 		try {
-			if (!HelperClass.checkString(salesOrderNum) && !HelperClass.checkString(decisionSetId) && !HelperClass.checkString(sapTaskId)
-					&& !HelperClass.checkString(levelNum)) {
+			if (!HelperClass.checkString(salesOrderNum) && !HelperClass.checkString(decisionSetId)
+					&& !HelperClass.checkString(sapTaskId) && !HelperClass.checkString(levelNum)) {
 				SalesDocHeaderDto salesDocHeaderDto = salesDocHeaderRepo
 						.getSalesDocHeaderWithoutItemsById(salesOrderNum);
 				if (salesDocHeaderDto != null) {
@@ -1205,10 +1219,9 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 												Double.parseDouble(salesDocItemDto.getNetWorth())));
 										salesDocItemDto.setVisiblity(salesOrderItemStatusDto.getVisiblity());
 										salesDocItemDto.setTaskItemStatus(salesOrderItemStatusDto.getItemStatus());
-										salesDocItemDto
-												.setItemStagingStatus(StatusConstants.MAP_TO_PRINT_ITEM_STATUS
-														.get(salesDocItemDto.getVisiblity()
-																+ salesDocItemDto.getTaskItemStatus()));
+										salesDocItemDto.setItemStagingStatus(StatusConstants.MAP_TO_PRINT_ITEM_STATUS
+												.get(salesDocItemDto.getVisiblity()
+														+ salesDocItemDto.getTaskItemStatus()));
 
 										DlvBlockReleaseMapDto dlvBlockReleaseMapDtoForItem = (DlvBlockReleaseMapDto) dlvBlockReleaseMapService
 												.getDlvBlockReleaseMapBydlvBlockCodeWithSpecialClients(
@@ -1225,7 +1238,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 								}
 							}
 
-							return new ResponseEntity(salesDocHeaderDto, HttpStatus.OK,Constants.DATA_FOUND,
+							return new ResponseEntity(salesDocHeaderDto, HttpStatus.OK, Constants.DATA_FOUND,
 									ResponseStatus.SUCCESS);
 						} else {
 							return new ResponseEntity("", HttpStatus.NO_CONTENT, "Sap task id is not registered yet!!",
@@ -1251,7 +1264,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			}
 		} catch (Exception e) {
 			logger.error(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 
@@ -1279,10 +1292,10 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 				}
 
 				if (!salesDocHeaderDtoList.isEmpty()) {
-					return new ResponseEntity(salesDocHeaderDtoList, HttpStatus.OK,Constants.DATA_FOUND,
+					return new ResponseEntity(salesDocHeaderDtoList, HttpStatus.OK, Constants.DATA_FOUND,
 							ResponseStatus.SUCCESS);
 				} else {
-					return new ResponseEntity("", HttpStatus.BAD_REQUEST,Constants.INVALID_INPUT,
+					return new ResponseEntity("", HttpStatus.BAD_REQUEST, Constants.INVALID_INPUT,
 							ResponseStatus.FAILED);
 				}
 			} else {
@@ -1293,7 +1306,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 			}
 		} catch (Exception e) {
 			logger.error(e + " on " + e.getStackTrace()[1]);
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 	}
@@ -1358,16 +1371,16 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 		oDataPayloadList.add(odataBatchOnSubmit);
 		try {
 			response = ODataBatchUtil.BULK_INSERT_ON_SUBMIT_DATA(oDataPayloadList,
-				StatusConstants.RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT,
+					StatusConstants.RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT,
 					StatusConstants.RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT_TAG);
 			System.err.println("HDB Response - " + response);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR,Constants.EXCEPTION_FAILED + e,
+			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 
-		return new ResponseEntity(response, HttpStatus.OK,Constants.DATA_FOUND, ResponseStatus.SUCCESS);
+		return new ResponseEntity(response, HttpStatus.OK, Constants.DATA_FOUND, ResponseStatus.SUCCESS);
 
 	}
 
@@ -1404,7 +1417,7 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 		item.setCreatedBy(salesheader.getCreatedBy());
 
 		returnItemList.add(item);
-		OrderToItems orderItem = new  OrderToItems(returnItemList);
+		OrderToItems orderItem = new OrderToItems(returnItemList);
 
 		batchHeaderData.setOrderToItems(orderItem);
 
@@ -1412,7 +1425,4 @@ public class TaskSubmitUIServiceImpl implements TaskSubmitUIService {
 
 	}
 
-	
-
 }
-

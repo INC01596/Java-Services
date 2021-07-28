@@ -1,45 +1,39 @@
 package com.incture.cherrywork.new_workflow.dao;
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.WConstants.StatusConstants;
-import com.incture.cherrywork.dao.BaseDao;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderLevelStatusDto;
 import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
-
-
+import com.incture.cherrywork.workflow.repositories.ISalesOrderLevelStatusRepository;
 
 @Service
 @Transactional
-public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusDo, SalesOrderLevelStatusDto>
-		implements SalesOrderLevelStatusDao {
+public class SalesOrderLevelStatusDaoImpl implements SalesOrderLevelStatusDao {
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Autowired
-	private SessionFactory sessionfactory;
+	private ISalesOrderLevelStatusRepository salesOrderLevelStatusRepository;
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
 	public SalesOrderLevelStatusDo importDto(SalesOrderLevelStatusDto dto) {
 
 		SalesOrderLevelStatusDo salesOrderLevelStatusDo = null;
@@ -74,7 +68,6 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 		return salesOrderLevelStatusDo;
 	}
 
-	
 	public SalesOrderLevelStatusDto exportDto(SalesOrderLevelStatusDo entity) {
 		SalesOrderLevelStatusDto salesOrderLevelStatusDto = null;
 
@@ -108,7 +101,6 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 		return salesOrderLevelStatusDto;
 	}
 
-	
 	public List<SalesOrderLevelStatusDo> importList(List<SalesOrderLevelStatusDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesOrderLevelStatusDo> doList = new ArrayList<>();
@@ -121,7 +113,6 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 		return Collections.emptyList();
 	}
 
-	
 	public List<SalesOrderLevelStatusDto> exportList(List<SalesOrderLevelStatusDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesOrderLevelStatusDto> dtoList = new ArrayList<>();
@@ -139,9 +130,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 			throws ExecutionFault {
 		try {
 			SalesOrderLevelStatusDo salesOrderLevelStatusDo = importDto(salesOrderLevelStatusDto);
-			getSession().merge(salesOrderLevelStatusDo);
-			getSession().flush();
-			getSession().clear();
+			salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 
 			return salesOrderLevelStatusDo.getLevelStatusSerialId();
 		} catch (NoResultException | NullPointerException e) {
@@ -160,13 +149,9 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 			SalesOrderLevelStatusDo salesOrderLevelStatusDo = null;
 
 			salesOrderLevelStatusDo = importDto(salesOrderLevelStatusDto);
+
 			if (salesOrderLevelStatusDo != null) {
-				Session session = sessionfactory.openSession();
-				Transaction tx1 = session.beginTransaction();
-				session.saveOrUpdate(salesOrderLevelStatusDo);
-				tx1.commit();
-				session.clear();
-				session.close();
+				salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 				return salesOrderLevelStatusDo.getLevelStatusSerialId();
 			}
 		} catch (NoResultException | NullPointerException e) {
@@ -186,10 +171,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 
 			salesOrderLevelStatusDo = importDto(salesOrderLevelStatusDto);
 			if (salesOrderLevelStatusDo != null) {
-				getSession().save(salesOrderLevelStatusDo);
-				getSession().flush();
-				getSession().clear();
-
+				salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 				return salesOrderLevelStatusDo.getLevelStatusSerialId();
 			}
 		} catch (NoResultException | NullPointerException e) {
@@ -208,10 +190,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 
 			if (salesOrderLevelStatusDo != null) {
 
-				getSession().saveOrUpdate(salesOrderLevelStatusDo);
-				getSession().flush();
-				getSession().clear();
-
+				salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 				return salesOrderLevelStatusDo.getLevelStatusSerialId();
 			}
 		} catch (NoResultException | NullPointerException e) {
@@ -225,33 +204,31 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 
 	@Override
 	public List<SalesOrderLevelStatusDto> listAllSalesOrderLevelStatuses() {
-		return exportList(
-				getSession().createQuery("from SalesOrderLevelStatusDo", SalesOrderLevelStatusDo.class).list());
+		return exportList(entityManager.createQuery("from SalesOrderLevelStatusDo", SalesOrderLevelStatusDo.class)
+				.getResultList());
 	}
 
 	@Override
 	public SalesOrderLevelStatusDto getSalesOrderLevelStatusById(String salesOrderLevelStatusId) {
-		return exportDto(getSession().get(SalesOrderLevelStatusDo.class, salesOrderLevelStatusId));
+		return exportDto(salesOrderLevelStatusRepository.getOne(salesOrderLevelStatusId));
 	}
 
 	@Override
 	public SalesOrderLevelStatusDo getSalesOrderLevelStatusDoById(String salesOrderLevelStatusId) {
 
-		return getSession().get(SalesOrderLevelStatusDo.class, salesOrderLevelStatusId);
+		return salesOrderLevelStatusRepository.findById(salesOrderLevelStatusId).get();
 	}
 
 	@Override
 	public String deleteSalesOrderLevelStatusById(String salesOrderLevelStatusId) throws ExecutionFault {
 		try {
-			SalesOrderLevelStatusDo salesOrderLevelStatusDo = getSession().byId(SalesOrderLevelStatusDo.class)
-					.load(salesOrderLevelStatusId);
-			if (salesOrderLevelStatusDo != null) {
-				getSession().delete(salesOrderLevelStatusDo);
-				return "Sales Order Level Status is completedly removed";
-			} else {
-				return "Sales Order Level Status is not found on Order id : " + salesOrderLevelStatusId;
-			}
-		} catch (Exception e) {
+
+			salesOrderLevelStatusRepository.deleteById(salesOrderLevelStatusId);
+			return "Sales Order Level Status is completedly removed";
+
+		} catch (
+
+		Exception e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		}
 	}
@@ -261,10 +238,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 			throws ExecutionFault {
 		try {
 			SalesOrderLevelStatusDo salesOrderLevelStatusDo = importDto(salesOrderLevelStatusDto);
-			getSession().merge(salesOrderLevelStatusDo);
-			getSession().flush();
-			getSession().clear();
-
+			salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 			return salesOrderLevelStatusDo.getLevelStatusSerialId();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -277,7 +251,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 	@Override
 	public SalesOrderLevelStatusDto getSalesOrderLevelStatusByDecisionSetAndLevel(String decisionSetId, String level) {
 		System.err.println("decisiion = " + decisionSetId + level);
-		return exportDto(getSession()
+		return exportDto(entityManager
 				.createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.level = :lvl",
 						SalesOrderLevelStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("lvl", level).getSingleResult());
@@ -287,15 +261,11 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 	public SalesOrderLevelStatusDto getSalesOrderLevelStatusByDecisionSetAndLevelSession(String decisionSetId,
 			String level) {
 		System.err.println("decisiion = " + decisionSetId + level);
-		Session session = sessionfactory.openSession();
-		Transaction transaction = session.beginTransaction();
-		SalesOrderLevelStatusDto salesOrderLevelStatusDto = exportDto(getSession()
+
+		SalesOrderLevelStatusDto salesOrderLevelStatusDto = exportDto((SalesOrderLevelStatusDo)entityManager
 				.createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.level = :lvl",
 						SalesOrderLevelStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("lvl", level).getSingleResult());
-
-		transaction.commit();
-		session.close();
 
 		return salesOrderLevelStatusDto;
 	}
@@ -304,7 +274,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 	public SalesOrderLevelStatusDo getSalesOrderLevelStatusByDecisionSetAndLevelDo(String decisionSetId, String level) {
 		System.err.println("decisiion = " + decisionSetId + level);
 
-		return getSession()
+		return entityManager
 				.createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.level = :lvl",
 						SalesOrderLevelStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("lvl", level).getSingleResult();
@@ -325,12 +295,7 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 
 		salesOrderLevelStatusDo.setLevelStatus(salesOrderLevelStatusDto.getLevelStatus());
 
-		Session session = sessionfactory.openSession();
-
-		session.save(salesOrderLevelStatusDo);
-
-		session.close();
-
+		salesOrderLevelStatusRepository.save(salesOrderLevelStatusDo);
 		return salesOrderLevelStatusDo.getLevelStatusSerialId();
 
 	}
@@ -338,30 +303,30 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 	@Override
 	public List<SalesOrderLevelStatusDto> getSalesOrderLevelStatusByDecisionSet(String decisionSetId) {
 
-		return exportList(getSession().createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId",
-				SalesOrderLevelStatusDo.class).setParameter("dsId", decisionSetId).list());
+		return exportList(entityManager.createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId",
+				SalesOrderLevelStatusDo.class).setParameter("dsId", decisionSetId).getResultList());
 	}
 
 	@Override
 	public List<SalesOrderLevelStatusDto> getSalesOrderLevelStatusByDecisionSetWithLevelInProgress(
 			String decisionSetId) {
 
-		return exportList(getSession().createQuery(
-				"from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.levelStatus not in ('"
-						+StatusConstants.LEVEL_NEW + "')",
-				SalesOrderLevelStatusDo.class).setParameter("dsId", decisionSetId).list());
+		return exportList(entityManager
+				.createQuery("from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.levelStatus not in ('"
+						+ StatusConstants.LEVEL_NEW + "')", SalesOrderLevelStatusDo.class)
+				.setParameter("dsId", decisionSetId).getResultList());
 	}
 
 	@Override
 	public List<SalesOrderLevelStatusDto> getsalesOrderLevelStatusByDecisionSetAndLevelNewStatus(String decisionSetId,
 			String level) {
 
-		return exportList(getSession()
+		return exportList(entityManager
 				.createQuery(
 						"from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.level != :level and l.levelStatus = :levelStatus",
 						SalesOrderLevelStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("level", level)
-				.setParameter("levelStatus", StatusConstants.LEVEL_NEW).list());
+				.setParameter("levelStatus", StatusConstants.LEVEL_NEW).getResultList());
 	}
 
 	@Override
@@ -378,10 +343,10 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 			}
 
 		}
-		return exportList(getSession().createQuery(
+		return exportList(entityManager.createQuery(
 				"from SalesOrderLevelStatusDo l where l.decisionSetId = :dsId and l.levelStatus = '"
 						+ StatusConstants.LEVEL_IN_PROGRESS + "' and l.level NOT IN (" + queryForExcludeLevel + ")",
-				SalesOrderLevelStatusDo.class).setParameter("dsId", decisionSet).list());
+				SalesOrderLevelStatusDo.class).setParameter("dsId", decisionSet).getResultList());
 	}
 
 	@Override
@@ -390,16 +355,16 @@ public class SalesOrderLevelStatusDaoImpl extends BaseDao<SalesOrderLevelStatusD
 		try {
 			for (int i = 0; i < decisionSetIDs.size(); i++) {
 				String decisionSetId = decisionSetIDs.get(i);
-				List<Integer> soLevelDoList = getSession().createQuery(
+				List<Integer> soLevelDoList = entityManager.createQuery(
 						"select distinct l.levelStatus from SalesOrderLevelStatusDo l where l.decisionSetId =:decisionSetId",
-						Integer.class).setParameter("decisionSetId", decisionSetId).list();
+						Integer.class).setParameter("decisionSetId", decisionSetId).getResultList();
 				levelStatusIdList.addAll(soLevelDoList);
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			// logger.error(e.getMessage());
+			System.err.println(e.getMessage());
 		}
 		return levelStatusIdList;
 
 	}
 }
-

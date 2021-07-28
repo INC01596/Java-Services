@@ -58,7 +58,7 @@ public class SchedulerController {
 
 	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
-	  @Scheduled(cron = "0 0/15 * * * ?")
+	  @Scheduled(cron = "0 0/5 * * * ?")
 	//@Scheduled(cron = "0 12 * * * ?")
 	public void schedulerTrigger() {
 		System.err.println("STEP 1 SCHEDULER ENTER time " + "=" + LocalDateTime.now(ZoneId.of("GMT+08:00"))

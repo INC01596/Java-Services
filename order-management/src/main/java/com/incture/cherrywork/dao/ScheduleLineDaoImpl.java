@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.ScheduleLineDto;
@@ -20,13 +21,20 @@ import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
 import com.incture.cherrywork.entities.ScheduleLineDo;
 import com.incture.cherrywork.entities.ScheduleLinePrimaryKeyDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.workflow.repositories.IScheduleLineRepository;
 
 
 @Service
 @Transactional
-public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto> implements ScheduleLineDao {
+public class ScheduleLineDaoImpl implements ScheduleLineDao {
 
-	@Override
+	@Autowired
+	private IScheduleLineRepository  scheduleLineRepository;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	
 	public ScheduleLineDo importDto(ScheduleLineDto dto) {
 		ScheduleLineDo scheduleLineDo = null;
 		if (dto != null) {
@@ -52,7 +60,7 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 		return scheduleLineDo;
 	}
 
-	@Override
+	
 	public ScheduleLineDto exportDto(ScheduleLineDo entity) {
 		ScheduleLineDto scheduleLineDto = null;
 		if (entity != null) {
@@ -79,7 +87,7 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 		return scheduleLineDto;
 	}
 
-	@Override
+	
 	public List<ScheduleLineDo> importList(List<ScheduleLineDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<ScheduleLineDo> dtoList = new ArrayList<>();
@@ -92,7 +100,7 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 		return Collections.emptyList();
 	}
 
-	@Override
+	
 	public List<ScheduleLineDto> exportList(List<ScheduleLineDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<ScheduleLineDto> dtoList = new ArrayList<>();
@@ -109,9 +117,8 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 	public String saveOrUpdateScheduleLine(ScheduleLineDto scheduleLineDto) throws ExecutionFault {
 		try {
 			ScheduleLineDo scheduleLineDo = importDto(scheduleLineDto);
-			getSession().saveOrUpdate(scheduleLineDo);
-			getSession().flush();
-			getSession().clear();
+			scheduleLineRepository.save(scheduleLineDo);
+		
 			return "Schedule Line is successfully created with =" + scheduleLineDo.getScheduleLineKey();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -122,7 +129,7 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 
 	@Override
 	public List<ScheduleLineDto> listAllScheduleLines() {
-		return exportList(getSession().createQuery("from ScheduleLineDo", ScheduleLineDo.class).list());
+		return exportList(entityManager.createQuery("from ScheduleLineDo", ScheduleLineDo.class).getResultList());
 	}
 
 	@Override
@@ -132,7 +139,7 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 		salesDocHeaderDo.setSalesOrderNum(soHeadNum);
 		salesDocItemDo.setSalesDocItemKey(new SalesDocItemPrimaryKeyDo(soItemNum, salesDocHeaderDo));
 		return exportDto(
-				getSession().get(ScheduleLineDo.class, new ScheduleLinePrimaryKeyDo(scheduleLineId, salesDocItemDo)));
+				scheduleLineRepository.getOne(new ScheduleLinePrimaryKeyDo(scheduleLineId, salesDocItemDo)));
 	}
 
 	@Override
@@ -143,10 +150,9 @@ public class ScheduleLineDaoImpl extends BaseDao<ScheduleLineDo, ScheduleLineDto
 			SalesDocHeaderDo salesDocHeaderDo = new SalesDocHeaderDo();
 			salesDocHeaderDo.setSalesOrderNum(soHeadNum);
 			salesDocItemDo.setSalesDocItemKey(new SalesDocItemPrimaryKeyDo(soItemNum, salesDocHeaderDo));
-			ScheduleLineDo scheduleLineDo = getSession().byId(ScheduleLineDo.class)
-					.load(new ScheduleLinePrimaryKeyDo(scheduleLineId, salesDocItemDo));
+			ScheduleLineDo scheduleLineDo = scheduleLineRepository.getOne(new ScheduleLinePrimaryKeyDo(scheduleLineId, salesDocItemDo));
 			if (scheduleLineDo != null) {
-				getSession().delete(scheduleLineDo);
+				scheduleLineRepository.delete(scheduleLineDo);
 				return "Schedule Line is completedly removed";
 			} else {
 				return "Schedule Line is not found on id : " + scheduleLineId;

@@ -17,6 +17,8 @@ import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.incture.cherrywork.dtos.ItemDataInReturnOrderDto;
+
 public class ServicesUtils {
 	
 	
@@ -114,6 +116,19 @@ public class ServicesUtils {
 		//return ResponseEntity<Object>.status(HttpStatus.OK).header("message", "Mail Sent Successfully to " + receiver).body(null);
 		return ResponseEntity.status(HttpStatus.SC_ACCEPTED).header("message", "Mail Sent Successfully to " + receiver)
 		.body(null);
+	}
+	public static boolean isPresent(int index, String orderId, String material, List<ItemDataInReturnOrderDto>list){
+		System.err.println("isPresent Starts with index: "+index+" orderId: "+orderId+" material: "+material);
+		int i=0;
+		for(ItemDataInReturnOrderDto item:list){
+			if(i != index){
+				System.err.println("in for loop in service utils ispresent(), orderNum: "+item.getOrderNum()+" material: "+item.getMaterialNum()+ " i: "+i);
+				if((item.getOrderNum().equals(orderId)) && (item.getMaterialNum().equals(material)))
+					return true;
+			}
+			i++;
+		}
+		return false;
 	}
 	
 	

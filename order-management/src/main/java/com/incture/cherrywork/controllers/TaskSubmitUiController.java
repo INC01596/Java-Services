@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 
 import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;
 import com.incture.cherrywork.dto.new_workflow.SalesOrderValidatorDto;
@@ -21,8 +21,6 @@ import com.incture.cherrywork.tasksubmit.TaskSubmitUIService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/taskSubmit")
 public class TaskSubmitUiController {
 

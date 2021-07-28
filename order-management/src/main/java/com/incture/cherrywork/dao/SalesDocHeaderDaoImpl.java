@@ -11,13 +11,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.FilterDto;
@@ -32,16 +28,16 @@ import com.incture.cherrywork.entities.ScheduleLineDo;
 import com.incture.cherrywork.entities.ScheduleLinePrimaryKeyDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.repositories.ISalesDocHeaderRepository;
+import com.incture.cherrywork.repositories.ISalesDocItemRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.util.ServicesUtil;
-import com.incture.cherrywork.workflow.repositories.ISalesDocItemRepository;
 import com.incture.cherrywork.workflow.repositories.IScheduleLineRepository;
 
 @SuppressWarnings("deprecation")
 @Service
 @Transactional
-public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHeaderDto> implements SalesDocHeaderDao {
+public class SalesDocHeaderDaoImpl implements SalesDocHeaderDao {
 
 	// Control the list of Items here by flag
 	private Boolean listofItemTrigger = Boolean.FALSE;
@@ -52,22 +48,8 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public Session getSession() {
-		Session session = entityManager.unwrap(Session.class);
-		return session;
-	}
-
-	@Autowired
-	private SessionFactory sessionfactory;
-
 	@Autowired
 	private ISalesDocHeaderRepository salesDocHeaderRepository;
-
-	@Autowired
-	private IScheduleLineRepository scheduleLineRepository;
-
-	@Autowired
-	private ISalesDocItemRepository salesDocItemRepository;
 
 	@Override
 	public String saveSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault {
@@ -131,6 +113,8 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			}
 
 			SalesDocHeaderDo salesDocHeaderDo = importDto(salesDocHeaderDto);
+			System.err.println(
+					"[salesDocHeaderDaoImpl][saveSalesDocHeader] salesDocHeaderDo: " + salesDocHeaderDo.toString());
 			// salesDocHeaderDo.setRequestId(ServicesUtil.randomId());
 			SalesDocHeaderDo savedSalesDocHeaderDo = salesDocHeaderRepository.save(salesDocHeaderDo);
 			System.err.println("[salesDocHeaderDaoImpl][saveSalesDocHeader] savedSalesDocHeaderDo "
@@ -154,7 +138,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	}
 
 	public String updateSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault {
-		try (Session session = sessionfactory.openSession()) {
+		try {
 
 			// Enabling the list of Items here by flag
 			listofItemTrigger = Boolean.TRUE;
@@ -187,12 +171,8 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			 */
 
 			// Session session = sessionfactory.openSession();
-			Transaction tx = session.beginTransaction();
 
-			session.saveOrUpdate(salesDocHeaderDo);
-
-			tx.commit();
-			session.close();
+			salesDocHeaderRepository.save(salesDocHeaderDo);
 
 			return "Sales Document Header is updated with " + salesDocHeaderDo.getSalesOrderNum();
 		} catch (NoResultException | NullPointerException e) {
@@ -237,7 +217,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			salesDocHeaderDo.setOrderRemark(fromDto.getOrderRemark());
 			salesDocHeaderDo.setSoldToParty(fromDto.getSoldToParty());
 			salesDocHeaderDo.setShipToParty(fromDto.getShipToParty());
-			salesDocHeaderDo.setDeliveryBlockText(fromDto.getDeliveryBlockCodeText());
+			salesDocHeaderDo.setDeliveryBlockText(fromDto.getDeliveryBlockText());
 			salesDocHeaderDo.setDocTypeText(fromDto.getDocTypeText());
 			salesDocHeaderDo.setShipToPartyText(fromDto.getShipToPartyText());
 			salesDocHeaderDo.setSoldToPartyText(fromDto.getSoldToPartyText());
@@ -307,7 +287,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			salesDocHeaderDto.setOrderRemark(entity.getOrderRemark());
 			salesDocHeaderDto.setSoldToParty(entity.getSoldToParty());
 			salesDocHeaderDto.setShipToParty(entity.getShipToParty());
-			salesDocHeaderDto.setDeliveryBlockCodeText(entity.getDeliveryBlockText());
+			salesDocHeaderDto.setDeliveryBlockText(entity.getDeliveryBlockText());
 			salesDocHeaderDto.setDocTypeText(entity.getDocTypeText());
 			salesDocHeaderDto.setSoldToPartyText(entity.getSoldToPartyText());
 			salesDocHeaderDto.setShipToPartyText(entity.getShipToPartyText());
@@ -453,7 +433,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 
 	}
 
-	@Override
+	
 	public List<SalesDocHeaderDo> importList(List<SalesDocHeaderDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocHeaderDo> doList = new ArrayList<>();
@@ -466,7 +446,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		return Collections.emptyList();
 	}
 
-	@Override
+	
 	public List<SalesDocHeaderDto> exportList(List<SalesDocHeaderDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocHeaderDto> dtoList = new ArrayList<>();
@@ -506,10 +486,8 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			}
 
 			SalesDocHeaderDo salesDocHeaderDo = importDto(salesDocHeaderDto);
-			getSession().saveOrUpdate(salesDocHeaderDo);
-			getSession().flush();
-			getSession().clear();
-
+			salesDocHeaderRepository.save(salesDocHeaderDo);
+			
 			return "Sales Document Header is saved with " + salesDocHeaderDo.getSalesOrderNum();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -527,7 +505,10 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		List<SalesDocHeaderDo> salesOrderHeaderList = new ArrayList<>();
 
 		salesOrderNumList.forEach(salesOrderNum -> {
-			SalesDocHeaderDo salesDocHeaderDo = getSession().get(SalesDocHeaderDo.class, salesOrderNum);
+			String query = "from SalesDocHeaderDo where salesOrderNum=:soNum";
+			Query q1 = entityManager.createQuery(query);
+			q1.setParameter("soNum", salesOrderNum);
+			SalesDocHeaderDo salesDocHeaderDo = (SalesDocHeaderDo)q1.getSingleResult();
 			if (salesDocHeaderDo != null) {
 				salesOrderHeaderList.add(salesDocHeaderDo);
 			}
@@ -540,19 +521,29 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	public List<SalesDocHeaderDto> listAllSalesDocHeaders() {
 		// Enabling the list of Items here by flag
 		listofItemTrigger = Boolean.TRUE;
-		return exportList(getSession().createQuery("from SalesDocHeaderDo", SalesDocHeaderDo.class).list());
+		
+		return exportList(entityManager.createQuery("from SalesDocHeaderDo", SalesDocHeaderDo.class).getResultList());
 	}
 
 	@Override
 	public SalesDocHeaderDto getSalesDocHeaderById(String salesHeaderOrderId) {
 		// Enabling the list of Items here by flag
 		listofItemTrigger = Boolean.TRUE;
-		return exportDto(getSession().get(SalesDocHeaderDo.class, salesHeaderOrderId));
+		String query = "from SalesDocHeaderDo where salesOrderNum=:soNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderOrderId);
+		SalesDocHeaderDo headerDo = (SalesDocHeaderDo)q1.getSingleResult();
+		return exportDto(headerDo);
 	}
 
 	@Override
 	public SalesDocHeaderDto getSalesDocHeaderByIdWithOutFlag(String salesHeaderOrderId) {
-		return exportDtoWithOutFlag(getSession().get(SalesDocHeaderDo.class, salesHeaderOrderId));
+		String query = "from SalesDocHeaderDo where salesOrderNum=:soNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderOrderId);
+		SalesDocHeaderDo headerDo = (SalesDocHeaderDo)q1.getSingleResult();
+		System.err.println("[getSalesDocHeaderByIdWithOutFlag] headerDo: "+headerDo.toString());
+		return exportDtoWithOutFlag(headerDo);
 
 	}
 
@@ -584,7 +575,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			salesDocHeaderDto.setOrderRemark(entity.getOrderRemark());
 			salesDocHeaderDto.setSoldToParty(entity.getSoldToParty());
 			salesDocHeaderDto.setShipToParty(entity.getShipToParty());
-			salesDocHeaderDto.setDeliveryBlockCodeText(entity.getDeliveryBlockText());
+			salesDocHeaderDto.setDeliveryBlockText(entity.getDeliveryBlockText());
 			salesDocHeaderDto.setDocTypeText(entity.getDocTypeText());
 			salesDocHeaderDto.setSoldToPartyText(entity.getSoldToPartyText());
 			salesDocHeaderDto.setShipToPartyText(entity.getShipToPartyText());
@@ -659,10 +650,10 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			// Session session = sessionfactory.openSession();
 			// Transaction tx1 = session.beginTransaction();
 			listofItemTrigger = Boolean.TRUE;
-			SalesDocHeaderDo salesDocHeaderDo = getSession().load(SalesDocHeaderDo.class, salesHeaderOrderId);
+			SalesDocHeaderDo salesDocHeaderDo = salesDocHeaderRepository.getOne(salesHeaderOrderId);
 			if (salesDocHeaderDo != null) {
 
-				getSession().delete(salesDocHeaderDo);
+				salesDocHeaderRepository.delete(salesDocHeaderDo);
 
 				// session.createNativeQuery("DELETE FROM REQUEST_MASTER WHERE
 				// REF_DOC_NUM =:REF_DOC_NUM")
@@ -693,14 +684,14 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	public List<SalesDocHeaderDto> listAllSalesDocHeaderWithoutItems() {
 		// Disabling the list of Items here by flag
 		listofItemTrigger = Boolean.FALSE;
-		return exportList(getSession().createQuery("from SalesDocHeaderDo", SalesDocHeaderDo.class).list());
+		return exportList(entityManager.createQuery("from SalesDocHeaderDo", SalesDocHeaderDo.class).getResultList());
 	}
 
 	@Override
 	public String getRequestIdWithSoHeader(String salesHeaderOrderId) {
 		// Disabling the list of Items here by flag
 		listofItemTrigger = Boolean.FALSE;
-		String query = "select h.reqMaster.requestId from SalesOrderHeader h where h.salesOrderNum = :soNum";
+		String query = "select h.reqMaster.requestId from SalesDocHeaderDo h where h.salesOrderNum = :soNum";
 		Query q1 = entityManager.createQuery(query);
 		q1.setParameter("soNum", salesHeaderOrderId);
 		return (String) q1.getSingleResult();
@@ -771,9 +762,9 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		boolean checkIfAllRights = false;
 		if (checkIfAllRights) {
 			// if logged person have all rights then return all sales order
-			return getSession().createQuery(
+			return entityManager.createQuery(
 					"select distinct i.decisionSetId from SalesDocHeaderDo s join SalesDocItemDo i on s.salesOrderNum = i.salesDocItemKey.salesDocHeader.salesOrderNum",
-					String.class).list();
+					String.class).getResultList();
 		} else {
 			// if logged person do not have all rights build query
 
@@ -938,7 +929,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 			System.err.println("Query for filterData = " + query);
 
 			listofItemTrigger = Boolean.FALSE;
-			return getSession().createQuery(query.toString(), String.class).list();
+			return entityManager.createQuery(query.toString(), String.class).getResultList();
 
 		}
 
@@ -967,7 +958,7 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 		startingQuery.append(subQuery);
 		System.err.println("Query to be searched : " + startingQuery.toString());
 		// Setting Parameters for QUERY
-		Query query = (Query) getSession().createQuery(startingQuery.toString(), String.class);
+		Query query = (Query) entityManager.createQuery(startingQuery.toString(), String.class);
 		System.err.println("Query : " + query);
 
 		if (filterData.getCustomerCode() != null && filterData.getCustomerCode().trim().length() != 0) {
@@ -1261,11 +1252,11 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	public Integer testQuery() throws ExecutionFault {
 		try {
 
-			List<SalesDocHeaderDo> list = getSession()
+			List<SalesDocHeaderDo> list = entityManager
 					.createQuery(
 							"select distinct h from SalesDocHeaderDo h join SalesDocItemDo i on h.salesOrderNum = i.salesDocItemKey.salesDocHeader.salesOrderNum "
 									+ "where h.customerPo IN ('test01','test02') AND h.salesOrg IN ('TH54','TH53')")
-					.list();
+					.getResultList();
 
 			return list.size();
 
@@ -1280,11 +1271,9 @@ public class SalesDocHeaderDaoImpl extends BaseDao<SalesDocHeaderDo, SalesDocHea
 	public SalesDocHeaderDto getSalesDocHeaderByIdSession(String salesOrderNum) {
 		// Enabling the list of Items here by flag
 		listofItemTrigger = Boolean.TRUE;
-		SalesDocHeaderDto headerDto = exportDto(getSession()
+		SalesDocHeaderDto headerDto = exportDto((SalesDocHeaderDo)entityManager
 				.createQuery("from SalesDocHeaderDo s where s.salesOrderNum =: salesOrderNum", SalesDocHeaderDo.class)
 				.setParameter("salesOrderNum", salesOrderNum).getSingleResult());
-		getSession().flush();
-		getSession().clear();
 		return headerDto;
 	}
 

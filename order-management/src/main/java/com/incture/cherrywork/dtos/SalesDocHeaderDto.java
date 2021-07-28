@@ -97,7 +97,7 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 
 	private String deliveryBlockCode;
 
-	private String deliveryBlockCodeText;
+	private String deliveryBlockText;
 
 	private String creditBlock;
 

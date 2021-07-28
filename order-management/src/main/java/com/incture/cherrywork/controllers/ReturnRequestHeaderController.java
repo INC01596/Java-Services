@@ -141,7 +141,7 @@ public class ReturnRequestHeaderController {
 	}
 
 	@GetMapping("/fetchReturnOrderTaskItemsNewDac/{userId}&{projectCode}&{customerPo}")
-	@ApiOperation(value = "/fetch Return Order Task Items New Dac")
+	@ApiOperation(value = "/fetchReturnOrderTaskItemsNewDac/{userId}&{projectCode}&{customerPo}")
 	public ResponseEntity<Object> fetchItemDataInReturnOrderHavingTaskDtoListForNewDac(
 			@PathVariable(name = "userId") String userId, @PathVariable(name = "projectCode") String projectCode,
 			@PathVariable(name = "customerPo") String customerPo) {

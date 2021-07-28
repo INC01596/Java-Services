@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.incture.cherrywork.rules.RuleConstants;
+
 @Component
 public class DestinationReaderUtil {
 
@@ -120,4 +122,29 @@ public class DestinationReaderUtil {
 		}
 		return null;
 	}
+	
+	
+public static String getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow() throws URISyntaxException, IOException {
+		
+		System.err.println("77 destination");
+		
+		HttpClient client = HttpClientBuilder.create().build();
+		
+		HttpPost httpPost = new HttpPost(RuleConstants.OAUTH_TOKEN_URL);
+		httpPost.addHeader("Content-Type", "application/json");
+		// Encoding username and password
+		String auth = HelperClass.encodeUsernameAndPassword(RuleConstants.RULE_CLIENT_ID,
+				RuleConstants.RULE_CLIENT_SECRETE);
+		httpPost.addHeader("Authorization", auth);
+		HttpResponse res = client.execute(httpPost);
+		System.err.println( " 92 rest" + res);
+		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
+		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+			String jwtToken = new JSONObject(data).getString("access_token");
+			System.err.println("jwtProxyToken "+jwtToken);
+				return jwtToken;
+			}
+		return null;
+	}
+
 }

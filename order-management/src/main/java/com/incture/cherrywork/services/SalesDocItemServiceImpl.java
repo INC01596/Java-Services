@@ -10,18 +10,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -65,8 +66,6 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	@Autowired
 	private SalesDocItemDao salesDocItemRepo;
 
-	@Autowired
-	private SessionFactory sessionfactory;
 
 	@Autowired
 	private SalesOrderLevelStatusDao salesOrderLevelStatusDao;
@@ -76,6 +75,10 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 
 	@Autowired
 	private SalesOrderItemStatusDao salesOrderItemStatusDao;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+
 
 //	@Autowired
 //	private WorkflowTrigger workflowtrigger;
@@ -517,28 +520,33 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	}
 
 	public SalesDocItemDo getSalesDocItemByIds(String salesItemId, String salesHeaderId) {
-		Session session = sessionfactory.openSession();
-		Transaction tx = session.beginTransaction();
-
-		// Creating Sales Header Entity For inserting in Composite PK
-		SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
-		// Setting Sales Header Primary Key
-		salesDocHeader.setSalesOrderNum(salesHeaderId);
-
-		SalesDocItemDo salesDocItemDo = session.get(SalesDocItemDo.class,
-				new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
-
-		tx.commit();
-
-		session.clear();
-		session.close();
-
-		return salesDocItemDo;
+		
+		String query = "from SalesDocItemDo where salesDocItemKey.salesItemOrderNo=:soNum";
+		Query q1= entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderId);
+		return (SalesDocItemDo) q1.getSingleResult();
+		
+//		Session session = sessionfactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//
+//		// Creating Sales Header Entity For inserting in Composite PK
+//		SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
+//		// Setting Sales Header Primary Key
+//		salesDocHeader.setSalesOrderNum(salesHeaderId);
+//
+//		SalesDocItemDo salesDocItemDo = session.get(SalesDocItemDo.class,
+//				new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
+//
+//		tx.commit();
+//
+//		session.clear();
+//		session.close();
+//
+//		return salesDocItemDo;
 
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public ResponseEntity checkForNextLevelTrigger(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
@@ -645,7 +653,6 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	// level abonded status
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public ResponseEntity updateLevelStatusAbandond(List<SalesOrderLevelStatusDto> saleOrderLevelStatusDoList) {
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				"INVALID_INPUT" + ",Failed to update SalesOrderLevelStatus", ResponseStatus.FAILED);

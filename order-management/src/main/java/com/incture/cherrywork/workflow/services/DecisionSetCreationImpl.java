@@ -1,7 +1,5 @@
 package com.incture.cherrywork.workflow.services;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +9,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.hibernate.HibernateException;
+
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Repository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ser.SerializerFactory;
 
@@ -26,58 +24,53 @@ import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.dao.SalesDocItemDao;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.TH_IDB_RO_RuleInputDto;
+import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.ISalesDocItemRepository;
 import com.incture.cherrywork.rules.ApproverDataOutputDto;
 import com.incture.cherrywork.rules.RuleInputDto;
 import com.incture.cherrywork.rules.THIDBRuleService;
 import com.incture.cherrywork.rules.TH_IDBRuleInputDto;
 import com.incture.cherrywork.sales.constants.StrategyConstants;
+import com.incture.cherrywork.util.ReturnExchangeConstants;
 import com.incture.cherrywork.util.SequenceNumberGen;
 
 
 
-@Transactional
-@Repository
 @Service
+@Transactional
 public class DecisionSetCreationImpl implements DecisionSetCreation {
+	
+	
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private ISalesDocItemRepository salesDocItemRepository;
 
-	
-	private SequenceNumberGen seqNumGenRepo;
-	
+
+	private SequenceNumberGen sequenceNumberGen;
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	public Session getSession()
-	{
-		Session session = entityManager.unwrap(Session.class);
-		return session;
-	}
 
+	
 	@Autowired
 	private SalesDocItemDao salesDocItemDao;
 
-	
-	
-	private SerializerFactory sf;
-
-	
 
 	private Map<String, List<ApproverDataOutputDto>> createApprovalMapFromRules(String requestId, String salesOrderId,
 			List<SalesDocItemDto> salesDocItemDtolist, String strategy, String distributionChannel, String salesOrg,
 			String country, String customerPo, String requestType, String requestCategory) {
 
-		
-		
-		if( customerPo !=null  && !customerPo.isEmpty()){
-		String checkTypeOfSo = customerPo.substring(0, 2);
-		// if of Return Order Type and Return ExchangeType
-		if (checkTypeOfSo.equals(Constants.RETURN_ORDER)||checkTypeOfSo.equals(Constants.RETURN_EXCHANGE)) {
+		if (customerPo != null && !customerPo.isEmpty()) {
+			String checkTypeOfSo = customerPo.substring(0, 2);
+			// if of Return Order Type and Return ExchangeType
+			if (checkTypeOfSo.equals(Constants.RETURN_ORDER) || checkTypeOfSo.equals(Constants.RETURN_EXCHANGE)) {
 
-			return generateApprovalMatFroReturnOrder(salesDocItemDtolist, strategy, distributionChannel, salesOrg,
-					country, requestType, requestCategory);
-		}
+				return generateApprovalMatFroReturnOrder(salesDocItemDtolist, strategy, distributionChannel, salesOrg,
+						country, requestType, requestCategory);
+			}
 		}
 
 		return generateApprovalMatForBso(salesDocItemDtolist, strategy, distributionChannel, salesOrg);
@@ -94,8 +87,6 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 			if (itemDto.getNetWorth() != null)
 				totalAmount = totalAmount + Double.parseDouble(itemDto.getNetWorth());
 		}
-		
-		
 
 		entry.getKey().setAmount(totalAmount);
 
@@ -140,10 +131,15 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		String decisionSetId = null;
 
 		if (outputList != null && !outputList.isEmpty()) {
-			Session session = ((SessionFactory) sf).openSession();
+
 			// if its of Blocked sales order type
-			decisionSetId = seqNumGenRepo.getNextSeqNumber("DS_", 6, session);
-			session.close();
+			sequenceNumberGen = SequenceNumberGen.getInstance();
+			Session session = entityManager.unwrap(Session.class);
+			System.err.println("session : " + session);
+			String tempId = sequenceNumberGen.getNextSeqNumber("DS_", 6, session);
+			System.err.println("returnReqNum " + tempId);
+
+			decisionSetId = tempId;
 
 			List<SalesDocItemDto> itemList = salesDocItemDao.getSalesDocItemsByDecisionSetId(decisionSetId);
 			System.err.println("decision Set check " + itemList);
@@ -174,10 +170,14 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		String decisionSetId = null;
 
 		if (outputList != null && !outputList.isEmpty()) {
-			Session session = ((SessionFactory) sf).openSession();
+
 			// if its of Blocked sales order type
-			decisionSetId = seqNumGenRepo.getNextSeqNumber("RO_DS_", 6, session);
-			session.close();
+			sequenceNumberGen = SequenceNumberGen.getInstance();
+			Session session = entityManager.unwrap(Session.class);
+			System.err.println("session : " + session);
+			String tempId = sequenceNumberGen.getNextSeqNumber("RO_DS_", 6, session);
+			System.err.println("returnReqNum " + tempId);
+			decisionSetId = tempId;
 
 			List<SalesDocItemDto> itemList = salesDocItemDao.getSalesDocItemsByDecisionSetId(decisionSetId);
 			System.err.println("decision Set check " + itemList);
@@ -186,7 +186,12 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 					for (SalesDocItemDto itemDto : entry.getValue()) {
 						try {
 							itemDto.setDecisionSetId(decisionSetId);
-							salesDocItemDao.saveOrUpdateSalesDocItemForDS(itemDto);
+							System.err.println(
+									"[generateDecisionSetIdForROType][in for loop] itemDto: " + itemDto.toString());
+							
+							
+							String res = salesDocItemDao.saveOrUpdateSalesDocItemForDS(itemDto);
+							System.err.println("[generateDecisionSetIdForROType][in for loop] res: " + res);
 							// salesDocItemDao.updateSalesDocItemWithDecisionSet(decisionSetId,
 							// itemDto.getSalesItemOrderNo(),
 							// itemDto.getSalesHeaderNo());
@@ -352,6 +357,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 			String country, String requestType, String requestCategory) {
 
 		Map<String, List<ApproverDataOutputDto>> outputMap = new HashMap<>();
+		System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] started with salesDocItemDtolist: "+salesDocItemDtolist.toString()+" strategy: "+strategy+" distributionChannel: "+distributionChannel+" salesOrg: "+salesOrg+" country:"+country+" requestType:"+requestType+" requestCategory: "+requestCategory);
 
 		switch (strategy) {
 		case StrategyConstants.TH_IDB_PROC:
@@ -368,6 +374,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 				if (salesDocItemDto.getMaterialGroup() != null && salesDocItemDto.getMaterialGroup4() != null
 						&& distributionChannel != null) {
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check1");
 					th_idb_proc_dto.setMaterialGroup(salesDocItemDto.getMaterialGroup());
 					th_idb_proc_dto.setMaterialGroup4(salesDocItemDto.getMaterialGroup4());
 					th_idb_proc_dto.setDistributionChannel(distributionChannel);
@@ -380,6 +387,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 					th_idb_proc_dto.setSalesOrg(salesOrg);
 
 				} else {
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check2");
 					th_idb_proc_dto.setDistributionChannel(Constants.DEFAULT);
 					th_idb_proc_dto.setSalesArea(Constants.DEFAULT);
 					th_idb_proc_dto.setMaterialGroup(Constants.DEFAULT);
@@ -395,11 +403,15 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 				}
 
 				if (inputMap.containsKey(th_idb_proc_dto) || defaultInputMap.containsKey(th_idb_proc_dto)) {
-					if (!type.equals(Constants.DEFAULT))
+					if (!type.equals(Constants.DEFAULT)) {
 						inputMap.get(th_idb_proc_dto).add(salesDocItemDto);
-					else
+						System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check3.1");
+					} else {
 						defaultInputMap.get(th_idb_proc_dto).add(salesDocItemDto);
+						System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check3.2");
+					}
 				} else {
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check4");
 					List<SalesDocItemDto> dtoList = new ArrayList<>();
 					dtoList.add(salesDocItemDto);
 					if (!type.equals(Constants.DEFAULT))
@@ -419,8 +431,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 						&& entry.getKey().getSalesArea() != null
 						&& !entry.getKey().getSalesTerritory().equals(Constants.DEFAULT)
 						&& entry.getKey().getSalesTerritory() != null
-						&& !entry.getKey().getCountry().equals(Constants.DEFAULT)
-						&& entry.getKey().getCountry() != null
+						&& !entry.getKey().getCountry().equals(Constants.DEFAULT) && entry.getKey().getCountry() != null
 						&& !entry.getKey().getMaterialGroup().equals(Constants.DEFAULT)
 						&& entry.getKey().getMaterialGroup() != null
 						&& !entry.getKey().getMaterialGroup4().equals(Constants.DEFAULT)
@@ -435,15 +446,20 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 						&& entry.getKey().getSalesOrg() != null)
 
 					try {
+						System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check5");
 						outputList = determineDsAndApprovalSetForRO(entry);
 						System.err.println("outputList : " + outputList);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-				if (null != outputList && !outputList.isEmpty())
+				if (null != outputList && !outputList.isEmpty()) {
+
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check6");
 					decisionSetId = generateDecisionSetIdForROType(outputList, entry);
+				}
 
 				if (outputList == null || outputList.isEmpty()) {
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check7");
 
 					TH_IDB_RO_RuleInputDto th_idb_proc_dto = new TH_IDB_RO_RuleInputDto();
 
@@ -472,11 +488,13 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 				}
 
 				if (null != decisionSetId && !outputList.isEmpty()) {
+					System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check8");
 					outputMap.put(decisionSetId, outputList); // setting key
 				}
 			}
 
 			if (defaultInputMap != null && !defaultInputMap.isEmpty()) {
+				System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] check9");
 				List<ApproverDataOutputDto> outputList = new ArrayList<>();
 				try {
 					defaultInputMap.entrySet().iterator();
@@ -485,6 +503,10 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
+				System.err.println(
+						"[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] outputList: " + outputList
+
+				);
 				String decisionSetId = null;
 				if (outputList != null && !outputList.isEmpty()) {
 					for (Map.Entry<TH_IDB_RO_RuleInputDto, List<SalesDocItemDto>> entry : defaultInputMap.entrySet())
@@ -500,9 +522,9 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 
 			break;
 		}
+		System.err.println("[generateApprovalMatFroReturnOrder] outputMap:" + outputMap);
 		return outputMap;
 
 	}
 
 }
-
