@@ -22,6 +22,7 @@ import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
@@ -38,6 +39,7 @@ public @Data class SalesOrderTaskStatusDo implements BaseDo {
 	@Column(name = "TASK_STATUS_SERIAL_ID", length = 100, nullable = false)
 	private String taskStatusSerialId = UUID.randomUUID().toString();
 
+	@ToString.Exclude
 	@JsonBackReference("task_status-task")
 	@ManyToOne
 	@JoinColumn(name = "LEVEL_STATUS_SERIAL_ID", nullable = false, referencedColumnName = "LEVEL_STATUS_SERIAL_ID")
@@ -124,11 +126,5 @@ public @Data class SalesOrderTaskStatusDo implements BaseDo {
 		return serialVersionUID;
 	}
 
-	@Override
-	public String toString() {
-		return "SalesOrderTaskStatusDo [taskStatusSerialId=" + taskStatusSerialId + ", salesOrderLevelStatus="
-				+ salesOrderLevelStatus + ", itemStatusList=" + itemStatusList + ", taskId=" + taskId + ", taskStatus="
-				+ taskStatus + ", approver=" + approver + ", completedBy=" + completedBy + "]";
-	}
 
 }

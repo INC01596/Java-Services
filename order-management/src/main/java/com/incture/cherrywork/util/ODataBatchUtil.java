@@ -1,7 +1,5 @@
 package com.incture.cherrywork.util;
 
-
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -15,14 +13,20 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -47,8 +51,6 @@ public class ODataBatchUtil {
 	// public static String BULK_INSERT(List<ReturnOrderRequestPojo>
 	// requestList, String url, String tag) throws IOException{
 
-		
-	
 	public static TenantContext getTenantInformation() {
 		TenantContext tenantctx = null;
 		try {
@@ -62,29 +64,26 @@ public class ODataBatchUtil {
 	}
 
 	private static Header[] getAccessToken(String url, String username, String password, HttpClient client,
-			TenantContext tenantctx, String proxyHost, int proxyPort, String sapClient)
+			String proxyHost, int proxyPort, String sapClient, String token)
 			throws ClientProtocolException, IOException {
-
-		/*
-		 * private static Header[] getAccessToken(String url, String username,
-		 * String password, HttpClient client, TenantContext tenantctx, String
-		 * sapClient) throws ClientProtocolException, IOException {
-		 */
 
 		HttpGet httpGet = new HttpGet(url);
 
+		String userpass = username + ":" + password;
+
+		httpGet.setHeader("Proxy-Authorization", "Bearer " + token);
+		httpGet.setHeader(HttpHeaders.AUTHORIZATION,
+				"Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes()));
 		// Encoding username and password
-		String auth = HelperClass.encodeUsernameAndPassword(username, password);
-		httpGet.addHeader("Authorization", auth);
 		httpGet.addHeader("X-CSRF-Token", "Fetch");
 		httpGet.addHeader("Content-Type", "application/json");
 		httpGet.addHeader("sap-client", sapClient);
+		httpGet.addHeader("SAP-Connectivity-SCC-Location_ID", "incture");
 
-		if (tenantctx != null) {
-			httpGet.addHeader("SAP-Connectivity-ConsumerAccount", tenantctx.getTenant().getAccount().getId());
-		}
+		HttpResponse response = client.execute(httpGet);
+		// HttpResponse response = client.execute( httpGet);
 
-		HttpResponse response = client.execute(new HttpHost(proxyHost, proxyPort), httpGet);
+		System.err.println("313 response " + response);
 
 		// HttpResponse response = client.execute(httpGet);
 
@@ -95,16 +94,38 @@ public class ODataBatchUtil {
 	private static String roBatchPostOnSubmit(String batchRequest, String batchGuid, String endPoint)
 			throws IOException {
 		try {
-			String proxyHost = System.getenv("HC_OP_HTTP_PROXY_HOST");
+			// String proxyHost = System.getenv("HC_OP_HTTP_PROXY_HOST");
+			String proxyHost = "connectivityproxy.internal.cf.eu10.hana.ondemand.com";
 			System.err.println("proxyHost-- " + proxyHost);
 
-			int proxyPort = Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
+			// int proxyPort =
+			// Integer.parseInt(System.getenv("HC_OP_HTTP_PROXY_PORT"));
+			int proxyPort = 20003;
 			System.err.println("proxyPort-- " + proxyPort);
 
-			HttpClient client = HttpClientBuilder.create().build();
+			// JSONObject jsonObj = new
+			// JSONObject(System.getenv("VCAP_SERVICES"));
 
-			Map<String, Object> map = DestinationReaderUtil
-					.getDestination(ComConstants.COM_ODATA_DESTINATION_NAME);
+			// System.err.println("116 - jsonObj =" + jsonObj);
+
+			// HttpClient client = HttpClientBuilder.create().build();
+
+			Map<String, Object> map = DestinationReaderUtil.getDestination(ComConstants.COM_ODATA_DESTINATION_NAME);
+
+			String jwToken = DestinationReaderUtil.getConectivityProxy();
+
+			CredentialsProvider credsProvider = new BasicCredentialsProvider();
+
+			credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
+					new UsernamePasswordCredentials((String) map.get("User"), (String) map.get("Password")));
+			HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+
+			clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort))
+					.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+					.setDefaultCredentialsProvider(credsProvider).disableCookieManagement();
+
+			HttpClient client = clientBuilder.build();
+			System.err.println("client " + client);
 
 			String url = map.get("URL") + endPoint;
 			System.err.println("url-- " + url);
@@ -113,21 +134,11 @@ public class ODataBatchUtil {
 			String tokenUrl = "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/soheaderSet?$format=json";
 			// http://kuldb11d.dksh.com:8005/sap/opu/odata/sap/ZDKSH_CC_RETURNS_MANAGEMENT_SRV/orderHeaderSet(salesDocument='5700000629')?$expand=OrderHdrToOrderItem&$format=json
 
-			SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-			clientHttpRequestFactory.setProxy(proxy);
-
-			System.err.println("> Proxy --- " + proxy);
-
-			TenantContext tenantctx = getTenantInformation();
-
 			map.forEach((k, v) -> System.err.println((k + ":" + v)));
 
-			// Get SharePoint Access Token
 			Header[] headers = getAccessToken((String) map.get("URL") + tokenUrl, (String) map.get("User"),
-					(String) map.get("Password"), client, tenantctx, proxyHost, proxyPort,
-					(String) map.get("sap-client"));
-
+					(String) map.get("Password"), client, proxyHost, proxyPort, (String) map.get("sap-client"),
+					jwToken);
 			/*
 			 * Header[] headers = getAccessToken(map.get("URL") + tokenUrl,
 			 * map.get("User"), map.get("Password"), client, tenantctx,
@@ -139,9 +150,10 @@ public class ODataBatchUtil {
 			if (headers.length != 0) {
 
 				HttpPost httpPost = new HttpPost(url);
-				if (tenantctx != null) {
-					httpPost.addHeader("SAP-Connectivity-ConsumerAccount", tenantctx.getTenant().getAccount().getId());
-				}
+				// if (tenantctx != null) {
+				// httpPost.addHeader("SAP-Connectivity-ConsumerAccount",
+				// tenantctx.getTenant().getAccount().getId());
+				// }
 				String token = null;
 				List<String> cookies = new ArrayList<>();
 				for (Header header : headers) {
@@ -164,6 +176,8 @@ public class ODataBatchUtil {
 				String auth = HelperClass.encodeUsernameAndPassword((String) map.get("User"),
 						(String) map.get("Password"));
 				httpPost.addHeader("Authorization", auth);
+				httpPost.setHeader("Proxy-Authorization", "Bearer " + jwToken);
+				httpPost.addHeader("SAP-Connectivity-SCC-Location_ID", "incture");
 				System.err.println("Token for update in ECC : " + token);
 
 				if (token != null) {
@@ -187,7 +201,7 @@ public class ODataBatchUtil {
 					System.err.println("jsonEntity : " + jsonEntity);
 				}
 
-				HttpResponse response = client.execute(new HttpHost(proxyHost, proxyPort), httpPost);
+				HttpResponse response = client.execute(httpPost);
 
 				// HttpResponse response = client.execute(httpPost);
 
@@ -208,9 +222,8 @@ public class ODataBatchUtil {
 
 	}
 
-	public static String BULK_INSERT_ON_SUBMIT_DATA(
-			List<OdataBatchOnSubmitPayload> odataBarequestList, String url,
-			String tag) throws IOException {
+	public static String BULK_INSERT_ON_SUBMIT_DATA(List<OdataBatchOnSubmitPayload> requestList, String url, String tag)
+			throws IOException { // --
 
 		String batchGuid = "zmybatch";
 		log.info("batchGuid", batchGuid);
@@ -225,7 +238,8 @@ public class ODataBatchUtil {
 			// Start: changeset to insert data ----------
 			String batchCnt_Insert = "";
 
-			for (OdataBatchOnSubmitPayload data : odataBarequestList) {
+			for (OdataBatchOnSubmitPayload data : requestList) {
+
 				batchCnt_Insert = batchCnt_Insert + "--changeset_" + changeSetId + "\n"
 						+ "Content-Type: application/http" + "\n" + "Content-Transfer-Encoding: binary" + "\n" + ""
 						+ "\n" + "POST " + tag + " HTTP/1.1" + "\n" + "Content-Type: application/json" + "\n"
@@ -238,7 +252,7 @@ public class ODataBatchUtil {
 
 			batchCnt_Insert = batchCnt_Insert + "--changeset_" + changeSetId + "--\n";
 
-			System.err.println("batchCnt_Insert" + batchCnt_Insert);
+			System.err.println("batchCnt_Insert: " + batchCnt_Insert);
 
 			// create batch for creating items
 			batchContents = "--batch_" + batchGuid + "\n" + "Content-Type: multipart/mixed; boundary=changeset_"

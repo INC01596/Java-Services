@@ -860,7 +860,7 @@ public class ServicesUtil {
 		ByteArrayInputStream bis = generatePdf(dto);
 		String zipFileName = "invoice.zip";
 		String fileName = "invoice_" + dto.getHeaderDto().getInvId() + "_.pdf";
-		byte[] test = getZippedInv(bis, fileName);
+		byte[] test = getZippedInv(bis, fileName);   //Invoice as a attachment as a Zip file
 
 		String receiver = dto.getHeaderDto().getCreatedBy();
 		String name = dto.getHeaderDto().getCustomerName();

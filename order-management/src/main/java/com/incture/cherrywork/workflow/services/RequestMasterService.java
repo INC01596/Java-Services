@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import com.incture.cherrywork.new_workflow.dao.SalesOrderLevelStatusDao;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.HelperClass;
+import com.incture.cherrywork.util.ReturnExchangeConstants;
 import com.incture.cherrywork.util.SequenceNumberGen;
 
 @Service("RequestMasterService")
@@ -62,8 +64,12 @@ public class RequestMasterService implements IRequestMasterService {
 	public ResponseEntity saveOrUpdateRequestMaster(RequestMasterDto requestMasterDto) {
 		try {
 			if (requestMasterDto.getRequestId() == null) {
-				requestMasterDto
-						.setRequestId(seqNumGenRepo.getNextSeqNumber("BSO_", 10, requestMasterRepo.getSession()));
+				seqNumGenRepo = SequenceNumberGen.getInstance();
+				Session session = entityManager.unwrap(Session.class);
+				System.err.println("session : " + session);
+				String tempId = seqNumGenRepo.getNextSeqNumber("BSO_", 10, session);
+				System.err.println("returnReqNum " + tempId);
+				requestMasterDto.setRequestId(tempId);
 
 				String msg = requestMasterRepo.saveOrUpdateRequestMaster(requestMasterDto);
 				if (msg == null) {

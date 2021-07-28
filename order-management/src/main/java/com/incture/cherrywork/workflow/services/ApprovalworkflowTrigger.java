@@ -125,7 +125,6 @@ public class ApprovalworkflowTrigger {
 	// triggers the approval workflow and create the reccord in the
 	// SO_TASK_STATUS_table.
 	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public WorkflowResponseEntity approvalworkflowTriggeringAndUpdateTable(String salesOrderNo, String requestId,
 			String approver, String level, String dataSet, String threshold, String decisionSetAmount,
 			String HeaderBlocReas, String soCreatedECC, String country, String customerPo, String requestType,
@@ -134,6 +133,7 @@ public class ApprovalworkflowTrigger {
 
 		WorkflowResponseEntity response = new WorkflowResponseEntity("", 200, TRIGGERFAILUER, ResponseStatus.FAILED,
 				null, null, "");
+		System.err.println("[approvalworkflowTriggeringAndUpdateTable] dataSet and Level: " + dataSet + " " + level);
 
 		if (level != null && dataSet != null) {
 
@@ -142,6 +142,7 @@ public class ApprovalworkflowTrigger {
 			WorkflowResponseEntity WorkflowResponseEntity = null;
 			// create a new task in SO_TASK_STATUS Table
 			String taskSerialId = createNewTaskOr(dataSet, level, approver);
+			System.err.println("[approvalworkflowTriggeringAndUpdateTable] taskSerialId: " + taskSerialId);
 			if (!HelperClass.checkString(taskSerialId)) {
 				// changes to determine - groupname or single user/list
 				String regex = "^[pP]\\d{6}$";
@@ -152,6 +153,7 @@ public class ApprovalworkflowTrigger {
 							if (!s.trim().matches(regex)) {
 								List<String> approverList = (List<String>) HelperClass
 										.findUsersFromGroupInIdp(approver);
+								System.err.println("in for loop approverList: " + approverList);
 								approver = String.join(",", approverList);
 								break;
 							}
@@ -167,6 +169,8 @@ public class ApprovalworkflowTrigger {
 						threshold, decisionSetAmount, group, HeaderBlocReas, soCreatedECC, country, customerPo,
 						requestType, requestCategory, salesOrderType, soldToParty, shipToParty, division,
 						distributionChannel, salesOrg, returnReason);
+				System.err.println(
+						"WorkflowResponseEntity response code: " + WorkflowResponseEntity.getResponseStatusCode());
 				// System.err.println("approvalWorkflowTrigger
 				// WorkflowResponseEntity =" + WorkflowResponseEntity);
 				if (WorkflowResponseEntity.getResponseStatusCode() == 200) {
@@ -180,6 +184,7 @@ public class ApprovalworkflowTrigger {
 						if (!HelperClass.checkString(taskstatusid)) {
 							// create item status in ItemTable
 							ResponseEntity responseEntity = createNewItemAndUpdataItem(dataSet, taskstatusid, level);
+							System.err.println("responseEntity: " + responseEntity.getMessage());
 							response.setData(responseEntity);
 							response.setMessage("Success " + WorkflowResponseEntity.toString());
 							response.setStatus(ResponseStatus.SUCCESS);
@@ -340,6 +345,7 @@ public class ApprovalworkflowTrigger {
 		SalesOrderTaskStatusDto salesOrderTaskStatusDto = new SalesOrderTaskStatusDto();
 
 		SalesOrderLevelStatusDo salesOrderLevelStatusDo = getLevelStatusBasedOnLevelAndDecisionSet(dataSet, level);
+		System.err.println("[createNewTaskOr] salesOrderLevelStatusDo: " + salesOrderLevelStatusDo.toString());
 
 		try {
 			salesOrderTaskStatusDto.setLevelStatusSerialId(salesOrderLevelStatusDo.getLevelStatusSerialId());
@@ -351,8 +357,11 @@ public class ApprovalworkflowTrigger {
 
 			taskSerialId = salesordertaskstatusdao
 					.saveOrUpdateSalesOrderTaskStatusSynchronized(salesOrderTaskStatusDto);
+			System.err.println("taskSerialId: " + taskSerialId);
 		} catch (ExecutionFault e1) {
 			// logger.error("ApprovalWorkflowTrigger " + e1);
+			System.err.println("Exception in [createNewTaskOr]: " + e1.getMessage());
+			e1.printStackTrace();
 		}
 		return taskSerialId;
 
@@ -454,7 +463,8 @@ public class ApprovalworkflowTrigger {
 		catch (Exception e) {
 
 			System.err.println("Exception  in update method" + e);
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return e.toString();
 		}
 
@@ -513,7 +523,8 @@ public class ApprovalworkflowTrigger {
 		}
 
 		catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			// logger.error("error in update of taskStatus" + e);
 			return Collections.emptyList();
 		}
@@ -541,6 +552,7 @@ public class ApprovalworkflowTrigger {
 		try {
 			return salesordertaskstatusdao.saveOrUpdateSalesOrderTaskStatusSynchronized(salesOrderTaskStatusDto);
 		} catch (ExecutionFault e) {
+			System.err.println("[updateSalesOrderTaskStatus] Exception "+e.getMessage());
 			// logger.error("updateSalesOrderTaskStatus failed " + e);
 		}
 		return null;
@@ -560,15 +572,23 @@ public class ApprovalworkflowTrigger {
 
 		// List<String> listItem =
 		// salesDocItemDao.getItemListByDataSet(dataSet);
+		if (listItem.size() > 0)
+			System.err.println(
+					"[createNewItemAndUpdataItem] dataset: " + dataSet + " listItem: " + listItem.get(0).toString());
 
 		if (level.equals("L1")) {
 			if (listItem != null) {
 
 				for (int itemid = 0; itemid < listItem.size(); itemid++) {
 
-					ResponseEntity responseentity1DispayOnly = dlvBlockreleasemapservice
-							.getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly(listItem.get(itemid).getItemDlvBlock());
+					System.err.println("[createNewItemAndUpdataItem]  listItem.get(itemid).getItemDlvBlock(): "+listItem.get(itemid).getItemDlvBlock());
+					ResponseEntity responseentity1DispayOnly =  new ResponseEntity("", HttpStatus.NOT_FOUND,
+							", dlv block release map do does not have this block code", ResponseStatus.FAILED);
+//							dlvBlockreleasemapservice
+//							.getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly(listItem.get(itemid).getItemDlvBlock());
 
+					responseentity1DispayOnly.setData(null);
+					System.err.println("[createNewItemAndUpdataItem] responseentity1DispayOnly: "+responseentity1DispayOnly.getMessage());
 					DlvBlockReleaseMapDto releaseMapDto = (DlvBlockReleaseMapDto) responseentity1DispayOnly.getData();
 
 					SalesOrderItemStatusDto salesorderitemstatusdto = new SalesOrderItemStatusDto();
@@ -593,12 +613,15 @@ public class ApprovalworkflowTrigger {
 					try {
 						serialitemid = salesOrderItemStatusService
 								.saveOrUpdateSalesOrderItemStatusSynchronised(salesorderitemstatusdto);
+						System.err.println("[createNewItemAndUpdataItem] serialitemid: "+serialitemid);
 					} catch (ExecutionFault e) {
 						// logger.error(" Level status serial id Failed" + e);
+						System.err.println(" Level status serial id Failed" + e);
 						responseentity.setMessage(e.getMessage());
 						return responseentity;
 
 					}
+					System.err.println("serialitemid" + serialitemid);
 					// logger.error("serialitemid" + serialitemid);
 				}
 			}
@@ -612,6 +635,7 @@ public class ApprovalworkflowTrigger {
 				// checking if the prevous level is AND/OR
 				List<SalesOrderTaskStatusDto> salesOrderTaskStatusDtoList = salesordertaskstatusdao
 						.getAllTasksFromDecisionSetAndLevel(dataSet, previousLevel);
+				System.err.println("[createNewItemAndUpdataItem] salesOrderTaskStatusDtoList: "+salesOrderTaskStatusDtoList.size());
 				// if the previous level is OR
 				if (salesOrderTaskStatusDtoList.size() == 1) {
 
@@ -619,6 +643,7 @@ public class ApprovalworkflowTrigger {
 
 						salesOrderItemStatusDto = salesOrderItemStatusDao.getItemStatusFromDecisionSetAndLevel(dataSet,
 								previousLevel, listItem.get(itemid).getSalesItemOrderNo());
+						System.err.println("[createNewItemAndUpdataItem] salesOrderItemStatusDto: "+salesOrderItemStatusDto.toString());
 
 						// check for null here
 						salesOrderItemStatusDto.setSalesOrderItemNum(listItem.get(itemid).getSalesItemOrderNo());
@@ -633,17 +658,14 @@ public class ApprovalworkflowTrigger {
 								|| salesOrderItemStatusDto.getItemStatus()
 										.equals(StatusConstants.ITEM_INDIRECT_REJECT)) {
 							salesOrderItemStatusDto.setItemStatus(StatusConstants.ITEM_INDIRECT_REJECT);
-							salesOrderItemStatusDto
-									.setVisiblity(StatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
+							salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT);
 						}
 						// check for Rejected in ECCC for OR case
-						else if (salesOrderItemStatusDto.getItemStatus()
-								.equals(StatusConstants.REJECTED_FROM_ECC)) {
+						else if (salesOrderItemStatusDto.getItemStatus().equals(StatusConstants.REJECTED_FROM_ECC)) {
 							salesOrderItemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
 							// check the visibility
 							salesOrderItemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
-						} else if (salesOrderItemStatusDto.getItemStatus()
-								.equals(StatusConstants.DISPLAY_ONLY_ITEM)) {
+						} else if (salesOrderItemStatusDto.getItemStatus().equals(StatusConstants.DISPLAY_ONLY_ITEM)) {
 							salesOrderItemStatusDto.setItemStatus(StatusConstants.DISPLAY_ONLY_ITEM);
 							salesOrderItemStatusDto.setVisiblity(StatusConstants.VISIBLITY_ACTIVE);
 						}
@@ -653,6 +675,7 @@ public class ApprovalworkflowTrigger {
 						try {
 							serialitemid = salesOrderItemStatusService
 									.saveOrUpdateSalesOrderItemStatusSynchronised(salesOrderItemStatusDto);
+							System.err.println("[createNewItemAndUpdataItem] serialitemid from [saveOrUpdateSalesOrderItemStatusSynchronised] "+serialitemid);
 							// System.err.println("serialitemid" +
 							// serialitemid);
 						} catch (ExecutionFault e) {
@@ -774,19 +797,21 @@ public class ApprovalworkflowTrigger {
 					.setConnectionRequestTimeout(50 * 1000).setSocketTimeout(50 * 1000).build();
 			// String url =
 			// "https://bpmworkflowruntimecbbe88bff-uk81qreeol.ap1.hana.ondemand.com/workflow-service/rest/v1/workflow-instances";
-			//Map<String, Object> map = DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER);
-			
+			// Map<String, Object> map =
+			// DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER);
+
 			String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-			
-			String url = Constants.WORKFLOW_REST_BASE_URL+"/v1/workflow-instances";
+
+			String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances";
 			httpPost = new HttpPost(url);
 			httpPost.addHeader("Content-type", "application/json");
-			//String xsrfToken = getXSRFToken(url, httpClient, httpContext);
+			// String xsrfToken = getXSRFToken(url, httpClient, httpContext);
 			if (jwToken != null) {
-				//httpPost.addHeader("X-CSRF-Token", xsrfToken); // header
+				// httpPost.addHeader("X-CSRF-Token", xsrfToken); // header
 
-				//String auth = map.get("User") + ":" + map.get("Password");
-				//String encoding = DatatypeConverter.printBase64Binary(auth.getBytes());
+				// String auth = map.get("User") + ":" + map.get("Password");
+				// String encoding =
+				// DatatypeConverter.printBase64Binary(auth.getBytes());
 				httpPost.addHeader(AUTHORIZATION, "Bearer " + jwToken);
 
 				String returnType = "";
@@ -886,7 +911,8 @@ public class ApprovalworkflowTrigger {
 				String id = respo.getString("id");
 				// logger.error("line 552 inside get id");
 
-				//Map<String, Object> map = DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER_ID);
+				// Map<String, Object> map =
+				// DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER_ID);
 				String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
 				String url = Constants.WORKFLOW_REST_BASE_URL;
 
@@ -894,8 +920,10 @@ public class ApprovalworkflowTrigger {
 
 				// System.err.println("URL Trimmed" + trimmed);
 
-				//String userpass = map.get("User") + ":" + map.get("Password");
-				//String encoding = javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+				// String userpass = map.get("User") + ":" +
+				// map.get("Password");
+				// String encoding =
+				// javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
 				// add the destination url wth a common name .......
 				URIBuilder builder = new URIBuilder();
 				builder.setScheme("https").setHost(trimmed).setPath("/v1/task-instances")
@@ -974,21 +1002,24 @@ public class ApprovalworkflowTrigger {
 
 	@SuppressWarnings({ "resource" })
 	public WorkflowResponseEntity getInstanceIdByWorkflowInstanceId(List<String> workflowInstaceId) throws IOException {
-		// System.err.println("line 538 inside get id");
+		 System.err.println("line 538 inside get id");
 		WorkflowResponseEntity response = new WorkflowResponseEntity("", 200, "FAILED TO GET ID  ",
 				ResponseStatus.FAILED, null, null, "");
 		Map<String, String> mapOfTaskId = new HashMap<String, String>();
 		HttpClient client = null;
 		InputStream instream = null;
-		// System.err.println("line 542 inside get id");
+		 System.err.println("line 542 inside get id");
 		if (!workflowInstaceId.isEmpty()) {
 			try {
 				for (String id : workflowInstaceId) {
 					client = new DefaultHttpClient();
-					//Map<String, Object> map = DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER_ID);
-			String jwToken		 = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
-					//String userpass = map.get("User") + ":" + map.get("Password");
-					//String encoding = javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+					// Map<String, Object> map =
+					// DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER_ID);
+					String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+					// String userpass = map.get("User") + ":" +
+					// map.get("Password");
+					// String encoding =
+					// javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
 
 					// iteratign over the workflowInstanceI
 					String url = Constants.WORKFLOW_REST_BASE_URL;
@@ -1005,6 +1036,8 @@ public class ApprovalworkflowTrigger {
 
 					// logger.error("line 578 inside get id request " +
 					// request);
+					System.err.println("line 578 inside get id request " +
+							 request);
 					httpresponse = client.execute(request);
 					HttpEntity entity = httpresponse.getEntity();
 					if (entity != null) {
@@ -1013,13 +1046,18 @@ public class ApprovalworkflowTrigger {
 						JSONArray responseResult = new JSONArray(result);
 						// logger.error("line 592 inside get id" +
 						// responseResult);
+						System.err.println("line 592 inside get id" +
+						 responseResult);
 
 						// logger.error("StatusCode " +
 						// httpresponse.getStatusLine().getStatusCode());
+						System.err.println("StatusCode " +
+								 httpresponse.getStatusLine().getStatusCode());
 						if (httpresponse.getStatusLine().getStatusCode() != 500) {
 							if (httpresponse.getStatusLine().getStatusCode() != 429) {
 								if (httpresponse.getStatusLine().getStatusCode() == 200) {
 									// logger.error("RESPONSE: " + result);
+									System.err.println("RESPONSE: " + result);
 									response.setMessage("Succes" + responseResult.toString());
 									response.setResponseStatusCode(httpresponse.getStatusLine().getStatusCode());
 									response.setStatus(ResponseStatus.SUCCESS);
@@ -1032,6 +1070,8 @@ public class ApprovalworkflowTrigger {
 									}
 									// logger.error(" get id from responsejson "
 									// + responsejson.getString("id"));
+									System.err.println(" get id from responsejson "
+											 + responsejson.getString("id"));
 								}
 
 							} else {
@@ -1063,8 +1103,8 @@ public class ApprovalworkflowTrigger {
 					}
 				}
 			} catch (Exception e) {
-				// System.err.println("Trigger FAILURE For get Id " +
-				// e.getMessage());
+				 System.err.println("Trigger FAILURE For get Id " +
+				 e.getMessage());
 				response.setMessage("Trigger FAILURE EXCEPTION for get id	" + e.getMessage());
 				response.setStatus(ResponseStatus.FAILED);
 				return response;
@@ -1076,15 +1116,15 @@ public class ApprovalworkflowTrigger {
 				}
 
 				catch (Exception e) {
-					// System.err.print("Closing HttpClient Exception : " + e);
+					 System.err.print("Closing HttpClient Exception : " + e);
 				}
 
 			}
 		}
 
 		response.setData(mapOfTaskId);
-		// System.err.println("workflowresponseentity output map response = " +
-		// response);
+		 System.err.println("workflowresponseentity output map response = " +
+		 response);
 		return response;
 
 	}
@@ -1479,6 +1519,7 @@ public class ApprovalworkflowTrigger {
 	// to get a cumilative status of the AND type all the task
 	public ResponseEntity CreateReccordForcumilativeStatusOfALLTaskANDType(String taskserializedId, String DataSet,
 			String level) {
+		System.err.println("CreateReccordForcumilativeStatusOfALLTaskANDType strats");
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
 				INVALID_INPUT + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
@@ -1545,6 +1586,7 @@ public class ApprovalworkflowTrigger {
 
 			try {
 				response = getInstanceIdByWorkflowInstanceId(workflowInstanceIdList);
+				System.err.println("[workflowTaskInstanceIdByDecisionSetAndLevel] response: "+response);
 			} catch (IOException e) {
 
 				return new WorkflowResponseEntity("", 200, TRIGGERFAILUER + " inside catch block " + e,
@@ -1595,27 +1637,32 @@ public class ApprovalworkflowTrigger {
 			try {
 				// getting XSRF TOKEN
 
-				//String xcsrfToken = null;
-				//List<String> cookies = null;
-				//HttpContext httpContext = new BasicHttpContext();
-				//httpContext.setAttribute(HttpClientContext.COOKIE_STORE, new BasicCookieStore());
+				// String xcsrfToken = null;
+				// List<String> cookies = null;
+				// HttpContext httpContext = new BasicHttpContext();
+				// httpContext.setAttribute(HttpClientContext.COOKIE_STORE, new
+				// BasicCookieStore());
 				HttpPost httpPost = null;
 				CloseableHttpResponse responseClient = null;
 				CloseableHttpClient httpClient = null;
 				httpClient = getHTTPClient();
 				// String url =
 				// "https://bpmworkflowruntimecbbe88bff-uk81qreeol.ap1.hana.ondemand.com/workflow-service/rest/v1/workflow-instances";
-				//Map<String, Object> map = DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER);
-				   String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+				// Map<String, Object> map =
+				// DestinationReaderUtil.getDestination(Constants.WORKFLOW_TRIGGER);
+				String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
 				approver = approver.replaceAll("[\\p{Ps}\\p{Pe}]", "");
-				String url = Constants.WORKFLOW_REST_BASE_URL+"/v1/workflow-instances";
+				String url = Constants.WORKFLOW_REST_BASE_URL + "/v1/workflow-instances";
 				httpPost = new HttpPost(url);
 				httpPost.addHeader("Content-type", "application/json");
-				//String xsrfToken = getXSRFToken(url, httpClient, httpContext);
+				// String xsrfToken = getXSRFToken(url, httpClient,
+				// httpContext);
 				if (jwToken != null) {
 					httpPost.addHeader("X-CSRF-Token", jwToken); // header
-					//String auth = map.get("User") + ":" + map.get("Password");
-					//String encoding = DatatypeConverter.printBase64Binary(auth.getBytes());
+					// String auth = map.get("User") + ":" +
+					// map.get("Password");
+					// String encoding =
+					// DatatypeConverter.printBase64Binary(auth.getBytes());
 					httpPost.addHeader(AUTHORIZATION, "Bearer " + jwToken);
 
 					String returnType = "";
@@ -1634,7 +1681,7 @@ public class ApprovalworkflowTrigger {
 							+ "\",\"shipToParty\":\"" + shipToParty + "\",\"division\":\"" + division
 							+ "\",\"distributionChannel\":\"" + distributionChannel + "\",\"salesOrg\":\"" + salesOrg
 							+ "\",\"returnReason\":\"" + returnReason + "\",\"returnType\":\"" + returnType + "\"}}";
-					
+
 					// System.err.println("Workflow Payload :" + payload);
 					StringEntity workflowPayload = new StringEntity(payload);
 					httpPost.setEntity(workflowPayload);
@@ -1712,7 +1759,8 @@ public class ApprovalworkflowTrigger {
 
 				if (dsNumber.get(i) != null) {
 					// get all the workflowInstanceId by bussinessKey.
-					org.springframework.http.ResponseEntity response = new HelperClass().getWorkflowInstanceUsingOauthClient(dsNumber.get(i));
+					org.springframework.http.ResponseEntity response = new HelperClass()
+							.getWorkflowInstanceUsingOauthClient(dsNumber.get(i));
 					System.err.println("responseEntity WokrlfowIds " + response);
 
 					if (response.getStatusCode().value() == HttpStatus.OK.value()) {
@@ -1726,8 +1774,10 @@ public class ApprovalworkflowTrigger {
 							// cancel workfow api
 							listWorkflowResponse.stream().forEach(e -> {
 								System.err.println("Workflow Instance Id : " + e);
-								//ResponseEntity responses = ((Object) new HelperClass()).cancellingWorkflowUsingOauthClient(e);
-								//System.err.println("responseOfCancelling " + responses);
+								// ResponseEntity responses = ((Object) new
+								// HelperClass()).cancellingWorkflowUsingOauthClient(e);
+								// System.err.println("responseOfCancelling " +
+								// responses);
 							});
 
 						}
@@ -1747,67 +1797,58 @@ public class ApprovalworkflowTrigger {
 		}
 
 	}
-	
-	
-	// a generic method to do httpRequest 
-	// input parameter  - definition id , context, GET/POST 
-	
-	public ResponseEntity httpRequest(String definitionId,String payload,String requestType,String requestUrl) throws URISyntaxException, IOException{
-		 ResponseEntity  response = new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED ,
-					ResponseStatus.FAILED);
-		
-	
+
+	// a generic method to do httpRequest
+	// input parameter - definition id , context, GET/POST
+
+	public ResponseEntity httpRequest(String definitionId, String payload, String requestType, String requestUrl)
+			throws URISyntaxException, IOException {
+		ResponseEntity response = new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED,
+				ResponseStatus.FAILED);
+
 		HttpResponse httpResponse = null;
 		HttpClient client = HttpClientBuilder.create().build();
 		String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
 		try {
 
-		if(requestType.equals("GET")){
-			HttpGet request = new HttpGet(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
-		httpResponse  = client.execute(request);
-		response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-					ResponseStatus.SUCCESS);
-		}
-		if(requestType.equals("POST")){
-			 HttpPost request = new HttpPost(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
-			request.addHeader("Content-type", "application/json");
-			request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
-			StringEntity workflowPayload = new StringEntity(payload);
-		      request.setEntity(workflowPayload);
-		      httpResponse = client.execute(request);
-		      response =     new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-						ResponseStatus.SUCCESS);
-		}
-		if(requestType.equals("PATCH")){
-			HttpPatch request = new HttpPatch(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
-			request.addHeader("Content-type", "application/json");
-			request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
-			StringEntity workflowPayload = new StringEntity(payload);
-		      request.setEntity(workflowPayload);
-		      httpResponse =  client.execute(request);
-		      response =  new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-						ResponseStatus.SUCCESS);
-		}
-		if(requestType.equals("DELETE")){
-			HttpDelete request =  new HttpDelete(Constants.WORKFLOW_REST_BASE_URL+requestUrl);
-			request.addHeader("Content-type", "application/json");
-			request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
-			httpResponse = client.execute(request);
-			response =	new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL",
-					ResponseStatus.SUCCESS);
-		}
-		
-		return response;
-		} catch (Exception e ){
-			
-			 return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED ,
-						ResponseStatus.FAILED);
+			if (requestType.equals("GET")) {
+				HttpGet request = new HttpGet(Constants.WORKFLOW_REST_BASE_URL + requestUrl);
+				httpResponse = client.execute(request);
+				response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL", ResponseStatus.SUCCESS);
+			}
+			if (requestType.equals("POST")) {
+				HttpPost request = new HttpPost(Constants.WORKFLOW_REST_BASE_URL + requestUrl);
+				request.addHeader("Content-type", "application/json");
+				request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
+				StringEntity workflowPayload = new StringEntity(payload);
+				request.setEntity(workflowPayload);
+				httpResponse = client.execute(request);
+				response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL", ResponseStatus.SUCCESS);
+			}
+			if (requestType.equals("PATCH")) {
+				HttpPatch request = new HttpPatch(Constants.WORKFLOW_REST_BASE_URL + requestUrl);
+				request.addHeader("Content-type", "application/json");
+				request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
+				StringEntity workflowPayload = new StringEntity(payload);
+				request.setEntity(workflowPayload);
+				httpResponse = client.execute(request);
+				response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL", ResponseStatus.SUCCESS);
+			}
+			if (requestType.equals("DELETE")) {
+				HttpDelete request = new HttpDelete(Constants.WORKFLOW_REST_BASE_URL + requestUrl);
+				request.addHeader("Content-type", "application/json");
+				request.addHeader(AUTHORIZATION, "Bearer " + jwToken);
+				httpResponse = client.execute(request);
+				response = new ResponseEntity(httpResponse, HttpStatus.ACCEPTED, "SUCCESSFUL", ResponseStatus.SUCCESS);
+			}
+
+			return response;
+		} catch (Exception e) {
+
+			return new ResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED, ResponseStatus.FAILED);
 		}
 	}
-	
-	
-	
-	// get jwtToken  get method for authentication 
-	
-	
+
+	// get jwtToken get method for authentication
+
 }

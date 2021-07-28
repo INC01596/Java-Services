@@ -23,6 +23,7 @@ import com.incture.cherrywork.util.HelperClass;
 import com.incture.cherrywork.worflow.dao.SalesOrderTaskStatusesDao;
 import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusesDo;
 import com.incture.cherrywork.workflow.repositories.ISalesOrderTaskStatusRepository;
+import com.incture.cherrywork.workflow.repositories.ISalesOrderTaskStatusesRepository;
 
 @Service
 @Transactional
@@ -30,6 +31,8 @@ public class SalesOrderTaskStatusesServiceImpl implements SalesOrderTaskStatuses
 
 	@Autowired
 	private ISalesOrderTaskStatusRepository salesOrderTaskStatusRepository;
+	@Autowired
+	private ISalesOrderTaskStatusesRepository salesOrderTaskStatusesRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -158,7 +161,7 @@ public class SalesOrderTaskStatusesServiceImpl implements SalesOrderTaskStatuses
 			q1.setParameter("ugroup", key.getUserGroup());
 			SalesOrderTaskStatusesDo salesOrderTaskStatusDo = (SalesOrderTaskStatusesDo) q1.getSingleResult();
 			if (salesOrderTaskStatusDo != null) {
-				salesOrderTaskStatusRepository.delete(salesOrderTaskStatusDo);
+				salesOrderTaskStatusesRepository.delete(salesOrderTaskStatusDo);
 				return "Sales Order Task Status is completedly removed";
 			} else {
 				return "Sales Order Task Status is not found on Key : " + key;
@@ -238,7 +241,7 @@ public class SalesOrderTaskStatusesServiceImpl implements SalesOrderTaskStatuses
 			SalesOrderTaskStatusesDo salesOrderTaskStatusDo = ObjectMapperUtils.map(salesOrderTaskStatusDto,
 					SalesOrderTaskStatusesDo.class);
 
-			salesOrderTaskStatusRepository.save(salesOrderTaskStatusDo);
+			salesOrderTaskStatusesRepository.save(salesOrderTaskStatusDo);
 
 			return "Sales Order Task Status is successfully created with key : " + salesOrderTaskStatusDo.getKey();
 		} catch (NoResultException | NullPointerException e) {

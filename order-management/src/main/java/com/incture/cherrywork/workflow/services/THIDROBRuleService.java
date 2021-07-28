@@ -24,7 +24,7 @@ public class THIDROBRuleService extends RuleServiceDestination{
 
 		System.err.println("RuleINputDto "+ input);
 		String node = execute(input, RuleConstants.thIDBRORuleService);
-		
+		System.err.println("[THIDROBRuleService][getResultList] node: "+node);
 		ApproverDataOutputDto dto = new ApproverDataOutputDto();
 		
 		if(node!=null && !node.isEmpty())
