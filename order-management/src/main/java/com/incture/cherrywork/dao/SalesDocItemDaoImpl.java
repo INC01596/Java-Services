@@ -10,15 +10,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderInput;
 import com.incture.cherrywork.dtos.ScheduleLineDto;
@@ -27,11 +23,13 @@ import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.entities.SalesDocItemPrimaryKeyDo;
 import com.incture.cherrywork.entities.ScheduleLineDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
-import com.incture.cherrywork.workflow.repositories.ISalesDocItemRepository;
+import com.incture.cherrywork.repositories.ISalesDocHeaderRepository;
+import com.incture.cherrywork.repositories.ISalesDocItemRepository;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
 
 @Service
 @Transactional
-public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto> implements SalesDocItemDao {
+public class SalesDocItemDaoImpl implements SalesDocItemDao {
 
 	@Lazy
 	@Autowired
@@ -42,10 +40,15 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	private SalesDocHeaderDaoImpl salesDocHeaderRepo;
 
 	@Autowired
-	ISalesDocItemRepository salesDocItemRepository;
+	private ISalesDocItemRepository salesDocItemRepository;
 
 	@Autowired
-	private SessionFactory sessionfactory;
+	private SalesDocHeaderDao salesDocHeaderDao;
+
+	@Autowired
+	private ISalesDocHeaderRepository salesDocHeaderRepository;
+
+	
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -130,7 +133,7 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 		return salesDocItemDo;
 	}
 
-	@Override
+	
 	public SalesDocItemDto exportDto(SalesDocItemDo entity) {
 		SalesDocItemDto salesDocItemDto = null;
 		if (entity != null) {
@@ -227,7 +230,7 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 	}
 
-	@Override
+	
 	public List<SalesDocItemDo> importList(List<SalesDocItemDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocItemDo> dtoList = new ArrayList<>();
@@ -240,7 +243,7 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 		return Collections.emptyList();
 	}
 
-	@Override
+	
 	public List<SalesDocItemDto> exportList(List<SalesDocItemDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SalesDocItemDto> dtoList = new ArrayList<>();
@@ -273,10 +276,60 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 		try {
 
-			SalesDocItemDo salesDocItemDo = importDto(salesDocItemDto);
-			salesDocItemRepository.save(salesDocItemDo);
+			String query = "from SalesDocHeaderDo where salesOrderNum=:soNum";
+			Query q1 = entityManager.createQuery(query);
+			q1.setParameter("soNum", salesDocItemDto.getSalesHeaderNo());
+			SalesDocHeaderDo header = (SalesDocHeaderDo) q1.getSingleResult();
 
-			return "Sales Document Item is successfully created with =" + salesDocItemDo.getSalesDocItemKey();
+			SalesDocHeaderDto headerDto = salesDocHeaderDao.exportDto(header);
+			List<SalesDocItemDto> itemList = new ArrayList<>();
+			itemList.add(salesDocItemDto);
+			headerDto.setSalesDocItemList(itemList);
+
+			List<SalesDocItemDto> itemListDto = headerDto.getSalesDocItemList();
+			if (itemListDto != null && !itemListDto.isEmpty()) {
+				for (SalesDocItemDto item : itemListDto) {
+
+					// Setting Foreign key in Item level from Header level
+					item.setSalesHeaderNo(headerDto.getSalesOrderNum());
+
+					// Setting Schedule line level
+					List<ScheduleLineDto> scheduleLineDtoList = item.getScheduleLineList();
+
+					if (scheduleLineDtoList != null && !scheduleLineDtoList.isEmpty()) {
+						scheduleLineDtoList.forEach(schLine -> {
+
+							// Setting Foreign Key for Schedule Line Level
+							schLine.setSalesHeaderNo(item.getSalesHeaderNo());
+							schLine.setSalesItemOrderNo(item.getSalesItemOrderNo());
+							ScheduleLineDo scheduleLineDo = ObjectMapperUtils.map(schLine, ScheduleLineDo.class);
+
+						});
+					}
+				}
+			}
+
+			SalesDocHeaderDo salesDocHeaderDo = salesDocHeaderDao.importDto(headerDto);
+			System.err.println(
+					"[salesDocHeaderDaoImpl][saveSalesDocHeader] salesDocHeaderDo: " + salesDocHeaderDo.toString());
+			// salesDocHeaderDo.setRequestId(ServicesUtil.randomId());
+			SalesDocHeaderDo savedSalesDocHeaderDo = null;
+			try {
+				savedSalesDocHeaderDo = salesDocHeaderRepository.save(salesDocHeaderDo);
+			} catch (Exception e) {
+				System.err.println("exception occured while saving(decision set): " + e.getMessage());
+				e.printStackTrace();
+			}
+			System.err.println("[salesDocHeaderDaoImpl][saveSalesDocHeader] savedSalesDocHeaderDo "
+					+ savedSalesDocHeaderDo.toString());
+			System.err.println("Saved Sales Doc Header");
+
+			// SalesDocItemDo salesDocItemDo = importDto(salesDocItemDto);
+			// System.err.println("[saveOrUpdateSalesDocItemForDS]
+			// salesDocItemDo: "+salesDocItemDo.toString());
+			// salesDocItemRepository.save(salesDocItemDo);
+
+			return "Sales Document Item is successfully created with =";
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		} catch (Exception e) {
@@ -297,9 +350,12 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 		SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
 		// Setting Sales Header Primary Key
 		salesDocHeader.setSalesOrderNum(salesHeaderId);
-		return null;
-//		return exportDto(
-//				getSession().get(SalesDocItemDo.class, new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader)));
+		// return null;
+		String query = "from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum = :soNum";
+		Query q1 = entityManager.createQuery(query);
+		q1.setParameter("soNum", salesHeaderId);
+		return exportDto(
+				(SalesDocItemDo)q1.getSingleResult());
 	}
 
 	@SuppressWarnings("unused")
@@ -311,8 +367,9 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 			// Setting Sales Header Primary Key
 			salesDocHeader.setSalesOrderNum(salesHeaderId);
 			SalesDocItemDo salesDocItemDo = null;
-//			SalesDocItemDo salesDocItemDo = getSession().byId(SalesDocItemDo.class)
-//					.load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
+			// SalesDocItemDo salesDocItemDo =
+			// getSession().byId(SalesDocItemDo.class)
+			// .load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
 			if (salesDocItemDo != null) {
 				salesDocItemRepository.delete(salesDocItemDo);
 				return "Sales Document Item is completedly removed";
@@ -326,8 +383,8 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 
 	@Override
 	public List<SalesDocItemDto> listOfItemsInSalesOrder(String salesHeaderId) {
-		
-		String query = "select item from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum =: salesHeaderId";
+
+		String query = "from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum =: salesHeaderId";
 		Query q1 = entityManager.createQuery(query);
 		q1.setParameter("salesHeaderId", salesHeaderId);
 		return exportList(q1.getResultList());
@@ -359,33 +416,33 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	@Override
 	synchronized public String updateSalesDocItemWithDecisionSet(String decisionSet, String salesItemId,
 			String salesHeaderId) throws ExecutionFault {
-		Session session = sessionfactory.openSession();
 		try {
 			// Creating Sales Header Entity For inserting in Composite PK
 			SalesDocHeaderDo salesDocHeader = salesDocHeaderRepo
 					.importDto(salesDocHeaderRepo.getSalesDocHeaderById(salesHeaderId));
 
-			SalesDocItemDo salesDocItemDo = getSession().byId(SalesDocItemDo.class)
-					.load(new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
+			String query1 = "from SalesDocItemDo item where item.salesDocItemKey.salesDocHeader.salesOrderNum = :soNum";
+			Query q1 = entityManager.createQuery(query1);
+			q1.setParameter("soNum", salesHeaderId);
+
+			SalesDocItemDo salesDocItemDo = (SalesDocItemDo) q1.getSingleResult();
+					
 			if (salesDocItemDo != null) {
 
-				String query = "update SalesDocItemDo s set s.decisionSetId =: decisionSetId"
+				String query2 = "update SalesDocItemDo s set s.decisionSetId =: decisionSetId"
 						+ " where s.salesDocItemKey.salesItemOrderNo =: salesItemOrderNo"
 						+ " and s.salesDocItemKey.salesDocHeader.salesOrderNum =: salesOrderNum";
-				Query q1 = entityManager.createQuery(query);
-				
+				Query q2 = entityManager.createQuery(query2);
 
-				q1.setParameter("decisionSetId", decisionSet);
-				q1.setParameter("salesItemOrderNo", salesItemId);
-				q1.setParameter("salesOrderNum", salesHeaderId);
+				q2.setParameter("decisionSetId", decisionSet);
+				q2.setParameter("salesItemOrderNo", salesItemId);
+				q2.setParameter("salesOrderNum", salesHeaderId);
 
-				q1.executeUpdate();
-				
+				q2.executeUpdate();
 
 				return "Sales Document Item is updated with decision set : " + decisionSet;
 			} else {
 
-				session.close();
 				return "Sales Document Item is not found on Item id : " + salesItemId + " and " + salesDocHeader;
 			}
 		} catch (Exception e) {
@@ -396,10 +453,10 @@ public class SalesDocItemDaoImpl extends BaseDao<SalesDocItemDo, SalesDocItemDto
 	@Override
 	public List<String> getItemListByDataSet(String dataSet) {
 		if (dataSet != null) {
-			
+
 			String query = "select item.salesDocItemKey.salesItemOrderNo from SalesDocItemDo item where item.decisionSetId = :decisionSetId";
 			Query q1 = entityManager.createQuery(query);
-			q1.setParameter("decisionSetId", dataSet);		
+			q1.setParameter("decisionSetId", dataSet);
 			return q1.getResultList();
 
 		} else {

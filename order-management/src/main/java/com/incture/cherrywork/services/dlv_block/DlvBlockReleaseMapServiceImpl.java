@@ -1,12 +1,9 @@
 package com.incture.cherrywork.services.dlv_block;
 
-
-
 import static com.incture.cherrywork.WConstants.Constants.CREATION_FAILED;
 import static com.incture.cherrywork.WConstants.Constants.DATA_FOUND;
 import static com.incture.cherrywork.WConstants.Constants.EMPTY_LIST;
 import static com.incture.cherrywork.WConstants.Constants.EXCEPTION_FAILED;
-
 
 import java.util.List;
 
@@ -21,8 +18,6 @@ import com.incture.cherrywork.dtos.DlvBlockReleaseMapDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.HelperClass;
-
-
 
 @Service
 @Transactional
@@ -51,7 +46,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 						"Delivery Block code and Country code fields are mandatory", ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -67,7 +63,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 				return new ResponseEntity("", HttpStatus.NO_CONTENT, EMPTY_LIST, ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -91,7 +88,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 						ResponseStatus.SUCCESS);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -100,9 +98,12 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 	@Override
 	public ResponseEntity getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly(String dlvBlockCode) {
 		try {
+			System.err.println("[getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly] strats with dlvBlockCode: "+dlvBlockCode);
 			if (!HelperClass.checkString(dlvBlockCode)) {
 				DlvBlockReleaseMapDto dlvBlockReleaseMapDto = dlvBlockReleaseMapRepo
 						.getDlvBlockReleaseMapBydlvBlockCode(dlvBlockCode);
+				System.err.println("[getDlvBlockReleaseMapBydlvBlockCodeForDisplayOnly] dlvBlockReleaseMapDto: "
+						+ dlvBlockReleaseMapDto.toString());
 				if (dlvBlockReleaseMapDto != null && dlvBlockReleaseMapDto.getDisplay() != false
 						&& !HelperClass.checkString(dlvBlockReleaseMapDto.getDlvBlockCode())) {
 					return new ResponseEntity(dlvBlockReleaseMapDto, HttpStatus.ACCEPTED, DATA_FOUND,
@@ -118,7 +119,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -160,7 +162,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -183,7 +186,8 @@ public class DlvBlockReleaseMapServiceImpl implements DlvBlockReleaseMapService 
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}

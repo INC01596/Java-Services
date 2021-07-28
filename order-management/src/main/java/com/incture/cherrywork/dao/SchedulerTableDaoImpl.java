@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.incture.cherrywork.dtos.SchedulerTableDto;
 import com.incture.cherrywork.entities.SchedulerTableDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
+import com.incture.cherrywork.repositories.ISchedulerTableRepository;
 
 
 /**
@@ -27,11 +29,15 @@ import com.incture.cherrywork.exceptions.ExecutionFault;
  */
 @Service
 @Transactional
-public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTableDto> implements SchedulerTableDao {
+public class SchedulerTableDaoImpl implements SchedulerTableDao {
 	
+	@Autowired
+	private ISchedulerTableRepository schedulerTableRepository; 
 	
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	
-	@Override
 	public SchedulerTableDo importDto(SchedulerTableDto fromDto) {
 		SchedulerTableDo schedulerTableDo = null;
 		if (fromDto != null) {
@@ -46,7 +52,7 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 		return schedulerTableDo;
 	}
 
-	@Override
+	
 	public SchedulerTableDto exportDto(SchedulerTableDo entity) {
 		SchedulerTableDto schedulerTableDto = null;
 		if (entity != null) {
@@ -64,7 +70,7 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 		return schedulerTableDto;
 	}
 
-	@Override
+	
 	public List<SchedulerTableDo> importList(List<SchedulerTableDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SchedulerTableDo> doList = new ArrayList<>();
@@ -77,7 +83,7 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 		return Collections.emptyList();
 	}
 
-	@Override
+	
 	public List<SchedulerTableDto> exportList(List<SchedulerTableDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<SchedulerTableDto> dtoList = new ArrayList<>();
@@ -94,10 +100,8 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 	public String save(SchedulerTableDto schedulerTableDto) throws Exception {
 		try {
 			SchedulerTableDo schedulerTableDo = importDto(schedulerTableDto);
-			getSession().saveOrUpdate(schedulerTableDo);
-			getSession().flush();
-			getSession().clear();
-
+			schedulerTableRepository.save(schedulerTableDo);
+			
 			return "Successfully updated in hana";
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
@@ -109,17 +113,17 @@ public class SchedulerTableDaoImpl extends BaseDao<SchedulerTableDo, SchedulerTa
 
 	@Override
 	public List<SchedulerTableDto> listAllLogs() {
-		return exportList(getSession()
-				.createQuery("from SchedulerTableDo st order by st.istTimeStamp desc", SchedulerTableDo.class).list());
+		return exportList(entityManager
+				.createQuery("from SchedulerTableDo st order by st.istTimeStamp desc", SchedulerTableDo.class).getResultList());
 	}
 
 	@Override
 	public List<SchedulerTableDto> listAllLogsInIst(LocalDateTime startDate, LocalDateTime endDate) {
-		return exportList(getSession()
+		return exportList(entityManager
 				.createQuery(
 						"from SchedulerTableDo st where istTimeStamp between :startDate and :endDate order by st.istTimeStamp desc",
 						SchedulerTableDo.class)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).list());
+				.setParameter("startDate", startDate).setParameter("endDate", endDate).getResultList());
 
 	}
 }

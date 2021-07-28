@@ -99,6 +99,7 @@ public @Data class ApproverDataOutputDto implements RuleOutputDto, Serializable 
 			approverList.add(approverDto);
 
 		}
+		System.err.println("[convertFromJSonNodeRo] approverList: "+approverList);
 		return approverList;
 		}
 	

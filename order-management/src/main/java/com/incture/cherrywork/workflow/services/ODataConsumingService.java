@@ -523,7 +523,7 @@ public class ODataConsumingService {
 				salesDocHeaderDto.setCondGroup5(res.getString("condGroup5"));
 				salesDocHeaderDto.setOrderReasonText(res.getString("orderReasonText"));
 				salesDocHeaderDto.setOrderRemark(res.getString("returnRemarks"));
-				salesDocHeaderDto.setDeliveryBlockCodeText(res.getString("DlvBlockText"));
+				salesDocHeaderDto.setDeliveryBlockText(res.getString("DlvBlockText"));
 				salesDocHeaderDto.setDocTypeText(res.getString("DocTypeText"));
 				salesDocHeaderDto.setOrdererNA(res.getString("PurchNoC"));
 				salesDocHeaderDto.setCustomerPo(res.getString("ordererNA"));

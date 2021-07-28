@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.incture.cherrywork.dtos.FilterDto;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
+import com.incture.cherrywork.entities.SalesDocHeaderDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 
 
@@ -40,5 +41,7 @@ public interface SalesDocHeaderDao {
 	public String saveSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault;
 
 	public String updateSalesDocHeader(SalesDocHeaderDto salesDocHeaderDto) throws ExecutionFault;
+	public SalesDocHeaderDto exportDto(SalesDocHeaderDo entity);
+	public SalesDocHeaderDo importDto(SalesDocHeaderDto fromDto);
 
 }

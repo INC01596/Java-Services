@@ -2,6 +2,7 @@ package com.incture.cherrywork.repositories;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.incture.cherrywork.dto.new_workflow.SalesOrderItemStatusDto;
 import com.incture.cherrywork.entities.ReturnRequestHeader;
+import com.incture.cherrywork.entities.new_workflow.SalesOrderItemStatusDo;
+import com.incture.cherrywork.entities.new_workflow.SalesOrderLevelStatusDo;
+import com.incture.cherrywork.util.ComConstants;
+import com.incture.cherrywork.workflow.entities.SalesOrderTaskStatusDo;
 
 @Repository
 public interface IReturnRequestHeaderRepository
@@ -74,7 +80,16 @@ public interface IReturnRequestHeaderRepository
 
 	@Query(value = "select item_status from so_item_status where item_status_serial_id =?1", nativeQuery = true)
 	Integer getItemStatus(String itemSerialId);
-
+	
+	@Query(value="from SalesOrderLevelStatusDo where decisionSetId =?1 and level =?2")
+	Optional<SalesOrderLevelStatusDo> fetchLevelStatusDtoFromDecisionSetAndLevelRepository(String decisionSetId, String level);
+	
+	@Query(value="from SalesOrderTaskStatusDo where taskStatus !=?1 and taskStatusSerialId =?2")
+	List<SalesOrderTaskStatusDo> getTaskStatusDataFromTaskSerialIdRepository(Integer taskStatus, String taskStatusSeriallId);
+	
+	@Query(value="from SalesOrderTaskStatusDo where taskStatus !=?1 and salesOrderLevelStatus.levelStatusSerialId =?2")
+	List<SalesOrderTaskStatusDo> getAllTaskFromLevelSerialIdRepository(Integer taskStatus, String levelStatusSeriallId);
+	
 	// Sandeep Kumar Khatri
 
 	// @Query("from ReturnRequestHeader r where r.returnReqNum=:reqNo")

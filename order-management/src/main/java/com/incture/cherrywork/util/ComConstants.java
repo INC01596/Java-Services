@@ -15,6 +15,7 @@ public final class ComConstants {
 	public static final String DESTINATION_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
 	public static final String DESTINATION_BASE_URL = "https://destination-configuration.cfapps.eu10.hana.ondemand.com";
 	public static final String OAUTH_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
+	public static final String WORKFLOW_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
 	public static final String WORKFLOW_CLIENT_ID = "sb-clone-b487dd67-d351-4d24-9c7b-94e20c7bc35b!b19391|workflow!b10150";
 	public static final String WORKFLOW_CLIENT_SECRETE = "0ed5a596-c2ee-44fc-aa2b-3ec56926c48c$JMRj5a6zHi8Hr2D051YjXMVCECnDL8lnhrbKWWut8N8=";
 	public static final String WORKFLOW_REST_BASE_URL = "https://api.workflow-sap.cfapps.eu10.hana.ondemand.com/workflow-service/rest";
@@ -66,7 +67,7 @@ public final class ComConstants {
 
 	public static final String SALES_HEADER_ITEM_ID_MANDATORY = "Sales header id and Sales item id fields are mandatory";
 
-	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT = "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/$batch ";
+	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT = "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/$batch";
 	public static final String RETURN_REQUEST_APPROVAL_BATCH_ON_SUBMIT_TAG = "soheaderSet";
 	public static final String RETURN_REQUEST_BATCH_TAG = "orderHeaderSet";
 
@@ -100,6 +101,7 @@ public final class ComConstants {
 	public static final Integer LEVEL_READY = 2;
 	public static final Integer LEVEL_IN_PROGRESS = 3;
 	public static final Integer LEVEL_COMPLETE = 4;
+	public static final Integer LEVEL_ABANDON = 17;
 	public static final Integer TASK_NEW = 5;
 	public static final Integer TASK_READY = 6;
 	public static final Integer TASK_IN_PROGRESS = 7;

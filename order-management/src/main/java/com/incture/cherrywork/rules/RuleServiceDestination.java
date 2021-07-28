@@ -66,7 +66,7 @@ public abstract class RuleServiceDestination {
 		//Map<String, String> map = DestinationReaderUtil.getDestination(DESTINATION_RULES) 
 		
 		
-		String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApi();
+		String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow();
 		System.err.println("map for rulesToken : " +jwToken);
 		httpPost = new HttpPost(RuleConstants.RULE_BASE_URL);
 		httpPost.addHeader(CONTENT_TYPE, "application/json");
@@ -100,6 +100,7 @@ public abstract class RuleServiceDestination {
 		if (httpClient != null) {
 			httpClient.close();
 		}
+		System.err.println("respBody: "+respBody);
 		return respBody;
 	}
 

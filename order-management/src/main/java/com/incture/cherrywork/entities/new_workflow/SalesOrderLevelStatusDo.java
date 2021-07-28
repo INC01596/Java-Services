@@ -118,4 +118,18 @@ public @Data class SalesOrderLevelStatusDo implements BaseDo {
 		return serialVersionUID;
 	}
 
+	public SalesOrderLevelStatusDo(String levelStatusSerialId, String decisionSetId, String level, String userGroup,
+			String approverType, Integer levelStatus) {
+		super();
+		this.levelStatusSerialId = levelStatusSerialId;
+		this.decisionSetId = decisionSetId;
+		this.level = level;
+		this.userGroup = userGroup;
+		this.approverType = approverType;
+		this.levelStatus = levelStatus;
+	}
+
+	
+	
+
 }

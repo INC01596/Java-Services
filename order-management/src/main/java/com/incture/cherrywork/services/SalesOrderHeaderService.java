@@ -191,18 +191,16 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 	@Override
 	public ResponseEntity<Object> getManageServiceObd(ObdDto dto) {
 
-		Pageable pageable = PageRequest.of(dto.getPageNo() - 1, 10);
-		Page<SalesOrderHeader> p = repo.getManageServiceObd(dto, pageable);
-		return ResponseEntity.ok().body(p);
+		Pageable pageable = PageRequest.of(dto.getPageNo(), 10);
+		return ResponseEntity.ok().body(repo.getManageServiceObd(dto, pageable));
 
 	}
 
 	@Override
 	public ResponseEntity<Object> getManageServiceInvo(InvoDto dto) {
 
-		Pageable pageable = PageRequest.of(dto.getPageNo() - 1, 10);
-		Page<SalesOrderHeader> p = repo.getManageServiceInvo(dto, pageable);
-		return ResponseEntity.ok().body(p);
+		Pageable pageable = PageRequest.of(dto.getPageNo(), 10);
+		return ResponseEntity.ok().body(repo.getManageServiceInvo(dto, pageable));
 
 	}
 

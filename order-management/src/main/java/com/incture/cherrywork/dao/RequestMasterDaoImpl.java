@@ -27,7 +27,7 @@ import com.incture.cherrywork.workflow.repositories.IRequestMasterRepository;
 
 @Service
 @Transactional
-public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMasterDto> implements RequestMasterDao {
+public class RequestMasterDaoImpl implements RequestMasterDao {
 
 	@Lazy
 	@Autowired
@@ -42,7 +42,6 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Override
 	public RequestMasterDo importDto(RequestMasterDto fromDto) {
 		RequestMasterDo reqMasterDo = null;
 		if (fromDto != null) {
@@ -67,7 +66,6 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 		return reqMasterDo;
 	}
 
-	@Override
 	public RequestMasterDto exportDto(RequestMasterDo entity) {
 		RequestMasterDto reqMasterDto = null;
 		if (entity != null) {
@@ -100,7 +98,6 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 		return reqMasterDto;
 	}
 
-	@Override
 	public List<RequestMasterDo> importList(List<RequestMasterDto> list) {
 		if (list != null && !list.isEmpty()) {
 			List<RequestMasterDo> doList = new ArrayList<>();
@@ -113,7 +110,6 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 		return Collections.emptyList();
 	}
 
-	@Override
 	public List<RequestMasterDto> exportList(List<RequestMasterDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<RequestMasterDto> dtoList = new ArrayList<>();
@@ -143,9 +139,7 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 
 	@Override
 	public List<RequestMasterDto> listAllRequests() {
-		String query = "from RequestMasterDo";
-		Query q1 = entityManager.createQuery(query);
-		return exportList(q1.getResultList());
+		return exportList(requestMasterRepository.findAll());
 	}
 
 	@Override
@@ -174,17 +168,8 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 	@Override
 	public String deleteRequestMasterById(String reqId) throws ExecutionFault {
 		try {
-
-			String query = "from RequestMasterDo r where r.requestId = :reqId";
-			Query q1 = entityManager.createQuery(query);
-			q1.setParameter("reqId", reqId);
-			RequestMasterDo reqMasterDo = (RequestMasterDo) q1.getSingleResult();
-			if (reqMasterDo != null) {
-				requestMasterRepository.delete(reqMasterDo);
-				return "Request master is completedly removed";
-			} else {
-				return "Request master is not found on Request id : " + reqId;
-			}
+			requestMasterRepository.deleteById(reqId);
+			return "Request master is completedly removed";
 		} catch (Exception e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);
 		}
@@ -229,7 +214,7 @@ public class RequestMasterDaoImpl extends BaseDao<RequestMasterDo, RequestMaster
 			requestMasterRepository.save(requestDo);
 			// getSession().flush();
 			// getSession().clear();
-			
+
 			return requestDo.getRequestId();
 		} catch (NoResultException | NullPointerException e) {
 			throw new ExecutionFault(e + " on " + e.getStackTrace()[1]);

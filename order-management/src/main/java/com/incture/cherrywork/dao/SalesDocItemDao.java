@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderInput;
+import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 
 
@@ -35,6 +36,7 @@ public interface SalesDocItemDao {
 
 	public List<String> getDSBySalesHeaderID(String salesHeaderId);  
 	
+	public SalesDocItemDo importDto(SalesDocItemDto fromDto);
 	
 
 }
