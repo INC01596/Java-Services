@@ -28,7 +28,10 @@ public interface IReturnRequestHeaderRepository
 
 	@Query("from ReturnRequestHeader re where re.requestedBy=?1 order by re.createdAt desc")
 	List<ReturnRequestHeader> getByReturnReqNumDraft(String requestedBy);
-
+	
+	@Query("select createdBy from ReturnRequestHeader where returnReqNum=?1")
+	String findCreatedBy(String returnReqNum);
+	
 	@Modifying(clearAutomatically = true)
 	@Query(value = "delete from return_request re where re.RETURN_REQ_NUM =?1 ", nativeQuery = true)
 	int deleteByReturnReqNum(String returnReqNum);

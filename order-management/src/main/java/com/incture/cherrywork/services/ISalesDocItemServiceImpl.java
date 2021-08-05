@@ -236,24 +236,27 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		q1.setParameter("itemId", salesItemId);
 
 		SalesDocItemPrimaryKeyDo primaryKeyDO = new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader);
+		
 		SalesDocItemDo itemDo = (SalesDocItemDo) q1.getSingleResult();
-		itemDo.setSalesDocItemKey(primaryKeyDO);
-		SalesDocItemDto itemDto = ObjectMapperUtils.map(itemDo, SalesDocItemDto.class);
-		itemDto.setSalesItemOrderNo(salesItemId);
-		itemDto.setSalesHeaderNo(salesHeaderId);
-		for (ScheduleLineDto schDto : itemDto.getScheduleLineList()) {
-			schDto.setSalesItemOrderNo(salesItemId);
-			schDto.setSalesHeaderNo(salesHeaderId);
-			schDto.setScheduleLineNum(ServicesUtil.randomId());
-		}
-		String query2 = "delete from ScheduleLineDo where scheduleLineKey.soItem.salesDocItemKey.salesDocHeader.salesOrderNum=:soNum";
-		Query q2 = entityManager.createQuery(query2);
-		q2.setParameter("soNum", salesHeaderId);
-		q2.executeUpdate();
-		for(ScheduleLineDto schDto : itemDto.getScheduleLineList()){
-			ScheduleLineDo sch = importDtoSch(schDto);
-			scheduleLineRepository.save(sch);
-		}
+		//itemDo.setSalesDocItemKey(primaryKeyDO);
+		SalesDocItemDto itemDto = exportDto(itemDo);
+//		itemDto.setSalesItemOrderNo(salesItemId);
+//		itemDto.setSalesHeaderNo(salesHeaderId);
+//		List<ScheduleLineDto> schDtoList = exportDto(itemDo.getScheduleLineList());
+//		for (ScheduleLineDo schDo : itemDo.getScheduleLineList()) {
+//			schDo.setSa(salesItemId);
+//			schDo.setSalesHeaderNo(salesHeaderId);
+//			schDo.setScheduleLineNum(schDo.getScheduleLineNum());
+//			System.err.println("[ISalesDocItemService][getSalesDocItemById] schDto.getScheduleLineNum(): "+schDto.getScheduleLineNum());
+//		}
+//		String query2 = "delete from ScheduleLineDo where scheduleLineKey.soItem.salesDocItemKey.salesDocHeader.salesOrderNum=:soNum";
+//		Query q2 = entityManager.createQuery(query2);
+//		q2.setParameter("soNum", salesHeaderId);
+//		q2.executeUpdate();
+//		for(ScheduleLineDto schDto : itemDto.getScheduleLineList()){
+//			ScheduleLineDo sch = importDtoSch(schDto);
+//			scheduleLineRepository.save(sch);
+//		}
 		return itemDto;
 
 	}
@@ -1167,6 +1170,140 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 				String.class).setParameter("salesOrderNum", salesHeaderId).getResultList();
 	}
 
+	public SalesDocItemDto exportDto(SalesDocItemDo entity) {
+		SalesDocItemDto salesDocItemDto = null;
+		if (entity != null) {
+
+			salesDocItemDto = new SalesDocItemDto();
+
+			System.err.println("Item Entity data came for sales order num "
+					+ entity.getSalesDocItemKey().getSalesDocHeader().getSalesOrderNum() + " and item num is "
+					+ entity.getSalesDocItemKey().getSalesItemOrderNo());
+			salesDocItemDto.setSapMaterialNum(entity.getSapMaterialNum());
+			salesDocItemDto.setBatchNum(entity.getBatchNum());
+			salesDocItemDto.setSplPrice(entity.getSplPrice());
+			salesDocItemDto.setMaterialGroup(entity.getMaterialGroup());
+			salesDocItemDto.setShortText(entity.getShortText());
+			salesDocItemDto.setItemCategory(entity.getItemCategory());
+			salesDocItemDto.setItemType(entity.getItemType());
+			salesDocItemDto.setSalesUnit(entity.getSalesUnit());
+			salesDocItemDto.setItemBillingBlock(entity.getItemBillingBlock());
+			salesDocItemDto.setItemDlvBlock(entity.getItemDlvBlock());
+			salesDocItemDto.setPartialDlv(entity.getPartialDlv());
+			salesDocItemDto.setRefDocNum(entity.getRefDocNum());
+			salesDocItemDto.setRefDocItem(entity.getRefDocItem());
+			salesDocItemDto.setPlant(entity.getPlant());
+			salesDocItemDto.setStorageLoc(entity.getStorageLoc());
+			// Split net price and add zero
+			salesDocItemDto.setNetPrice(entity.getNetPrice().toString());
+
+			salesDocItemDto.setDocCurrency(entity.getDocCurrency());
+			salesDocItemDto.setPricingUnit(entity.getPricingUnit());
+			salesDocItemDto.setCoudUnit(entity.getCoudUnit());
+			salesDocItemDto.setOldMatCode(entity.getOldMatCode());
+			salesDocItemDto.setNetWorth(entity.getNetWorth().toString());
+			salesDocItemDto.setOverallStatus(entity.getOverallStatus());
+			salesDocItemDto.setDeliveryStatus(entity.getDeliveryStatus());
+			salesDocItemDto.setReasonForRejection(entity.getReasonForRejection());
+			salesDocItemDto.setReasonForRejectionText(entity.getReasonForRejectionText());
+			salesDocItemDto.setMaterialGroup4(entity.getMaterialGroupFor());
+			salesDocItemDto.setBaseUnit(entity.getBaseUnit());
+			salesDocItemDto.setHigherLevelItem(entity.getHigherLevelItem());
+			salesDocItemDto.setTaxAmount(entity.getTaxAmount());
+			salesDocItemDto.setConvDen(entity.getConvDen());
+			salesDocItemDto.setConvNum(entity.getConvNum());
+			salesDocItemDto.setCuConfQtyBase(entity.getCuConfQtyBase());
+			salesDocItemDto.setCuConfQtySales(entity.getCuConfQtySales());
+			salesDocItemDto.setCuReqQtySales(entity.getCuReqQtySales());
+			salesDocItemDto.setOrderedQtySales(entity.getOrderedQtySales());
+			salesDocItemDto.setDecisionSetId(entity.getDecisionSetId());
+			salesDocItemDto.setItemStagingStatus(entity.getItemStagingStatus());
+			salesDocItemDto.setItemCategText(entity.getItemCategText());
+			salesDocItemDto.setSalesArea(entity.getSalesArea());
+			salesDocItemDto.setSalesTeam(entity.getSalesTeam());
+			salesDocItemDto.setMatExpiryDate(entity.getMatExpiryDate());
+			salesDocItemDto.setSerialNumber(entity.getSerialNumber());
+
+			// Converting list level to entity using import List method and
+			// checking the content of it
+			List<ScheduleLineDto> scheduleLineList = exportList(entity.getScheduleLineList());
+			if (scheduleLineList != null && !scheduleLineList.isEmpty()) {
+				salesDocItemDto.setScheduleLineList(scheduleLineList);
+				StringBuilder itemDlvBlockCodes = new StringBuilder();
+				int size = 0;
+				for (ScheduleLineDto scheduleLineDto : scheduleLineList) {
+					size++;
+					if (scheduleLineDto.getSchlineDeliveryBlock() != null) {
+						itemDlvBlockCodes.append(scheduleLineDto.getSchlineDeliveryBlock());
+						if (size != scheduleLineList.size()) {
+							itemDlvBlockCodes.append(",");
+						}
+					}
+				}
+				salesDocItemDto.setItemDlvBlockText(scheduleLineList.get(0).getRelfordelText());
+				salesDocItemDto.setItemDlvBlock(itemDlvBlockCodes.toString());
+			}
+
+			// Converting String from Date
+			// salesDocItemDto.setFirstDeliveryDate(ConvertDateToString(entity.getFirstDeliveryDate()));
+			salesDocItemDto.setFirstDeliveryDate(entity.getFirstDeliveryDate());
+
+			// Setting Foreign Key with Composite Primary Key
+			salesDocItemDto.setSalesHeaderNo(entity.getSalesDocItemKey().getSalesDocHeader().getSalesOrderNum());
+			// Setting Primary Key
+			salesDocItemDto.setSalesItemOrderNo(entity.getSalesDocItemKey().getSalesItemOrderNo());
+
+			// Setting stock block logic
+			// If req qty is greater than conf Qty
+			if (entity.getCuReqQtySales() != null && entity.getCuConfQtySales() != null) {
+				if (entity.getCuReqQtySales() > entity.getCuConfQtySales()) {
+					salesDocItemDto.setItemStockBlock("ACTIVE");
+				}
+			}
+
+		}
+		return salesDocItemDto;
+
+	}
+
+
+	public List<ScheduleLineDto> exportList(List<ScheduleLineDo> list) {
+		if (list != null && !list.isEmpty()) {
+			List<ScheduleLineDto> dtoList = new ArrayList<>();
+			for (ScheduleLineDo entity : list) {
+
+				dtoList.add(exportDtoSch(entity));
+			}
+			return dtoList;
+		}
+		return Collections.emptyList();
+	}
 	
+	public ScheduleLineDto exportDtoSch(ScheduleLineDo entity) {
+		ScheduleLineDto scheduleLineDto = null;
+		if (entity != null) {
+			scheduleLineDto = new ScheduleLineDto();
+
+			scheduleLineDto.setBaseUnit(entity.getBaseUnit());
+			scheduleLineDto.setConfQtySales(entity.getConfQtySales());
+			scheduleLineDto.setReqQtyBase(entity.getReqQtyBase());
+			scheduleLineDto.setReqQtySales(entity.getReqQtySales());
+			scheduleLineDto.setSalesUnit(entity.getSalesUnit());
+			scheduleLineDto.setSchlineDeliveryBlock(entity.getSchlineDeliveryBlock());
+			scheduleLineDto.setRelfordelText(entity.getRelfordelText());
+
+			// <Setting Foreign Keys>
+			// Setting Schedule Line Number
+			scheduleLineDto.setScheduleLineNum(entity.getScheduleLineKey().getScheduleLineNum());
+			// Setting Sales Header Number
+			scheduleLineDto.setSalesHeaderNo(entity.getScheduleLineKey().getSoItem().getSalesDocItemKey()
+					.getSalesDocHeader().getSalesOrderNum());
+			// Setting Sales Item Number
+			scheduleLineDto.setSalesItemOrderNo(
+					entity.getScheduleLineKey().getSoItem().getSalesDocItemKey().getSalesItemOrderNo());
+		}
+		return scheduleLineDto;
+	}
+
 
 }

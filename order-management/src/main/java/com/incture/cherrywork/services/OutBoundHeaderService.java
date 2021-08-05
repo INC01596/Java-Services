@@ -589,12 +589,13 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				dto.getHeaderDto().setInvId(invID.get(0));
 				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
+				setStatusAsClosed(obdId);
 				ServicesUtil.mailZippedInv(dto);
 			} else {
 				dto.getHeaderDto().setInvoiceStatus("FAILED");
 				dto.getHeaderDto().setPostingError((String)res1.getBody());
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
-				setStatusAsClosed(obdId);
+				
 
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}

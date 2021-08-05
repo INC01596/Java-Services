@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -159,7 +161,7 @@ public class ODataConsumingService {
 					new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 
 			System.err
-					.println("STEP 7 inside ODataConsumingService.mainScheduler(); blocked slaes order in last 2 hrs ="
+					.println("STEP 7 inside ODataConsumingService.mainScheduler(); blocked sales order in last 2 hrs ="
 							+ jsonObjectcontainingListOfSo);
 
 			// forming the JSON structure from output of OData
@@ -286,7 +288,7 @@ public class ODataConsumingService {
 			 */
 
 			String url2 = destinationInfo.get("URL")
-					+ "/sap/opu/odata/sap/ZDKSH_CC_SALES_ORDER_CR_SRV/SalesDocumentDetailsSet('" + soNumbers
+					+ "/sap/opu/odata/sap/ZDKSH_CC_SALES_ORDER_CR_COM_SRV/SalesDocumentDetailsSet('" + soNumbers
 					+ "')?$expand=NAVTOHEADER,NAVTOITEM,NAVTOSCHEDULE,NAVTOISTATUS,NAVTOPARTNER,NAVTOHSTATUS&$format=json";
 			System.err.println("STEP 12 URL2 with each batch iteration = " + url2);
 
@@ -526,17 +528,17 @@ public class ODataConsumingService {
 				salesDocHeaderDto.setDeliveryBlockText(res.getString("DlvBlockText"));
 				salesDocHeaderDto.setDocTypeText(res.getString("DocTypeText"));
 				salesDocHeaderDto.setOrdererNA(res.getString("PurchNoC"));
+				
 				salesDocHeaderDto.setCustomerPo(res.getString("ordererNA"));
 				if (salesDocHeaderDto.getCustomerPo() == null || salesDocHeaderDto.getCustomerPo().isEmpty()) {
 					sequenceNumberGen = SequenceNumberGen.getInstance();
 					Session session = entityManager.unwrap(Session.class);
 					System.err.println("session : " + session);
-					String tempId = sequenceNumberGen.getNextSeqNumber("BSO-", 6, session);
+					String tempId = sequenceNumberGen.getNextSeqNumber("CR-", 6, session);
 					// if its of Blocked sales order type
 					String decisionSetId = tempId;
 					session.close();
-					String crNumber = decisionSetId.substring(3);
-					salesDocHeaderDto.setCustomerPo("CR" + crNumber);
+					salesDocHeaderDto.setCustomerPo(decisionSetId);
 					System.err.println("495 CustomerPo" + salesDocHeaderDto.getCustomerPo());
 				}
 
@@ -548,6 +550,12 @@ public class ODataConsumingService {
 				salesDocHeaderDto.setSalesOrgText(res.getString("SalesOrgName"));
 				salesDocHeaderDto.setDistrChanText(res.getString("DistrChanName"));
 				salesDocHeaderDto.setDivisionText(res.getString("DivisionName"));
+				if (res.getString("DocDateTime") != null) {
+					String dateInString = res.getString("DocDateTime").substring(6,
+							res.getString("DocDateTime").length() - 2);
+					System.err.println("[odataConsuming Service][ImportJsonFromOdata] dateInString: "+dateInString);
+					salesDocHeaderDto.setSalesOrderDate(new BigInteger(dateInString));
+				}
 
 				// pull the credit block code from NAVTOHSTATUS and setting
 				JSONArray headerdetailsStatus = obj.getJSONObject("d").getJSONObject("NAVTOHSTATUS")
@@ -802,369 +810,381 @@ public class ODataConsumingService {
 						new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 
 		for (SalesDocHeaderDto salesDocHeaderDtoFromEcc : listOfSalesOrderDtos) {
-			 try {
+			try {
 
-			System.err.println("Sales order data came from ECC : " + salesDocHeaderDtoFromEcc);
+				System.err.println("Sales order data came from ECC : " + salesDocHeaderDtoFromEcc);
 
-			if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("I")
-			/*
-			 * && StatusConstants.REQUEST_NEW.toString().equals(
-			 * salesDocHeaderDto.getReqMasterId())
-			 */) {
-				// Below 4 lines commented by Awadhesh Kumar
-				salesDocHeaderDtoFromEcc.setReqMasterId("1");
-				List<RequestMasterDto> reqList = requestMasterService
-						.getRequestMasterById(salesDocHeaderDtoFromEcc.getReqMasterId());// here
-				System.err.println("req list size" + reqList.size());
+				if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("I")
+				/*
+				 * && StatusConstants.REQUEST_NEW.toString().equals(
+				 * salesDocHeaderDto.getReqMasterId())
+				 */) {
+					// Below 4 lines commented by Awadhesh Kumar
+					salesDocHeaderDtoFromEcc.setReqMasterId("1");
+					List<RequestMasterDto> reqList = requestMasterService
+							.getRequestMasterById(salesDocHeaderDtoFromEcc.getReqMasterId());// here
+					System.err.println("req list size" + reqList.size());
 
-				RequestMasterDto req1 = new RequestMasterDto();
-				// if (!reqList.isEmpty()) {
-				// req1 = reqList.get(0);
-				// }
-				req1.setRequestStatusCode("33");
-				if (StatusConstants.REQUEST_NEW.toString().equals(req1.getRequestStatusCode())) {
+					RequestMasterDto req1 = new RequestMasterDto();
+					// if (!reqList.isEmpty()) {
+					// req1 = reqList.get(0);
+					// }
+					req1.setRequestStatusCode("33");
+					if (StatusConstants.REQUEST_NEW.toString().equals(req1.getRequestStatusCode())) {
 
-					// i need to check whether req have status for which i
-					// need to get info
-					System.err.println("in if condition");
-					SalesDocHeaderDto salesOrderInHana = null;
-					try {
-						salesOrderInHana = (SalesDocHeaderDto) salesDocHeaderService
-								.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum()).getData();
-					} catch (Exception e) {
-						System.err.println(
-								"[odataConsuming service][saveDataToHanaDb] Exception in getSalesDocHeadersWithoutItems: "
-										+ e.getMessage());
-						e.printStackTrace();
-					}
-
-					System.err.println("outside if");
-					System.err.println("salesOrderInHana " + salesOrderInHana);
-					System.err.println("check1");
-					if (salesOrderInHana == null) {
-						ResponseEntity saveSalesDocHeader = null;
+						// i need to check whether req have status for which i
+						// need to get info
+						System.err.println("in if condition");
+						SalesDocHeaderDto salesOrderInHana = null;
 						try {
-							// these multiline comments have to be removed once
-							// temp test is ok.
-							System.err.println("salesOrderInHana is null ");
-							saveSalesDocHeader = salesDocHeaderService.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
-							System.err.println(
-									"[odata consuming service][saveDataToHanaDb] ResponseEntity After Saving  = "
-											+ saveSalesDocHeader);
+							salesOrderInHana = (SalesDocHeaderDto) salesDocHeaderService
+									.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum())
+									.getData();
 						} catch (Exception e) {
-							System.err.println("exception occurred during saving to hana db for sales order with id = "
-									+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+							System.err.println(
+									"[odataConsuming service][saveDataToHanaDb] Exception in getSalesDocHeadersWithoutItems: "
+											+ e.getMessage());
 							e.printStackTrace();
+						}
 
+						System.err.println("outside if");
+						System.err.println("salesOrderInHana " + salesOrderInHana);
+						System.err.println("check1");
+						if (salesOrderInHana == null) {
+							ResponseEntity saveSalesDocHeader = null;
+							try {
+								// these multiline comments have to be removed
+								// once
+								// temp test is ok.
+								System.err.println("salesOrderInHana is null ");
+								saveSalesDocHeader = salesDocHeaderService.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
+								System.err.println(
+										"[odata consuming service][saveDataToHanaDb] ResponseEntity After Saving  = "
+												+ saveSalesDocHeader);
+							} catch (Exception e) {
+								System.err.println(
+										"exception occurred during saving to hana db for sales order with id = "
+												+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+								e.printStackTrace();
+
+								schedulerLogService.saveInDB(new SchedulerTableDto(
+										"exception occurred during saving to hana db for sales order with id = "
+												+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
+										new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+							}
+
+							// Updating base version for items
+							// updateBaseVersionForEachItem(salesDocHeaderDto.getSalesDocItemList());
+
+							// below line was commented by Awadhesh kumar
+							// because of
+							// issue in saving data to doc header.
+							if (ResponseStatus.SUCCESS == saveSalesDocHeader.getStatus()) {
+								// these multiline comments have to be removed
+								// once
+								// temp test is ok.
+								schedulerLogService.saveInDB(new SchedulerTableDto(
+										"STEP 16 saved data in Sales order table and sales order number is := "
+												+ salesDocHeaderDtoFromEcc.getSalesOrderNum() + " with mode ="
+												+ salesDocHeaderDtoFromEcc.getFlagFromScheduler(),
+										new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+
+								SalesDocHeaderDto soDto = null;
+								try {
+									soDto = (SalesDocHeaderDto) salesDocHeaderService
+											.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum())
+											.getData();
+								} catch (Exception e) {
+									System.err.println(
+											"[odataConsuming service][saveDataToHanaDb] Exception getSalesDocHeadersWithoutItems: "
+													+ e.getMessage());
+									e.printStackTrace();
+								}
+
+								// Below 4 lines commented by Awadhesh Kumar
+								// List<RequestMasterDto> reqList2 =
+								// requestMasterDao
+								// .getRequestMasterById(soDto.getReqMasterId());
+								System.err.println("soDto " + soDto);
+								RequestMasterDto req = new RequestMasterDto();
+								// if (!reqList2.isEmpty()) {
+								// req = reqList2.get(0);
+								// }
+								// checking if the workflow is triggered for the
+								// req id
+								req.setRequestStatusCode("33");
+								if ((StatusConstants.REQUEST_NEW.toString().equals(req.getRequestStatusCode()))) {
+
+									// call method
+									System.err.println("check2 at blockTypeFilterDetrmination");
+									ResponseEntity btdSalesOrderResponse = null;
+									try {
+										btdSalesOrderResponse = btdService.blockTypeFilterBasedOnSoId(
+												salesDocHeaderDtoFromEcc.getSalesOrderNum());
+									} catch (Exception e) {
+										System.err.println(
+												"[odataConsuming service][saveDataToHanaDb] Exception blockTypeFilterBasedOnSoId: "
+														+ e.getMessage());
+										e.printStackTrace();
+									}
+									System.err.println(
+											"[odataConsuming service][saveDataToHanaDb] btdSalesOrderResponse: "
+													+ btdSalesOrderResponse);
+									Map<DkshBlockConstant, Object> dataFromBtd = null;
+									if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
+										dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
+										System.err.println(
+												"[odataConsuming service][saveDataToHanaDb] dataFromBtd" + dataFromBtd);
+									}
+
+									try {
+										triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
+									} catch (Exception e) {
+										System.err.println(
+												"[odataConsuming service][saveDataToHanaDb] Exception triggeringWorkFlow: "
+														+ e.getMessage());
+										e.printStackTrace();
+									}
+									req.setRequestStatusCode(StatusConstants.REQUEST_IN_PROGRESS.toString());
+									// updating the req status to in progress as
+									// worflow is triggered
+									// Below line commented by Awadhesh Kumar
+									// requestMasterService.updateRequestMaster(req);
+									System.err.println("STEP 20 workflow triggered successfully for ="
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+								} else {
+									System.err.println("STEP 20 workflow already exist for  ="
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+								}
+
+							}
+							/*
+							 * triggeringWorkFlow(salesDocHeaderDto);
+							 * System.err.println(
+							 * "STEP 20 workflow triggered successfully for =" +
+							 * salesDocHeaderDto.getSalesOrderNum());
+							 */
+						} else {
 							schedulerLogService.saveInDB(new SchedulerTableDto(
-									"exception occurred during saving to hana db for sales order with id = "
+									"Sales Order In Hana is not null and sales order number is : "
 											+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
 									new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+
 						}
+
+					}
+
+				} else if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("R")) {
+					List<RequestMasterDto> reqList = requestMasterService
+							.getRequestMasterById(salesDocHeaderDtoFromEcc.getReqMasterId());
+
+					RequestMasterDto req1 = null;
+					if (!reqList.isEmpty()) {
+						req1 = reqList.get(0);
+					}
+
+					if (StatusConstants.REQUEST_NEW.toString().equals(req1.getRequestStatusCode())) {
+
+						// i need to check whether req have status for which i
+						// need to get info
+
+						ResponseEntity saveSalesDocHeader = salesDocHeaderService
+								.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
+						System.err.println(" ResponseEntity After Saving  = " + saveSalesDocHeader);
 
 						// Updating base version for items
 						// updateBaseVersionForEachItem(salesDocHeaderDto.getSalesDocItemList());
 
-						// below line was commented by Awadhesh kumar because of
-						// issue in saving data to doc header.
 						if (ResponseStatus.SUCCESS == saveSalesDocHeader.getStatus()) {
-							// these multiline comments have to be removed once
-							// temp test is ok.
 							schedulerLogService.saveInDB(new SchedulerTableDto(
 									"STEP 16 saved data in Sales order table and sales order number is := "
 											+ salesDocHeaderDtoFromEcc.getSalesOrderNum() + " with mode ="
 											+ salesDocHeaderDtoFromEcc.getFlagFromScheduler(),
 									new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 
-							SalesDocHeaderDto soDto = null;
-							try {
-								soDto = (SalesDocHeaderDto) salesDocHeaderService
-										.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum())
-										.getData();
-							} catch (Exception e) {
-								System.err.println(
-										"[odataConsuming service][saveDataToHanaDb] Exception getSalesDocHeadersWithoutItems: "
-												+ e.getMessage());
-								e.printStackTrace();
-							}
+							SalesDocHeaderDto soDto = (SalesDocHeaderDto) salesDocHeaderService
+									.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum())
+									.getData();
+							if (soDto != null && soDto.getReqMasterId() != null) {
+								List<RequestMasterDto> reqList2 = requestMasterService
+										.getRequestMasterById(soDto.getReqMasterId());
+								RequestMasterDto req = null;
+								if (!reqList2.isEmpty()) {
+									req = reqList2.get(0);
+								}
+								// checking if the workflow is triggered for the
+								// req id
+								if (req != null && (StatusConstants.REQUEST_NEW.toString()
+										.equals(req.getRequestStatusCode()))) {
 
-							// Below 4 lines commented by Awadhesh Kumar
-							// List<RequestMasterDto> reqList2 =
-							// requestMasterDao
-							// .getRequestMasterById(soDto.getReqMasterId());
-							System.err.println("soDto " + soDto);
-							RequestMasterDto req = new RequestMasterDto();
-							// if (!reqList2.isEmpty()) {
-							// req = reqList2.get(0);
-							// }
-							// checking if the workflow is triggered for the
-							// req id
-							req.setRequestStatusCode("33");
-							if ((StatusConstants.REQUEST_NEW.toString().equals(req.getRequestStatusCode()))) {
-
-								// call method
-								System.err.println("check2 at blockTypeFilterDetrmination");
-								ResponseEntity btdSalesOrderResponse = null;
-								try {
-									btdSalesOrderResponse = btdService
+									// call method
+									ResponseEntity btdSalesOrderResponse = btdService
 											.blockTypeFilterBasedOnSoId(salesDocHeaderDtoFromEcc.getSalesOrderNum());
-								} catch (Exception e) {
-									System.err.println(
-											"[odataConsuming service][saveDataToHanaDb] Exception blockTypeFilterBasedOnSoId: "
-													+ e.getMessage());
-									e.printStackTrace();
-								}
-								System.err.println("[odataConsuming service][saveDataToHanaDb] btdSalesOrderResponse: "+btdSalesOrderResponse);
-								Map<DkshBlockConstant, Object> dataFromBtd = null;
-								if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
-									dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
-									System.err.println("[odataConsuming service][saveDataToHanaDb] dataFromBtd"+dataFromBtd);
+									Map<DkshBlockConstant, Object> dataFromBtd = null;
+									if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
+										dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
+									}
+
+									triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
+									req.setRequestStatusCode(StatusConstants.REQUEST_IN_PROGRESS.toString());
+									// updating the req status to in progress as
+									// worflow is triggered
+									requestMasterService.updateRequestMaster(req);
+									System.err.println("STEP 20 workflow triggered successfully for ="
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+								} else {
+									System.err.println("STEP 20 workflow already exist for  ="
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
 								}
 
-								try {
-									triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
-								} catch (Exception e) {
-									System.err.println(
-											"[odataConsuming service][saveDataToHanaDb] Exception triggeringWorkFlow: " + e.getMessage());
-									e.printStackTrace();
-								}
-								req.setRequestStatusCode(StatusConstants.REQUEST_IN_PROGRESS.toString());
-								// updating the req status to in progress as
-								// worflow is triggered
-								// Below line commented by Awadhesh Kumar
-								// requestMasterService.updateRequestMaster(req);
-								System.err.println("STEP 20 workflow triggered successfully for ="
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
-							} else {
-								System.err.println("STEP 20 workflow already exist for  ="
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
 							}
+							/*
+							 * triggeringWorkFlow(salesDocHeaderDto);
+							 * System.err.println(
+							 * "STEP 20 workflow triggered successfully for =" +
+							 * salesDocHeaderDto.getSalesOrderNum());
+							 */
+						} else {
+							schedulerLogService.saveInDB(new SchedulerTableDto(
+									"Exception occured in saving data in Sales order table and sales order number is : "
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
+									new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 
 						}
-						/*
-						 * triggeringWorkFlow(salesDocHeaderDto);
-						 * System.err.println(
-						 * "STEP 20 workflow triggered successfully for =" +
-						 * salesDocHeaderDto.getSalesOrderNum());
-						 */
-					} else {
-						schedulerLogService.saveInDB(new SchedulerTableDto(
-								"Sales Order In Hana is not null and sales order number is : "
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
-								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 
 					}
+				} else if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("U")) {
 
-				}
+					/*
+					 * if exist in Hana dB and Active workflow is there then
+					 * just update the SO in Hana if does not exist in hana dB
+					 * then create in Hana DB and trigger the workflow also just
+					 * like I Mode
+					 */
 
-			} else if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("R")) {
-				List<RequestMasterDto> reqList = requestMasterService
-						.getRequestMasterById(salesDocHeaderDtoFromEcc.getReqMasterId());
+					SalesDocHeaderDto salesOrderDtoFromHana = (SalesDocHeaderDto) salesDocHeaderService
+							.getSalesDocHeaderById(salesDocHeaderDtoFromEcc.getSalesOrderNum()).getData();
+					System.err.println("sales order data came from hana : " + salesOrderDtoFromHana);
 
-				RequestMasterDto req1 = null;
-				if (!reqList.isEmpty()) {
-					req1 = reqList.get(0);
-				}
+					if (salesOrderDtoFromHana != null) {
 
-				if (StatusConstants.REQUEST_NEW.toString().equals(req1.getRequestStatusCode())) {
+						Set<String> decisionSetIdList = new HashSet<>();
+						salesOrderDtoFromHana.getSalesDocItemList()
+								.forEach(itemInHana -> decisionSetIdList.add(itemInHana.getDecisionSetId()));
 
-					// i need to check whether req have status for which i
-					// need to get info
+						System.err.println("Decision Set id List in a sales order : "
+								+ salesOrderDtoFromHana.getSalesOrderNum() + " and list : " + decisionSetIdList);
 
-					ResponseEntity saveSalesDocHeader = salesDocHeaderService
-							.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
-					System.err.println(" ResponseEntity After Saving  = " + saveSalesDocHeader);
+						Map<String, SalesDocItemDto> mapOfItemsFromHana = salesOrderDtoFromHana.getSalesDocItemList()
+								.stream().collect(Collectors.toMap(SalesDocItemDto::getSalesItemOrderNo, item -> item,
+										(oldValue, newValue) -> newValue, LinkedHashMap::new));
+
+						salesDocHeaderDtoFromEcc.getSalesDocItemList().forEach(itemInECC -> {
+
+							if (!HelperClass.checkString(itemInECC.getReasonForRejection())
+									&& mapOfItemsFromHana.containsKey(itemInECC.getSalesItemOrderNo())
+									&& HelperClass.checkString(mapOfItemsFromHana.get(itemInECC.getSalesItemOrderNo())
+											.getReasonForRejection())) {
+
+								ResponseEntity responseFromHanaForAllTheItemStatusDtos = salesOrderItemStatusService
+										.getItemsStatusFromDecisionSetAndItemNumForAllLevels(mapOfItemsFromHana
+												.get(itemInECC.getSalesItemOrderNo()).getDecisionSetId(),
+												itemInECC.getSalesItemOrderNo());
+
+								System.err.println("responseFromHanaForAllTheItemStatusDtos : "
+										+ responseFromHanaForAllTheItemStatusDtos);
+
+								if (responseFromHanaForAllTheItemStatusDtos.getStatus()
+										.equals(ResponseStatus.SUCCESS)) {
+
+									List<SalesOrderItemStatusDto> listOfSalesOrderItemStatus = (List<SalesOrderItemStatusDto>) responseFromHanaForAllTheItemStatusDtos
+											.getData();
+									listOfSalesOrderItemStatus.forEach(itemStatusDto -> {
+										itemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
+										itemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
+
+										// Save the updated Item Status
+										salesOrderItemStatusService.saveOrUpdateSalesOrderItemStatus(itemStatusDto);
+
+									});
+
+								}
+
+							}
+
+						});
+
+						decisionSetIdList.forEach(decisionSetId -> {
+							ResponseEntity responseForPendingDecisionSetId = salesOrderItemStatusService
+									.getAllTheUpcomingItemStatusesForPerticularDecisionSetAndItemNotBlocked(
+											decisionSetId);
+
+							System.err.println("responseForPendingDecisionSetId : " + responseForPendingDecisionSetId);
+
+							if (responseForPendingDecisionSetId.getStatusCode().value() == HttpStatus.NO_CONTENT
+									.value()) {
+
+								System.err.println(
+										"Trigger Ime is successfully triggered for decision set id : " + decisionSetId);
+								triggerImeService.triggerIme(decisionSetId);
+							}
+
+						});
+
+						salesDocHeaderService.updateSalesDocHeaderForSchedular(salesDocHeaderDtoFromEcc);
+						schedulerLogService.saveInDB(new SchedulerTableDto(
+								"updated SalesOrder data in hana dB with sales order number with U mode is =  "
+										+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
+								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+					} else {
+
+						ResponseEntity saveSalesDocHeader = salesDocHeaderService
+								.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
+						System.err.println(" ResponseEntity After Saving  = " + saveSalesDocHeader);
+
+						if (ResponseStatus.SUCCESS == saveSalesDocHeader.getStatus()) {
+							schedulerLogService.saveInDB(new SchedulerTableDto(
+									"STEP 16 saved data in Sales order table and sales order number is := "
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum() + " with mode ="
+											+ salesDocHeaderDtoFromEcc.getFlagFromScheduler(),
+									new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+
+							// call method
+							ResponseEntity btdSalesOrderResponse = btdService
+									.blockTypeFilterBasedOnSoId(salesDocHeaderDtoFromEcc.getSalesOrderNum());
+							Map<DkshBlockConstant, Object> dataFromBtd = null;
+							if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
+								dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
+							}
+
+							triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
+							System.err.println("STEP 20 workflow triggered successfully for ="
+									+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+						} else {
+							schedulerLogService.saveInDB(new SchedulerTableDto(
+									"Exception occured in saving data in Sales order table and sales order number is : "
+											+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
+									new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+
+						}
+
+					}
 
 					// Updating base version for items
 					// updateBaseVersionForEachItem(salesDocHeaderDto.getSalesDocItemList());
 
-					if (ResponseStatus.SUCCESS == saveSalesDocHeader.getStatus()) {
-						schedulerLogService.saveInDB(new SchedulerTableDto(
-								"STEP 16 saved data in Sales order table and sales order number is := "
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum() + " with mode ="
-										+ salesDocHeaderDtoFromEcc.getFlagFromScheduler(),
-								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-
-						SalesDocHeaderDto soDto = (SalesDocHeaderDto) salesDocHeaderService
-								.getSalesDocHeadersWithoutItems(salesDocHeaderDtoFromEcc.getSalesOrderNum()).getData();
-						if (soDto != null && soDto.getReqMasterId() != null) {
-							List<RequestMasterDto> reqList2 = requestMasterService
-									.getRequestMasterById(soDto.getReqMasterId());
-							RequestMasterDto req = null;
-							if (!reqList2.isEmpty()) {
-								req = reqList2.get(0);
-							}
-							// checking if the workflow is triggered for the
-							// req id
-							if (req != null
-									&& (StatusConstants.REQUEST_NEW.toString().equals(req.getRequestStatusCode()))) {
-
-								// call method
-								ResponseEntity btdSalesOrderResponse = btdService
-										.blockTypeFilterBasedOnSoId(salesDocHeaderDtoFromEcc.getSalesOrderNum());
-								Map<DkshBlockConstant, Object> dataFromBtd = null;
-								if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
-									dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
-								}
-
-								triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
-								req.setRequestStatusCode(StatusConstants.REQUEST_IN_PROGRESS.toString());
-								// updating the req status to in progress as
-								// worflow is triggered
-								requestMasterService.updateRequestMaster(req);
-								System.err.println("STEP 20 workflow triggered successfully for ="
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
-							} else {
-								System.err.println("STEP 20 workflow already exist for  ="
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
-							}
-
-						}
-						/*
-						 * triggeringWorkFlow(salesDocHeaderDto);
-						 * System.err.println(
-						 * "STEP 20 workflow triggered successfully for =" +
-						 * salesDocHeaderDto.getSalesOrderNum());
-						 */
-					} else {
-						schedulerLogService.saveInDB(new SchedulerTableDto(
-								"Exception occured in saving data in Sales order table and sales order number is : "
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
-								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-
-					}
-
-				}
-			} else if (salesDocHeaderDtoFromEcc.getFlagFromScheduler().equalsIgnoreCase("U")) {
-
-				/*
-				 * if exist in Hana dB and Active workflow is there then just
-				 * update the SO in Hana if does not exist in hana dB then
-				 * create in Hana DB and trigger the workflow also just like I
-				 * Mode
-				 */
-
-				SalesDocHeaderDto salesOrderDtoFromHana = (SalesDocHeaderDto) salesDocHeaderService
-						.getSalesDocHeaderById(salesDocHeaderDtoFromEcc.getSalesOrderNum()).getData();
-				System.err.println("sales order data came from hana : " + salesOrderDtoFromHana);
-
-				if (salesOrderDtoFromHana != null) {
-
-					Set<String> decisionSetIdList = new HashSet<>();
-					salesOrderDtoFromHana.getSalesDocItemList()
-							.forEach(itemInHana -> decisionSetIdList.add(itemInHana.getDecisionSetId()));
-
-					System.err.println("Decision Set id List in a sales order : "
-							+ salesOrderDtoFromHana.getSalesOrderNum() + " and list : " + decisionSetIdList);
-
-					Map<String, SalesDocItemDto> mapOfItemsFromHana = salesOrderDtoFromHana.getSalesDocItemList()
-							.stream().collect(Collectors.toMap(SalesDocItemDto::getSalesItemOrderNo, item -> item,
-									(oldValue, newValue) -> newValue, LinkedHashMap::new));
-
-					salesDocHeaderDtoFromEcc.getSalesDocItemList().forEach(itemInECC -> {
-
-						if (!HelperClass.checkString(itemInECC.getReasonForRejection())
-								&& mapOfItemsFromHana.containsKey(itemInECC.getSalesItemOrderNo())
-								&& HelperClass.checkString(mapOfItemsFromHana.get(itemInECC.getSalesItemOrderNo())
-										.getReasonForRejection())) {
-
-							ResponseEntity responseFromHanaForAllTheItemStatusDtos = salesOrderItemStatusService
-									.getItemsStatusFromDecisionSetAndItemNumForAllLevels(
-											mapOfItemsFromHana.get(itemInECC.getSalesItemOrderNo()).getDecisionSetId(),
-											itemInECC.getSalesItemOrderNo());
-
-							System.err.println("responseFromHanaForAllTheItemStatusDtos : "
-									+ responseFromHanaForAllTheItemStatusDtos);
-
-							if (responseFromHanaForAllTheItemStatusDtos.getStatus().equals(ResponseStatus.SUCCESS)) {
-
-								List<SalesOrderItemStatusDto> listOfSalesOrderItemStatus = (List<SalesOrderItemStatusDto>) responseFromHanaForAllTheItemStatusDtos
-										.getData();
-								listOfSalesOrderItemStatus.forEach(itemStatusDto -> {
-									itemStatusDto.setItemStatus(StatusConstants.REJECTED_FROM_ECC);
-									itemStatusDto.setVisiblity(StatusConstants.REJECTED_FROM_ECC);
-
-									// Save the updated Item Status
-									salesOrderItemStatusService.saveOrUpdateSalesOrderItemStatus(itemStatusDto);
-
-								});
-
-							}
-
-						}
-
-					});
-
-					decisionSetIdList.forEach(decisionSetId -> {
-						ResponseEntity responseForPendingDecisionSetId = salesOrderItemStatusService
-								.getAllTheUpcomingItemStatusesForPerticularDecisionSetAndItemNotBlocked(decisionSetId);
-
-						System.err.println("responseForPendingDecisionSetId : " + responseForPendingDecisionSetId);
-
-						if (responseForPendingDecisionSetId.getStatusCode().value() == HttpStatus.NO_CONTENT.value()) {
-
-							System.err.println(
-									"Trigger Ime is successfully triggered for decision set id : " + decisionSetId);
-							triggerImeService.triggerIme(decisionSetId);
-						}
-
-					});
-
-					salesDocHeaderService.updateSalesDocHeaderForSchedular(salesDocHeaderDtoFromEcc);
-					schedulerLogService.saveInDB(new SchedulerTableDto(
-							"updated SalesOrder data in hana dB with sales order number with U mode is =  "
-									+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
-							new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-				} else {
-
-					ResponseEntity saveSalesDocHeader = salesDocHeaderService
-							.saveSalesDocHeader(salesDocHeaderDtoFromEcc);
-					System.err.println(" ResponseEntity After Saving  = " + saveSalesDocHeader);
-
-					if (ResponseStatus.SUCCESS == saveSalesDocHeader.getStatus()) {
-						schedulerLogService.saveInDB(new SchedulerTableDto(
-								"STEP 16 saved data in Sales order table and sales order number is := "
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum() + " with mode ="
-										+ salesDocHeaderDtoFromEcc.getFlagFromScheduler(),
-								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-
-						// call method
-						ResponseEntity btdSalesOrderResponse = btdService
-								.blockTypeFilterBasedOnSoId(salesDocHeaderDtoFromEcc.getSalesOrderNum());
-						Map<DkshBlockConstant, Object> dataFromBtd = null;
-						if (btdSalesOrderResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
-							dataFromBtd = (Map<DkshBlockConstant, Object>) btdSalesOrderResponse.getData();
-						}
-
-						triggeringWorkFlow(salesDocHeaderDtoFromEcc, dataFromBtd);
-						System.err.println("STEP 20 workflow triggered successfully for ="
-								+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
-					} else {
-						schedulerLogService.saveInDB(new SchedulerTableDto(
-								"Exception occured in saving data in Sales order table and sales order number is : "
-										+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
-								new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-
-					}
-
 				}
 
-				// Updating base version for items
-				// updateBaseVersionForEachItem(salesDocHeaderDto.getSalesDocItemList());
+			} catch (Exception e) {
+				System.err.println("exception occurred during saving to hana db for sales order with id = "
+						+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
+				e.printStackTrace();
 
+				schedulerLogService.saveInDB(new SchedulerTableDto(
+						"exception occurred during saving to hana db for sales order with id = "
+								+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
+						new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 			}
-
-			 }
-			 catch (Exception e) {
-					System.err.println("exception occurred during saving to hana db for sales order with id = "
-							+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
-					e.printStackTrace();
-
-					schedulerLogService.saveInDB(new SchedulerTableDto(
-							"exception occurred during saving to hana db for sales order with id = "
-									+ salesDocHeaderDtoFromEcc.getSalesOrderNum(),
-							new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
-				}
 
 		}
 
@@ -1543,7 +1563,8 @@ public class ODataConsumingService {
 	 */
 	public void triggeringWorkFlow(SalesDocHeaderDto salesDocHeaderDto, Map<DkshBlockConstant, Object> dataFromBtd) {
 		System.err.println("[odata Consuming service][triggeringWorkFlow] starts..");
-		System.err.println("[odata Consuming service][triggeringWorkFlow] salesDocHeaderDto: "+salesDocHeaderDto+" dataFromBtd: "+dataFromBtd);
+		System.err.println("[odata Consuming service][triggeringWorkFlow] salesDocHeaderDto: " + salesDocHeaderDto
+				+ " dataFromBtd: " + dataFromBtd);
 		ContextDto context = new ContextDto("blocktypedeterminationworkflow", salesDocHeaderDto, dataFromBtd);
 		System.err.println("Context in wf for sales order " + salesDocHeaderDto.getSalesOrderNum() + " : " + context);
 		WorkFlowTriggerFromJava workFlowTriggerFromJava = new WorkFlowTriggerFromJava();

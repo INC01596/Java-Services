@@ -332,7 +332,7 @@ public ResponseEntity<Object> getManageServiceObd(ObdDto dto, Pageable pageable)
 	     
 	     String invo=null;
 			
-	     if(!ServicesUtils.isEmpty(dto.getStpId()))
+	     if(!ServicesUtils.isEmpty(dto.getInvoiceStatus()))
 	     {
 		    invo = listToString(dto.getInvoiceStatus());
 	     }

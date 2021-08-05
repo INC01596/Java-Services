@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Embeddable
 public @Data class ScheduleLinePrimaryKeyDo implements Serializable {
@@ -27,6 +28,7 @@ public @Data class ScheduleLinePrimaryKeyDo implements Serializable {
 	@Column(name = "SCHEDULE_LINE_ID", length = 100)
 	private String scheduleLineNum;
 
+	@ToString.Exclude
 	@JsonBackReference("task-soItem")
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "SALES_ORDER_NUM", nullable = false, referencedColumnName = "SALES_ORDER_NUM"),

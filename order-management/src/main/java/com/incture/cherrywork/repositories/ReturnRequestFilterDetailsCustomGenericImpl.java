@@ -417,7 +417,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 			System.err.println(
 					"fetchSalesOrdersFromCustomerPoList starts and customerPoList size: " + customerPoList.size());
 			System.err.println("fetchSalesOrdersFromCustomerPoList starts and customerPoList: " + customerPoList);
-			String query = "from SalesDocHeaderDo h where h.customerPo in (:list) order by customerPo desc";
+			String query = "from SalesDocHeaderDo h where h.customerPo in (:list) order by salesOrderDate desc";
 			List<SalesDocHeaderDo> list1 = new ArrayList<>();
 			try {
 				Query q1 = entityManager.createQuery(query);

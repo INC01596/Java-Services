@@ -29,6 +29,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -56,7 +57,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -120,6 +121,7 @@ import com.incture.cherrywork.repositories.IReturnRequestHeaderRepository;
 
 import com.incture.cherrywork.repositories.IReturnRequestHeaderRepositoryNew;
 import com.incture.cherrywork.repositories.IReturnRequestItemRepository;
+import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
@@ -156,6 +158,9 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 	@Autowired
 	private IReturnRequestItemRepository returnItemRepo;
+
+	@Autowired
+	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
 
 	@Autowired
 	private ISalesOrderLevelStatusRepository salesOrderLevelStatusRepository;
@@ -1848,9 +1853,27 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							System.err.println(
 									"mapOfDistinctCustomerPoWithRoType : " + mapOfDistinctCustomerPoWithRoType);
 
-							List<SalesDocHeaderDto> returnOrderList = fetchSalesDocHeaderDtoListFromCustomerPoNumbersForNewDac(
+							List<SalesDocHeaderDto> returnOrderList1 = fetchSalesDocHeaderDtoListFromCustomerPoNumbersForNewDac(
 									mapOfDistinctCustomerPoWithRoType.keySet().stream().collect(Collectors.toList()),
 									map, flagForAllRights, flagForEmptyInput);
+							List<SalesDocHeaderDto> returnOrderList = new ArrayList<SalesDocHeaderDto>();
+							List<String> customerPoList = new ArrayList<String>();
+							for (SalesDocHeaderDto dto : returnOrderList1) {
+								if (!customerPoList.contains(dto.getCustomerPo())) {
+									String createdBy = salesOrderHeaderRepository
+											.findBySalesHeaderId(dto.getSalesOrderNum(), "OR");
+									if (createdBy != null)
+										dto.setCreatedBy(createdBy);
+									else {
+										createdBy = returnHeaderRepo.findCreatedBy(dto.getCustomerPo());
+										if (createdBy != null)
+											dto.setCreatedBy(createdBy);
+									}
+									returnOrderList.add(dto);
+									customerPoList.add(dto.getCustomerPo());
+								}
+
+							}
 
 							if (!returnOrderList.isEmpty()) {
 								int min = (indexNum * count) - count;
@@ -2283,6 +2306,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					} catch (Exception e) {
 						// logger.error("Current level is the last level");
 						System.err.println("Current level is the last level");
+						e.printStackTrace();
 					}
 
 					// next level dto is null means current level is last level
@@ -2325,7 +2349,8 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 				});
 
 				// commenting call to ecc
-				//ResponseEntity<?> responseFromECC = new ResponseEntity<>("", HttpStatus.OK);
+				// ResponseEntity<?> responseFromECC = new ResponseEntity<>("",
+				// HttpStatus.OK);
 				ResponseEntity<?> responseFromECC = postSalesOrderToEcc(returnOrderDto, uniqueDecisionSetAndLevelIdMap);
 
 				System.err.println("2716 responseFromECC : " + responseFromECC);
@@ -2342,10 +2367,12 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							List<SalesOrderTaskStatusDo> taskStatusDoList = returnHeaderRepo
 									.getTaskStatusDataFromTaskSerialIdRepository(ComConstants.TASK_COMPLETE,
 											item.getTaskStatusSerialId());
+
 							List<SalesOrderTaskStatusDto> taskStatusDtoList = new ArrayList<SalesOrderTaskStatusDto>();
 							if (taskStatusDoList != null) {
 								taskStatusDtoList = ObjectMapperUtils.mapAll(taskStatusDoList,
 										SalesOrderTaskStatusDto.class);
+								System.err.println("taskStatusDtoList" + taskStatusDtoList.toString());
 							}
 							if (taskStatusDtoList != null && !taskStatusDtoList.isEmpty()) {
 								mapOfTaskIdWithTaskStatusData.put(item.getTaskStatusSerialId(),
@@ -2379,6 +2406,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							// item status data in other levels and tasks where
 							// item status as 9, update status data as IR and
 							// visibility as IIR
+							System.err.println("updating ItemStatusAndVisibilityForIIRCase");
 							returnHeaderRepo.updateItemStatusAndVisibilityForIIRCase(ComConstants.ITEM_INDIRECT_REJECT,
 									ComConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT, item.getDecisionSetId(),
 									item.getOrderItemNum(), item.getTaskId());
@@ -2397,7 +2425,8 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							uniqueLevelSerialIdList.add(entry.getValue().getLevelStatusSerialId());
 						}
 
-						List<SalesOrderItemStatusDto> itemStatusDtoList = getItemStatusDataItemStatusAsBlockedFromTaskSerialId(entry.getKey());
+						List<SalesOrderItemStatusDto> itemStatusDtoList = getItemStatusDataItemStatusAsBlockedFromTaskSerialId(
+								entry.getKey());
 
 						if (itemStatusDtoList.isEmpty() || itemStatusDtoList == null) {
 
@@ -2449,14 +2478,16 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					System.err.println("uniqueLevelSerialIdList : " + uniqueLevelSerialIdList);
 
 					// Update level status
-					
+
 					uniqueLevelSerialIdList.stream().forEach(levelSerialId -> {
 
-						List<SalesOrderTaskStatusDo> taskStatusDoList = returnHeaderRepo.getAllTaskFromLevelSerialIdRepository(ComConstants.TASK_COMPLETE, levelSerialId);
+						List<SalesOrderTaskStatusDo> taskStatusDoList = returnHeaderRepo
+								.getAllTaskFromLevelSerialIdRepository(ComConstants.TASK_COMPLETE, levelSerialId);
 						List<SalesOrderTaskStatusDto> taskStatusDtoList = null;
-						
-						if(taskStatusDoList != null)
-							taskStatusDtoList = ObjectMapperUtils.mapAll(taskStatusDoList, SalesOrderTaskStatusDto.class);
+
+						if (taskStatusDoList != null)
+							taskStatusDtoList = ObjectMapperUtils.mapAll(taskStatusDoList,
+									SalesOrderTaskStatusDto.class);
 						if (taskStatusDtoList.isEmpty() || taskStatusDtoList == null) {
 
 							// Update level status when all tasks are completed
@@ -2542,7 +2573,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 								// UPCOMING LEVELS AND IF NO ITEM IS IN 'B',
 								// TRIGGER IME
 								List<SalesOrderItemStatusDto> listOfBlockedItems = getItemStatusDataUsingDecisionSetForBlockedItems(
-												uniqueDecisionSetAndLevelId.getKey().getDecisionSetId());
+										uniqueDecisionSetAndLevelId.getKey().getDecisionSetId());
 
 								// logger.error("Upcoming item status for
 								// blocked items : " + listOfBlockedItems);
@@ -2606,7 +2637,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 										// ALL UPCOMING LEVELS AND IF NO ITEM IS
 										// IN 'B', TRIGGER IME
 										List<SalesOrderItemStatusDto> listOfBlockedItems = getItemStatusDataUsingDecisionSetForBlockedItems(
-														uniqueDecisionSetAndLevelId.getKey().getDecisionSetId());
+												uniqueDecisionSetAndLevelId.getKey().getDecisionSetId());
 
 										// logger.error("Upcoming item status
 										// for blocked items : " +
@@ -2954,12 +2985,14 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							item.setItemText(itemData.getLevel() + ", approved by " + returnOrderDto.getLoggedInUserId()
 									+ " on " + new DateUtils().dateFormatForECC);
 							returnItemList.add(item);
+
 						}
 					} else {
 						item.setApprove_Rej("PA");
 						item.setItemText(itemData.getLevel() + ", approved by " + returnOrderDto.getLoggedInUserId()
 								+ " on " + new DateUtils().dateFormatForECC);
 						returnItemList.add(item);
+
 					}
 
 				} else if (itemData.getAcceptOrReject().equalsIgnoreCase("R")) {
@@ -2976,6 +3009,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					returnHeaderRepo.updateReasonOfRejectionInSalesOrder(orderNum, itemData.getOrderItemNum(),
 							itemData.getReasonForRejection(), itemData.getReasonForRejectionText());
 					returnItemList.add(item);
+					batchHeaderData.setDlvBlock("01");
 
 				}
 			}
@@ -3201,7 +3235,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 						+ "' and item.TASK_STATUS_SERIAL_ID = '" + taskSerialId + "'",
 				NativeSqlResultMapping.SALES_DOC_ITEM_STATUS_DATA).getResultList();
 	}
-	
+
 	public List<SalesOrderItemStatusDto> getItemStatusDataUsingDecisionSetForBlockedItems(String decisionSetId) {
 
 		return entityManager
@@ -3213,6 +3247,5 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 				.getResultList();
 
 	}
-
 
 }

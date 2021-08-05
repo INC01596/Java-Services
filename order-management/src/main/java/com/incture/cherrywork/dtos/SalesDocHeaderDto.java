@@ -162,7 +162,7 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 
 	public SalesDocHeaderDto(String salesOrderNum, String deliveryBlockCode) {
 		super();
-		this.salesOrderNum = salesOrderNum;
+		//this.salesOrderNum = salesOrderNum;
 		this.deliveryBlockCode = deliveryBlockCode;
 	}
 

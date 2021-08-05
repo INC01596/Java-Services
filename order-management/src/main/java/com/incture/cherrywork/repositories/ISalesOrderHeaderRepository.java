@@ -200,5 +200,8 @@ public interface ISalesOrderHeaderRepository extends JpaRepository<SalesOrderHea
 
 	public Page<SalesOrderHeader> findAllOPI(@Param("documentType") String documentType,
 			@Param("invoiceStatus") List<String> invoiceStatus, Pageable pageable);
+
 	//
+	@Query("select createdBy from  SalesOrderHeader where salesHeaderId=?1 and documentType=?2")
+	String findBySalesHeaderId(String id, String docType);
 }
