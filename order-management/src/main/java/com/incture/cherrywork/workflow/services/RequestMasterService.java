@@ -96,6 +96,7 @@ public class RequestMasterService implements IRequestMasterService {
 				if (msg == null) {
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST, "CREATION_FAILED", ResponseStatus.FAILED);
 				}
+				System.err.println("updateRequestMster "+msg);
 				return new ResponseEntity(requestMasterDto, HttpStatus.CREATED, msg, ResponseStatus.SUCCESS);
 			} else {
 				return new ResponseEntity("", HttpStatus.BAD_REQUEST,

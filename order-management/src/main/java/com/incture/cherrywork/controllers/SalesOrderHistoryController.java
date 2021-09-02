@@ -16,8 +16,6 @@ import com.incture.cherrywork.workflow.services.SalesOrderHistoryService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/salesOrder")
 public class SalesOrderHistoryController {
 

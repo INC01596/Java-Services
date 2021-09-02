@@ -22,8 +22,6 @@ import com.incture.cherrywork.services.new_workflow.SalesOrderTaskStatusService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/taskStatus")
 public class SalesOrderTaskStatusController {
 

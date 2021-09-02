@@ -434,6 +434,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 			// list1.get(0)" + list1.get(0).toString());
 			System.err.println("[fetchSalesOrdersFromCustomerPoList] list1 size: " + list1.size());
 			List<SalesDocHeaderDto> list2 = ObjectMapperUtils.mapAll(list1, SalesDocHeaderDto.class);
+			list2 = list2.subList(0, Math.min(list2.size(),100));
 			System.err.println("list2: " + list2);
 			return list2;
 		} catch (Exception e) {
@@ -638,6 +639,7 @@ public class ReturnRequestFilterDetailsCustomGenericImpl implements ReturnReques
 			Boolean flagForAllRightsItemLevel) {
 		StringBuilder query = new StringBuilder();
 
+		System.err.println("[fetchItemDataInReturnOrderHavingTaskDtoListForNewDac] starts with salesOrderNumList "+salesOrderNumList+" userId: "+userId+" mapOfAttributeValues "+mapOfAttributeValues);
 		if (!flagForAllRightsItemLevel) {
 
 			// When inclusion and exclusion both are there

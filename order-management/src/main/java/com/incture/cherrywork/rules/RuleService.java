@@ -1,6 +1,5 @@
 package com.incture.cherrywork.rules;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,25 +35,9 @@ public abstract class RuleService {
 		CloseableHttpClient httpClient = null;
 		httpClient = getHTTPClient();
 
-		String rulesRuntimeUrl = "https://bpmrulesruntimerules-uk81qreeol.ap1.hana.ondemand.com/"; // url
-																									// of
-																									// bpmruntimerules
-																									// picked
-																									// from
-																									// DKSH
-																									// dev
-																									// tenant
-		String xsrfTokenUrl = rulesRuntimeUrl + "rules-service/rest/v2/xsrf-token"; // sap
-																					// cloud
-																					// business
-																					// rules
-																					// api
-																					// -
-																					// v2
-																					// version
-																					// for
-																					// x-csrf
-																					// token
+		String rulesRuntimeUrl = "https://bpmrulesruntimerules-uk81qreeol.ap1.hana.ondemand.com/"; // url  of bpmruntimerules picked from DKSH dev tenant
+																									
+		String xsrfTokenUrl = rulesRuntimeUrl + "rules-service/rest/v2/xsrf-token"; // sap cloud business rules api-v2 version for x-csrf token
 
 		String invokeUrl = rulesRuntimeUrl + "rules-service/rest/v2/workingset-rule-services"; // sap
 																								// cloud
@@ -118,8 +101,7 @@ public abstract class RuleService {
 		CloseableHttpResponse response = null;
 		String xsrfToken = null;
 		try {
-			
-			
+
 			httpGet = new HttpGet(requestURL);
 
 			String auth = "Basic UDIwMDA5ODI0Nzc6M1BnMTNlYzAyMg==";
@@ -155,4 +137,3 @@ public abstract class RuleService {
 		return httpClient;
 	}
 }
-

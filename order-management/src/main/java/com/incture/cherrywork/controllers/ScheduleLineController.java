@@ -18,8 +18,6 @@ import com.incture.cherrywork.services.ScheduleLineService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/scheduleLine")
 public class ScheduleLineController {
 

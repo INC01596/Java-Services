@@ -44,8 +44,9 @@ public class SchedulerController {
 	//private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
 	static boolean schedulerSwitch = true;
+	static final int interval = 5;
 
-	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:50")).plusMinutes(30);
+	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:30")).plusMinutes(5);
 
 	@Autowired
 	private ODataConsumingService oDataConsumingService;
@@ -58,10 +59,10 @@ public class SchedulerController {
 
 	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
-	  @Scheduled(cron = "0 0/3 * * * ?")
+	  @Scheduled(cron = "0 0/"+interval+" * * * ?")
 	//@Scheduled(cron = "0 12 * * * ?")
 	public void schedulerTrigger() {
-		System.err.println("STEP 1 SCHEDULER ENTER time " + "=" + LocalDateTime.now(ZoneId.of("GMT+08:00"))
+		System.err.println("STEP 1 SCHEDULER ENTER TIME " + "=" + LocalDateTime.now(ZoneId.of("GMT+05:30"))
 				+ " " + "com.incture.controllers.SchedulerController*****************");
 
 		/*
@@ -69,7 +70,7 @@ public class SchedulerController {
 		 * SchedulerTableDto("STEP 1 SCHEDULER ENTER time ", new
 		 * Date().toString(),LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 		 * 
-		 */ schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+08:00")).plusMinutes(30);
+		 */ schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:30")).plusMinutes(5);
 		// if scheduler is on then only data will come using below method
 		if (schedulerSwitch) {
 			oDataConsumingService.mainScheduler();
@@ -77,8 +78,8 @@ public class SchedulerController {
 			System.err.println("scheduler is switched OFF now ");
 		}
 
-		System.err.println("SCHEDULER EXIT time " + "=" + LocalDateTime.now(ZoneId.of("GMT+08:00"))
-				+ "  according to Malasiya " + "com.incture.controllers.SchedulerController*****************");
+		System.err.println("SCHEDULER EXIT time " + "=" + LocalDateTime.now(ZoneId.of("GMT+05:30"))
+				+ "  according to IST " + "com.incture.controllers.SchedulerController*****************");
 		/*
 		 * schedulerTableService.saveInDB( new
 		 * SchedulerTableDto("Last STEP SCHEDULER EXIT time ", new
@@ -96,11 +97,11 @@ public class SchedulerController {
 			// return "NO" +" scheduler is switched OFF now ";
 		} else {
 
-			Duration between = Duration.between(LocalDateTime.now(ZoneId.of("GMT+08:00")), schedulerFutureTime);
+			Duration between = Duration.between(LocalDateTime.now(ZoneId.of("GMT+05:30")), schedulerFutureTime);
 			schedulerSwitch = parameter;
 			System.err.println("scheduler is switched ON now and will start in =  " + between);
 			return new ResponseEntity("ON ", HttpStatus.OK, "Scheduler is switched ON now and will start in =   "
-					+ between + "   ,on Malaysian time =  " + schedulerFutureTime, ResponseStatus.SUCCESS);
+					+ between + "   ,on IST =  " + schedulerFutureTime, ResponseStatus.SUCCESS);
 			// return "YES " + " ,scheduler is switched ON now and will start in
 			// = " + between + " ,on Malaysian time =
 			// "+LocalDateTime.now(ZoneId.of("GMT+08:00"));
@@ -108,16 +109,19 @@ public class SchedulerController {
 	}
 
 	@GetMapping("/schedulerRunningStatus")
+	@ApiOperation(value = "/schedulerRunningStatus")
 	public boolean schedulerRunningStatus() {
 		return schedulerSwitch;
 	}
 
 	@GetMapping("/getAllLogsOfScheduler")
+	@ApiOperation(value = "/getAllLogsOfScheduler")
 	public ResponseEntity listAllSchedulerLogs() {
 		return schedulerTableService.listAllLog();
 	}
 
 	@GetMapping("/getAllLogsOfSchedulerWithDateRange/{startDate}&{endDate}")
+	@ApiOperation(value = "/getAllLogsOfSchedulerWithDateRange/{startDate}&{endDate}")
 	public ResponseEntity listAllSchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
 		return schedulerTableService.listAllLogsInIst(
 				Instant.ofEpochMilli(Long.parseLong(startDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
@@ -127,17 +131,20 @@ public class SchedulerController {
 	}
 
 	@PostMapping("/identifySalesOrdersToRetriggerWorkflow")
+	@ApiOperation(value = "/identifySalesOrdersToRetriggerWorkflow")
 	public ResponseEntity identifySalesOrdersToRetriggerWorkflow(
 			@RequestBody WorkflowTriggerInputDto workflowTriggerDto) {
 		return oDataConsumingService.identifySalesOrdersToRetriggerWorkflow(workflowTriggerDto);
 	}
 
 	@PostMapping("/reTriggerSalesOrders")
+	@ApiOperation(value = "/reTriggerSalesOrders")
 	public ResponseEntity reTriggerSalesOrders(@RequestBody List<String> salesOrderNumList) {
 		return oDataConsumingService.reTriggerSalesOrders(salesOrderNumList);
 	}
 
 	@PostMapping("/schedulerTriggerManual")
+	@ApiOperation(value = "/schedulerTriggerManual")
 	public ResponseEntity schedulerTriggerManual(@RequestBody SchedulerTimeDto dto) {
 			return oDataConsumingService.manualScheduler(dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
 					dto.getEndTime());

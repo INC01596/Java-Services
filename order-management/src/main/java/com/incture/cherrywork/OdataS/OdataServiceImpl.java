@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -29,7 +31,7 @@ import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incture.cherrywork.Odat.Dto.SalesOrderHeaderOdataDto;
@@ -230,7 +232,7 @@ public class OdataServiceImpl implements OdataService {
 		Map<String, Object> map = DestinationReaderUtil
 				.getDestination(Constants.ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME);
 
-		String url = map.get("URL") + "/sap/opu/odata/sap/ZCC_SALESORDER_DATA_SRV/soheaderSet";
+		String url = map.get("URL") + "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/soheaderSet";
 
 		// TenantContext tenantctx = new HelperClass().getTenantInformation();
 
@@ -647,7 +649,7 @@ public class OdataServiceImpl implements OdataService {
 		Map<String, Object> map = DestinationReaderUtil
 				.getDestination(Constants.ODATA_CONSUMING_UPDATE_IN_ECC_DESTINATION_NAME);
 
-		String url = map.get("URL") + "/sap/opu/odata/sap/ZCC_SALESORDER_DATA_SRV/soheaderSet";
+		String url = map.get("URL") + "/sap/opu/odata/sap/ZCOM_SALESORDER_DATA_SRV/soheaderSet";
 
 		// TenantContext tenantctx = new HelperClass().getTenantInformation();
 

@@ -42,7 +42,7 @@ public @Data class SalesDocHeaderDo implements BaseDo {
 	// private RequestMasterDo reqMaster;
 
 	@Column(name = "REQUEST_ID")
-	private String requestId;
+	private String reqMasterId;
 
 	@Column(name = "SALES_ORDER_DATE")
 	private BigInteger salesOrderDate;
@@ -199,7 +199,7 @@ public @Data class SalesDocHeaderDo implements BaseDo {
 		super();
 		this.salesOrderNum = salesOrderNum;
 		this.salesDocItemList = salesDocItemList;
-		this.requestId = requestId;
+		this.reqMasterId = reqMasterId;
 		this.salesOrderDate = salesOrderDate;
 		this.createdBy = createdBy;
 		this.orderCategory = orderCategory;
@@ -261,12 +261,12 @@ public @Data class SalesDocHeaderDo implements BaseDo {
 		this.salesDocItemList = salesDocItemList;
 	}
 
-	public String getRequestId() {
-		return requestId;
+	public String getRequestMasterId() {
+		return reqMasterId;
 	}
 
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
+	public void setRequestMasterId(String reqMasterId) {
+		this.reqMasterId = reqMasterId;
 	}
 
 	public BigInteger getSalesOrderDate() {

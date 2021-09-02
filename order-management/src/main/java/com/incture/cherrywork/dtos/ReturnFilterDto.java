@@ -10,7 +10,7 @@ public class ReturnFilterDto {
 
 	private Integer pageNo;
 	private String returnReqNumber;
-	private String customerId;
+	private List<String> customerId;
 	private Date createdAt;
 	private String salesOrg;
 	private String requestedBy;

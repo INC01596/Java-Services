@@ -51,6 +51,7 @@ import com.incture.cherrywork.util.ReturnExchangeConstants;
 
 @SuppressWarnings("unused")
 @Service("OdataServices")
+@Transactional
 public class SalesOrderOdataServices {
 
 	// private Logger logger = LoggerFactory.getLogger(OdataServices.class);

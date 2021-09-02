@@ -117,6 +117,7 @@ import com.incture.cherrywork.repositories.IAddressRepository;
 import com.incture.cherrywork.repositories.IAttachmentRepository;
 import com.incture.cherrywork.repositories.IExchangeHeaderRepository;
 import com.incture.cherrywork.repositories.IExchangeItemRepository;
+import com.incture.cherrywork.repositories.INotificationConfigRepository;
 import com.incture.cherrywork.repositories.IReturnRequestHeaderRepository;
 
 import com.incture.cherrywork.repositories.IReturnRequestHeaderRepositoryNew;
@@ -167,6 +168,13 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 	@Autowired
 	private IExchangeHeaderRepository exchangeHeaderRepo;
+	
+	@Autowired
+	private INotificationConfigRepository notificationConfigRepository;
+	
+	@Autowired
+	private NotificationDetailService notificationDetailService;
+
 
 	// @Autowired
 	// private IDataAccessService dataAccessService;
@@ -379,6 +387,27 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					// savedExchangeItems);
 					System.err.println("> savedExchangeItems :  " + savedExchangeItems);
 				}
+			}
+			try {
+
+				String notificationTypeId = "N07";
+				String createdByDesc = null;
+				String soldToParty = null;
+				if(requestData.getReturns() != null){
+					createdByDesc = requestData.getReturns().getCreatedByDesc();
+					soldToParty = requestData.getReturns().getSoldToParty();
+				}
+				else{
+//					String createdByDesc = requestData.getExchange().getCreatedByDesc();
+					soldToParty = requestData.getExchange().getSoldToParty();
+				}
+				if (notificationConfigRepository.checkAlertForUser(createdByDesc,
+						notificationTypeId)) {
+					notificationDetailService.saveNotification(createdByDesc,
+							soldToParty, null, "01", "01", notificationTypeId, "Start", false);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
 		} catch (Exception e) {
@@ -904,6 +933,27 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					mailUtil.sendMailAlert(receipentId, "", ReturnExchangeConstants.RETURN_REQUEST_MAIL_SUBJECT,
 							message, "");
 				}
+				try {
+					String notificationTypeId = "N07";
+					String createdByDesc = null;
+					String soldToParty = null;
+					if(requestData.getReturns() != null){
+						createdByDesc = requestData.getReturns().getCreatedByDesc();
+						soldToParty = requestData.getReturns().getSoldToParty();
+					}
+					else{
+//						String createdByDesc = requestData.getExchange().getCreatedByDesc();
+						soldToParty = requestData.getExchange().getSoldToParty();
+					}
+					if (notificationConfigRepository.checkAlertForUser(createdByDesc,
+							notificationTypeId))
+						notificationDetailService.saveNotification(createdByDesc,
+						soldToParty, requestData.getReturns().getReturnReqNum(), "All", "All",
+								notificationTypeId, "Created", false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 			} else {
 				ReturnRequestHeader returnHeaderDo = returnHeaderRepo
 						.findByReturnReqNum(requestData.getReturns().getReturnReqNum());
@@ -1659,8 +1709,8 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
 
-			for (int i = 0; i < dto.getCustomerId().length(); i++) {
-				l1.add(dto.getCustomerId().substring(8));
+			for (int i = 0; i < dto.getCustomerId().size(); i++) {
+				l1.add(dto.getCustomerId().get(i).substring(8));
 			}
 
 		}
@@ -1865,7 +1915,9 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 									if (createdBy != null)
 										dto.setCreatedBy(createdBy);
 									else {
-										createdBy = returnHeaderRepo.findCreatedBy(dto.getCustomerPo());
+										String returnReqNum = returnHeaderRepo.findReturnReqNum(dto.getSalesOrderNum());
+										if (returnReqNum != null)
+											createdBy = returnHeaderRepo.findCreatedBy(returnReqNum);
 										if (createdBy != null)
 											dto.setCreatedBy(createdBy);
 									}
@@ -3009,7 +3061,6 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					returnHeaderRepo.updateReasonOfRejectionInSalesOrder(orderNum, itemData.getOrderItemNum(),
 							itemData.getReasonForRejection(), itemData.getReasonForRejectionText());
 					returnItemList.add(item);
-					batchHeaderData.setDlvBlock("01");
 
 				}
 			}

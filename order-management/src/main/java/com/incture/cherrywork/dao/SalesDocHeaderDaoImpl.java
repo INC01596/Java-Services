@@ -246,7 +246,7 @@ public class SalesDocHeaderDaoImpl implements SalesDocHeaderDao {
 			// reqMaster.setRequestId(fromDto.getReqMasterId());
 			//
 			// salesDocHeaderDo.setReqMaster(reqMaster);
-			salesDocHeaderDo.setRequestId(fromDto.getReqMasterId());
+			salesDocHeaderDo.setRequestMasterId(fromDto.getReqMasterId());
 
 			// Converting list level to entity using import List method and
 			// checking the content of it
@@ -316,7 +316,7 @@ public class SalesDocHeaderDaoImpl implements SalesDocHeaderDao {
 
 			// Setting Foreign Key
 			// salesDocHeaderDto.setReqMasterId(entity.getReqMaster().getRequestId());
-			salesDocHeaderDto.setReqMasterId(entity.getRequestId());
+			salesDocHeaderDto.setReqMasterId(entity.getRequestMasterId());
 
 			// Converting String from Date
 			// salesDocHeaderDto.setSalesOrderDate(ConvertDateToString(entity.getSalesOrderDate()));
@@ -604,7 +604,7 @@ public class SalesDocHeaderDaoImpl implements SalesDocHeaderDao {
 
 			// Setting Foreign Key
 			// salesDocHeaderDto.setReqMasterId(entity.getReqMaster().getRequestId());
-			salesDocHeaderDto.setReqMasterId(entity.getRequestId());
+			salesDocHeaderDto.setReqMasterId(entity.getRequestMasterId());
 
 			// Converting String from Date
 			// salesDocHeaderDto.setSalesOrderDate(ConvertDateToString(entity.getSalesOrderDate()));

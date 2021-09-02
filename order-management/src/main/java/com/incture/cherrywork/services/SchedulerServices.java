@@ -54,7 +54,7 @@ public class SchedulerServices {
 
 	private SequenceNumberGen sequenceNumberGen;
 
-	@Scheduled(cron = "0 12 * * * ?")
+//	@Scheduled(cron = "0 12 * * * ?")
 	public ResponseEntity<Object> headerScheduler() {
 		// logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new
 		// Date());
@@ -283,7 +283,7 @@ public class SchedulerServices {
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
 
-	@Scheduled(cron = "0 12 * * * ?")
+//	@Scheduled(cron = "0 12 * * * ?")
 	@SuppressWarnings({ "unchecked", "resource" })
 	public ResponseEntity<Object> itemScheduler() {
 		// logger.debug("[SalesItemDetailsDao][itemScheduler] Start : " + new

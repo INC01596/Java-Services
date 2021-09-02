@@ -81,6 +81,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		ResponseEntity<Object> res = null;
 		ResponseEntity<Object> res1 = null;
 
+		dto.getHeaderDto().setDocumentCategory("OBD");
 		if (dto.getHeaderDto().getSalesOrderId() == null)
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.header("Message", "Please provide at least one Sales Order").body(null);
@@ -346,6 +347,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 		}
 
+		
 		ResponseEntity<Object> res = null;
 		ResponseEntity<Object> res1 = null;
 		// String s4DocumentId = null;
@@ -358,6 +360,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		// }
 		// dto.getHeaderDto().setSalesOrderId(dto.getHeaderDto().getSalesHeaderId());
 		//
+		dto.getHeaderDto().setDocumentCategory("PGI");
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		salesOrderHeaderRepository.save(header);
 
@@ -520,6 +523,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		// }
 		// dto.getHeaderDto().setSalesOrderId(dto.getHeaderDto().getSalesHeaderId());
 		//
+		dto.getHeaderDto().setDocumentCategory("INV");
 		SalesOrderHeader header = ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class);
 		salesOrderHeaderRepository.save(header);
 

@@ -93,7 +93,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultList((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -118,7 +118,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultList((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}

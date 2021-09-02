@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.incture.cherrywork.WConstants.StatusConstants;
 import com.incture.cherrywork.dao.RequestMasterDao;
@@ -65,10 +66,10 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 				// "Entered Request ID already Registered, Use another one!!",
 				// ResponseStatus.FAILED);
 				// } else {
-				//RequestMasterDto reqMasterDto = new RequestMasterDto();
-				//reqMasterDto.setRequestId(salesDocHeaderDto.getReqMasterId());
+				RequestMasterDto reqMasterDto = new RequestMasterDto();
+				reqMasterDto.setRequestId(salesDocHeaderDto.getReqMasterId());
 				// Saving data here
-				return savingSalesDocHeader(salesDocHeaderDto, /*Stream.of(reqMasterDto).collect(Collectors.toList())*/null);
+				return savingSalesDocHeader(salesDocHeaderDto, Stream.of(reqMasterDto).collect(Collectors.toList()));
 				// }
 				// }
 			} else {
@@ -286,23 +287,21 @@ public class SalesDocHeaderServiceImpl implements SalesDocHeaderService {
 			}
 
 			// Assigning ref doc num to req master from so dto no
-			//below lines commented by Awadhesh for request Master issue
-//			if(reqMasterDtoList != null && reqMasterDtoList.size()>0){
-//			reqMasterDtoList.forEach(req -> {
-//				if (salesDocHeaderDto.getCustomerPo().contains("CR")) {
-//
-//					req.setRequestCategory("PR");
-//					req.setRequestType("05");
-//				}
-//
-//				req.setRefDocNum(salesDocHeaderDto.getSalesOrderNum());
-//				req.setRequestStatusCode(StatusConstants.REQUEST_NEW.toString());
-//			});
+			if(reqMasterDtoList != null && reqMasterDtoList.size()>0){
+			reqMasterDtoList.forEach(req -> {
+				if (salesDocHeaderDto.getCustomerPo().contains("CR")) {
+
+					req.setRequestCategory("PR");
+					req.setRequestType("05");
+				}
+
+				req.setRefDocNum(salesDocHeaderDto.getSalesOrderNum());
+				req.setRequestStatusCode(StatusConstants.REQUEST_NEW.toString());
+			});
 
 			// Saving ref doc id in req master here
-			//Commented below line by Awadhesh Kumar
-//			requestMasterRepo.saveOrUpdateRequestMaster(reqMasterDtoList.get(0));
-//			}
+			requestMasterRepo.saveOrUpdateRequestMaster(reqMasterDtoList.get(0));
+			}
 
 			return new ResponseEntity(salesDocHeaderDto, HttpStatus.CREATED, msg, ResponseStatus.SUCCESS);
 		} else {
