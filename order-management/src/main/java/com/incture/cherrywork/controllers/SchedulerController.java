@@ -155,7 +155,7 @@ public class SchedulerController {
 		odataConsumingService.saveDataToHanaDb(list);
 	}
 	
-	//nischal -- checking git
+	//nischal -- checking git access
 
 }
 
