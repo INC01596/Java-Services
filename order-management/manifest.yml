@@ -1,6 +1,6 @@
 applications:
 -  name: order-management
-   memory: 1G
+   memory: 800M
    path: target/order-management-1.0.0.jar
    random-route: false
    buildpacks: 

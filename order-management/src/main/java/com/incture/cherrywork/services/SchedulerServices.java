@@ -1,9 +1,9 @@
 
-
 package com.incture.cherrywork.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +14,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +23,27 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.incture.cherrywork.dtos.MaterialMasterDto;
+//import com.incture.cherrywork.dtos.MaterialMasterDto;
+import com.incture.cherrywork.dtos.Response;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
+import com.incture.cherrywork.entities.MaterialMaster;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
+import com.incture.cherrywork.odata.dto.OdataMaterialDto;
+import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
+import com.incture.cherrywork.odata.dto.OdataMaterialStartNewDto;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
 import com.incture.cherrywork.odata.dto.OdataSchItemStartDto;
+import com.incture.cherrywork.repositories.IMaterialMasterRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
 import com.incture.cherrywork.repositories.ISalesOrderItemRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.sales.constants.EnOverallDocumentStatus;
 import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
+import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
 import com.incture.cherrywork.util.ServicesUtil;
 
@@ -40,11 +51,16 @@ import com.incture.cherrywork.util.ServicesUtil;
 @Transactional
 public class SchedulerServices {
 
-	@Autowired
-	ISalesOrderHeaderRepository salesOrderHeaderRepository;
+	private Logger logger = LoggerFactory.getLogger(SchedulerServices.class);
 
 	@Autowired
-	ISalesOrderItemRepository salesOrderItemRepository;
+	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
+
+	@Autowired
+	private ISalesOrderItemRepository salesOrderItemRepository;
+
+	@Autowired
+	private IMaterialMasterRepository materialMasterRepository;
 
 	@Autowired
 	private SalesOrderOdataServices odataServices;
@@ -54,7 +70,7 @@ public class SchedulerServices {
 
 	private SequenceNumberGen sequenceNumberGen;
 
-//	@Scheduled(cron = "0 12 * * * ?")
+	// @Scheduled(cron = "0 12 * * * ?")
 	public ResponseEntity<Object> headerScheduler() {
 		// logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new
 		// Date());
@@ -283,7 +299,7 @@ public class SchedulerServices {
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
 
-//	@Scheduled(cron = "0 12 * * * ?")
+	// @Scheduled(cron = "0 12 * * * ?")
 	@SuppressWarnings({ "unchecked", "resource" })
 	public ResponseEntity<Object> itemScheduler() {
 		// logger.debug("[SalesItemDetailsDao][itemScheduler] Start : " + new
@@ -460,5 +476,212 @@ public class SchedulerServices {
 		System.err.println("[SalesItemDetailsDao][itemScheduler] Ended : " + new Date());
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
+
+	@SuppressWarnings({ "unchecked", "resource" })
+	@Scheduled(cron = "0 0/15 * * * ?")
+	public Response materialScheduler() {
+		logger.debug("[MaterialMasterDao][materialScheduler] Start : " + new Date());
+		System.err.println("[MaterialMasterDao][materialScheduler] Start : " + new Date());
+		Response response = new Response();
+		ArrayList<String> list = new ArrayList<>();
+		OdataMaterialStartNewDto odataMaterialStartNewDto = odataServices.materialSchedulerNew();
+		return response;
+//		try {
+//			OdataMaterialStartDto odataMaterialStartDto = odataServices.materialScheduler();
+//			List<MaterialMasterDto> listMaterialMasterDto = convertData(odataMaterialStartDto);
+//			for (MaterialMasterDto materialMasterDto : listMaterialMasterDto) {
+//				if (materialMasterDto.getUpdateIndicator().equals(EnUpdateIndicator.DELETE)) {
+//
+//					Query query = entityManager.createQuery(
+//							"delete from MaterialMaster m where m.material=:material and m.standard=:standard and "
+//									+ "m.length=:length and m.sectionGrade=:sectionGrade and m.plant=:plant and m.size=:size and m.kgPerMeter=:kgPerMeter and m.container=:container");
+//					query.setParameter("material", materialMasterDto.getMaterial());
+//					query.setParameter("standard", materialMasterDto.getStandard());
+//					query.setParameter("length", materialMasterDto.getLength());
+//					query.setParameter("sectionGrade", materialMasterDto.getSectionGrade());
+//					query.setParameter("plant", materialMasterDto.getPlant());
+//					query.setParameter("size", materialMasterDto.getSize());
+//					query.setParameter("kgPerMeter", materialMasterDto.getKgPerMeter());
+//					query.setParameter("container", materialMasterDto.getContainer());
+//
+//					query.executeUpdate();
+//					list.add("D-" + materialMasterDto.getMaterialMasterId());
+//
+//				} else {
+//
+//					Query query = entityManager.createQuery(
+//							"select m.materialMasterId from MaterialMaster m where m.material=:material and m.standard=:standard and "
+//									+ "m.length=:length and m.sectionGrade=:sectionGrade and m.plant=:plant and m.size=:size and m.kgPerMeter=:kgPerMeter and m.container=:container");
+//					query.setParameter("material", materialMasterDto.getMaterial());
+//					query.setParameter("standard", materialMasterDto.getStandard());
+//					query.setParameter("length", materialMasterDto.getLength());
+//					query.setParameter("sectionGrade", materialMasterDto.getSectionGrade());
+//					query.setParameter("plant", materialMasterDto.getPlant());
+//					query.setParameter("size", materialMasterDto.getSize());
+//					query.setParameter("kgPerMeter", materialMasterDto.getKgPerMeter());
+//					query.setParameter("container", materialMasterDto.getContainer());
+//
+//					List<String> objList = query.getResultList();
+//					
+//
+//					if (objList != null && objList.size() > 0) {
+//						
+//						String matId = objList.get(0).toString();
+//						list.add("U-" + matId);
+//						logger.debug("[MaterialMasterDao][materialScheduler] matId : " + matId);
+//
+//						StringBuffer sb = new StringBuffer("update MATERIAL set ");
+//						sb.append("BARS_PER_BUNDLE = " + materialMasterDto.getBarsPerBundle() + ", ");
+//						sb.append("BEND_TEST = " + materialMasterDto.getBendTest() + ", ");
+//						sb.append("BUNDLE_WEIGHT = " + materialMasterDto.getBundleWeight() + ", ");
+//						sb.append("CATALOG_KEY = '" + materialMasterDto.getCatalogKey() + "', ");
+//						sb.append("CE_LOGO = " + materialMasterDto.getCeLogo() + ", ");
+//						sb.append("CONTAINER = " + materialMasterDto.getContainer() + ", ");
+//						sb.append("GRADE_PRICING_GROUP = '" + materialMasterDto.getGradePricingGroup() + "', ");
+//						sb.append("IMPACT_TEST = " + materialMasterDto.getImpactTest() + ", ");
+//						sb.append("ISI_LOGO = " + materialMasterDto.getIsiLogo() + ", ");
+//						sb.append("KEY = '" + materialMasterDto.getKey() + "', ");
+//						sb.append("KG_PER_METER = " + materialMasterDto.getKgPerMeter() + ", ");
+//						sb.append("KGPERM_PRICING_GROUP = '" + materialMasterDto.getKgpermPricingGroup() + "', ");
+//						sb.append("LENGTH = " + materialMasterDto.getLength() + ", ");
+//						sb.append("LENGTH_MAP_KEY = '" + materialMasterDto.getLengthMapKey() + "', ");
+//						sb.append("LENGTH_PRICING_GROUP = '" + materialMasterDto.getLengthPricingGroup() + "', ");
+//						sb.append("LEVEL2_ID = '" + materialMasterDto.getLevel2Id() + "', ");
+//						sb.append("MATERIAL = '" + materialMasterDto.getMaterial() + "', ");
+//						sb.append("MATERIAL_DESC = '" + materialMasterDto.getMaterialDescription() + "', ");
+//						sb.append("PLANT = '" + materialMasterDto.getPlant() + "', ");
+//						sb.append("SEARCH_FIELD = '" + materialMasterDto.getSearchField() + "', ");
+//						sb.append("SECTION = '" + materialMasterDto.getSection() + "', ");
+//						sb.append("SECTION_GRADE = '" + materialMasterDto.getSectionGrade() + "', ");
+//						sb.append("SECTION_GRADE_DESC = '" + materialMasterDto.getSectionGradeDescription() + "', ");
+//						sb.append("SECTION_GROUP = '" + materialMasterDto.getSectionGroup() + "', ");
+//						sb.append("SECTION_PRICING_GROUP = '" + materialMasterDto.getSectionPricingGroup() + "', ");
+//						sb.append("SIZE = '" + materialMasterDto.getSize() + "', ");
+//						sb.append("SIZE_GROUP = " + materialMasterDto.getSizeGroup() + ", ");
+//						sb.append("SIZE_PRICING_GROUP = '" + materialMasterDto.getSizePricingGroup() + "', ");
+//						sb.append("STANDARD = '" + materialMasterDto.getStandard() + "', ");
+//						sb.append("STANDARD_DESC = '" + materialMasterDto.getStandardDescription() + "', ");
+//						sb.append("ULTRALIGHT_TEST = " + materialMasterDto.getUltraLightTest() + ", ");
+//						sb.append("SYNC_STAT = " + materialMasterDto.getSyncStatus() + ", ");
+//						sb.append("UPDATE_INDICATOR = " + materialMasterDto.getUpdateIndicator() + " ");
+//						sb.append("where MATERIAL_MASTER_ID = '" + materialMasterDto.getMaterialMasterId() + "'");
+//
+//						materialMasterDto.setMaterialMasterId(matId);
+//						Query q1 = entityManager.createQuery(sb.toString());
+//						q1.executeUpdate();
+////						materialMasterRepository.save(ObjectMapperUtils.map(materialMasterDto, MaterialMaster.class));
+//						
+//					} else {
+//						
+//						materialMasterDto.setMaterialMasterId(UUID.randomUUID().toString().replaceAll("-", ""));
+//						list.add("I-" + materialMasterDto.getMaterialMasterId());
+//						materialMasterRepository.save(ObjectMapperUtils.map(materialMasterDto, MaterialMaster.class));
+//						
+//					}
+//				}
+//			}
+//			response.setData(list);
+//			response.setMessage("Successfully Updated");
+//			response.setStatus(ResponseStatus.SUCCESS);
+//			response.setStatusCode(HttpStatus.OK);
+//			String ackResponse = odataServices.materialAckScheduler();
+//			logger.debug("[MaterialMasterDao][materialScheduler] ackResponse : " + ackResponse);
+//		} catch (Exception e) {
+//			logger.error("[MaterialMasterDao][materialScheduler] Exception : " + e.getMessage());
+//			e.printStackTrace();
+//			response.setMessage("Error Updating");
+//			response.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
+//			response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//		logger.debug("[MaterialMasterDao][materialScheduler] Ended : " + new Date());
+//		return response;
+	}
+	
+	public List<MaterialMasterDto> convertData(OdataMaterialStartDto odataMaterialStartDto) {
+		logger.debug("[MaterialMasterDao][convertData] Start : " + odataMaterialStartDto.toString());
+		List<MaterialMasterDto> listMaterialMasterDto = new ArrayList<MaterialMasterDto>();
+		try {
+			for (OdataMaterialDto odataMaterialDto : odataMaterialStartDto.getD().getResults()) {
+				MaterialMasterDto materialMasterDto = new MaterialMasterDto();
+				materialMasterDto.setClientSpecific(Integer.parseInt(odataMaterialDto.getMandt()));
+				materialMasterDto.setKey(odataMaterialDto.getZzkey());
+				materialMasterDto.setCatalogKey(odataMaterialDto.getCatKey());
+				materialMasterDto.setLengthMapKey(odataMaterialDto.getMapKey());
+				materialMasterDto.setMaterial(odataMaterialDto.getMatnr());
+				materialMasterDto.setMaterialDescription(odataMaterialDto.getArktx());
+				materialMasterDto.setPlant(odataMaterialDto.getWerks());
+				materialMasterDto.setStandard(odataMaterialDto.getZzstd());
+				materialMasterDto.setStandardDescription(odataMaterialDto.getZzstdDes());
+				materialMasterDto.setSectionGrade(odataMaterialDto.getZzgrade());
+				materialMasterDto.setSectionGradeDescription(odataMaterialDto.getZzgradeDes());
+				materialMasterDto.setSize(odataMaterialDto.getZzsize());
+				materialMasterDto.setKgPerMeter(new BigDecimal(odataMaterialDto.getZzkgperm()));
+				materialMasterDto.setLength(new BigDecimal(odataMaterialDto.getZzlength()));
+				materialMasterDto.setBarsPerBundle(new BigDecimal(odataMaterialDto.getZzpcsPerBndl()));
+				materialMasterDto.setSectionGroup(odataMaterialDto.getZzsectionGrp());
+				materialMasterDto.setLevel2Id(odataMaterialDto.getZzl2id());
+				if (odataMaterialDto.getZzceMark().equalsIgnoreCase("False"))
+					materialMasterDto.setCeLogo(false);
+				else
+					materialMasterDto.setCeLogo(true);
+				materialMasterDto.setSection(odataMaterialDto.getZzsection());
+				materialMasterDto.setSizeGroup(new BigDecimal(odataMaterialDto.getZzsizeGrp()));
+				if (odataMaterialDto.getZzisiMark().equalsIgnoreCase("False"))
+					materialMasterDto.setIsiLogo(false);
+				else
+					materialMasterDto.setIsiLogo(true);
+				if (odataMaterialDto.getZzqltyBt().equalsIgnoreCase("False"))
+					materialMasterDto.setBendTest(false);
+				else
+					materialMasterDto.setBendTest(true);
+				if (odataMaterialDto.getZzqltyIt().equalsIgnoreCase("False"))
+					materialMasterDto.setImpactTest(false);
+				else
+					materialMasterDto.setImpactTest(true);
+				if (odataMaterialDto.getZzqltyUl().equalsIgnoreCase("False"))
+					materialMasterDto.setUltraLightTest(false);
+				else
+					materialMasterDto.setUltraLightTest(true);
+				materialMasterDto.setGradePricingGroup(odataMaterialDto.getZzgradePrGrp());
+				materialMasterDto.setKgpermPricingGroup(odataMaterialDto.getZzkgpermPrGrp());
+				materialMasterDto.setSizePricingGroup(odataMaterialDto.getZzsizePrGrp());
+				materialMasterDto.setLengthPricingGroup(odataMaterialDto.getZzlengthPrGrp());
+				materialMasterDto.setBundleWeight(new BigDecimal(odataMaterialDto.getZzbdlWt()));
+				if (odataMaterialDto.getUpdateInd().equals("I"))
+					materialMasterDto.setUpdateIndicator(EnUpdateIndicator.INSERT);
+				else if (odataMaterialDto.getUpdateInd().equals("U"))
+					materialMasterDto.setUpdateIndicator(EnUpdateIndicator.UPDATE);
+				else if (odataMaterialDto.getUpdateInd().equals("D"))
+					materialMasterDto.setUpdateIndicator(EnUpdateIndicator.DELETE);
+				// materialMasterDto.setChangedOn(
+				// new
+				// SimpleDateFormat("yyyyMMddhhmmss").parse(odataMaterialDto.getChangedOn()));
+				if (!ServicesUtil.isEmpty(odataMaterialDto.getChangedOn())) {
+					// String s = odataSchHeaderDto.getChangedOn().substring(6,
+					// 19);
+					long l = Long.parseLong(odataMaterialDto.getChangedOn());
+					Timestamp d = new Timestamp(l);
+					materialMasterDto.setChangedOn(d);
+				} else
+					materialMasterDto.setChangedOn(null);
+				if (odataMaterialDto.getSyncStat().equalsIgnoreCase("False"))
+					materialMasterDto.setSyncStatus(false);
+				else
+					materialMasterDto.setSyncStatus(true);
+				if (odataMaterialDto.getContainer().equals("Y"))
+					materialMasterDto.setContainer(true);
+				else
+					materialMasterDto.setContainer(false);
+				materialMasterDto.setSearchField(odataMaterialDto.getSearch());
+				listMaterialMasterDto.add(materialMasterDto);
+			}
+			logger.debug("[MaterialMasterDao][convertData] End : " + listMaterialMasterDto.toString());
+		} catch (Exception e) {
+			logger.error("[MaterialMasterDao][convertData] Exception : " + e.getMessage());
+			e.printStackTrace();
+		}
+		return listMaterialMasterDto;
+	}
+
 
 }

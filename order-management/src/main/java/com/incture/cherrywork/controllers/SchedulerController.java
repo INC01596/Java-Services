@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.Odat.Dto.WorkflowTriggerInputDto;
+import com.incture.cherrywork.dtos.Response;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SchedulerTimeDto;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.services.SchedulerServices;
 import com.incture.cherrywork.workflow.services.ODataConsumingService;
 import com.incture.cherrywork.workflow.services.SchedulerTableService;
 
@@ -56,6 +58,9 @@ public class SchedulerController {
 	
 	@Autowired
 	private ODataConsumingService odataConsumingService;
+	
+	@Autowired
+	private SchedulerServices schedulerServices;
 
 	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
@@ -156,6 +161,15 @@ public class SchedulerController {
 	}
 	
 	//nischal -- checking git access 
+	@GetMapping("/test")
+    public String test(){
+        return "successfully deployed";
+    }
+	
+	@GetMapping("/triggerMaterialScheduler")
+    public Response materialScheduler(){
+        return schedulerServices.materialScheduler();
+    }
 
 }
 
