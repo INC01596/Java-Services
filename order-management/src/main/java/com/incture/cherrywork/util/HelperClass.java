@@ -38,6 +38,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.apache.http.util.EntityUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,11 +48,15 @@ import org.springframework.http.ResponseEntity;
 
 import com.google.gson.Gson;
 import com.incture.cherrywork.WConstants.Constants;
-
+import com.incture.cherrywork.sales.constants.ApplicationConstants;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
 import com.incture.cherrywork.WConstants.DkshConstants;
 import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
+import com.incture.cherrywork.dtos.UserAttributes;
+import com.incture.cherrywork.dtos.UserCustom;
+import com.incture.cherrywork.dtos.UserInfo;
+import com.incture.cherrywork.dtos.UserList;
 import com.incture.cherrywork.dtos.WorkflowTaskOutputDto;
 
 @SuppressWarnings("unused")
@@ -795,7 +800,273 @@ public class HelperClass {
 
 	}
 
+	public static ResponseEntity<?> findAllidpUsers(Integer startIndex, Integer count) {
+		try {
+			if (startIndex != null && count != null) {
 
+				Map<String, Object> map = DestinationReaderUtil
+						.getDestination(ApplicationConstants.IDP_SERVICES_DESTINATION_NAME);
+
+				HttpClient client = HttpClientBuilder.create().build();
+				HttpGet httpGet = new HttpGet(
+						map.get("URL") + "service/scim/Users?startIndex=" + startIndex + "&count=" + count);
+
+				httpGet.addHeader("Content-Type", "application/json");
+
+				// Encoding username and password
+				String auth = encodeUsernameAndPassword((String) map.get("User"), (String) map.get("Password"));
+				httpGet.addHeader("Authorization", auth);
+
+				HttpResponse response = client.execute(httpGet);
+				String dataFromStream = getDataFromStream(response.getEntity().getContent());
+				System.err.println("dataFromStream : " + dataFromStream);
+				if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+
+					JSONObject json = new JSONObject(dataFromStream);
+
+					UserList userDetails = new UserList();
+					userDetails.setTotalResults(json.getNumber("totalResults").toString());
+					userDetails.setStartIndex(json.getNumber("startIndex").toString());
+					userDetails.setItemsPerPage(json.getNumber("itemsPerPage").toString());
+
+					List<UserInfo> listOfUser = new ArrayList<>();
+
+					JSONArray arr = json.getJSONArray("Resources");
+					for (int i = 0; i < arr.length(); i++) {
+
+						JSONObject d = arr.getJSONObject(i);
+
+						UserInfo data = new Gson().fromJson(d.toString(), UserInfo.class);
+
+						// add custom attributes
+						if (!d.isNull("urn:sap:cloud:scim:schemas:extension:custom:2.0:User")) {
+							JSONArray att = d.getJSONObject("urn:sap:cloud:scim:schemas:extension:custom:2.0:User")
+									.getJSONArray("attributes");
+							List<UserAttributes> listOfAttributes = new ArrayList<>();
+							if (att.length() > 0) {
+								for (int j = 0; j < att.length(); j++) {
+									JSONObject attribute = att.getJSONObject(j);
+									UserAttributes userAtt = new UserAttributes();
+									userAtt.setName(attribute.getString("name"));
+									userAtt.setValue(attribute.getString("value"));
+									listOfAttributes.add(userAtt);
+								}
+								data.setUserCustomAttributes(new UserCustom(listOfAttributes));
+							}
+
+						}
+
+						listOfUser.add(data);
+
+					}
+					userDetails.setResources(listOfUser);
+
+					return new ResponseEntity<>(userDetails, HttpStatus.OK);
+
+				} else {
+					return new ResponseEntity<>(FETCHING_FAILED, HttpStatus.CONFLICT);
+
+				}
+			} else {
+				return new ResponseEntity<>(INVALID_INPUT_PLEASE_RETRY, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+	}
+/*
+	public static ResponseEntity<?> createExcelForAllIasUsers(String sheetName, String fileName, Integer startIndex,
+			Integer count) {
+		try {
+			if (startIndex != null && count != null && !checkString(sheetName) && !checkString(fileName)) {
+				Double countD = new Double(count);
+				Double startIndexD = new Double(startIndex);
+				ResponseEntity<?> responseFromIas = findAllidpUsersForExcel(startIndexD.intValue(), countD.intValue());
+
+				if (responseFromIas.getStatusCodeValue() == HttpStatus.OK.value()) {
+
+					IasUserList ias = (IasUserList) responseFromIas.getBody();
+					List<IasResourceDto> listOfUsers = ias.getListOfUsers();
+
+					Double totalResult = ias.getTotalResults().doubleValue();
+
+					if (totalResult.intValue() != 0) {
+						if (totalResult > (startIndexD * countD)) {
+							for (int i = 0; i < Math.ceil(totalResult / (startIndex * count) - 1); i++) {
+								startIndexD = startIndexD + countD;
+								IasUserList iasTemp = (IasUserList) findAllidpUsersForExcel(startIndexD.intValue(),
+										countD.intValue()).getBody();
+								listOfUsers.addAll(iasTemp.getListOfUsers());
+							}
+
+						}
+
+						File file = new File(fileName + ".csv");
+
+						FileUtils.writeByteArrayToFile(file,
+								IOUtils.toByteArray(ExcelUtils.writeToExcel(sheetName, listOfUsers)));
+
+						return ResponseEntity.ok()
+								.header("Content-Disposition", "attachment; filename=" + fileName + ".csv")
+								.contentLength(file.length()).contentType(MediaType.parseMediaType("text/csv"))
+								.body(new FileSystemResource(file));
+					} else {
+						return new ResponseEntity<>("No data found", HttpStatus.NO_CONTENT);
+					}
+
+				} else {
+					return responseFromIas;
+				}
+			} else {
+				return new ResponseEntity<>(INVALID_INPUT_PLEASE_RETRY, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public static ResponseEntity<?> findAllidpUsersForExcel(Integer startIndex, Integer count) {
+		try {
+			if (startIndex != null && count != null) {
+
+				Map<String, Object> map = DestinationReaderUtil
+						.getDestination(DkshApplicationConstants.IDP_SERVICES_DESTINATION_NAME);
+
+				HttpClient client = HttpClientBuilder.create().build();
+				HttpGet httpGet = new HttpGet(
+						map.get("URL") + "service/scim/Users?startIndex=" + startIndex + "&count=" + count);
+
+				httpGet.addHeader("Content-Type", "application/json");
+
+				// Encoding username and password
+				String auth = encodeUsernameAndPassword((String) map.get("User"), (String) map.get("Password"));
+
+				httpGet.addHeader("Authorization", auth);
+
+				HttpResponse response = client.execute(httpGet);
+				String dataFromStream = getDataFromStream(response.getEntity().getContent());
+				if (response.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+
+					JSONObject json = new JSONObject(dataFromStream);
+
+					IasUserList iasUserDetails = new IasUserList();
+					iasUserDetails.setTotalResults(json.getInt("totalResults"));
+					iasUserDetails.setStartIndex(json.getInt("startIndex"));
+					iasUserDetails.setItemsPerPage(json.getInt("itemsPerPage"));
+
+					List<IasResourceDto> listOfUsers = new ArrayList<>();
+
+					JSONArray arr = json.getJSONArray("Resources");
+					for (int i = 0; i < arr.length(); i++) {
+
+						IasResourceDto userDetails = new IasResourceDto();
+
+						JSONObject d = arr.getJSONObject(i);
+
+						userDetails.setPid(d.getString("id"));
+						if (!d.isNull("name")) {
+							if (!d.getJSONObject("name").isNull("givenName")) {
+								userDetails.setFirstName(d.getJSONObject("name").getString("givenName"));
+							}
+							if (!d.getJSONObject("name").isNull("familyName")) {
+								userDetails.setFirstName(d.getJSONObject("name").getString("familyName"));
+							}
+						}
+						// if (!d.isNull("addresses") &&
+						// !d.getJSONArray("addresses").isEmpty()
+						// &&
+						// d.getJSONArray("addresses").getJSONObject(0).isNull("country"))
+						// {
+						// userDetails.setCountry(d.getJSONArray("addresses").getJSONObject(0).getString("country"));
+						// }
+						if (!d.isNull("emails")) {
+							userDetails.setEmail(d.getJSONArray("emails").getJSONObject(0).getString("value"));
+						}
+						if (!d.isNull("groups")) {
+							StringJoiner sj = new StringJoiner(",");
+							JSONArray groupArr = d.getJSONArray("groups");
+							for (int g = 0; g < groupArr.length(); g++) {
+								sj.add(groupArr.getJSONObject(g).getString("display"));
+							}
+							userDetails.setUserGroup(sj.toString());
+						}
+
+						// add custom attributes
+						if (!d.isNull("urn:sap:cloud:scim:schemas:extension:custom:2.0:User")) {
+							JSONArray att = d.getJSONObject("urn:sap:cloud:scim:schemas:extension:custom:2.0:User")
+									.getJSONArray("attributes");
+							if (att.length() > 0) {
+								for (int j = 0; j < att.length(); j++) {
+									JSONObject attribute = att.getJSONObject(j);
+
+									if (attribute.getString("name").equalsIgnoreCase("CustomAttribute1")) {
+										userDetails.setCustomAttribute1(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute2")) {
+										userDetails.setCustomAttribute2(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute3")) {
+										userDetails.setCustomAttribute3(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute4")) {
+										userDetails.setCustomAttribute4(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute5")) {
+										userDetails.setCustomAttribute5(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute6")) {
+										userDetails.setCustomAttribute6(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute7")) {
+										userDetails.setCustomAttribute7(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute8")) {
+										userDetails.setCustomAttribute8(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute9")) {
+										userDetails.setCustomAttribute9(attribute.getString("value"));
+									} else if (attribute.getString("name").equalsIgnoreCase("CustomAttribute10")) {
+										userDetails.setCustomAttribute10(attribute.getString("value"));
+									}
+								}
+							}
+
+						}
+						listOfUsers.add(userDetails);
+					}
+					iasUserDetails.setListOfUsers(listOfUsers);
+
+					return new ResponseEntity<>(iasUserDetails, HttpStatus.OK);
+
+				} else {
+					return new ResponseEntity<>(FETCHING_FAILED, HttpStatus.CONFLICT);
+
+				}
+			} else {
+				return new ResponseEntity<>(INVALID_INPUT_PLEASE_RETRY, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+	}*/
+
+	
+	public static ResponseEntity<?> findAllCountryTexts() {
+		try {
+			Map<String, Object> map = DestinationReaderUtil
+					.getDestination(ApplicationConstants.IDP_SERVICES_DESTINATION_NAME);
+
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet httpGetForFetchingCountryMap = new HttpGet(map.get("URL") + "md/countries");
+
+			HttpResponse responseFromFetchingCountryMap = client.execute(httpGetForFetchingCountryMap);
+			if (responseFromFetchingCountryMap.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+				String responseFromFetchingCountryString = getDataFromStream(
+						responseFromFetchingCountryMap.getEntity().getContent());
+				return new ResponseEntity<>(new JSONObject(responseFromFetchingCountryString).toMap(), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(getDataFromStream(responseFromFetchingCountryMap.getEntity().getContent()),
+						HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+		
+			return new ResponseEntity<>("Exception due to " + e, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
 

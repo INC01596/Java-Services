@@ -1657,12 +1657,15 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 		System.err.println(s);
 
-		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
-
-			for (int i = 0; i < dto.getCustomerId().length(); i++) {
-				l1.add(dto.getCustomerId().substring(8));
+		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
+		{
+			
+			for(int i=0;i<dto.getCustomerId().size();i++)
+			{
+				l1.add(dto.getCustomerId().get(i).substring(8));
 			}
-
+			
+			
 		}
 
 		List<ReturnRequestHeader> list = new ArrayList<>();
