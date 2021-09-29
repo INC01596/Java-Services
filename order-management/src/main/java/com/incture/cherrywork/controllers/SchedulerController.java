@@ -47,6 +47,9 @@ public class SchedulerController {
 	//private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
 	static boolean schedulerSwitch = true;
+	
+	static boolean materialSchedulerSwitch = true;
+	
 	static final int interval = 5;
 
 	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:30")).plusMinutes(5);
@@ -175,6 +178,7 @@ public class SchedulerController {
         return schedulerServices.materialScheduler();
     }
 	
+	//nischal -- getAllLogsOfMaterialSchedulerWithDateRange Method
 	@GetMapping("/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	@ApiOperation(value = "/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	public ResponseEntity listAllMaterialSchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
@@ -183,6 +187,34 @@ public class SchedulerController {
 						.toLocalDateTime(),
 				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
 						.toLocalDateTime());
+	}
+	//nischal -- get the status of the material scheduler
+	@GetMapping("/materialSchedulerRunningStatus")
+	@ApiOperation(value = "/materialSchedulerRunningStatus")
+	public boolean materialSchedulerRunningStatus() {
+		return materialSchedulerSwitch;
+	}
+	
+	//nischal -- 
+	@GetMapping("/materialSchedulerSwitch/{parameter}")
+	@ApiOperation(value = "/materialSchedulerSwitch/{parameter}")
+	public static ResponseEntity turnOffOnMaterialScheduler(@PathVariable boolean parameter) {
+		if (!parameter) {
+			materialSchedulerSwitch = parameter;
+			System.err.println("Material Scheduler is switched OFF now ");
+			return new ResponseEntity("OFF ", HttpStatus.OK, "Material Scheduler is switched OFF now ", ResponseStatus.SUCCESS);
+			// return "NO" +" scheduler is switched OFF now ";
+		} else {
+
+			Duration between = Duration.between(LocalDateTime.now(ZoneId.of("GMT+05:30")), schedulerFutureTime);
+			materialSchedulerSwitch = parameter;
+			System.err.println("Material scheduler is switched ON now and will start in =  " + between);
+			return new ResponseEntity("ON ", HttpStatus.OK, "Scheduler is switched ON now and will start in =   "
+					+ between + "   ,on IST =  " + schedulerFutureTime, ResponseStatus.SUCCESS);
+			// return "YES " + " ,scheduler is switched ON now and will start in
+			// = " + between + " ,on Malaysian time =
+			// "+LocalDateTime.now(ZoneId.of("GMT+08:00"));
+		}
 	}
 }
 
