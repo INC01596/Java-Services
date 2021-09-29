@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incture.cherrywork.dtos.MaterialSchedulerLogsDto;
 import com.incture.cherrywork.dtos.ODataBatchPayload;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
@@ -39,10 +44,12 @@ import com.google.gson.JsonParser;
 
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
+import com.incture.cherrywork.entities.MaterialSchedulerLogs;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartNewDto;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
 import com.incture.cherrywork.odata.dto.OdataSchItemStartDto;
+import com.incture.cherrywork.repositories.IMaterialSchedulerLogs;
 //import com.incture.cherrywork.odataServices.OdataServices;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderCustomRepository;
 import com.incture.cherrywork.repositories.ISalesOrderHeaderRepository;
@@ -56,7 +63,12 @@ import com.incture.cherrywork.util.ReturnExchangeConstants;
 public class SalesOrderOdataServices {
 
 	// private Logger logger = LoggerFactory.getLogger(OdataServices.class);
-
+	private static final long serialVersionUID = -6817163152358352346L;
+	
+	@Autowired
+	private MaterialSchedulerService materialSchedulerService;
+	
+	
 	@Async
 	public String postData(SalesOrderOdataHeaderDto headerDto, String docType) {
 		// logger.debug("[OdataServices][postData] Started : " +
@@ -300,10 +312,11 @@ public class SalesOrderOdataServices {
 	}
 	//nischal -- new method for calling scheduler
 	
-	public static OdataMaterialStartNewDto materialSchedulerNew(){
+	public OdataMaterialStartNewDto materialSchedulerNew(){
 		OdataMaterialStartNewDto odataMaterialStartNewDto = new OdataMaterialStartNewDto();
 		String URL = SalesOrderOdataConstants.BASE_URL + "MaterialSchedulerTabSet?$filter=Bismt%20eq%20'GET'&$format=json";
 		try {
+			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto(URL, new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
 			System.err.println("[SalesOrderOdataUtilService][materialSchedulerNew] response" + response);
 			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();

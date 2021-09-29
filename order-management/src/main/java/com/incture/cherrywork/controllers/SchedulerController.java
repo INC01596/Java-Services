@@ -26,6 +26,7 @@ import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SchedulerTimeDto;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.services.MaterialSchedulerService;
 import com.incture.cherrywork.services.SchedulerServices;
 import com.incture.cherrywork.workflow.services.ODataConsumingService;
 import com.incture.cherrywork.workflow.services.SchedulerTableService;
@@ -61,7 +62,10 @@ public class SchedulerController {
 	
 	@Autowired
 	private SchedulerServices schedulerServices;
-
+	
+	@Autowired
+	private MaterialSchedulerService materialSchedulerService;
+	
 	@GetMapping("/schedulerTrigger")
 	//@Scheduled(cron = "*/5 * * * * ?" )
 	  @Scheduled(cron = "0 0/"+interval+" * * * ?")
@@ -170,6 +174,15 @@ public class SchedulerController {
     public Response materialScheduler(){
         return schedulerServices.materialScheduler();
     }
-
+	
+	@GetMapping("/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
+	@ApiOperation(value = "/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
+	public ResponseEntity listAllMaterialSchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
+		return materialSchedulerService.listAllLogsInIst(
+				Instant.ofEpochMilli(Long.parseLong(startDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
+						.toLocalDateTime(),
+				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
+						.toLocalDateTime());
+	}
 }
 
