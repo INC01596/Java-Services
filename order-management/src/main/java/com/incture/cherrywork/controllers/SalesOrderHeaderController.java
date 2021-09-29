@@ -174,5 +174,10 @@ public class SalesOrderHeaderController {
 	public List<SalesOrderItemDto> getDetails(@PathVariable String salesHeaderId){
 		return salesOrderHeaderService.getDetails(salesHeaderId);
 	}
+	
+	@GetMapping("/createdDate/{orderNum}")
+	public SalesOrderHeader getCreatedDate(@PathVariable String orderNum){
+		return salesOrderHeaderService.getCreatedDate(orderNum);
+	}
 
 }

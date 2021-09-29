@@ -324,6 +324,7 @@ public class SalesOrderOdataUtilService {
 
 	public static String callOdataSch(String URL, String methodType, String body, String csrfToken) {
 		// logger.debug("[OdataUtilService][callOdata] Started");
+		System.err.println("[SalesOrderOdataUtilService][callOdata] URL" + URL);
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
@@ -342,7 +343,7 @@ public class SalesOrderOdataUtilService {
 					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
 				CompositeAccessToken accessToken = xsuaaContext.getToken();
-				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL_SCH);
+				URL proxyURL_GET = new URL(SalesOrderOdataConstants.BASE_URL);
 				HttpURLConnection conn_GET = (HttpURLConnection) proxyURL_GET.openConnection(proxy);
 				// logger.debug("[OdataUtilService][callOdata] connection GET :
 				// " + conn_GET.toString());

@@ -35,7 +35,7 @@ public class NotificationController {
 	public ResponseEntity<Object> getNotification(@PathVariable("userId") String userId) {
 		NotificationListDto notificationListDto = null;
 		try {
-			//notificationListDto = notificationDetailService.getNotification(userId);
+			notificationListDto = notificationDetailService.getNotification(userId);
 
 		} catch (Exception e) {
 
@@ -107,4 +107,8 @@ public class NotificationController {
 		return notificationConfigService.createNotificationAlert(userId);
 	}
 	
+//	@GetMapping("/webSocketCall/{userId}")
+//	public void webSocketCall(@PathVariable String userId){
+//		notificationDetailService.webSocketCall(userId);
+//	}
 }

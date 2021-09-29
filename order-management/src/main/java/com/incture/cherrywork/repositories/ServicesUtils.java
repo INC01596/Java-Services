@@ -85,7 +85,7 @@ public class ServicesUtils {
 //		String APP_URL = "https://foulath-holding-bsc-foulathdev-cesp-app-login.cfapps.eu10.hana.ondemand.com/Login/index.html#";
 //		String APP_URL = "https://foulath-foulathqas-qas-unit-login.cfapps.eu10.hana.ondemand.com/Login/index.html";
 //		String APP_URL = "https://foulath-foulathprd-prd-unit-login.cfapps.eu10.hana.ondemand.com";
-		String APP_URL = "https://order-management1.cfapps.eu10.hana.ondemand.com";
+		String APP_URL = "https://incture-technologies-hrapps-com-dev-mta-com-approuter.cfapps.eu10.hana.ondemand.com/cominctureCOM/index.html#/ManageOrder";
 //		String APP_URL = "http://192.168.1.8:8080";
 
 		Properties prop = new Properties();

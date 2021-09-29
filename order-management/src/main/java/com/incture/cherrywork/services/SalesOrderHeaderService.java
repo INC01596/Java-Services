@@ -36,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -385,7 +386,25 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				d.setSalesOrderHeader(savedSalesOrderHeader);
 				SalesOrderItem salesOrderItem = ObjectMapperUtils.map(d, SalesOrderItem.class);
 				salesOrderItem.setSalesHeaderId(dto.getSalesHeaderId());
-				salesOrderItemRepository.save(salesOrderItem);
+				try {
+					salesOrderItemRepository.save(salesOrderItem);
+					String notificationTypeId = "";
+					if (dto.getDocumentType().equals("IN"))
+						notificationTypeId = "N01";
+					else if (dto.getDocumentType().equals("QT"))
+						notificationTypeId = "N02";
+					else if (dto.getDocumentType().equals("OR"))
+						notificationTypeId = "N03";
+					if (notificationConfigRepository.checkAlertForUser(dto.getEmailId(), notificationTypeId)) {
+						notificationDetailService.saveNotification(dto.getEmailId(), dto.getSoldToParty(), null, "01",
+								"01", notificationTypeId, "Start", false);
+
+					}
+				} catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+				}
+
 			}
 		}
 
@@ -577,14 +596,21 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		try {
 			String queryString = null;
 			Query query = null;
-			if (dto.getHeaderDto().getDocumentType().equals("OBD")) {
+			if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("OBD")) {
 				queryString = "select distinct(i.plant) from SalesOrderItem i where i.outBoundOrderId=:outBoundOrderId";
 				query = entityManager.createQuery(queryString);
 				query.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
-			} else if (dto.getHeaderDto().getDocumentType().equals("PGI")) {
+			} else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("PGI")) {
 				queryString = "select distinct(i.plant) from SalesOrderItem i where i.pgiId=:pgiId";
 				query = entityManager.createQuery(queryString);
 				query.setParameter("pgiId", dto.getHeaderDto().getPgiId());
+			} else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("INV")) {
+				queryString = "select distinct(i.plant) from SalesOrderItem i where i.outBoundOrderId=:outBoundOrderId";
+				query = entityManager.createQuery(queryString);
+				query.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
 			} else {
 				queryString = "select distinct(i.plant) from SalesOrderItem i where i.salesHeaderId=:salesHeaderId";
 				query = entityManager.createQuery(queryString);
@@ -634,14 +660,21 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			}
 
 			Query query1 = null;
-			if (dto.getHeaderDto().getDocumentType().equals("OBD")) {
+			if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("OBD")) {
 				String iq = "select s.salesItemId from SalesOrderItem s where s.outBoundOrderId=:outBoundOrderId ";
 				query1 = entityManager.createQuery(iq);
 				query1.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
-			} else if (dto.getHeaderDto().getDocumentType().equals("PGI")) {
+			} else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("PGI")) {
 				String iq = "select s.salesItemId from SalesOrderItem s where s.pgiId=:pgiId ";
 				query1 = entityManager.createQuery(iq);
 				query1.setParameter("pgiId", dto.getHeaderDto().getPgiId());
+			} else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("INV")) {
+				String iq = "select s.salesItemId from SalesOrderItem s where s.outBoundOrderId=:outBoundOrderId ";
+				query1 = entityManager.createQuery(iq);
+				query1.setParameter("outBoundOrderId", dto.getHeaderDto().getObdId());
 			} else {
 				String iq = "select s.salesItemId from SalesOrderItem s where s.salesHeaderId=:salesHeaderId ";
 				query1 = entityManager.createQuery(iq);
@@ -694,18 +727,21 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				notificationTypeId = "N02";
 			else if (dto.getHeaderDto().getDocumentType().equals("OR"))
 				notificationTypeId = "N03";
-			else if (dto.getHeaderDto().getDocumentType().equals("OBD"))
+			else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("OBD"))
 				notificationTypeId = "N04";
-			else if (dto.getHeaderDto().getDocumentType().equals("PGI"))
+			else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("PGI"))
 				notificationTypeId = "N05";
-			else if (dto.getHeaderDto().getDocumentType().equals("INV"))
+			else if (dto.getHeaderDto().getDocumentType().equals("OBD")
+					&& dto.getHeaderDto().getDocumentCategory().equals("INV"))
 				notificationTypeId = "N06";
 			// String userResponse =
 			// //odataServices.usersBySoldToParty((dto.getSoldToParty()));
 			// List<String>listUser = getUserDetailsBySTP((userResponse));
 			// for (String email :listUser)
 			// {
-			if (notificationConfigRepository.checkAlertForUser(dto.getHeaderDto().getCreatedBy(), notificationTypeId)) {
+			if (notificationConfigRepository.checkAlertForUser(dto.getHeaderDto().getEmailId(), notificationTypeId)) {
 				// Dependency oon notification
 				// String odataResponse = odataServices.usersByEmail(email);
 				// List<UserDto> listUserDto =
@@ -715,8 +751,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// notificationTypeId.equals("QT"))) {
 				// if (userDto.getPersonaId().equals("01")) {
 				// if (userDto.getUserId().equals(dto.getSoldToParty()))
-				notificationDetailService.saveNotification(dto.getHeaderDto().getCreatedBy(),
-						dto.getHeaderDto().getSoldToParty(), null, "01", "01", notificationTypeId, "Start", true);
+				notificationDetailService.saveNotification(dto.getHeaderDto().getEmailId(),
+						dto.getHeaderDto().getSoldToParty(), null, "01", "01", notificationTypeId, "Start", false);
 
 				// } else {
 				// notificationDetailService.saveNotification(userDto,
@@ -795,11 +831,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// else if (salesHeaderDto.getDocumentType().equals("INV"))
 				// docID_6 = "INV" + docID_6;
 
-				if (salesHeaderDto.getDocumentType().equals("OBD"))
+				if (salesHeaderDto.getDocumentType().equals("OBD")
+						&& salesHeaderDto.getDocumentCategory().equals("OBD"))
 					salesHeaderDto.setObdId(docID_6);
-				else if (salesHeaderDto.getDocumentType().equals("PGI"))
+				else if (salesHeaderDto.getDocumentType().equals("OBD")
+						&& salesHeaderDto.getDocumentCategory().equals("PGI"))
 					salesHeaderDto.setPgiId(docID_6);
-				else if (salesHeaderDto.getDocumentType().equals("INV"))
+				else if (salesHeaderDto.getDocumentType().equals("OBD")
+						&& salesHeaderDto.getDocumentCategory().equals("INV"))
 					salesHeaderDto.setInvId(docID_6);
 				else
 					salesHeaderDto.setSalesHeaderId(docID_6);
@@ -848,11 +887,14 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						notificationTypeId = "N02";
 					else if (salesHeaderDto.getDocumentType().equals("OR"))
 						notificationTypeId = "N03";
-					else if (salesHeaderDto.getDocumentType().equals("OBD"))
+					else if (salesHeaderDto.getDocumentType().equals("OBD")
+							&& salesHeaderDto.getDocumentCategory().equals("OBD"))
 						notificationTypeId = "N04";
-					else if (salesHeaderDto.getDocumentType().equals("PGI"))
+					else if (salesHeaderDto.getDocumentType().equals("OBD")
+							&& salesHeaderDto.getDocumentCategory().equals("PGI"))
 						notificationTypeId = "N05";
-					else if (salesHeaderDto.getDocumentType().equals("INV"))
+					else if (salesHeaderDto.getDocumentType().equals("OBD")
+							&& salesHeaderDto.getDocumentCategory().equals("INV"))
 						notificationTypeId = "N06";
 					// String odataResponse1 =
 					// odataServices.usersBySoldToParty(salesHeaderDto.getSoldToParty());
@@ -863,8 +905,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// NOTIFICATION DEPENDENCY --AWADHESH
 					// KUMAR----------------------------
 
-					if (notificationConfigRepository.checkAlertForUser(salesHeaderDto.getCreatedBy(),
-							notificationTypeId))
+					if (notificationConfigRepository.checkAlertForUser(salesHeaderDto.getEmailId(), notificationTypeId))
 
 						// String odataResponse =
 						// odataServices.usersByEmail(user.toLowerCase());
@@ -881,9 +922,9 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 						 * NOTIFICATION DEPENDENCY --AWADHESH
 						 * KUMAR----------------------------
 						 */
-						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
-								notificationTypeId, "Created", true);
+						notificationDetailService.saveNotification(salesHeaderDto.getEmailId(),
+								salesHeaderDto.getSoldToParty(), salesHeaderDto.getSalesHeaderId(), "All", "All",
+								notificationTypeId, "Created", false);
 
 					// } else {
 					// notificationDetailService.saveNotification(userDto,
@@ -901,10 +942,6 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					 * NOTIFICATION DEPENDENCY --AWADHESH
 					 * KUMAR----------------------------
 					 */
-					if (salesHeaderDto.getDocumentType().equals("OR"))
-						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "01", "01", "N04",
-								"Acknowledge", true);
 
 					// }
 					// }
@@ -1064,36 +1101,22 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// getUserDetailsBySTP(odataResponse1);
 					// for (String user : listUsers) {
 
-					/*
-					 * NOTIFICATION DEPENDENCY --AWADHESH
-					 * KUMAR---------------------------- if
-					 * (notificationConfigDao.checkAlertForUser(salesHeaderDto.
-					 * getCreatedBy(), notificationTypeId)) {
-					 */
+					if (notificationConfigRepository.checkAlertForUser(salesHeaderDto.getEmailId(), notificationTypeId))
 
-					// String odataResponse =
-					// odataServices.usersByEmail(user.toLowerCase());
-					// List<UserDto> listUserDto =
-					// getUserDetailsByEmail(odataResponse);
-					// for (UserDto userDto : listUserDto) {
-					// if (!(userDto.getPersonaId().equals("01") &&
-					// notificationTypeId.equals("QT"))) {
-					// if (userDto.getPersonaId().equals("01")) {
-					// if
-					// (userDto.getUserId().equals(salesHeaderDto.getSoldToParty()))
+						// String odataResponse =
+						// odataServices.usersByEmail(user.toLowerCase());
+						// List<UserDto> listUserDto =
+						// getUserDetailsByEmail(odataResponse);
+						// for (UserDto userDto : listUserDto) {
+						// if (!(userDto.getPersonaId().equals("01") &&
+						// notificationTypeId.equals("QT"))) {
+						// if (userDto.getPersonaId().equals("01")) {
+						// if
+						// (userDto.getUserId().equals(salesHeaderDto.getSoldToParty()))
 
-					if (Doc_Type.equals("OBD"))
-						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
-								notificationTypeId, "OBD Created", true);
-					else if (Doc_Type.equals("PGI"))
-						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
-								notificationTypeId, "PGI Created", true);
-
-					notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-							salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "All", "All",
-							notificationTypeId, "Created", true);
+						notificationDetailService.saveNotification(salesHeaderDto.getEmailId(),
+								salesHeaderDto.getSoldToParty(), salesHeaderDto.getSalesHeaderId(), "All", "All",
+								notificationTypeId, "Created", false);
 
 					// } else {
 					// notificationDetailService.saveNotification(userDto,
@@ -1107,10 +1130,11 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					// &&
 					// userDto.getUserId().equals(salesHeaderDto.getSoldToParty()))
 
-					if (salesHeaderDto.getDocumentType().equals("OR"))
-						notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
-								salesHeaderDto.getSoldToParty(), salesHeaderDto.getS4DocumentId(), "01", "01", "N04",
-								"Acknowledge", true);
+					// if (salesHeaderDto.getDocumentType().equals("OR"))
+					// notificationDetailService.saveNotification(salesHeaderDto.getCreatedBy(),
+					// salesHeaderDto.getSoldToParty(),
+					// salesHeaderDto.getS4DocumentId(), "01", "01", "N04",
+					// "Acknowledge", true);
 
 					// }
 					// }
@@ -1312,4 +1336,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		return result;
 	}
 
+	public SalesOrderHeader getCreatedDate(@PathVariable String orderNum) {
+		SalesOrderHeader header = salesOrderHeaderRepository.findById(orderNum).get();
+		Date date = header.getCreatedDate();
+		System.out.println("createdDate: " + date);
+		return header;
+	}
 }

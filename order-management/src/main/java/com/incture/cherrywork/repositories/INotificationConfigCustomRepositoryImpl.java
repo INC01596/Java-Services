@@ -6,11 +6,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.incture.cherrywork.dtos.NotificationConfigDto;
 import com.incture.cherrywork.entities.NotificationConfig;
@@ -64,7 +65,7 @@ public class INotificationConfigCustomRepositoryImpl implements INotificationCon
 		List<NotificationTypeDto> notificationTypeDtos = new ArrayList<>();
 		List<NotificationType> notificationTypeDos = new ArrayList<>();
 		try{
-			String query = "select n from NotificationType n";
+			String query = "from NotificationType n";
 			Query q = entityManager.createQuery(query);
 			notificationTypeDos = q.getResultList();
 			for(NotificationType typeDo : notificationTypeDos){
@@ -88,7 +89,7 @@ public class INotificationConfigCustomRepositoryImpl implements INotificationCon
 		NotificationConfigDto configDto = null;
 		List<NotificationConfig> notificationConfigDos = new ArrayList<>();
 		try{
-			String query = "select n from NotificationConfig n where lower(n.emailId)=:userId and n.notificationTypeId=:notificationTypeId";
+			String query = "from NotificationConfig n where lower(n.emailId)=:userId and n.notificationTypeId=:notificationTypeId";
 			Query q = entityManager.createQuery(query);
 			q.setParameter("userId", userId.toLowerCase());
 			q.setParameter("notificationTypeId", notificationTypeId);

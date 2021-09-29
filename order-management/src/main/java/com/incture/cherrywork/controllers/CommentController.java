@@ -22,8 +22,6 @@ import com.incture.cherrywork.util.HelperClass;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/comment")
 public class CommentController {
 

@@ -6,9 +6,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.incture.cherrywork.dtos.NotificationDetailDto;
 import com.incture.cherrywork.dtos.NotificationListDto;
@@ -26,20 +27,17 @@ public class INotificationDetailCustomRepositoryImpl implements INotificationDet
 	@SuppressWarnings("unchecked")
 	public NotificationListDto getNotification(String userId) {
 		//logger.debug("[NotificationDetailDao][getNotification] Started");
-		System.out.println("[NotificationDetailDao][getNotification] Started");
+		System.out.println("[NotificationDetailCustomRepositoryImpl][getNotification] Started");
 		NotificationListDto notificationList = new NotificationListDto();
 		List<NotificationDetail> notificationListEntity = new ArrayList<>();
 		List<NotificationDetailDto> notificationListDto = new ArrayList<>();
 		try {
-			String queryStringRead = "select n from NotificationDetail n where lower(n.userId)=:userId order by n.createdAt desc";
+			String queryStringRead = "from NotificationDetail n where lower(n.userId)=:userId order by n.createdAt desc";
 			Query query2 = entityManager.createQuery(queryStringRead);
 			query2.setParameter("userId", userId.toLowerCase());
 			notificationListEntity = query2.getResultList();
-			for (NotificationDetail entity : notificationListEntity) {
-				NotificationDetailDto dto = new NotificationDetailDto();
-				dto = ObjectMapperUtils.map(entity, NotificationDetailDto.class);
-				notificationListDto.add(dto);
-			}
+			System.err.println("notificationListEntity size: "+notificationListEntity.size());
+			notificationListDto = ObjectMapperUtils.mapAll(notificationListEntity, NotificationDetailDto.class);
 			notificationList.setNotificationList(notificationListDto);
 			notificationList.setCount(UnseenNotificationCount(userId));
 		} catch (Exception e) {
@@ -53,14 +51,15 @@ public class INotificationDetailCustomRepositoryImpl implements INotificationDet
 	@SuppressWarnings("unchecked")
 	public int UnseenNotificationCount(String userId) {
 		//logger.debug("[NotificationDetailDao][UnseenNotificationCount] Started");
-		System.out.println("[NotificationDetailDao][UnseenNotificationCount] Started");
+		System.out.println("[NotificationDetailRepository][UnseenNotificationCount] Started");
 		List<NotificationDetail> notificationListEntity = new ArrayList<>();
 		int count = 0;
 		try {
-			String queryString = "select n from NotificationDetail n where n.userId=:userId and n.unread = true";
+			String queryString = "from NotificationDetail n where n.userId=:userId and n.unread = true";
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("userId", userId);
 			notificationListEntity = query.getResultList();
+			System.err.println("unseen notification count: "+notificationListEntity.size());
 			count = notificationListEntity.size();
 		} catch (Exception e) {
 			//logger.error("[NotificationDetailDao][UnseenNotificationCount] Exception : " + e.getMessage());

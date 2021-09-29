@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.http.Header;
@@ -52,8 +53,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -340,6 +339,7 @@ public class ApprovalworkflowTrigger {
 	// create new task for the trigger appoval workflow for OR condition.
 	public String createNewTaskOr(String dataSet, String level, String approver) {
 
+		System.err.println("dataset: "+dataSet+" level: "+level+" approver: "+approver);
 		String taskSerialId = "";
 
 		SalesOrderTaskStatusDto salesOrderTaskStatusDto = new SalesOrderTaskStatusDto();
@@ -1318,7 +1318,7 @@ public class ApprovalworkflowTrigger {
 		return response;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	
 	public ResponseEntity checkForNextLevelTrigger(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
@@ -1457,7 +1457,7 @@ public class ApprovalworkflowTrigger {
 
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	
 	public ResponseEntity checkForNextLevelTriggerAnd(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,

@@ -23,8 +23,6 @@ import com.incture.cherrywork.services.new_workflow.SalesOrderLevelStatusService
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/levelStatus")
 public class SalesOrderLevelStatusController {
 

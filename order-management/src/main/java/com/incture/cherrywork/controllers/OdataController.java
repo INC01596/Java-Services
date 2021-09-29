@@ -16,8 +16,6 @@ import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;
 import com.incture.cherrywork.dtos.ResponseEntity;
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/OdataServices")
 public class OdataController {
  

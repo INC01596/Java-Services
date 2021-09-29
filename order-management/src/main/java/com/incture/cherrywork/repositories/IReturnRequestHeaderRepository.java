@@ -93,6 +93,9 @@ public interface IReturnRequestHeaderRepository
 	@Query(value="from SalesOrderTaskStatusDo where taskStatus !=?1 and salesOrderLevelStatus.levelStatusSerialId =?2")
 	List<SalesOrderTaskStatusDo> getAllTaskFromLevelSerialIdRepository(Integer taskStatus, String levelStatusSeriallId);
 	
+	@Query("select distinct returnReqNum from ReturnItem where sapReturnOrderNum=?1")
+	String findReturnReqNum(String salesOrderNum);
+	
 	// Sandeep Kumar Khatri
 
 	// @Query("from ReturnRequestHeader r where r.returnReqNum=:reqNo")

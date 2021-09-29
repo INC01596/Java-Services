@@ -50,6 +50,12 @@ public @Data class TH_IDBRuleInputDto implements RuleInputDto {
 	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
+	
+	@Override
+	public String WorkRuleEnginePayload(String decisonTableId) {
+		return "";
+	}
+
 
 	@Override
 	public String toRuleInputString(String rulesServiceId) {

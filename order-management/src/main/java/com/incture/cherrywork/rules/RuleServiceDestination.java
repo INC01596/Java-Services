@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.http.Header;
@@ -25,11 +26,16 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.incture.cherrywork.dtos.ReturnOrderRuleInputDto;
 import com.incture.cherrywork.util.DestinationReaderUtil;
 
-
-
+@Service
+@Transactional
 public abstract class RuleServiceDestination {
 
 	public static final String XCSRF_TOKEN = "X-CSRF-Token";
@@ -45,16 +51,18 @@ public abstract class RuleServiceDestination {
 	public static final String URL = "URL";
 
 	public static final String CONTENT_TYPE = "Content-Type";
-	
+
 	public static final String AUTHORIZATION = "Authorization";
-	
+
 	public static final String FETCH = "Fetch";
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public abstract List<?> getResultList(RuleInputDto input) throws ClientProtocolException, IOException, URISyntaxException;
 
-	protected String execute(RuleInputDto input, String rulesServiceId) throws ClientProtocolException, IOException, URISyntaxException {
+	public abstract List<?> getResultListRuleService(RuleInputDto input)
+			throws ClientProtocolException, IOException, URISyntaxException;
+
+	protected String execute(RuleInputDto input, String rulesServiceId)
+			throws ClientProtocolException, IOException, URISyntaxException {
 
 		HttpContext httpContext = new BasicHttpContext();
 		httpContext.setAttribute(HttpClientContext.COOKIE_STORE, new BasicCookieStore());
@@ -63,15 +71,15 @@ public abstract class RuleServiceDestination {
 		CloseableHttpClient httpClient = null;
 		httpClient = getHTTPClient();
 
-		//Map<String, String> map = DestinationReaderUtil.getDestination(DESTINATION_RULES) 
-		
-		
+		// Map<String, String> map =
+		// DestinationReaderUtil.getDestination(DESTINATION_RULES)
+
 		String jwToken = DestinationReaderUtil.getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow();
-		System.err.println("map for rulesToken : " +jwToken);
+		System.err.println("map for rulesToken : " + jwToken);
 		httpPost = new HttpPost(RuleConstants.RULE_BASE_URL);
 		httpPost.addHeader(CONTENT_TYPE, "application/json");
 
-		httpPost.addHeader(AUTHORIZATION, "Bearer " +jwToken); // header
+		httpPost.addHeader(AUTHORIZATION, "Bearer " + jwToken); // header
 
 		String ruleInputString = input.toRuleInputString(rulesServiceId);
 		StringEntity stringEntity = new StringEntity(ruleInputString);
@@ -79,7 +87,7 @@ public abstract class RuleServiceDestination {
 		httpPost.setEntity(stringEntity);
 
 		response = httpClient.execute(httpPost);
-		System.err.println("response : " +response);
+		System.err.println("response : " + response);
 
 		// process your response here
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -100,9 +108,57 @@ public abstract class RuleServiceDestination {
 		if (httpClient != null) {
 			httpClient.close();
 		}
-		System.err.println("respBody: "+respBody);
+		System.err.println("respBody: " + respBody);
 		return respBody;
 	}
+
+	public String callWorkRulesRuleEngine(RuleInputDto input, String tableId) throws URISyntaxException {
+		System.err.println("callWorkRulesRuleEngine started..");
+		RestTemplate restTemplate = new RestTemplate();
+		URI uri = null;
+		HttpHeaders requestHeaders;
+		HttpEntity<String> entity;
+
+		uri = new URI(RuleConstants.WORKRULE_API_BASE_URL + "/invoke/rules");
+
+		requestHeaders = new HttpHeaders();
+		/*
+		 * requestHeaders.add(MailNotificationAppConstants.AUTHORIZATION,
+		 * MailNotificationAppConstants.TOKEN + jwt.getTokenValue());
+		 */
+		requestHeaders.add("Content-Type", "application/json;charset=utf-8");
+
+		
+
+		String payload = input.WorkRuleEnginePayload(tableId);
+		System.err.println("payload: "+payload);
+		entity = new HttpEntity<String>(payload, requestHeaders);
+
+		String response = restTemplate.postForObject(uri, entity, String.class);
+//		logger.info(
+//				"response from wr " + response.toString() + " " + response.getStatusCode() + " " + response.getBody());
+		System.err.println("response from wr "+response);
+		
+		return response;
+	}
+
+//	public String getPayloadByDecisionTable(String tableId) {
+//		RestTemplate restTemplate = new RestTemplate();
+//
+//		final String baseUrl = RuleConstants.WORKRULE_API_BASE_URL + "/invokePayload/" + tableId;
+//		URI uri = null;
+//		try {
+//			uri = new URI(baseUrl);
+//		} catch (URISyntaxException e) {
+//			e.printStackTrace();
+//		}
+//
+//		ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
+//		String responseData = (String) result.getBody();
+//
+//		return responseData;
+//
+//	}
 
 	private String getXSRFToken(CloseableHttpClient client) throws URISyntaxException {
 
@@ -111,26 +167,26 @@ public abstract class RuleServiceDestination {
 		String xsrfToken = null;
 		try {
 
-			Map<String,Object> map = DestinationReaderUtil.getDestination(DESTINATION_RULES_TOKEN);
-			System.err.println("map for Rules_V2 : " +map.toString());
+			Map<String, Object> map = DestinationReaderUtil.getDestination(DESTINATION_RULES_TOKEN);
+			System.err.println("map for Rules_V2 : " + map.toString());
 
-			//setting 
+			// setting
 			httpGet = new HttpGet((URI) map.get(URL));
 			String auth = map.get(USER) + ":" + map.get(PASSWORD);
 			String encoding = DatatypeConverter.printBase64Binary(auth.getBytes());
-			
+
 			System.err.println(httpGet);
 
-			httpGet.addHeader(AUTHORIZATION, "Basic " +encoding);
+			httpGet.addHeader(AUTHORIZATION, "Basic " + encoding);
 			httpGet.addHeader(XCSRF_TOKEN, FETCH);
 
 			response = client.execute(httpGet);
 
 			System.err.println("response token: " + response);
-			
+
 			Header xsrfTokenheader = response.getFirstHeader(XCSRF_TOKEN);
-			System.err.println("xsrfTokenheader : " +xsrfTokenheader);
-			
+			System.err.println("xsrfTokenheader : " + xsrfTokenheader);
+
 			if (xsrfTokenheader != null) {
 				xsrfToken = xsrfTokenheader.getValue();
 			}

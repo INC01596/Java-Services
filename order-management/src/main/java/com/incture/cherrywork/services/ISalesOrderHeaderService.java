@@ -87,4 +87,5 @@ public interface ISalesOrderHeaderService {
 	ResponseEntity<Object> getHeader(String stp);
 
 	ResponseEntity<Object> getSOData(HeaderIdDto dto);
+	SalesOrderHeader getCreatedDate(@PathVariable String orderNum);
 }

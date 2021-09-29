@@ -268,10 +268,11 @@ public class SalesOrderTaskStatusDaoImpl implements SalesOrderTaskStatusDao {
 
 	@Override
 	public List<SalesOrderTaskStatusDto> getAllTasksFromDecisionSetAndLevel(String decisionSetId, String level) {
+		
 
 		return exportList(entityManager
 				.createQuery(
-						"from SalesOrderTaskStatusDo task join SalesOrderLevelStatusDo l on "
+						"select task from SalesOrderTaskStatusDo task join SalesOrderLevelStatusDo l on "
 								+ "l.levelStatusSerialId = task.salesOrderLevelStatus.levelStatusSerialId where l.decisionSetId = :dsId and l.level = :lvl",
 						SalesOrderTaskStatusDo.class)
 				.setParameter("dsId", decisionSetId).setParameter("lvl", level).getResultList());

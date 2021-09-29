@@ -31,7 +31,7 @@ public class NotificationConfigService {
 	public ResponseEntity<Object> setNotificationAlert(NotificationConfigDto configDto) {
 		//Response response = new Response();
 		//logger.debug("[NotificationConfigDao][setNotificationAlert] Started for data : " + configDto.toString());
-		System.out.println("[NotificationConfigDao][setNotificationAlert] Started for data : " + configDto.toString());
+		System.out.println("[NotificationConfigService][setNotificationAlert] Started for data : " + configDto.toString());
 		try {
 			if (!ServicesUtil.isEmpty(configDto))
 				notificationConfigRepository.save(ObjectMapperUtils.map(configDto, NotificationConfig.class));
@@ -52,7 +52,7 @@ public class NotificationConfigService {
 	public ResponseEntity<Object> createNotificationAlert(String userId) {
 		
 		//logger.debug("[NotificationConfigDao][createNotificationAlert] Started for user : " + userId);
-		System.out.println("[NotificationConfigDao][createNotificationAlert] Started for user : " + userId);
+		System.out.println("[NotificationConfigService][createNotificationAlert] Started for user : " + userId);
 		List<NotificationConfigDto> notificationConfigDtos = new ArrayList<>();
 		NotificationConfigDto configDto = new NotificationConfigDto();
 		List<NotificationTypeDto> notificationTypeDtos;

@@ -528,7 +528,7 @@ public class ODataConsumingService {
 				salesDocHeaderDto.setDeliveryBlockText(res.getString("DlvBlockText"));
 				salesDocHeaderDto.setDocTypeText(res.getString("DocTypeText"));
 				salesDocHeaderDto.setOrdererNA(res.getString("PurchNoC"));
-				
+
 				salesDocHeaderDto.setCustomerPo(res.getString("ordererNA"));
 				if (salesDocHeaderDto.getCustomerPo() == null || salesDocHeaderDto.getCustomerPo().isEmpty()) {
 					sequenceNumberGen = SequenceNumberGen.getInstance();
@@ -553,7 +553,7 @@ public class ODataConsumingService {
 				if (res.getString("DocDateTime") != null) {
 					String dateInString = res.getString("DocDateTime").substring(6,
 							res.getString("DocDateTime").length() - 2);
-					System.err.println("[odataConsuming Service][ImportJsonFromOdata] dateInString: "+dateInString);
+					System.err.println("[odataConsuming Service][ImportJsonFromOdata] dateInString: " + dateInString);
 					salesDocHeaderDto.setSalesOrderDate(new BigInteger(dateInString));
 				}
 
@@ -820,7 +820,7 @@ public class ODataConsumingService {
 				 * salesDocHeaderDto.getReqMasterId())
 				 */) {
 					// Below 4 lines commented by Awadhesh Kumar
-					salesDocHeaderDtoFromEcc.setReqMasterId("1");
+					salesDocHeaderDtoFromEcc.setReqMasterId(ServicesUtil.randomId());
 					List<RequestMasterDto> reqList = requestMasterService
 							.getRequestMasterById(salesDocHeaderDtoFromEcc.getReqMasterId());// here
 					System.err.println("req list size" + reqList.size());
@@ -902,17 +902,16 @@ public class ODataConsumingService {
 								}
 
 								// Below 4 lines commented by Awadhesh Kumar
-								// List<RequestMasterDto> reqList2 =
-								// requestMasterDao
-								// .getRequestMasterById(soDto.getReqMasterId());
+								List<RequestMasterDto> reqList2 = requestMasterService
+										.getRequestMasterById(soDto.getReqMasterId());
+								System.err.println("reqList2: " + reqList2);
 								System.err.println("soDto " + soDto);
 								RequestMasterDto req = new RequestMasterDto();
-								// if (!reqList2.isEmpty()) {
-								// req = reqList2.get(0);
-								// }
+								if (!reqList2.isEmpty()) {
+									req = reqList2.get(0);
+								}
 								// checking if the workflow is triggered for the
 								// req id
-								req.setRequestStatusCode("33");
 								if ((StatusConstants.REQUEST_NEW.toString().equals(req.getRequestStatusCode()))) {
 
 									// call method
@@ -949,7 +948,7 @@ public class ODataConsumingService {
 									// updating the req status to in progress as
 									// worflow is triggered
 									// Below line commented by Awadhesh Kumar
-									// requestMasterService.updateRequestMaster(req);
+									requestMasterService.updateRequestMaster(req);
 									System.err.println("STEP 20 workflow triggered successfully for ="
 											+ salesDocHeaderDtoFromEcc.getSalesOrderNum());
 								} else {

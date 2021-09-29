@@ -16,12 +16,13 @@ import com.incture.cherrywork.dtos.NotificationListDto;
 import com.incture.cherrywork.dtos.NotificationTextDto;
 import com.incture.cherrywork.entities.NotificationDetail;
 import com.incture.cherrywork.entities.NotificationText;
+
+//import com.incture.cherrywork.notification.WebsocketDto;
 //import com.incture.cherrywork.notificationWebsocket.NotificationWebSocket;
 //import com.incture.cherrywork.notificationWebsocket.NotificationWebsocketDto;
 import com.incture.cherrywork.repositories.INotificationDetailRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.ServicesUtils;
-
 
 @Service("NotificationDetailService")
 @Transactional
@@ -32,7 +33,7 @@ public class NotificationDetailService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	public NotificationListDto getNotification(String userId) {
 		return notificationDetailRepository.getNotification(userId);
 	}
@@ -49,10 +50,9 @@ public class NotificationDetailService {
 			String notificationTypeId, String triggerPoint, Boolean emailRequired) {
 		saveNotification1(email, soldToParty, s4DocumentId, source, target, notificationTypeId, triggerPoint,
 				emailRequired);
-		//callWebsocket(email.toLowerCase());
+		// callWebsocket(email.toLowerCase());
 	}
 
-	
 	public void clearNotification(String userId) {
 		notificationDetailRepository.clearNotification(userId);
 	}
@@ -61,7 +61,9 @@ public class NotificationDetailService {
 	public void saveNotification1(String email, String soldToParty, String s4DocumentId, String source, String target,
 			String notificationTypeId, String triggerPoint, Boolean emailRequired) {
 		// logger.debug("[NotificationDetailDao][saveNotification] Started");
-		System.out.println("[NotificationDetailDao][saveNotification] Started");
+		System.out
+				.println("[NotificationDetailDao][saveNotification] Started with email: " + email + " source: " + source
+						+ " target: "+target + " notificationTypeId: " + notificationTypeId + " triggerPoint:" + triggerPoint);
 		// Session session = sessionFactory.openSession();
 		// Transaction tx = null;
 		NotificationTextDto notificationTextDto = new NotificationTextDto();
@@ -69,7 +71,7 @@ public class NotificationDetailService {
 		NotificationDetailDto notificationDetailDto = new NotificationDetailDto();
 		try {
 			// tx = session.beginTransaction();
-			String queryString = "select n from NotificationText n where n.source=:source and n.target=:target "
+			String queryString = "from NotificationText n where n.source=:source and n.target=:target "
 					+ "and n.notificationTypeId=:notificationTypeId and n.triggerPoint=:triggerPoint";
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("source", source);
@@ -88,19 +90,11 @@ public class NotificationDetailService {
 			}
 
 			if (notificationTextDto.getTriggerPoint().equals("Created")) {
-				if (notificationTypeId.equals("N01"))
-					message = notificationTextDto.getNotificationText().replace("<Enquiry Id>", s4DocumentId)
-							.replace("<customer name>", "User" + " (" + soldToParty + ")");
-				else if (notificationTypeId.equals("N02"))
-					message = notificationTextDto.getNotificationText().replace("<Quotation Id>", s4DocumentId)
-							.replace("<customer name>", "User" + " (" + soldToParty + ")");
-				else if (notificationTypeId.equals("N03"))
-					message = notificationTextDto.getNotificationText().replace("<Order Id>", s4DocumentId)
-							.replace("<customer name>", "User" + " (" + soldToParty + ")");
+				message = notificationTextDto.getNotificationText()+ "with id "+s4DocumentId+" for (" + soldToParty + ")";
 			}
 
 			if (notificationTextDto.getTriggerPoint().equals("Acknowledge")) {
-				message = notificationTextDto.getNotificationText().replace("<Order Id>", s4DocumentId);
+				message = notificationTextDto.getNotificationText()+ "<Order Id> "+s4DocumentId;
 			}
 
 			notificationDetailDto.setNotificationId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -110,29 +104,32 @@ public class NotificationDetailService {
 			notificationDetailDto.setUnread(true);
 			notificationDetailDto.setUserId(email.toLowerCase());
 			notificationDetailRepository.save(ObjectMapperUtils.map(notificationDetailDto, NotificationDetail.class));
-			
+
 			if (emailRequired == true)
 				ServicesUtils.mail(email.toLowerCase(), "User", title, message);
 		} catch (Exception e) {
-			
-			//logger.error("[NotificationDetailDao][saveNotification] Exception : " + e.getMessage());
+
+			// logger.error("[NotificationDetailDao][saveNotification] Exception
+			// : " + e.getMessage());
 			System.out.println("[NotificationDetailDao][saveNotification] Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
-//	public void callWebsocket(String userId){
-//		System.out.println("callWebsocket started!");
-//		NotificationListDto notificationListDto = new NotificationListDto();
-//		notificationListDto = notificationDetailRepository.getNotification(userId);
-//		NotificationWebsocketDto websocketDto = new NotificationWebsocketDto();
-//		websocketDto.setUser(userId);
-//		websocketDto.setAlert(true);
-//		websocketDto.setNotification(notificationListDto);
-//		//NotificationWebSocket webSocket = new NotificationWebSocket();
-//		//.getResponse(websocketDto);
-//		System.out.println("callWebsocket Completed!"+websocketDto.toString());
-//	}
-//
+
+	// public void webSocketCall(String userId){
+	// callWebsocket(userId);
+	// }
+
+	// public void callWebsocket(String userId){
+	// NotificationListDto notificationListDto = new NotificationListDto();
+	// notificationListDto =
+	// notificationDetailRepository.getNotification(userId);
+	// WebsocketDto websocketDto = new WebsocketDto();
+	// websocketDto.setUser(userId);
+	// websocketDto.setAlert(true);
+	// websocketDto.setNotification(notificationListDto);
+	// NotificationWebSocket webSocket = new NotificationWebSocket();
+	// webSocket.getResponse(websocketDto);
+	// }
 
 }

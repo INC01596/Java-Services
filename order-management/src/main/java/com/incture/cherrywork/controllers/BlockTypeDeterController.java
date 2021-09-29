@@ -13,8 +13,6 @@ import com.incture.cherrywork.workflow.services.BlockTypeDeterminationService;
 
 
 @RestController
-@EnableWebMvc
-@CrossOrigin("*")
 @RequestMapping("/btd")
 public class BlockTypeDeterController {
 
@@ -27,7 +25,7 @@ public class BlockTypeDeterController {
 
 	@GetMapping("/findBtdBySoId/{salesOrderHeaderNo}")
 	public ResponseEntity findBtdById(@PathVariable("salesOrderHeaderNo") String salesOrderHeaderNo) {
-		System.err.println("Inside Comment find by Id method");
+		System.err.println("Inside find btd by Id method");
 		return services.blockTypeFilterBasedOnSoId(salesOrderHeaderNo);
 	}
 

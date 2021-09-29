@@ -1160,6 +1160,7 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto, Pageable p
 
 	// Sandeep KUmar
 
+<<<<<<< HEAD
 //	public String getItems(String salesHeaderId) {
 //
 //		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
@@ -1351,6 +1352,8 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto, Pageable p
 //		}
 //
 //	}
+=======
+>>>>>>> branch 'master' of https://github.com/Yuvraj1004/Java-Services.git
 	public String getItems(String salesHeaderId)
 	{
 		
@@ -1577,7 +1580,6 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto, Pageable p
 		}
 		
 	}
-
 	public static String listToString(List<String> list) {
 		String response = "";
 		try {

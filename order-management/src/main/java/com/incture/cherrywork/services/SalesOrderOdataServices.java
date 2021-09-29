@@ -40,6 +40,7 @@ import com.google.gson.JsonParser;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
+import com.incture.cherrywork.odata.dto.OdataMaterialStartNewDto;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
 import com.incture.cherrywork.odata.dto.OdataSchItemStartDto;
 //import com.incture.cherrywork.odataServices.OdataServices;
@@ -51,6 +52,7 @@ import com.incture.cherrywork.util.ReturnExchangeConstants;
 
 @SuppressWarnings("unused")
 @Service("OdataServices")
+@Transactional
 public class SalesOrderOdataServices {
 
 	// private Logger logger = LoggerFactory.getLogger(OdataServices.class);
@@ -281,17 +283,38 @@ public class SalesOrderOdataServices {
 	public static OdataMaterialStartDto materialScheduler() {
 
 		OdataMaterialStartDto odataMaterialStartDto = new OdataMaterialStartDto();
-		String URL = SalesOrderOdataConstants.BASE_URL_SCH + "getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
+//		String URL = SalesOrderOdataConstants.BASE_URL_SCH + "getMaterialTabSet?$filter=Zzkey%20eq%20'GET'";
+		String URL = SalesOrderOdataConstants.BASE_URL + "MaterialSchedulerTabSet?$filter=Bismt%20eq%20'GET'&$format=json";
 		try {
 			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
+			System.err.println("[SalesOrderOdataUtilService][materialScheduler] response" + response);
 			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-			odataMaterialStartDto = gson.fromJson(response.toString(), OdataMaterialStartDto.class);
-
+			System.err.println("[SalesOrderOdataUtilService][materialScheduler] gson response" + gson);
+			odataMaterialStartDto = gson.fromJson(response, OdataMaterialStartDto.class);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 		return odataMaterialStartDto;
+	}
+	//nischal -- new method for calling scheduler
+	
+	public static OdataMaterialStartNewDto materialSchedulerNew(){
+		OdataMaterialStartNewDto odataMaterialStartNewDto = new OdataMaterialStartNewDto();
+		String URL = SalesOrderOdataConstants.BASE_URL + "MaterialSchedulerTabSet?$filter=Bismt%20eq%20'GET'&$format=json";
+		try {
+			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
+			System.err.println("[SalesOrderOdataUtilService][materialSchedulerNew] response" + response);
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			System.err.println("[SalesOrderOdataUtilService][materialSchedulerNew] gson response" + gson);
+			odataMaterialStartNewDto = gson.fromJson(response, OdataMaterialStartNewDto.class);
+			System.err.println("[SalesOrderOdataUtilService][materialSchedulerNew] odataMaterialStartNewDto" + odataMaterialStartNewDto);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return odataMaterialStartNewDto;
 	}
 
 	//

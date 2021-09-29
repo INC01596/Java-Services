@@ -321,6 +321,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 					th_idb_proc_dto.setRequestType(requestType);
 					th_idb_proc_dto.setReturnType(requestCategory);
 					th_idb_proc_dto.setSalesTerritory(salesDocItemDto.getSalesTeam());
+					th_idb_proc_dto.setSalesTeam(salesDocItemDto.getSalesTeam());
 					th_idb_proc_dto.setSalesOrg(salesOrg);
 
 				} else {
@@ -335,6 +336,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 					th_idb_proc_dto.setReturnType(Constants.DEFAULT);
 					th_idb_proc_dto.setSalesTerritory(Constants.DEFAULT);
 					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesTeam(Constants.DEFAULT);
 					type = Constants.DEFAULT;
 
 				}
@@ -411,6 +413,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 					th_idb_proc_dto.setReturnType(Constants.DEFAULT);
 					th_idb_proc_dto.setMatrialNumber(Constants.DEFAULT);
 					th_idb_proc_dto.setSalesOrg(Constants.DEFAULT);
+					th_idb_proc_dto.setSalesTeam(Constants.DEFAULT);
 					for (SalesDocItemDto salesDocItemDto : entry.getValue()) {
 
 						if (defaultInputMap.containsKey(th_idb_proc_dto))
@@ -620,7 +623,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultList((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -725,7 +728,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultList((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}

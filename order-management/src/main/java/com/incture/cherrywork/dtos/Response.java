@@ -47,6 +47,10 @@ public class Response {
 	public void setStatus(ResponseStatus status) {
 		this.status = status;
 	}
+	public Response() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 }
 

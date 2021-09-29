@@ -3,11 +3,13 @@ package com.incture.cherrywork.workflow.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.incture.cherrywork.dao.SchedulerTableDao;
 import com.incture.cherrywork.dtos.ResponseEntity;
