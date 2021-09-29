@@ -1707,17 +1707,11 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 		System.err.println(s);
 
-<<<<<<< HEAD
-		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
-		{
-			
-			for(int i=0;i<dto.getCustomerId().size();i++)
-			{
-=======
+
+		
 		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
 
 			for (int i = 0; i < dto.getCustomerId().size(); i++) {
->>>>>>> branch 'master' of https://github.com/Yuvraj1004/Java-Services.git
 				l1.add(dto.getCustomerId().get(i).substring(8));
 			}
 			
