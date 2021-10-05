@@ -4,6 +4,8 @@ package com.incture.cherrywork.services;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.incture.cherrywork.dtos.MaterialMasterDto;
+import com.incture.cherrywork.dtos.MaterialSchedulerLogsDto;
 //import com.incture.cherrywork.dtos.MaterialMasterDto;
 import com.incture.cherrywork.dtos.Response;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
@@ -32,6 +35,7 @@ import com.incture.cherrywork.entities.MaterialMaster;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
 import com.incture.cherrywork.odata.dto.OdataMaterialDto;
+import com.incture.cherrywork.odata.dto.OdataMaterialNewDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartNewDto;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
@@ -43,7 +47,6 @@ import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.sales.constants.EnOverallDocumentStatus;
 import com.incture.cherrywork.sales.constants.EnUpdateIndicator;
-import com.incture.cherrywork.sales.constants.ResponseStatus;
 import com.incture.cherrywork.util.SequenceNumberGen;
 import com.incture.cherrywork.util.ServicesUtil;
 
@@ -64,7 +67,10 @@ public class SchedulerServices {
 
 	@Autowired
 	private SalesOrderOdataServices odataServices;
-
+	
+	@Autowired
+	private MaterialSchedulerService materialSchedulerService;
+	
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -476,15 +482,53 @@ public class SchedulerServices {
 		System.err.println("[SalesItemDetailsDao][itemScheduler] Ended : " + new Date());
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Successfully Updated").body(list);
 	}
+	
+	public List<MaterialMaster> convertDataToDB(OdataMaterialStartNewDto odataMaterialStartNewDto){
+		logger.debug("[MaterialMasterDao][convertDataToDB] Start - results data : " + odataMaterialStartNewDto.getD().getResults().toString());
+		List<MaterialMaster> listMaterialMasterData = new ArrayList<MaterialMaster>();
+		int i = 10;
+		for(OdataMaterialNewDto a : odataMaterialStartNewDto.getD().getResults()){
+			MaterialMaster b = new MaterialMaster();
+			b.setMaterialMasterId(ServicesUtil.randomId());
+			b.setCreatedBy(a.getErnam());
+			b.setItemNumber("0000" +Integer.toString(i));
+			b.setMaterial(a.getMatnr());
+			b.setMaterialDescription(a.getMatkl());
+			b.setPlant("CODD");
+			i += 10; 
+			listMaterialMasterData.add(b);
+		}
+		return listMaterialMasterData;
+	}
 
-	@SuppressWarnings({ "unchecked", "resource" })
-	@Scheduled(cron = "0 0/15 * * * ?")
+	
 	public Response materialScheduler() {
+		
 		logger.debug("[MaterialMasterDao][materialScheduler] Start : " + new Date());
 		System.err.println("[MaterialMasterDao][materialScheduler] Start : " + new Date());
 		Response response = new Response();
 		ArrayList<String> list = new ArrayList<>();
-		OdataMaterialStartNewDto odataMaterialStartNewDto = odataServices.materialSchedulerNew();
+		try{
+			OdataMaterialStartNewDto odataMaterialStartNewDto = odataServices.materialSchedulerNew();
+			List<MaterialMaster> dataToPush = convertDataToDB(odataMaterialStartNewDto);
+			int length = dataToPush.size();
+			if(length == 0){
+				materialSchedulerService.deleteAllDataFromDb();
+				return response;
+			}
+			materialSchedulerService.deleteAllDataFromDb();
+			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto("Data from OData which will be updated to HanaDb :" + dataToPush.toString(), new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+			com.incture.cherrywork.dtos.ResponseEntity res =  materialSchedulerService.saveAllDataToDb(dataToPush);
+			System.err.println("[MaterialMasterDao][materialScheduler] res : " + res + res.getMessage() + res.getStatus() + res.getStatusCode());
+			
+			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto("Data updated Properly. " + length + " materials updated to HanaDb", new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto("Failed to update the data", new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+			logger.debug("[MaterialMasterDao][materialScheduler] end : " +  "Failed to update the data");
+		}
+		logger.debug("[MaterialMasterDao][materialScheduler] Ended : " + new Date());
 		return response;
 //		try {
 //			OdataMaterialStartDto odataMaterialStartDto = odataServices.materialScheduler();
@@ -593,9 +637,11 @@ public class SchedulerServices {
 //			response.setStatus(ResponseStatus.INTERNAL_SERVER_ERROR);
 //			response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
 //		}
-//		logger.debug("[MaterialMasterDao][materialScheduler] Ended : " + new Date());
+//		
 //		return response;
 	}
+	
+	
 	
 	public List<MaterialMasterDto> convertData(OdataMaterialStartDto odataMaterialStartDto) {
 		logger.debug("[MaterialMasterDao][convertData] Start : " + odataMaterialStartDto.toString());

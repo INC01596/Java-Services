@@ -34,22 +34,19 @@ import com.incture.cherrywork.workflow.services.SchedulerTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-
-
-
-
 @EnableScheduling
 @RestController
 @Api(value = "Scheduler Controller", tags = { "Approval" })
 @RequestMapping("/scheduler")
 public class SchedulerController {
 
-	//private final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
+	// private final Logger logger =
+	// LoggerFactory.getLogger(SchedulerController.class);
 
 	static boolean schedulerSwitch = true;
-	
+
 	static boolean materialSchedulerSwitch = true;
-	
+
 	static final int interval = 5;
 
 	static LocalDateTime schedulerFutureTime = LocalDateTime.now(ZoneId.of("GMT+05:30")).plusMinutes(5);
@@ -59,23 +56,23 @@ public class SchedulerController {
 
 	@Autowired
 	private SchedulerTableService schedulerTableService;
-	
+
 	@Autowired
 	private ODataConsumingService odataConsumingService;
-	
+
 	@Autowired
 	private SchedulerServices schedulerServices;
-	
+
 	@Autowired
 	private MaterialSchedulerService materialSchedulerService;
-	
+
 	@GetMapping("/schedulerTrigger")
-	//@Scheduled(cron = "*/5 * * * * ?" )
-	  @Scheduled(cron = "0 0/"+interval+" * * * ?")
-	//@Scheduled(cron = "0 12 * * * ?")
+	// @Scheduled(cron = "*/5 * * * * ?" )
+	@Scheduled(cron = "0 0/" + interval + " * * * ?")
+	// @Scheduled(cron = "0 12 * * * ?")
 	public void schedulerTrigger() {
-		System.err.println("STEP 1 SCHEDULER ENTER TIME " + "=" + LocalDateTime.now(ZoneId.of("GMT+05:30"))
-				+ " " + "com.incture.controllers.SchedulerController*****************");
+		System.err.println("STEP 1 SCHEDULER ENTER TIME " + "=" + LocalDateTime.now(ZoneId.of("GMT+05:30")) + " "
+				+ "com.incture.controllers.SchedulerController*****************");
 
 		/*
 		 * schedulerTableService.saveInDB( new
@@ -158,27 +155,35 @@ public class SchedulerController {
 	@PostMapping("/schedulerTriggerManual")
 	@ApiOperation(value = "/schedulerTriggerManual")
 	public ResponseEntity schedulerTriggerManual(@RequestBody SchedulerTimeDto dto) {
-			return oDataConsumingService.manualScheduler(dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
-					dto.getEndTime());
-		
+		return oDataConsumingService.manualScheduler(dto.getStartDate(), dto.getEndDate(), dto.getStartTime(),
+				dto.getEndTime());
+
 	}
+
 	@PostMapping("/saveDataToHanaDb")
-	public void saveDataToHanaDb(@RequestBody List<SalesDocHeaderDto> list){
+	public void saveDataToHanaDb(@RequestBody List<SalesDocHeaderDto> list) {
 		odataConsumingService.saveDataToHanaDb(list);
 	}
-	
-	//nischal -- checking git access 
+
+	// nischal -- checking git access
 	@GetMapping("/test")
-    public String test(){
-        return "successfully deployed";
-    }
+	public String test() {
+		return "successfully deployed";
+	}
 	
+	@SuppressWarnings({ "unchecked", "resource" })
+	@Scheduled(cron = "0 0/15 * * * ?")
 	@GetMapping("/triggerMaterialScheduler")
-    public Response materialScheduler(){
-        return schedulerServices.materialScheduler();
-    }
-	
-	//nischal -- getAllLogsOfMaterialSchedulerWithDateRange Method
+	public void materialScheduler() {
+		if (materialSchedulerSwitch) {
+			schedulerServices.materialScheduler();
+		} else {
+			System.err.println("Material scheduler is switched OFF now ");
+		}
+
+	}
+
+	// nischal -- getAllLogsOfMaterialSchedulerWithDateRange Method
 	@GetMapping("/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	@ApiOperation(value = "/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	public ResponseEntity listAllMaterialSchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
@@ -188,21 +193,23 @@ public class SchedulerController {
 				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
 						.toLocalDateTime());
 	}
-	//nischal -- get the status of the material scheduler
+
+	// nischal -- get the status of the material scheduler
 	@GetMapping("/materialSchedulerRunningStatus")
 	@ApiOperation(value = "/materialSchedulerRunningStatus")
 	public boolean materialSchedulerRunningStatus() {
 		return materialSchedulerSwitch;
 	}
-	
-	//nischal -- 
+
+	// nischal --
 	@GetMapping("/materialSchedulerSwitch/{parameter}")
 	@ApiOperation(value = "/materialSchedulerSwitch/{parameter}")
 	public static ResponseEntity turnOffOnMaterialScheduler(@PathVariable boolean parameter) {
 		if (!parameter) {
 			materialSchedulerSwitch = parameter;
 			System.err.println("Material Scheduler is switched OFF now ");
-			return new ResponseEntity("OFF ", HttpStatus.OK, "Material Scheduler is switched OFF now ", ResponseStatus.SUCCESS);
+			return new ResponseEntity("OFF ", HttpStatus.OK, "Material Scheduler is switched OFF now ",
+					ResponseStatus.SUCCESS);
 			// return "NO" +" scheduler is switched OFF now ";
 		} else {
 
@@ -217,4 +224,3 @@ public class SchedulerController {
 		}
 	}
 }
-

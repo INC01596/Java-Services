@@ -316,7 +316,7 @@ public class SalesOrderOdataServices {
 		OdataMaterialStartNewDto odataMaterialStartNewDto = new OdataMaterialStartNewDto();
 		String URL = SalesOrderOdataConstants.BASE_URL + "MaterialSchedulerTabSet?$filter=Bismt%20eq%20'GET'&$format=json";
 		try {
-			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto(URL, new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
+			materialSchedulerService.saveInDB(new MaterialSchedulerLogsDto("Odata Service Url for Material Scheduler: " +URL, new Date().toString(), LocalDateTime.now(ZoneId.of("GMT+05:30"))));
 			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
 			System.err.println("[SalesOrderOdataUtilService][materialSchedulerNew] response" + response);
 			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
