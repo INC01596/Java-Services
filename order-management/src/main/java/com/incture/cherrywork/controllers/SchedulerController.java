@@ -172,7 +172,7 @@ public class SchedulerController {
 	}
 	
 	@SuppressWarnings({ "unchecked", "resource" })
-	@Scheduled(cron = "0 0/15 * * * ?")
+	@Scheduled(cron = "0 0/2 * * * ?")
 	@GetMapping("/triggerMaterialScheduler")
 	public void materialScheduler() {
 		if (materialSchedulerSwitch) {
