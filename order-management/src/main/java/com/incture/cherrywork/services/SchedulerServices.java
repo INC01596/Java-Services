@@ -34,6 +34,8 @@ import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.entities.MaterialMaster;
 import com.incture.cherrywork.entities.SalesOrderHeader;
 import com.incture.cherrywork.entities.SalesOrderItem;
+import com.incture.cherrywork.odata.dto.ODataCustomerDto;
+import com.incture.cherrywork.odata.dto.OdataCustomerStartDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialNewDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
@@ -70,6 +72,9 @@ public class SchedulerServices {
 	
 	@Autowired
 	private MaterialSchedulerService materialSchedulerService;
+	
+	@Autowired
+	private CustomerMasterService customerMasterService;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -500,7 +505,22 @@ public class SchedulerServices {
 		}
 		return listMaterialMasterData;
 	}
-
+	
+	public Response customerMasterScheduler(){
+		System.err.println("[Step 1 -Inside SchedulerService][customerMasterScheduler] Start : " + new Date());
+		Response response = new Response();
+		List<String> list = new ArrayList<>();
+		try{
+			OdataCustomerStartDto odataCustomerStartDto = odataServices.customerMasterScheduler();
+			for(ODataCustomerDto a : odataCustomerStartDto.getD().getResults()){
+				response = customerMasterService.saveInDb(a);
+			}
+			return response;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	public Response materialScheduler() {
 		

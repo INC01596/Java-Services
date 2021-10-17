@@ -223,4 +223,9 @@ public class SchedulerController {
 			// "+LocalDateTime.now(ZoneId.of("GMT+08:00"));
 		}
 	}
+	
+	@GetMapping("/triggerCustomerMasterScheduler")
+	public void triggerCustomerMasterScheduler(){
+		schedulerServices.customerMasterScheduler();
+	}
 }

@@ -18,6 +18,9 @@ public interface SalesOrderOdataConstants {
 	String PASSWORD_OBD = "Welcome@1234";
 	String BASE_URL_SCH = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_SO_CREATE_SRV/";
 	String BASE_URL_RETURN = "http://incturedec:8080/sap/opu/odata/sap/ZCOM_RETURNS_MANAGEMENT_SRV/";
+	
+	//nischal -- added baseurl for CustomerMaster Odata call
+	String BASE_URL_CUSTOMER_MASTER = "http://incturedec:8080/sap/opu/odata/sap/ZCOM_MASTER_ENQUIRIES_SRV/";
 //	
 //	String JSON = "application/json";
 	

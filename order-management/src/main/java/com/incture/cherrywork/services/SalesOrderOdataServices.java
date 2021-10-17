@@ -45,6 +45,7 @@ import com.google.gson.JsonParser;
 import com.incture.cherrywork.dtos.SalesOrderOdataHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderOdataLineItemDto;
 import com.incture.cherrywork.entities.MaterialSchedulerLogs;
+import com.incture.cherrywork.odata.dto.OdataCustomerStartDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartDto;
 import com.incture.cherrywork.odata.dto.OdataMaterialStartNewDto;
 import com.incture.cherrywork.odata.dto.OdataSchHeaderStartDto;
@@ -478,5 +479,25 @@ public class SalesOrderOdataServices {
 	// String a = s.toLowerCase();
 	// System.out.println(a);
 	// }
+	
+	//nischal -- Calling CustomerMaster OData Service
+	public OdataCustomerStartDto customerMasterScheduler(){
+		System.err.println("[Step 2 -Inside SalesOrderODataService][customerMasterScheduler] Start : " + new Date());
+		OdataCustomerStartDto odataCustomerStartDto = new OdataCustomerStartDto();
+		String URL = SalesOrderOdataConstants.BASE_URL_CUSTOMER_MASTER 
+				+ "CustomerMasterSet?$filter=channel%20eq%20'CO'%20and%20division%20eq%20'*'%20and%20salesOrg%20eq%20'CODD'&$format=json";
+		try{
+			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
+			System.err.println("[Step 3 SalesOrderODataService][customerMasterScheduler] response" + response);
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			System.err.println("[Step4 SalesOrderODataService][customerMasterScheduler] gson response" + gson);
+			odataCustomerStartDto = gson.fromJson(response, OdataCustomerStartDto.class);
+			System.err.println("[Step 5 SalesOrderODataService][customerMasterScheduler] odataMaterialStartNewDto" + odataCustomerStartDto);
+			return odataCustomerStartDto;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }
