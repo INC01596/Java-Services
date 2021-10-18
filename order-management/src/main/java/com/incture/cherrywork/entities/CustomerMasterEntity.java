@@ -63,9 +63,6 @@ public class CustomerMasterEntity {
 	
 	@Column(name = "Sales_Org_Name")
 	private String sOrgName;
-	
-	@Column(name = "Credit_Limit")
-	private String creditLimit;
 
 	public String getCustCode() {
 		return custCode;
@@ -211,22 +208,10 @@ public class CustomerMasterEntity {
 		this.sOrgName = sOrgName;
 	}
 
-	public String getCreditLimit() {
-		return creditLimit;
-	}
-
-	public void setCreditLimit(String creditLimit) {
-		this.creditLimit = creditLimit;
-	}
-
-	public CustomerMasterEntity() {
-		super();
-	}
-
 	public CustomerMasterEntity(String custCode, String custNumEx, String oldCustCode, String nameInTH, String nameInEN,
 			String salesOrg, String titleInLocalName, String channel, String streetHouseNum, String city,
 			String postCode, String province, String phoneNum, String languageID, String division, String dName,
-			String dcName, String sOrgName, String creditLimit) {
+			String dcName, String sOrgName) {
 		super();
 		this.custCode = custCode;
 		this.custNumEx = custNumEx;
@@ -246,7 +231,10 @@ public class CustomerMasterEntity {
 		this.dName = dName;
 		this.dcName = dcName;
 		this.sOrgName = sOrgName;
-		this.creditLimit = creditLimit;
+	}
+
+	public CustomerMasterEntity() {
+		super();
 	}
 
 	@Override
@@ -256,8 +244,9 @@ public class CustomerMasterEntity {
 				+ ", titleInLocalName=" + titleInLocalName + ", channel=" + channel + ", streetHouseNum="
 				+ streetHouseNum + ", city=" + city + ", postCode=" + postCode + ", province=" + province
 				+ ", phoneNum=" + phoneNum + ", languageID=" + languageID + ", division=" + division + ", dName="
-				+ dName + ", dcName=" + dcName + ", sOrgName=" + sOrgName + ", creditLimit=" + creditLimit + "]";
+				+ dName + ", dcName=" + dcName + ", sOrgName=" + sOrgName + "]";
 	}
+	
 	
 	
 	

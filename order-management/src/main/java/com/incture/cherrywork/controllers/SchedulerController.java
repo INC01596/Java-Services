@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.Odat.Dto.WorkflowTriggerInputDto;
+import com.incture.cherrywork.dtos.CustomerMasterFilterDto;
 import com.incture.cherrywork.dtos.Response;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
@@ -227,5 +228,12 @@ public class SchedulerController {
 	@GetMapping("/triggerCustomerMasterScheduler")
 	public void triggerCustomerMasterScheduler(){
 		schedulerServices.customerMasterScheduler();
+	}
+	
+	@ApiOperation(value = "/getCustomerMasterDetails")
+	@PostMapping("/getCustomerMasterDetails")
+	public Response getCustomerMasterDetails(@RequestBody CustomerMasterFilterDto filterData){
+		return schedulerServices.getCustomerMasterDetails(filterData);
+		 
 	}
 }

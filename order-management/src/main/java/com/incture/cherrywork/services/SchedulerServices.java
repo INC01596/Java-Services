@@ -25,6 +25,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.incture.cherrywork.dtos.CustomerMasterFilterDto;
 import com.incture.cherrywork.dtos.MaterialMasterDto;
 import com.incture.cherrywork.dtos.MaterialSchedulerLogsDto;
 //import com.incture.cherrywork.dtos.MaterialMasterDto;
@@ -747,6 +748,26 @@ public class SchedulerServices {
 			e.printStackTrace();
 		}
 		return listMaterialMasterDto;
+	}
+	
+	public Response getCustomerMasterDetails(CustomerMasterFilterDto filterData){
+		Response res = new Response();
+		try{
+			if(filterData.getDac()!=null && filterData.getDac().size() > 0){
+				if(filterData.getDac().get(0).equals("*")){
+					return customerMasterService.getCustomerDetailsWithFullAccess(filterData);
+				}else{
+					return customerMasterService.getCustomerDetailsWithDacAccess(filterData);
+				}
+			}else{
+				res.setData(null);
+				res.setMessage("DAC Parameter is empty. Please provide suitable DAC Parameter for filtering the data");
+				return res;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
