@@ -484,8 +484,10 @@ public class SalesOrderOdataServices {
 	public OdataCustomerStartDto customerMasterScheduler(){
 		System.err.println("[Step 2 -Inside SalesOrderODataService][customerMasterScheduler] Start : " + new Date());
 		OdataCustomerStartDto odataCustomerStartDto = new OdataCustomerStartDto();
-		String URL = SalesOrderOdataConstants.BASE_URL_CUSTOMER_MASTER 
-				+ "CustomerMasterSet?$filter=channel%20eq%20'CO'%20and%20division%20eq%20'*'%20and%20salesOrg%20eq%20'CODD'&$format=json";
+//		String URL = SalesOrderOdataConstants.BASE_URL_CUSTOMER_MASTER 
+//				+ "CustomerMasterSet?$filter=channel%20eq%20'CO'%20and%20division%20eq%20'*'%20and%20salesOrg%20eq%20'CODD'&$format=json";
+		String URL = SalesOrderOdataConstants.BASE_URL_CUSTOMER_MASTER
+				+ "CustomerMasterSet?$filter=channel%20eq%20'*'%20and%20division%20eq%20'*'%20and%20custCode%20eq%20'*'%20and%20salesOrg%20eq%20'*'&$format=json";
 		try{
 			String response = SalesOrderOdataUtilService.callOdataSch(URL, "GET", null, "fetch");
 			System.err.println("[Step 3 SalesOrderODataService][customerMasterScheduler] response" + response);

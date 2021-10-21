@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.dtos.CustomerMasterFilterDto;
 import com.incture.cherrywork.dtos.Response;
+import com.incture.cherrywork.dtos.ResponseDtoNew;
 import com.incture.cherrywork.entities.CustomerMasterEntity;
 import com.incture.cherrywork.entities.RequestMasterDo;
 import com.incture.cherrywork.odata.dto.ODataCustomerDto;
@@ -55,13 +56,19 @@ public class CustomerMasterServiceImpl implements CustomerMasterService{
 	}
 
 	@Override
-	public Response getCustomerDetailsWithFullAccess(CustomerMasterFilterDto filterData) {
-		Response res = new Response();
+	public ResponseDtoNew getCustomerDetailsWithFullAccess(CustomerMasterFilterDto filterData) {
+		ResponseDtoNew res = new ResponseDtoNew();
 		int flag = 0;
 		try{
-			String sql = "SELECT c FROM CustomerMasterEntity c WHERE ";
+			String sql = "SELECT c FROM CustomerMasterEntity c ";
 //			List<CustomerMasterEntity> data = iCustomerMasterRepo.filterCustomerByFullAccess(filterData.getCustomerNum());
 //			res.setData(data);
+			if(filterData.getCustomerNum() != null || filterData.getCustomerName() != null || 
+					(filterData.getDistributionChannel() != null && filterData.getDistributionChannel().size() != 0) || 
+					(filterData.getDivision() !=null && filterData.getDivision().size() !=0) || 
+					(filterData.getSalesOrg() !=null && filterData.getSalesOrg().size() !=0)){
+				sql = sql + "WHERE ";
+			}
 			if(filterData.getCustomerNum() != null){
 				String customerNumber = "'"+filterData.getCustomerNum()+"'";
 				sql = sql + "c.custCode = " +customerNumber;
@@ -113,10 +120,12 @@ public class CustomerMasterServiceImpl implements CustomerMasterService{
 			}else{
 				res.setMessage("Success");
 			}
-			
+			res.setStatusCode(200);
+			res.setStatus("OK");
 			return res;
 		}catch(Exception e){
 			res.setData(null);
+			res.setStatusCode(500);
 			res.setMessage("Internal server error");
 			e.printStackTrace();
 		}
@@ -131,14 +140,15 @@ public class CustomerMasterServiceImpl implements CustomerMasterService{
 	}
 
 	@Override
-	public Response getCustomerDetailsWithDacAccess(CustomerMasterFilterDto filterData) {
+	public ResponseDtoNew getCustomerDetailsWithDacAccess(CustomerMasterFilterDto filterData) {
 		
-		Response res = new Response();
+		ResponseDtoNew res = new ResponseDtoNew();
 		int flag = 0;
 		try{
 			String sql = "SELECT c FROM CustomerMasterEntity c WHERE ";
 //			List<CustomerMasterEntity> data = iCustomerMasterRepo.filterCustomerByFullAccess(filterData.getCustomerNum());
 //			res.setData(data);
+			
 			if(filterData.getCustomerNum() != null){
 				String customerNumber = "'"+filterData.getCustomerNum()+"'";
 				sql = sql + "c.custCode = " +customerNumber;
@@ -178,6 +188,7 @@ public class CustomerMasterServiceImpl implements CustomerMasterService{
 					sql = sql + " AND c.salesOrg IN (" + salesOrg + ")";
 				}else{
 					sql = sql + " c.salesOrg IN (" + salesOrg + ")";
+					flag = 1;
 				}
 			}
 			if(filterData.getDac() !=null && filterData.getDac().size() !=0){
@@ -193,15 +204,17 @@ public class CustomerMasterServiceImpl implements CustomerMasterService{
 			Query q1 = entityManager.createQuery(sql);
 			List<CustomerMasterEntity> data = q1.getResultList();
 			res.setData(data);
-			if(data == null){
+			if(data == null || data.size() <= 0){
 				res.setMessage("No Data Found !!");
 			}else{
 				res.setMessage("Success");
 			}
-			
+			res.setStatusCode(200);
+			res.setStatus("OK");
 			return res;
 		}catch(Exception e){
 			res.setData(null);
+			res.setStatusCode(500);
 			res.setMessage("Internal server error");
 			e.printStackTrace();
 		}

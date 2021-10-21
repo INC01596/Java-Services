@@ -30,6 +30,7 @@ import com.incture.cherrywork.dtos.MaterialMasterDto;
 import com.incture.cherrywork.dtos.MaterialSchedulerLogsDto;
 //import com.incture.cherrywork.dtos.MaterialMasterDto;
 import com.incture.cherrywork.dtos.Response;
+import com.incture.cherrywork.dtos.ResponseDtoNew;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.entities.MaterialMaster;
@@ -750,8 +751,8 @@ public class SchedulerServices {
 		return listMaterialMasterDto;
 	}
 	
-	public Response getCustomerMasterDetails(CustomerMasterFilterDto filterData){
-		Response res = new Response();
+	public ResponseDtoNew getCustomerMasterDetails(CustomerMasterFilterDto filterData){
+		ResponseDtoNew res = new ResponseDtoNew();
 		try{
 			if(filterData.getDac()!=null && filterData.getDac().size() > 0){
 				if(filterData.getDac().get(0).equals("*")){
@@ -762,6 +763,8 @@ public class SchedulerServices {
 			}else{
 				res.setData(null);
 				res.setMessage("DAC Parameter is empty. Please provide suitable DAC Parameter for filtering the data");
+				res.setStatus("OK");
+				res.setStatusCode(200);
 				return res;
 			}
 		}catch(Exception e){

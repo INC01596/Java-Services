@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.incture.cherrywork.Odat.Dto.WorkflowTriggerInputDto;
 import com.incture.cherrywork.dtos.CustomerMasterFilterDto;
 import com.incture.cherrywork.dtos.Response;
+import com.incture.cherrywork.dtos.ResponseDtoNew;
 import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SchedulerTimeDto;
@@ -232,7 +233,7 @@ public class SchedulerController {
 	
 	@ApiOperation(value = "/getCustomerMasterDetails")
 	@PostMapping("/getCustomerMasterDetails")
-	public Response getCustomerMasterDetails(@RequestBody CustomerMasterFilterDto filterData){
+	public ResponseDtoNew getCustomerMasterDetails(@RequestBody CustomerMasterFilterDto filterData){
 		return schedulerServices.getCustomerMasterDetails(filterData);
 		 
 	}
