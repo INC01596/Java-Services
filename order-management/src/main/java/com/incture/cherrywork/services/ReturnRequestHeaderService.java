@@ -1829,7 +1829,11 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 		System.err.println(s);
 
 
+<<<<<<< HEAD
 	
+=======
+		
+>>>>>>> refs/remotes/origin/master
 		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
 
 			for (int i = 0; i < dto.getCustomerId().size(); i++) {

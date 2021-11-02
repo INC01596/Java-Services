@@ -877,6 +877,200 @@ public ResponseEntity<Object> getManageService(HeaderDetailUIDto dto, Pageable p
 
 
 
+
+
+//	public String getItems(String salesHeaderId) {
+//
+//		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
+//		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
+//		List<String> listItemNo = new ArrayList<>();
+//		String result = "";
+//		try {
+//			StringBuffer str = new StringBuffer("from SalesOrderItem s where s.salesHeaderId=:salesHeaderId");
+//
+//			Query q = entityManager.createQuery(str.toString());
+//
+//			if (!ServicesUtils.isEmpty(salesHeaderId)) {
+//				q.setParameter("salesHeaderId", salesHeaderId);
+//			}
+//
+//			List<SalesOrderItem> item = q.getResultList();
+//			System.err.println("item.size() " + item.size());
+//
+//			for (SalesOrderItem i : item) {
+//
+//				listItemNo.add(i.getLineItemNumber());
+//
+//				System.err.println("i.getItemNumber()" + i.getLineItemNumber());
+//			}
+//
+//			for (String s : listItemNo) {
+//				if (s.length() > 1) {
+//					int i = s.length();
+//					result = s.substring(i - 1);
+//				}
+//			}
+//			System.err.println("result" + result);
+//
+//			return result;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	public SalesOrderHeaderItemDto getHeaderById(HeaderIdDto dto) {
+//
+//		List<SalesOrderHeader> headerEntityList = new ArrayList<>();
+//		List<SalesOrderItem> lineItemEntityList = new ArrayList<>();
+//		try {
+//			StringBuffer headerQuery = new StringBuffer("select s from SalesOrderHeader s where ");
+//
+//			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId())) {
+//
+//				headerQuery.append("s.salesHeaderId=:salesHeaderId");
+//
+//			}
+//
+//			Query hq = entityManager.createQuery(headerQuery.toString());
+//
+//			if (!ServicesUtil.isEmpty(dto.getSalesHeaderId()))
+//				hq.setParameter("salesHeaderId", dto.getSalesHeaderId());
+//
+//			headerEntityList = hq.getResultList();
+//
+//			SalesOrderHeader headerEntity = new SalesOrderHeader();
+//			if (headerEntityList.size() > 0) {
+//				headerEntity = headerEntityList.get(0);
+//			}
+//
+//			SalesOrderHeaderItemDto salesHeaderItemDto = new SalesOrderHeaderItemDto();
+//			List<SalesOrderItemDto> lineItemDtoList = new ArrayList<>();
+//
+//			SalesOrderHeaderDto headerDto = new SalesOrderHeaderDto();
+//
+//			headerDto = ObjectMapperUtils.map(headerEntity, SalesOrderHeaderDto.class);
+//
+//			salesHeaderItemDto.setHeaderDto(headerDto);
+//
+//			try {
+//
+//				StringBuffer lineItemQuery = new StringBuffer("select i from SalesOrderItem i where");
+//
+//				lineItemQuery.append(" i.salesHeaderId=:salesHeaderId");
+//
+//				Query iq = entityManager.createQuery(lineItemQuery.toString());
+//
+//				if (!ServicesUtils.isEmpty(headerDto.getSalesHeaderId())) {
+//					iq.setParameter("salesHeaderId", headerDto.getSalesHeaderId());
+//				}
+//
+//				lineItemEntityList = iq.getResultList();
+//				System.err.println("lineItemEntityList size" + lineItemEntityList.size());
+//
+//				for (SalesOrderItem lineItemEntity : lineItemEntityList) {
+//					SalesOrderItemDto lineItemDto = new SalesOrderItemDto();
+//					lineItemDto = ObjectMapperUtils.map(lineItemEntity, SalesOrderItemDto.class);
+//					System.err.println(lineItemDto.getSalesHeaderId());
+//					if (lineItemDto.getLineItemNumber().equalsIgnoreCase(getItems(lineItemDto.getSalesHeaderId()))) {
+//
+//						System.err.println("Hello");
+//						continue;
+//					} else {
+//						if (lineItemDto.getOutBoundOrderId() != null) {
+//							StringBuffer str = new StringBuffer(
+//									"from SalesOrderHeader s where s.obdId=:id and s.obdStatus=:CREATED");
+//							Query q = entityManager.createQuery(str.toString());
+//							q.setParameter("id", lineItemDto.getOutBoundOrderId());
+//							q.setParameter("CREATED", "CREATED");
+//							List<SalesOrderHeader> l = q.getResultList();
+//							SalesOrderHeader s = new SalesOrderHeader();
+//							if (l.size() > 0) {
+//								s = l.get(0);
+//
+//							}
+//
+//							if (!ServicesUtils.isEmpty(s.getObdStatus())) {
+//								lineItemDto.setObdStatus(s.getObdStatus());
+//
+//							}
+//
+//						}
+//						if (lineItemDto.getPgiId() != null) {
+//							StringBuffer str = new StringBuffer(
+//									"from SalesOrderHeader s where s.pgiId=:id and s.pgiStatus=:CREATED");
+//							Query q = entityManager.createQuery(str.toString());
+//							q.setParameter("id", lineItemDto.getPgiId());
+//							q.setParameter("CREATED", "CREATED");
+//							List<SalesOrderHeader> l = q.getResultList();
+//							SalesOrderHeader s = new SalesOrderHeader();
+//							if (l.size() > 0) {
+//								s = l.get(0);
+//							}
+//							if (!ServicesUtils.isEmpty(s.getPgiStatus())) {
+//								lineItemDto.setPgiStatus(s.getPgiStatus());
+//							}
+//						}
+//						if (lineItemDto.getInvId() != null) {
+//							StringBuffer str = new StringBuffer(
+//									"from SalesOrderHeader s where s.invId=:id and s.invoiceStatus=:CREATED");
+//							Query q = entityManager.createQuery(str.toString());
+//							q.setParameter("id", lineItemDto.getInvId());
+//							q.setParameter("CREATED", "CREATED");
+//							List<SalesOrderHeader> l = q.getResultList();
+//							SalesOrderHeader s = new SalesOrderHeader();
+//							if (l.size() > 0) {
+//								s = l.get(0);
+//							}
+//							if (!ServicesUtils.isEmpty(s.getInvoiceStatus())) {
+//								lineItemDto.setInvoiceStatus(s.getInvoiceStatus());
+//
+//							}
+//
+//						}
+//
+//						if (lineItemDto.getInspection() != null)
+//							lineItemDto.setQualityTestList(setQualityTest("3.2 INSPECTION"));
+//						// else if(lineItemDto.getBendTest())
+//						// lineItemDto.setQualityTestList(setQualityTest("BEND
+//						// TEST"));
+//						// else if(lineItemDto.getHardnessTest())
+//						// lineItemDto.setQualityTestList(setQualityTest("HARDNESS
+//						// TEST"));
+//						// else if(lineItemDto.getIsElementBoronRequired())
+//						// lineItemDto.setQualityTestList(setQualityTest("BORON
+//						// REQUIRED"));
+//						// else if(lineItemDto.getImpactTest())
+//						// lineItemDto.setQualityTestList(setQualityTest("IMPACT
+//						// TEST"));
+//						// else
+//						// lineItemDto.setQualityTestList(new ArrayList<>());
+//
+//						lineItemDtoList.add(lineItemDto);
+//
+//					}
+//				}
+//
+//				salesHeaderItemDto.setLineItemList(lineItemDtoList);
+//
+//			} catch (Exception e) {
+//				System.err.println("try found exception123");
+//				e.printStackTrace();
+//
+//			}
+//			System.err.println(salesHeaderItemDto);
+//			return salesHeaderItemDto;
+//
+//		} catch (Exception e) {
+//			System.err.println("try found exception");
+//			e.printStackTrace();
+//			return null;
+//		}
+//
+//	}
+
 	public String getItems(String salesHeaderId)
 	{
 		

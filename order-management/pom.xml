@@ -26,6 +26,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+<<<<<<< HEAD
 		
  
 		<dependency>
@@ -56,6 +57,17 @@
 			<artifactId>spring-xml</artifactId>
 		</dependency>
 		
+=======
+
+		<dependency>
+
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+			<scope>compile</scope>
+
+		</dependency>
+>>>>>>> refs/remotes/origin/master
 
 		<dependency>
 			<groupId>com.sap.hana.cloud</groupId>
@@ -285,5 +297,9 @@
 
 		</plugins>
 	</build>
+<<<<<<< HEAD
 </project>
 
+=======
+</project>
+>>>>>>> refs/remotes/origin/master

@@ -155,6 +155,22 @@ public class OdataMaterialNewDto {
 	@Expose
 	@SerializedName("Tragr")
 	private String Tragr;
+	
+	@Expose
+	@SerializedName("Ean11")
+	private String Ean11;
+	
+	@Expose
+	@SerializedName("Numtp")
+	private String Numtp;
+	
+	@Expose
+	@SerializedName("MtposMara")
+	private String MtposMara;
+	
+	@Expose
+	@SerializedName("SledBbd")
+	private String SledBbd;
 
 	public String getMandt() {
 		return Mandt;
@@ -460,8 +476,41 @@ public class OdataMaterialNewDto {
 		Tragr = tragr;
 	}
 
+	public String getEan11() {
+		return Ean11;
+	}
+
+	public void setEan11(String ean11) {
+		Ean11 = ean11;
+	}
+
+	public String getNumtp() {
+		return Numtp;
+	}
+
+	public void setNumtp(String numtp) {
+		Numtp = numtp;
+	}
+
+	public String getMtposMara() {
+		return MtposMara;
+	}
+
+	public void setMtposMara(String mtposMara) {
+		MtposMara = mtposMara;
+	}
+
+	public String getSledBbd() {
+		return SledBbd;
+	}
+
+	public void setSledBbd(String sledBbd) {
+		SledBbd = sledBbd;
+	}
+
 	public OdataMaterialNewDto() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public OdataMaterialNewDto(String mandt, String matnr, String ersda, String ernam, String aenam, String vpsta,
@@ -469,7 +518,8 @@ public class OdataMaterialNewDto {
 			String bstme, String zeinr, String zeiar, String zeivr, String zeifo, String aeszn, String blatt,
 			String blanz, String ferth, String formt, String groes, String wrkst, String normt, String labor,
 			String ekwsl, String brgew, String ntgew, String gewei, String volum, String voleh, String behvo,
-			String raube, String tempb, String disst, String tragr) {
+			String raube, String tempb, String disst, String tragr, String ean11, String numtp, String mtposMara,
+			String sledBbd) {
 		super();
 		Mandt = mandt;
 		Matnr = matnr;
@@ -509,6 +559,10 @@ public class OdataMaterialNewDto {
 		Tempb = tempb;
 		Disst = disst;
 		Tragr = tragr;
+		Ean11 = ean11;
+		Numtp = numtp;
+		MtposMara = mtposMara;
+		SledBbd = sledBbd;
 	}
 
 	@Override
@@ -520,21 +574,8 @@ public class OdataMaterialNewDto {
 				+ ", Blatt=" + Blatt + ", Blanz=" + Blanz + ", Ferth=" + Ferth + ", Formt=" + Formt + ", Groes=" + Groes
 				+ ", Wrkst=" + Wrkst + ", Normt=" + Normt + ", Labor=" + Labor + ", Ekwsl=" + Ekwsl + ", Brgew=" + Brgew
 				+ ", Ntgew=" + Ntgew + ", Gewei=" + Gewei + ", Volum=" + Volum + ", Voleh=" + Voleh + ", Behvo=" + Behvo
-				+ ", Raube=" + Raube + ", Tempb=" + Tempb + ", Disst=" + Disst + ", Tragr=" + Tragr + ", getMandt()="
-				+ getMandt() + ", getMatnr()=" + getMatnr() + ", getErsda()=" + getErsda() + ", getErnam()="
-				+ getErnam() + ", getAenam()=" + getAenam() + ", getVpsta()=" + getVpsta() + ", getPstat()="
-				+ getPstat() + ", getLvorm()=" + getLvorm() + ", getMtart()=" + getMtart() + ", getMbrsh()="
-				+ getMbrsh() + ", getMatkl()=" + getMatkl() + ", getBismt()=" + getBismt() + ", getMeins()="
-				+ getMeins() + ", getBstme()=" + getBstme() + ", getZeinr()=" + getZeinr() + ", getZeiar()="
-				+ getZeiar() + ", getZeivr()=" + getZeivr() + ", getZeifo()=" + getZeifo() + ", getAeszn()="
-				+ getAeszn() + ", getBlatt()=" + getBlatt() + ", getBlanz()=" + getBlanz() + ", getFerth()="
-				+ getFerth() + ", getFormt()=" + getFormt() + ", getGroes()=" + getGroes() + ", getWrkst()="
-				+ getWrkst() + ", getNormt()=" + getNormt() + ", getLabor()=" + getLabor() + ", getEkwsl()="
-				+ getEkwsl() + ", getBrgew()=" + getBrgew() + ", getNtgew()=" + getNtgew() + ", getGewei()="
-				+ getGewei() + ", getVolum()=" + getVolum() + ", getVoleh()=" + getVoleh() + ", getBehvo()="
-				+ getBehvo() + ", getRaube()=" + getRaube() + ", getTempb()=" + getTempb() + ", getDisst()="
-				+ getDisst() + ", getTragr()=" + getTragr() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + ", toString()=" + super.toString() + "]";
+				+ ", Raube=" + Raube + ", Tempb=" + Tempb + ", Disst=" + Disst + ", Tragr=" + Tragr + ", Ean11=" + Ean11
+				+ ", Numtp=" + Numtp + ", MtposMara=" + MtposMara + ", SledBbd=" + SledBbd + "]";
 	}
 	
 	
