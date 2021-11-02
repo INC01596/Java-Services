@@ -97,7 +97,6 @@ public interface EmailDefinitionProcessMappingRepo
 	public void deleteByEmailDefinitionId(@Param("emailDefinitionId") String emailDefinitionId);
 
 	@Query("select mapping from EmailDefinitionProcessMappingDo mapping where mapping.id.emailDefinitionId=:emailDefinitionId ")
-
-	public List<EmailDefinitionProcessMappingDo> getByEmailDefinitionId(String emailDefinitionId);
+     public List<EmailDefinitionProcessMappingDo> getByEmailDefinitionId(String emailDefinitionId);
 
 }

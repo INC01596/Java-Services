@@ -35,6 +35,8 @@ public final class DkshConstants {
 	public static final String EXCEPTION_FAILED = "Failed Due to : Exception Occur on ";
 
 	public static final String DATA_FOUND = "Data found";
+	
+	public static final String SHAREPOINTURL = "SharePointUrl";
 
 	public static final String DATA_NOT_FOUND = "Data not found";
 

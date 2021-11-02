@@ -26,6 +26,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.incture.cherrywork.dtos.DefDto;
+import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryInvoiceInputDto;
 import com.incture.cherrywork.dtos.OdataOutBoudDeliveryPgiInputDto;
@@ -55,6 +57,8 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	@Autowired
+	private EmailDefinitionService emailDefinitionService;
 
 	@Autowired
 	private ISalesOrderHeaderRepository salesOrderHeaderRepository;
@@ -271,18 +275,83 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (dto.getDraft()) {
 			if (res.getStatusCode().equals(HttpStatus.OK))
+			{
+				
+				try{
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					List<String>mlist=new ArrayList<>();
+					HashMap<String,Object>m=new HashMap();
+					mDto.setEntityName("COM_Obd");
+					mDto.setProcess("Create Obd");
+					m.put("Created_By",dto.getHeaderDto().getCreatedBy());	
+					
+					m.put("Created_Date", dto.getHeaderDto().getCreatedDate());
+					
+					m.put("Customer_Name", dto.getHeaderDto().getCustomerName());
+					m.put("Obd_Id",dto.getHeaderDto().getObdId());
+					
+					mlist.add(dto.getHeaderDto().getEmailId());
+					
+					System.err.println(mDto.getToList());
+					DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+					defDto.setProcess(mDto.getProcess());
+					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+					mDto.setContentVariables(m);
+					emailDefinitionService.triggerMail(mDto); 
+					
+					
+				}catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+
+			}
 				return ResponseEntity.status(HttpStatus.OK).header("message", "Record submitted successfully as draft.")
 						.body(res.getBody());
+			}
 			else
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 						.header("message", "Technical Error in Submitting").body(res.getBody());
 		}
 
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
+		{
+			try{
+				MailTriggerDto mDto=new MailTriggerDto();
+				mDto.setApplication("COM");
+				List<String>mlist=new ArrayList<>();
+				
+					
+						mDto.setEntityName("COM_Obd");
+						mDto.setProcess("Create Obd");
+					
+				
+				
+				mlist.add(dto.getHeaderDto().getEmailId());
+				mDto.setToList(mlist);
+				
+				DefDto defDto=new DefDto();
+				defDto.setApplication(mDto.getApplication());
+				defDto.setEntityName(mDto.getEntityName());
+				defDto.setProcess(mDto.getProcess());
+				mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+				
+				emailDefinitionService.triggerMail(mDto); 
+				
+				
+			}catch (Exception e) {
+				System.err.println("Exception while saving as draft: " + e.getMessage());
+				e.printStackTrace();
+
+		}
+		
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",
 							"Record submitted successfully. This is under review and you should get notified on this soon.")
 					.body(res1.getBody());
+		}
 		else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());
@@ -595,6 +664,42 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 				setStatusAsClosed(obdId);
 				ServicesUtil.mailZippedInv(dto);
+				try{
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					List<String>mlist=new ArrayList<>();
+					HashMap<String,Object>m=new HashMap();
+					
+						
+							mDto.setEntityName("COM_Invoice");
+							mDto.setProcess("Generate Invoice");
+		                  m.put("Created_By",dto.getHeaderDto().getCreatedBy());	
+							
+							m.put("Created_Date", dto.getHeaderDto().getCreatedDate());
+							
+							m.put("Customer_Name", dto.getHeaderDto().getCustomerName());
+							m.put("Invoice_Id",dto.getHeaderDto().getInvId());
+							
+					
+					
+					mlist.add(dto.getHeaderDto().getEmailId());
+					mDto.setToList(mlist);
+					System.err.println(mDto.getToList());
+					DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+					defDto.setProcess(mDto.getProcess());
+					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+					mDto.setContentVariables(m);
+					
+					emailDefinitionService.triggerMail(mDto); 
+					
+					
+				}catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+
+			}
 			} else {
 				dto.getHeaderDto().setInvoiceStatus("FAILED");
 				dto.getHeaderDto().setPostingError((String)res1.getBody());
@@ -603,15 +708,22 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
+			
+			
 		}
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+		
 
-		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
+		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK)){
+			
+			
+			
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",
 							"Record submitted successfully. This is under review and you should get notified on this soon.")
 					.body(res1.getBody());
+		}
 		else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());

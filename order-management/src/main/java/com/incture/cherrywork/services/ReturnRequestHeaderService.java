@@ -71,6 +71,7 @@ import com.incture.cherrywork.dto.workflow.OrderToItems;
 import com.incture.cherrywork.dtos.CreateReturnOrderMessage;
 import com.incture.cherrywork.dtos.DecisionSetAndLevelDto;
 import com.incture.cherrywork.dtos.DecisionSetAndLevelKeyDto;
+import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EccResponseOutputDto;
 import com.incture.cherrywork.dtos.ExchangeHeaderDto;
 import com.incture.cherrywork.dtos.ExchangeHeaderFromOrderDto;
@@ -78,6 +79,7 @@ import com.incture.cherrywork.dtos.ExchangeItemDto;
 import com.incture.cherrywork.dtos.ExchangeOrder;
 import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
 import com.incture.cherrywork.dtos.ItemDataInReturnOrderDto;
+import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.ODataBatchItem;
 import com.incture.cherrywork.dtos.ODataBatchPayload;
 import com.incture.cherrywork.dtos.OdataBatchOnsubmitItem;
@@ -151,6 +153,9 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 	@Autowired
 	private IReturnRequestHeaderRepository returnHeaderRepo;
 
+	@Autowired
+	private EmailDefinitionService emailDefinitionService;
+	
 	@Autowired
 	private IAttachmentRepository attachmentRepo;
 
@@ -406,6 +411,41 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					notificationDetailService.saveNotification(createdByDesc,
 							soldToParty, null, "01", "01", notificationTypeId, "Start", false);
 				}
+				
+				
+				try{
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					List<String>mlist=new ArrayList<>();
+					HashMap<String,Object>m=new HashMap();
+					mDto.setEntityName("COM_Returns");
+					mDto.setProcess("Draft Return");
+					
+					m.put("Return_Id", requestData.getReturns().getReturnReqNum());
+					m.put("Created_By",requestData.getReturns().getCreatedBy());
+					m.put("Customer_Name", requestData.getReturns().getCustomerPo());
+					m.put("Created_Date", requestData.getReturns().getCreatedAt());
+						
+					
+					
+					mlist.add(requestData.getReturns().getRequestorEmail());
+					
+					System.err.println(mDto.getToList());
+					DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+					defDto.setProcess(mDto.getProcess());
+					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+					mDto.setContentVariables(m);
+					
+					emailDefinitionService.triggerMail(mDto); 
+					
+					
+				}catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+
+			}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -601,6 +641,41 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					returnRequestHeaderDo.setDocumentUrl(fileDownloadUri);
 					requestData.getReturns().setDocumentUrl(fileDownloadUri);
 
+				}
+				if(requestData.getExchange() != null ){
+					
+				if (requestData.getExchange().getAttachment() != null
+						&& !requestData.getExchange().getAttachment().isEmpty()) {
+					List<Attachment> listSaveAttachement = requestData.getExchange().getAttachment();
+					String returnRequestNum = returnReqNum;
+					listSaveAttachement.stream().forEach(r -> {
+						r.setReturnReqNum(returnRequestNum);
+					});
+					List<Attachment> listAttachment = attachmentRepo.saveAll(listSaveAttachement);
+					// logger.error("> savedReturnAttachment : " +
+					// listAttachment);
+					System.err.println("> savedReturnAttachment :  " + listAttachment);
+					// share point upload zip file
+
+					// File sharePointfile =
+					// convertByteArrayToFile(returnReqNum,
+					// listSaveAttachement);
+					String salesOrg = returnRequestHeaderDo.getSalesOrg();
+					salesOrg = salesOrg.substring(0, salesOrg.length() - 2);
+					// String message = putRecordInSharePoint(sharePointfile,
+					// salesOrg);
+					// System.err.println("sharePoint uploaded " + message);
+
+					fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+
+							// .path("/Attachment/downloadFileByReturnReqNum/").path(returnRequestNum
+							// + "&" + salesOrg)
+							.path("/Attachment/downloadFileByReturnReqNum/").path(returnRequestNum).toUriString();
+
+					returnRequestHeaderDo.setDocumentUrl(fileDownloadUri);
+					requestData.getReturns().setDocumentUrl(fileDownloadUri);
+
+				}
 				}
 
 				// Setting the sequence to header.
@@ -933,6 +1008,36 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					mailUtil.sendMailAlert(receipentId, "", ReturnExchangeConstants.RETURN_REQUEST_MAIL_SUBJECT,
 							message, "");
 				}
+				try{
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					List<String>mlist=new ArrayList<>();
+					HashMap<String,Object>m=new HashMap();
+					mDto.setEntityName("COM_Returns");
+					mDto.setProcess("Create Return");
+					m.put("Return_Id", requestData.getReturns().getReturnReqNum());
+					m.put("Created_By",requestData.getReturns().getCreatedBy());
+					m.put("Customer_Name", requestData.getReturns().getCustomerPo());
+					m.put("Created_Date", requestData.getReturns().getCreatedAt());
+					
+					
+					mlist.add(requestData.getReturns().getRequestorEmail());
+					
+					System.err.println(mDto.getToList());
+					DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+					defDto.setProcess(mDto.getProcess());
+					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+					mDto.setContentVariables(m);
+					emailDefinitionService.triggerMail(mDto); 
+					
+					
+				}catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+
+			}
 				try {
 					String notificationTypeId = "N07";
 					String createdByDesc = null;
@@ -1562,11 +1667,27 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 					}
 					List<Attachment> attachmentDo = attachmentRepo.findByReturnReqNum(returnReqNum);
+					
 					if (!attachmentDo.isEmpty() && attachmentDo != null) {
 						// returnRequestHeaderDto.setListAttachementDto(ObjectMapperUtils.mapAll(attachmentDo,
 						// AttachmentDto.class));
-						returnRequestHeaderDto.setListAttachementDo(attachmentDo);
+						List<Attachment>attachment1=new ArrayList<Attachment>();
+						List<Attachment>attachment2=new ArrayList<Attachment>();
+						for(Attachment a:attachmentDo)
+						{
+						if(a.getType().equals("R"))
+						{
+							attachment1.add(a);
+						}
+						else
+							attachment2.add(a);
+						}
+						returnRequestHeaderDto.setListAttachementDo(attachment1);
+						returnRequestHeaderDto.getExchangeDto().setListAttachementDo(attachment2);
 					}
+					
+						
+					
 
 					List<Address> adressList = addressRepo.findByReturnReqNum(returnReqNum);
 					if (adressList != null && !adressList.isEmpty()) {
@@ -1707,17 +1828,11 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 		System.err.println(s);
 
-<<<<<<< HEAD
-		if(!ServicesUtils.isEmpty(dto.getCustomerId()))
-		{
-			
-			for(int i=0;i<dto.getCustomerId().size();i++)
-			{
-=======
+
+	
 		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
 
 			for (int i = 0; i < dto.getCustomerId().size(); i++) {
->>>>>>> branch 'master' of https://github.com/Yuvraj1004/Java-Services.git
 				l1.add(dto.getCustomerId().get(i).substring(8));
 			}
 			
@@ -2418,6 +2533,26 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 				if (responseFromECC.getStatusCodeValue() == HttpStatus.OK.value()) {
 
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					mDto.setEntityName("Approvals");
+					List<String>mlist=new ArrayList<>();
+					mlist.add("Sandeep.k@incture.com");
+					HashMap<String,Object>m=new HashMap();
+					m.put("Created_By",returnOrderDto.getLoggedInUserPid());
+					m.put("Request-Id", returnOrderDto.getReturnReqNum());
+					m.put("Customer_Name", returnOrderDto.getShipToPartyText());
+					m.put("CreatedDate", new Date());
+					
+					
+						
+						
+						
+						
+						
+					
+					
+					
 					// Update the Hana tables
 					// Update Item status
 					returnOrderDto.getReturnItemsList().stream().forEach(item -> {
@@ -2443,7 +2578,8 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 						}
 
 						if (item.getAcceptOrReject().equalsIgnoreCase("A")) {
-
+							mDto.setProcess("Approve Request");
+							m.put("status", "accepted");
 							// Fetch next level item status for all the action
 							// item creating next level id from current level
 							String nextLevel = "L" + (Integer.parseInt(String.valueOf(item.getLevel().charAt(1))) + 1);
@@ -2467,11 +2603,23 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 							// item status data in other levels and tasks where
 							// item status as 9, update status data as IR and
 							// visibility as IIR
+							mDto.setProcess("Reject Request");
+							m.put("status", "rejected");
 							System.err.println("updating ItemStatusAndVisibilityForIIRCase");
 							returnHeaderRepo.updateItemStatusAndVisibilityForIIRCase(ComConstants.ITEM_INDIRECT_REJECT,
 									ComConstants.VISIBLITY_INACTIVE_INDIRECT_REJECT, item.getDecisionSetId(),
 									item.getOrderItemNum(), item.getTaskId());
 						}
+//						mlist.add(item.get);
+						mDto.setToList(mlist);
+				
+						DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+						defDto.setProcess(mDto.getProcess());
+						mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+				    mDto.setContentVariables(m);
+						emailDefinitionService.triggerMail(mDto); 
 
 					});
 

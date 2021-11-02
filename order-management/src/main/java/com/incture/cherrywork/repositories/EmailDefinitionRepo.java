@@ -76,4 +76,8 @@ public interface EmailDefinitionRepo extends JpaRepository<EmailDefinitionDo, St
 			@Param("entity") String entity, @Param("newStatus") String newStatus, @Param("oldStatus") String oldStatus);
 
 	public Page<EmailDefinitionDo> findByNameContainingIgnoreCase(String searchString, Pageable pageable);
+	
+	
+	@Query("select p from EmailDefinitionDo p  where  p.application =:application and p.process =:process and p.entity =:entity" )
+	public List<EmailDefinitionDo> getDef(@Param("application") String application,@Param("process") String process, @Param("entity") String entity);
 }

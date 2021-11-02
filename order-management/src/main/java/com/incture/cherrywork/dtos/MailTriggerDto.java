@@ -18,6 +18,7 @@ public class MailTriggerDto {
 	private String emailDefinitionId;
 	private String templateName;
 	private String subject;
+	private String fromAddress;
 	private String emailBody;
 	private String attachment;
 	private List<String>toList;

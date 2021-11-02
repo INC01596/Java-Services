@@ -1,6 +1,7 @@
 package com.incture.cherrywork.controllers;
 
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EmailUiDto;
+import com.incture.cherrywork.dtos.GetTemplateDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.services.EmailDefinitionService;
 
@@ -49,25 +52,26 @@ public class EmailDefinitionController {
 		return emailDefinitionService.deleteEmailTemplate(emailDefinitionId);
 	}
 
-	@GetMapping
+	@PostMapping("/get")
 	@ApiOperation(value = "Get Email Definition Template by  emailDefinitionId ")
-	public ResponseDto getEmailTemplate(
-			@ApiParam(value = "Email Definition Id") @RequestParam(value = "emailDefinitionId", required = false) String emailDefinitionId,
-			@ApiParam(value = "Application") @RequestParam(value = "application", required = false) String application,
-			@ApiParam(value = "Process") @RequestParam(value = "process", required = false) String process,
-			@ApiParam(value = "Entity Name") @RequestParam(value = "entityName", required = false) String entityName,
-			@ApiParam(value = "Page Number") @RequestParam(value = "page", required = false) Integer pageIndex,
-			@ApiParam(value = "Limit") @RequestParam(value = "limit", required = false) Integer limit,
-			@ApiParam(value = "Search String") @RequestParam(value = "searchString", required = false) String searchString,
-			@AuthenticationPrincipal Jwt jwt) {
+	public ResponseDto getEmailTemplate(@RequestBody GetTemplateDto dto) {
+		JSONObject inputObject = new JSONObject();
+
+		JSONObject getInvoiceDetails = new JSONObject();
+
+		getInvoiceDetails.put("CustomerNumber","get" );
+
+		inputObject.put("GetInvoiceDetails", "getInvoiceDetails");
+		System.err.println(inputObject.toString());
+
 		Pageable pageable;
-		if (!(pageIndex != null && limit != null)) {
+		if (!(dto.getPageIndex() != null && dto.getLimit() != null)) {
 			pageable = PageRequest.of(0, Integer.MAX_VALUE);
 		} else {
-			pageable = PageRequest.of(pageIndex, limit);
+			pageable = PageRequest.of(dto.getPageIndex(), dto.getLimit());
 		}
 
-		return emailDefinitionService.getEmailTemplate(emailDefinitionId, application, process, entityName,pageable,searchString,jwt);
+		return emailDefinitionService.getEmailTemplate(dto.getEmailDefinitionId(), dto.getApplication(), dto.getProcess(), dto.getEntityName(),pageable,dto.getSearchString());
 	}
 
 	@GetMapping("/validate")
@@ -79,5 +83,13 @@ public class EmailDefinitionController {
 			@ApiParam(value = "Process") @RequestParam(value = "process", required = false) String process) {
 		return emailDefinitionService.validateActiveTemplate(application, entity, process);
 	}
+	@PostMapping("/getEmailDefi")
+	public String getDefId(@RequestBody DefDto defDto)
+	{
+		System.err.println("hey1 "+defDto.toString());
+		
+		return emailDefinitionService.getDefId(defDto);
+	}
+	
 
 }

@@ -13,7 +13,7 @@ import com.incture.cherrywork.entities.AttachmentPk;
 @Repository
 public interface IAttachmentRepository extends JpaRepository<Attachment, AttachmentPk>{
 	
-Attachment findByDocId(String docId);
+     Attachment findByDocId(String docId);
 	
 	List<Attachment> findByReturnReqNum(String returnReqNum);
 	

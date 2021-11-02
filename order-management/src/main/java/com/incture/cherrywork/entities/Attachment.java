@@ -39,6 +39,8 @@ public class Attachment {
 	@Column(name = "DOC_TYPE")
 	private String docType;
 
+	@Column(name="TYPE")
+	private String type;
 	@Lob
 	@Column(name = "DOC_DATA")
 	private byte[] docData;

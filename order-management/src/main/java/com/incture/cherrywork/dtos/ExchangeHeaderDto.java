@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import com.incture.cherrywork.entities.Attachment;
+
 import lombok.Data;
 
 @Data
@@ -53,6 +55,7 @@ public class ExchangeHeaderDto {
 	private String createdBy;
 	private String remarks;
 	private String documentUrl;
+	private List<Attachment> listAttachementDo;
 	private List<ExchangeItemDto> listExhangeItemDto;
 
 }

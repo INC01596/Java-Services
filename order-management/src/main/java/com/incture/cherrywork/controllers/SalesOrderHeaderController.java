@@ -31,6 +31,7 @@ import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderSearchHeaderDto;
 import com.incture.cherrywork.entities.SalesOrderHeader;
+import com.incture.cherrywork.services.EmailDefinitionService;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 import com.incture.cherrywork.services.ISalesOrderItemService;
 
@@ -38,13 +39,14 @@ import com.incture.cherrywork.services.ISalesOrderItemService;
 @RestController
 @Api(value = "Sales Order Header", tags = { "Sales Order Header" })
 @RequestMapping("/api/v1")
-
 public class SalesOrderHeaderController {
 
 	@Autowired
 	private ISalesOrderHeaderService salesOrderHeaderService;
 	@Autowired
 	private ISalesOrderItemService salesOrderItemService;
+	
+	
 
 	@GetMapping("/test")
 	public String test() {
@@ -84,17 +86,20 @@ public class SalesOrderHeaderController {
 
 	// <-----------------------Sandeep Kumar---------------------------------------->
 
-	@PostMapping("/getHeaderById")
+	@PostMapping("/getHeaderById")	
+	@ApiOperation(value="Get SalesOrder Header By ID")
 	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
 		return salesOrderHeaderService.getHeaderById(dto);
 	}
 
 	@PostMapping("/getDraftedVersion")
+	@ApiOperation(value="Get Drafted Version")
 	public ResponseEntity<Object> getDraftedVersion(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getDraftedVersion(dto);
 	}
 
 	@PostMapping("/getManageService")
+	
 	public ResponseEntity<Object> getManageService(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getManageService(dto);
 	}
@@ -123,21 +128,25 @@ public class SalesOrderHeaderController {
 	}
 
 	@PostMapping("/getObd")
+	@ApiOperation(value="Get All Obd List")
 	public ResponseEntity<Object> getManageServiceObd(@RequestBody ObdDto dto) {
 		return salesOrderHeaderService.getManageServiceObd(dto);
 	}
 
 	@PostMapping("/getInvo")
+	@ApiOperation(value="Get All Invoice List")
 	public ResponseEntity<Object> getManageServiceInvo(@RequestBody InvoDto dto) {
 		return salesOrderHeaderService.getManageServiceInvo(dto);
 	}
 	
 	@PostMapping("/getByObd")
+	@ApiOperation(value="Get Obd By Obd ID")
 	public ResponseEntity<Object> getByObd(@RequestParam String obdId) {
 		return salesOrderHeaderService.getByObd(obdId);
 	}
 	
 	@PostMapping("/getSOData")
+	@ApiOperation(value="Get All data To trackSo")
 	public ResponseEntity<Object> getSOData(@RequestBody HeaderIdDto dto)
 	{
 		return salesOrderHeaderService.getSOData(dto);

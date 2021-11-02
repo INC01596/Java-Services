@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 
 import com.incture.cherrywork.entities.Address;
+import com.incture.cherrywork.entities.Attachment;
 import com.incture.cherrywork.entities.ExchangeItem;
 
 import lombok.Data;
@@ -54,6 +55,7 @@ public class ExchangeOrder {
 	private List<OrderConditionDto> orderCondition;
 	private List<Address> address;
 	private List<OrderHdrToOrderPartnerDto> orderHdrToOrderPartnerDto;
+	private List<Attachment> attachment;
 	public String getExchangeReqNum() {
 		return exchangeReqNum;
 	}
@@ -306,6 +308,7 @@ public class ExchangeOrder {
 	public void setOrderHdrToOrderPartnerDto(List<OrderHdrToOrderPartnerDto> orderHdrToOrderPartnerDto) {
 		this.orderHdrToOrderPartnerDto = orderHdrToOrderPartnerDto;
 	}
+	
 	
 	
 	

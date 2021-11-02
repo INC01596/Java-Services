@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
@@ -89,6 +91,9 @@ public class ServicesUtil {
 	public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 	public static final int lookupStartIndex = 0;
 	public static final int lookupBatchSize = 501;
+	public static DateFormat dateFormatForSalesPlanner = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date formatedDate;
+	public static String stringDate;
 
 	public static void main(String[] args) {
 		System.out.println(isChange("PZ", "EA"));
@@ -99,6 +104,23 @@ public class ServicesUtil {
 			return true;
 		}
 		return false;
+	}
+	public static String getLoggedInUser(String string) {
+		return string.substring(1, string.length()).replaceFirst("^0+(?!$)", "");
+	}
+	public static Date dateConverterForPlanner(Date date) {
+
+		try {
+
+			stringDate = dateFormatForSalesPlanner.format(date);
+			formatedDate = dateFormatForSalesPlanner.parse(stringDate);
+
+		} catch (Exception e) {
+
+			System.err.println("ServicesUtil :[convertDateForSalesPlanner] " + e.getMessage());
+		}
+
+		return formatedDate;
 	}
 
 	public static Date getTime() {

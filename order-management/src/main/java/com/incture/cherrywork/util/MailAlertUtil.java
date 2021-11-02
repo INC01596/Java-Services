@@ -35,12 +35,16 @@ public class MailAlertUtil {
 	private final String BOUNCER_ID = "xyz@abc.com";
 	private final String BOUNCER_PORT = "mail.smtp.from";
 	private final String SENDER_MAILID = "awadhesh.kumar@incture.com";
+	
+	
 	private final String SENDER_PASSWORD = "aW1533@9#";	
 	private final String SUCCESS = "Success";
 	private final String FAILURE = "Failure";
 
 	public String sendMailAlert(String receipentId,String receipentIdCC, String subjectName, String message, String userName ) {
-
+		System.err.println("hey MAilAlert");
+		System.err.println("message "+ message);
+		
 		Properties props = new Properties();
 		props.put(SMTP_AUTH, "true");
 		props.put(SMTP_TTLS, "true");
@@ -55,13 +59,14 @@ public class MailAlertUtil {
 		});
 		
 		logger.debug("session " + session);
+		
 		MimeMessage mimeMesg = new MimeMessage(session);
 		try {
 			mimeMesg.setFrom(new InternetAddress(SENDER_MAILID));
-
+			System.err.println("hey MAilAlert1");
 			getMailBody(receipentId,receipentIdCC, mimeMesg, subjectName, message, userName);
 			Transport.send(mimeMesg);
-
+			System.err.println("hey MAilAlert2");
 		} catch (Exception e) {
 			logger.error("[sendMailtoClient]:Exception while sending mail " + e.getMessage());
 			e.printStackTrace();
@@ -75,7 +80,7 @@ public class MailAlertUtil {
 	private void getMailBody(String receipentId,String receipentIdCC, MimeMessage message, String subjectName, String messagebody,
 			String userName) {
 		Object msg=null;
-	
+	System.err.println("heyGetBody");
 		try {
 			Calendar cal = Calendar.getInstance();
 			cal.setTimeZone(TimeZone.getTimeZone("CST"));
@@ -88,17 +93,17 @@ public class MailAlertUtil {
 			message.setSubject(subjectName);
 			Multipart multipart = new MimeMultipart();
 			BodyPart messageBodyPart = new MimeBodyPart();
+			System.err.println("heyGetBody1");
+			String splitedMessage = messagebody;
+			//.split("To");
 			
-			String [] splitedMessage = messagebody.split("To");
-			
-			msg = 	"<html><body>" + "Dear Sir" + ",</br>" +""+"</br>"+ splitedMessage[0]+"</br>"+
-                           splitedMessage[1]+"</br></br>Thank you.</br></br>"
+			msg = 	"<html><body>" +"</br>"+ splitedMessage+"</br>"+"</br></br>Thank you.</br></br>"
 					+ "</br><font color=grey>This is a system generated e-mail. Do-not reply.</font></br>"
 					+ "</body></html>";
 			
 			messageBodyPart.setContent(msg, MAIL_UTF8_CONTENT_TYPE);
 			multipart.addBodyPart(messageBodyPart);
-			
+			System.err.println("heyGetBody2");
 			message.setContent(multipart);
 			message.saveChanges();
 	

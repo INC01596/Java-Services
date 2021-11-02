@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.jwt.Jwt;
 
 import com.incture.cherrywork.dtos.ApplicationVariablesMasterDto;
+import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EmailUiDto;
 import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.ResponseDto;
@@ -19,7 +20,7 @@ public interface EmailDefinitionService {
 		ResponseDto deleteEmailTemplate(String emailDefinitionId);
 
 		ResponseDto getEmailTemplate(String emailDefinitionId, String application, String process, String entityName,Pageable pageable,
-				String searchString,Jwt jwt);
+				String searchString);
 
 		ResponseDto validateActiveTemplate(String application, String entity, String process);
 
@@ -31,6 +32,9 @@ public interface EmailDefinitionService {
 
 		ResponseDto getVariables(String application,String process,String entity);
 
+	
+
+		String getDefId(DefDto defDto);
 	}
 
 

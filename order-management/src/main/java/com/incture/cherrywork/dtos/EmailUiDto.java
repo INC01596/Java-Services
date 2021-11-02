@@ -13,7 +13,7 @@ public class EmailUiDto {
 	private String name;
 	private String application;
 	private String applicationDesc;
-
+    private String recipent;
 	private String process;
 	private String processDesc;
 

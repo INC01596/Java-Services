@@ -54,14 +54,17 @@ public class EmailUtils {
 	public ResponseDto triggerMail(EmailUiDto emailUiDto) {
 
 		logger.info("[EmailSender][triggerMail] Execution start");
-
+		System.err.println("heyEmailUtil");
 		ResponseDto responseDto = new ResponseDto();
 		try {
 			JSONObject inputBody = setRequestData(emailUiDto);
+			System.err.println(inputBody+"input Body");
 			if (!ServicesUtil.isEmpty(inputBody)) {
+				System.err.println("heyEmailUtil1");
 				DestinationDto destination = destinationUtility.getDestinationByName("Work_rules_mail");
 				HttpRequestBase httpRequestBase = null;
 				HttpResponse httpResponse = null;
+				System.err.println("heyEmailUtil2");
 				String jsonString = null;
 				StringEntity data = null;
 				CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -145,7 +148,7 @@ public class EmailUtils {
 		return inputBody;
 	}
 
-	public List<Map<String, Object>> getRecordsInWorkrules(String query, Jwt jwt)
+	/*public List<Map<String, Object>> getRecordsInWorkrules(String query, Jwt jwt)
 			throws JsonMappingException, JsonProcessingException, URISyntaxException {
 		RestTemplate restTemplate = new RestTemplate();
 		URI uri = null;
@@ -330,10 +333,10 @@ public class EmailUtils {
 		uri = new URI(MailNotificationAppConstants.WR_EXECUTION_ENGINE_BASE_URL + "v1/invoke-rules");
 
 		requestHeaders = new HttpHeaders();
-		/*
+		
 		 * requestHeaders.add(MailNotificationAppConstants.AUTHORIZATION,
 		 * MailNotificationAppConstants.TOKEN + jwt.getTokenValue());
-		 */
+		 
 		requestHeaders.add(MailNotificationAppConstants.CONTENT_TYPE, "application/json;charset=utf-8");
 
 		RuleEnginePayload payload = new RuleEnginePayload();
@@ -354,9 +357,9 @@ public class EmailUtils {
 				"response from wr " + response.toString() + " " + response.getStatusCode() + " " + response.getData());
 
 		return response.getData();
-	}
+	}*/
 
-	public static void main(String[] args) throws JsonMappingException, JsonProcessingException, URISyntaxException {
+/*	public static void main(String[] args) throws JsonMappingException, JsonProcessingException, URISyntaxException {
 		EmailUtils email = new EmailUtils();
 		List<String> emailDefinitionIdList = new ArrayList<>();
 //		emailDefinitionIdList.add("4df2cf34-c23c-42d9-aa39-759c20fee39a");
@@ -364,6 +367,6 @@ public class EmailUtils {
 //		emailDefinitionIdList.add("822dbafe-aeb7-43e6-bcf9-8cae51910da8");
 
 		System.out.println(email.getRecipientsRecordsFromWorkRules(emailDefinitionIdList));
-	}
+	}*/
 
 }

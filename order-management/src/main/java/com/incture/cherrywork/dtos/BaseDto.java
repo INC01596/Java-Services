@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.incture.cherrywork.exceptions.InvalidInputFault;
 import com.incture.cherrywork.repositories.ServicesUtils;
 import com.incture.cherrywork.sales.constants.EnOperation;
+import com.incture.cherrywork.util.DB_Operation;
 
 
 public abstract class BaseDto {
@@ -51,5 +52,17 @@ public abstract class BaseDto {
 		}
 		return value;
 	}
+
+	public void validate(DB_Operation enOperation) throws com.incture.cherrywork.util.InvalidInputFault {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Object getPrimaryKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 }

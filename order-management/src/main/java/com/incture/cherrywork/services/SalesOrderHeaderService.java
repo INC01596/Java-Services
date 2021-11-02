@@ -10,7 +10,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -41,10 +43,12 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.gson.Gson;
+import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.ErrorDto;
 import com.incture.cherrywork.dtos.HeaderDetailUIDto;
 import com.incture.cherrywork.dtos.HeaderIdDto;
 import com.incture.cherrywork.dtos.InvoDto;
+import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.ObdDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderDto;
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
@@ -89,7 +93,12 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 	@Autowired
 	private SalesOrderOdataServices odataServices;
+	
+	@Autowired
+	private EmailDefinitionService emailDefinitionService;
 
+	
+	
 	@Autowired
 	private INotificationConfigRepository notificationConfigRepository;
 
@@ -331,7 +340,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				d.setImpactTest(false);
 				d.setUltralightTest(false);
 				d.setIsElementBoronRequired(false);
-				if (d.getQualityTestList().contains("3.2 INSPECTION")) {
+				/*if (d.getQualityTestList().contains("3.2 INSPECTION")) {
 					d.setInspection(true);
 				}
 
@@ -358,7 +367,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				if (d.getQualityTestList().contains("BORON REQUIRED")) {
 					d.setIsElementBoronRequired(true);
 
-				}
+				}*/
 
 				String s = UUID.randomUUID().toString().replace("-", "");
 				s = s.length() > 10 ? s.substring(0, 9) : s;
@@ -404,15 +413,73 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 					System.err.println("Exception while saving as draft: " + e.getMessage());
 					e.printStackTrace();
 				}
-
-			}
+				
 		}
+		}
+		try
+		{
+			SalesOrderHeaderDto dto1=ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class);
+			MailTriggerDto mDto=new MailTriggerDto();
+			mDto.setApplication("COM");
+			List<String>mlist=new ArrayList<>();
+			HashMap<String,Object>m=new HashMap();
+			
+			if(!ServicesUtil.isEmpty(dto.getDocumentType()))
+			{
+				if(dto1.getDocumentType().equalsIgnoreCase("IN"))
+				{
+					mDto.setEntityName("COM_Enquiry");
+					mDto.setProcess("Draft Enquiry");
+					m.put("Enquiry_Id", dto1.getSalesHeaderId());
+					m.put("Created_By",dto1.getCreatedBy());
+					m.put("Created_Date", dto1.getPostingDate());
+					m.put("Customer_Name", dto1.getCustomerName());
+				}
+				if(dto.getDocumentType().equalsIgnoreCase("QT"))
+				{
+					mDto.setEntityName("COM_Quotation");
+					mDto.setProcess("Draft Quotation");
+					m.put("Quotation_Id", dto1.getSalesHeaderId());
+					m.put("Created_By",dto1.getCreatedBy());
+					m.put("Created_Date", dto1.getPostingDate());
+					m.put("Customer_Name", dto1.getCustomerName());
+				}
+				if(dto.getDocumentType().equalsIgnoreCase("OR"))
+				{
+					mDto.setEntityName("COM_Order");
+					mDto.setProcess("Draft Order");
+					m.put("Order_Id", dto1.getSalesHeaderId());
+					m.put("Created_By",dto1.getCreatedBy());
+					m.put("Created_Date", dto1.getPostingDate());
+					m.put("Customer_Name", dto1.getCustomerName());
+					
+				}
+			}
+			
+			mlist.add(dto.getEmailId());
+			mDto.setToList(mlist);
+		
+			DefDto defDto=new DefDto();
+			defDto.setApplication(mDto.getApplication());
+			defDto.setEntityName(mDto.getEntityName());
+			defDto.setProcess(mDto.getProcess());
+			mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+		    mDto.setContentVariables(m);
+			emailDefinitionService.triggerMail(mDto); 
+			
+			
+		}catch (Exception e) {
+			System.err.println("Exception while saving as draft: " + e.getMessage());
+			e.printStackTrace();
 
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+	}
+
+		
 		return ResponseEntity.ok().body(ObjectMapperUtils.map(savedSalesOrderHeader, SalesOrderHeaderDto.class));
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseEntity<Object> submitSalesOrder(SalesOrderHeaderItemDto dto) {
 		if (dto.getHeaderDto().getSalesHeaderId() != null && dto.getHeaderDto().getS4DocumentId() == null)
@@ -562,6 +629,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			SalesOrderOdataHeaderDto odataHeaderDto = salesOrderHeaderRepository.getOdataReqPayload(dto);
 			res1 = submitOdata(odataHeaderDto, dto.getHeaderDto().getDocumentType());
 		}
+		
+
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
 			return ResponseEntity.status(HttpStatus.OK)
@@ -571,6 +640,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());
+		
 	}
 
 	public ResponseEntity<Object> getSearchDropDown(SalesOrderSearchHeaderDto dto) {
@@ -741,6 +811,10 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			// List<String>listUser = getUserDetailsBySTP((userResponse));
 			// for (String email :listUser)
 			// {
+			
+				
+				
+			
 			if (notificationConfigRepository.checkAlertForUser(dto.getHeaderDto().getEmailId(), notificationTypeId)) {
 				// Dependency oon notification
 				// String odataResponse = odataServices.usersByEmail(email);
@@ -1076,6 +1150,63 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// tx.commit();
 
 				// Notification for id and acknowledgement
+				try
+				{
+					SalesOrderHeaderDto dto1=salesHeaderDto;
+					MailTriggerDto mDto=new MailTriggerDto();
+					mDto.setApplication("COM");
+					List<String>mlist=new ArrayList<>();
+					HashMap<String,Object>m=new HashMap();
+					
+					if(!ServicesUtil.isEmpty(dto1.getDocumentType()))
+					{
+						if(dto1.getDocumentType().equalsIgnoreCase("IN"))
+						{
+							mDto.setEntityName("COM_Enquiry");
+							mDto.setProcess("Create Enquiry");
+							m.put("Enquiry_Id", dto1.getSalesHeaderId());
+							m.put("Created_By",dto1.getCreatedBy());
+							m.put("Created_Date", dto1.getPostingDate());
+							m.put("Customer_Name", dto1.getCustomerName());
+						}
+						if(dto1.getDocumentType().equalsIgnoreCase("QT"))
+						{
+							mDto.setEntityName("COM_Quotation");
+							mDto.setProcess("Create Quotation");
+							m.put("Quotation_Id", dto1.getSalesHeaderId());
+							m.put("Created_By",dto1.getCreatedBy());
+							m.put("Created_Date", dto1.getPostingDate());
+							m.put("Customer_Name", dto1.getCustomerName());
+						}
+						if(dto1.getDocumentType().equalsIgnoreCase("OR"))
+						{
+							mDto.setEntityName("COM_Order");
+							mDto.setProcess("Create Order");
+							m.put("Order_Id", dto1.getSalesHeaderId());
+							m.put("Created_By",dto1.getCreatedBy());
+							m.put("Created_Date", dto1.getPostingDate());
+							m.put("Customer_Name", dto1.getCustomerName());
+							
+						}
+					}
+					
+					mlist.add(dto1.getEmailId());
+					mDto.setToList(mlist);
+				
+					DefDto defDto=new DefDto();
+					defDto.setApplication(mDto.getApplication());
+					defDto.setEntityName(mDto.getEntityName());
+					defDto.setProcess(mDto.getProcess());
+					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+				    mDto.setContentVariables(m);
+					emailDefinitionService.triggerMail(mDto); 
+					
+					
+				}catch (Exception e) {
+					System.err.println("Exception while saving as draft: " + e.getMessage());
+					e.printStackTrace();
+
+			}
 
 				try {
 					String notificationTypeId = "";

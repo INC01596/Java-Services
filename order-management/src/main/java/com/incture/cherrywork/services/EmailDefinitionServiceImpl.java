@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.incture.cherrywork.WConstants.MailNotificationAppConstants;
 import com.incture.cherrywork.dtos.ApplicationVariablesMasterDto;
+import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EmailUiDto;
 import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.RecipientDto;
@@ -40,6 +41,7 @@ import com.incture.cherrywork.repositories.EmailDefinitionRepo;
 import com.incture.cherrywork.repositories.RecipientRepo;
 import com.incture.cherrywork.util.CommonMethods;
 import com.incture.cherrywork.util.EmailUtils;
+import com.incture.cherrywork.util.MailAlertUtil;
 import com.incture.cherrywork.util.ServicesUtil;
 
 @Service
@@ -58,6 +60,8 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 	@Autowired
 	private EmailUtils emailUtils;
 	
+	@Autowired
+	private MailAlertUtil mailAlert;
 	
 
 	@Autowired
@@ -232,7 +236,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 
 	@Override
 	public ResponseDto getEmailTemplate(String emailDefinitionId, String application, String process, String entityName,
-			Pageable pageable, String searchString, Jwt jwt) {
+			Pageable pageable, String searchString) {
 		logger.info(" [EmailDefinitionServiceImpl]|[getEmailTemplate]  Execution start");
 		ResponseDto responseDto = new ResponseDto();
 		ResponseDto temp = new ResponseDto();
@@ -268,17 +272,21 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 			Pageable pageable;
 			pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
+    String res=" ";
+			@SuppressWarnings("unchecked")
 			List<EmailUiDto> emailUiDtoList = (List<EmailUiDto>) (getEmailTemplates(
 					mailTriggerDto.getEmailDefinitionId(), mailTriggerDto.getApplication(), mailTriggerDto.getProcess(),
 					mailTriggerDto.getEntityName(), mailTriggerDto.getTemplateName(), null, Boolean.TRUE, pageable,
 					null).getData());
-
+			for(EmailUiDto s:emailUiDtoList)
+			{
+				System.err.println(s+" ");
+			}
+			
 			if (!ServicesUtil.isEmpty(emailUiDtoList)) {
 				EmailUiDto emailUiDto = emailUiDtoList.get(0);
-				emailUiDto.setSubject(
-						mailTriggerDto.getSubject() != null ? mailTriggerDto.getSubject() : emailUiDto.getSubject());
-				emailUiDto.setContent(mailTriggerDto.getEmailBody() != null ? mailTriggerDto.getEmailBody()
-						: emailUiDto.getContent());
+				emailUiDto.setSubject(mailTriggerDto.getSubject() != null ? mailTriggerDto.getSubject() : emailUiDto.getSubject());
+				emailUiDto.setContent(mailTriggerDto.getEmailBody() != null ? mailTriggerDto.getEmailBody(): emailUiDto.getContent());
 				emailUiDto.setAttachment(mailTriggerDto.getAttachment());
 
 				if (mailTriggerDto.getSubjectVariables() != null && !mailTriggerDto.getSubjectVariables().isEmpty()) {
@@ -288,7 +296,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 					});
 					// emailUiDto.setSubject(changedSub);
 				}
-
+			
 				if (mailTriggerDto.getContentVariables() != null && !mailTriggerDto.getContentVariables().isEmpty()) {
 					mailTriggerDto.getContentVariables().entrySet().forEach(entry -> {
 						emailUiDto.setContent(emailUiDto.getContent().replaceAll("&" + entry.getKey(),
@@ -302,7 +310,8 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 					} else {
 						emailUiDto.setToList(mailTriggerDto.getToList());
 					}
-
+					//set to list
+					
 				}
 				if (!ServicesUtil.isEmpty(mailTriggerDto.getCcList())) {
 					if (!ServicesUtil.isEmpty(emailUiDto.getCcList())) {
@@ -310,7 +319,8 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 					} else {
 						emailUiDto.setCcList(mailTriggerDto.getCcList());
 					}
-
+//setcc list
+					
 				}
 				if (!ServicesUtil.isEmpty(mailTriggerDto.getBccList())) {
 					if (!ServicesUtil.isEmpty(emailUiDto.getBccList())) {
@@ -318,13 +328,16 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 					} else {
 						emailUiDto.setBccList(mailTriggerDto.getBccList());
 					}
-
+					
 				}
 				if (emailUiDto.getBccAllowed() == null || !emailUiDto.getBccAllowed()) {
 					emailUiDto.setBccList(null);
 				}
+				System.err.println(emailUiDto.getToList());
 				if (!ServicesUtil.isEmpty(emailUiDto.getToList())) {
-					responseDto = emailUtils.triggerMail(emailUiDto);
+					System.err.println("hey8");
+					 res = mailAlert.sendMailAlert(emailUiDto.getToList().get(0),mailTriggerDto.getToList().get(0),emailUiDto.getSubject(),emailUiDto.getContent(),emailUiDto.getFromAddress());
+					System.err.println("hey9");
 				} else {
 					responseDto.setMessage("Recipients are required to trigger mail");
 				}
@@ -333,7 +346,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 			}
 			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setStatusCode(200);
-
+            responseDto.setData(res);
 		} catch (Exception e) {
 			logger.error(" [EmailDefinitionServiceImpl]|[deleteEmailTemplate]   "
 
@@ -355,7 +368,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 		List<EmailUiDto> dtos = new ArrayList<>();
 		List<EmailDefinitionDo> emailDefinitionDos = new ArrayList<>();
 		Page<EmailDefinitionDo> page = null;
-
+		System.err.println("heygetTemp1");
 		if (emailDefinitionId != null && !ServicesUtil.isEmpty(emailDefinitionId)) {
 			emailDefinitionDos = emailDefinitionRepo.findByEmailDefinitionId(emailDefinitionId);
 			responseDto.setTotalCount((emailDefinitionDos != null) ? emailDefinitionDos.size() : 0);
@@ -377,14 +390,16 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 				responseDto.setTotalCount((page != null) ? (int) page.getTotalElements() : 0);
 			}
 
-		}
+		}System.err.println("heygetTemp2");
 
 		if (!ServicesUtil.isEmpty(emailDefinitionDos)) {
 			emailDefinitionDos = emailDefinitionDos.stream().distinct().collect(Collectors.toList());
+			@SuppressWarnings("unused")
 			List<String> emailDefinitionIdList = emailDefinitionDos.stream().map(obj -> obj.getEmailDefinitionId())
 					.collect(Collectors.toList());
 			List<String> userIds = new ArrayList<String>();
 			Map<String, List<String>> map = null;
+			System.err.println("heygetTemp3");
 			/*
 			 * if (jwt != null) { map =
 			 * emailUtils.getRecipientsRecordsFromWr(emailDefinitionIdList, jwt); }
@@ -392,10 +407,14 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 			// map = emailUtils.getRecipientsRecordsFromWorkRules(emailDefinitionIdList);
 
 			for (EmailDefinitionDo definitionDo : emailDefinitionDos) {
+				System.err.println("emailDefinitionDo "+definitionDo);
 				EmailUiDto emailUiDto = new EmailUiDto();
+				System.err.println("heygetTemp4");
 				BeanUtils.copyProperties(definitionDo, emailUiDto);
-				emailUiDto.setProcessList(emailDefinitionProcessMappingRepo.exportDtoList(
-						emailDefinitionProcessMappingRepo.getByEmailDefinitionId(emailUiDto.getEmailDefinitionId())));
+				System.err.println("hey emailUiDto"+emailUiDto.getEmailDefinitionId());
+//				emailUiDto.setProcessList(emailDefinitionProcessMappingRepo.exportDtoList(
+//						emailDefinitionProcessMappingRepo.getByEmailDefinitionId(emailUiDto.getEmailDefinitionId())));
+//				System.err.println("heygetTemp5");
 				if (map != null && !map.isEmpty()) {
 
 					emailUiDto.setToList(map.get(emailUiDto.getEmailDefinitionId() + MailNotificationAppConstants.TO));
@@ -404,6 +423,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 					emailUiDto
 							.setBccList(map.get(emailUiDto.getEmailDefinitionId() + MailNotificationAppConstants.BCC));
 				}
+				System.err.println("heygetTemp6");
 				if (definitionDo.getCreatedBy() != null) {
 					userIds.add(definitionDo.getCreatedBy());
 				}
@@ -412,7 +432,8 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 				}
 				dtos.add(emailUiDto);
 			}
-			if (!ServicesUtil.isEmpty(userIds) && !ServicesUtil.isEmpty(dtos)) {
+			System.err.println("heygetTemp4");
+			/*if (!ServicesUtil.isEmpty(userIds) && !ServicesUtil.isEmpty(dtos)) {
 				Map<String, UserDto> userMap = CommonMethods.getUserDetails(userIds); 
 				if (userMap != null && !userMap.isEmpty()) {
 
@@ -427,7 +448,7 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 						}
 					});
 				}
-			}
+			}*/
 		}
 		if (!ServicesUtil.isEmpty(dtos)) {
 			dtos.sort(new Comparator<EmailUiDto>() {
@@ -582,6 +603,17 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 		}
 		logger.info(" [EmailDefinitionServiceImpl]|[validateActiveTemplate]  Execution End");
 		return responseDto;
+	}
+
+	@Override
+	public String getDefId(DefDto defDto) {
+		System.err.println("hey2");
+		List<EmailDefinitionDo>p= emailDefinitionRepo.getDef(defDto.getApplication(),defDto.getProcess(), defDto.getEntityName());
+		System.err.println("p "+p);
+		if(p.size()>0)
+		return p.get(0).getEmailDefinitionId();
+		else
+			return "Please Define A template for this";
 	}
 
 	
