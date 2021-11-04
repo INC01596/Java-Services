@@ -26,38 +26,31 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-<<<<<<< HEAD
-		
- 
 		<dependency>
-
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
 			<scope>compile</scope>
-
 		</dependency>
-		
-<dependency>
-<groupId>org.apache.oltu.oauth2</groupId>
-<artifactId>org.apache.oltu.oauth2.client</artifactId>
-<version>1.0.2</version>
-</dependency>
-		
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.client</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.12.0</version>
-</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
+		</dependency>
 
 
-<dependency>
+		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-xml</artifactId>
 		</dependency>
-		
-=======
+
+
 
 		<dependency>
 
@@ -67,7 +60,7 @@
 			<scope>compile</scope>
 
 		</dependency>
->>>>>>> refs/remotes/origin/master
+
 
 		<dependency>
 			<groupId>com.sap.hana.cloud</groupId>
@@ -91,7 +84,7 @@
 			<artifactId>jackson-annotations</artifactId>
 		</dependency>
 
-<dependency>
+		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.4</version>
@@ -297,9 +290,8 @@
 
 		</plugins>
 	</build>
-<<<<<<< HEAD
+
 </project>
 
-=======
-</project>
->>>>>>> refs/remotes/origin/master
+
+
