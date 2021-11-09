@@ -1,11 +1,16 @@
 package com.incture.cherrywork.services;
 
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +28,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incture.cherrywork.WConstants.MailNotificationAppConstants;
 import com.incture.cherrywork.dtos.ApplicationVariablesMasterDto;
 import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EmailUiDto;
+import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
 import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.RecipientDto;
 import com.incture.cherrywork.dtos.ResponseDto;
+import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.UserDto;
 import com.incture.cherrywork.dtos.VariableDto;
 import com.incture.cherrywork.entities.ApplicationVariablesMasterDo;
@@ -66,6 +75,9 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 
 	@Autowired
 	private ApplicationVariablesMasterRepo applicationVariablesMasterRepo;
+	
+	@Autowired
+	private IReturnRequestHeaderService service;
 
 	@Override
 	public ResponseDto createEmailTemplate(EmailUiDto emailUiDto) {
@@ -615,6 +627,99 @@ public class EmailDefinitionServiceImpl implements EmailDefinitionService {
 		else
 			return "Please Define A template for this";
 	}
+
+	@Override
+	public EmailDefinitionDo getInfo(String application, String process, String entity, String status) {
+		EmailDefinitionDo data = emailDefinitionRepo.getInfo(application,process,entity,status);
+		return data;
+	}
+
+	@Override
+	public ResponseDto triggerMailforApprovals(MailTriggerDto mailTriggerDto) {
+		try{
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "start :" + mailTriggerDto);
+			EmailDefinitionDo getInfoForBody  = getInfo(mailTriggerDto.getApplication(),mailTriggerDto.getProcess(),mailTriggerDto.getEntityName(),"Active");
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "getInfoForBody : " + getInfoForBody.toString());
+//			String subject = getInfoForBody.getSubject();
+//			String mailBody = getInfoForBody.getContent();
+			
+//			ResponseEntity<Object> responseFromOdata = service.fetchItemDataInReturnOrderHavingTaskDtoListForNewDac("P000252", mailTriggerDto.getContentVariables().get("Request_Id").toString(), "cc");
+			ObjectMapper mapper = new ObjectMapper();
+//			Object body = responseFromOdata.getBody();
+			
+			FilterOnReturnHeaderDto filterDto = new FilterOnReturnHeaderDto();
+			filterDto.setCount(100);
+			filterDto.setCustomerPo(mailTriggerDto.getContentVariables().get("Request_Id").toString());
+			filterDto.setDistributionChannelList(new ArrayList<>());
+			filterDto.setDivisionList(new ArrayList<>());
+			filterDto.setHeaderDeliveryBlockList(new ArrayList<>());
+			filterDto.setIndexNum(1);
+			filterDto.setLoginInUserId("P000252");
+			filterDto.setOrderNumber("");
+			filterDto.setOrderTypeList(new ArrayList<>());
+			filterDto.setProjectCode("cc");
+			filterDto.setReturnReasonList(new ArrayList<>());
+			filterDto.setReturnType("");
+			filterDto.setSalesOrgList(new ArrayList<>());
+			filterDto.setShipToPartyList(new ArrayList<>());
+			filterDto.setSoldToPartyList(new ArrayList<>());
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "filterDto" + filterDto.toString());
+			ResponseEntity<Object> responseFromOdata = service.fetchReturnHeaderListForUserWhichHasTasksForNewDac(filterDto, filterDto.getIndexNum(),
+					filterDto.getCount());
+//			List<SalesDocHeaderDto> dataFromOdata = (List<SalesDocHeaderDto>) mapper.convertValue(responseFromOdata.getBody().t, SalesDocHeaderDto.class);
+			List<SalesDocHeaderDto> dataFromOdata = (List<SalesDocHeaderDto>)responseFromOdata.getBody();
+			SalesDocHeaderDto data = dataFromOdata.get(0);
+			String date1 = new Date(data.getSalesOrderDate().longValue()).toGMTString();
+//			Date date2 = new Date(data.getSalesOrderDate().longValue());
+//			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//	        format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+//	        String formatted = format.format(date2);
+//			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "responseFromOdata" + responseFromOdata);
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "responseFromOdata body" + responseFromOdata.getBody());
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "dataFromOdata " + data.getSalesOrderDate() + " " + data.getCreatedBy());
+//			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "GMT " + date1);
+//			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "formatted " +formatted);
+			
+			HashMap<String,Object>m= (HashMap<String, Object>) mailTriggerDto.getContentVariables();
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "before hashmap " + m.toString());
+			m.put("Created_Date", date1);
+			m.put("Created_By", data.getCreatedBy());
+			mailTriggerDto.setContentVariables(m);
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "new hashmap " + mailTriggerDto.getContentVariables().toString());
+			mailTriggerDto.setSubject(getInfoForBody.getSubject());
+			mailTriggerDto.setEmailBody(getInfoForBody.getContent());
+			if (mailTriggerDto.getContentVariables()!= null && !mailTriggerDto.getContentVariables().isEmpty()) {
+				mailTriggerDto.getContentVariables().entrySet().forEach(entry -> {
+					mailTriggerDto.setSubject(mailTriggerDto.getSubject().replaceAll("&" + entry.getKey().toString(),
+							entry.getValue() != null ? entry.getValue().toString() : null));
+//					System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "Inside set Subject : " + "&"+entry.getKey().toString() + " " + mailTriggerDto.getSubject());
+				});
+				// emailUiDto.setSubject(changedSub);
+				System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "Subject : " + mailTriggerDto.getSubject());
+			}
+			if (mailTriggerDto.getContentVariables()!= null && !mailTriggerDto.getContentVariables().isEmpty()) {
+				mailTriggerDto.getContentVariables().entrySet().forEach(entry -> {
+					mailTriggerDto.setEmailBody(mailTriggerDto.getEmailBody().replaceAll("&" + entry.getKey().toString(),
+							entry.getValue() != null ? entry.getValue().toString() : null));
+					System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "Inside set content : " + "&"+entry.getKey().toString() + " = " + entry.getValue() + mailTriggerDto.getEmailBody());
+				});
+				// emailUiDto.setSubject(changedSub);
+				System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "Content : " + mailTriggerDto.getEmailBody());
+			}
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "debugg sendMailAlert");
+			mailAlert.sendMailAlert(mailTriggerDto.getToList().get(0), mailTriggerDto.getCcList().get(0),
+					mailTriggerDto.getSubject(), mailTriggerDto.getEmailBody(), "awadhesh.kumar@incture.com");
+			System.err.println("EmailDefinitionServiceImpl : triggerMailforApprovals : " + "end");
+			return null;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	
 
 	
 }

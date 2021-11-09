@@ -11,6 +11,7 @@ import com.incture.cherrywork.dtos.DefDto;
 import com.incture.cherrywork.dtos.EmailUiDto;
 import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.ResponseDto;
+import com.incture.cherrywork.entities.EmailDefinitionDo;
 
 public interface EmailDefinitionService {
 		ResponseDto createEmailTemplate(EmailUiDto emailUiDto);
@@ -35,6 +36,10 @@ public interface EmailDefinitionService {
 	
 
 		String getDefId(DefDto defDto);
+		
+		EmailDefinitionDo getInfo(String application,String process, String entity, String status);
+		
+		ResponseDto triggerMailforApprovals(MailTriggerDto mailTriggerDto);
 	}
 
 
