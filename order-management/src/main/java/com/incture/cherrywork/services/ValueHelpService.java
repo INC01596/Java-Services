@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.incture.cherrywork.dao.SalesManCustRelDaoLocal;
 import com.incture.cherrywork.dtos.CreditLimitDto;
 import com.incture.cherrywork.dtos.CustomerDto;
 import com.incture.cherrywork.dtos.PaymentTermDo;

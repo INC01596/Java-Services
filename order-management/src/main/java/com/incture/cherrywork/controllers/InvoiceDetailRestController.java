@@ -20,6 +20,7 @@ import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.RejectionReasonDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.TransactionDto;
+import com.incture.cherrywork.services.EbillingStatusServiceLocal;
 import com.incture.cherrywork.services.HciInvoiceDetailServiceLocal;
 import com.incture.cherrywork.services.InvoiceServicesLocal;
 import com.incture.cherrywork.services.TransactionServicesLocal;
@@ -43,8 +44,8 @@ public class InvoiceDetailRestController {
 //	@Autowired
 //	private HciInvoicePrintDetailsServiceLocal hciPrintService;
 //
-//	@Autowired
-//	private EbillingStatusServiceLocal ebillingStatusService;
+	@Autowired
+	private EbillingStatusServiceLocal ebillingStatusService;
 //
 //	@Autowired
 //	private PrintBillingServiceLocal printService;
@@ -126,11 +127,11 @@ public class InvoiceDetailRestController {
 //		return ebillingStatusService.getTrackingDetails(transactionId);
 //	}
 //
-//	@RequestMapping(value = "/getPendingApprovals/{pendingWith}", method = RequestMethod.GET)
-//	public ResponseDto getPendingApprovals(@PathVariable String pendingWith) {
-//		pendingWith= "AccountExecutive";
-//		return ebillingStatusService.getPendingApprovals(pendingWith);
-//	}
+	@RequestMapping(value = "/getPendingApprovals/{pendingWith}", method = RequestMethod.GET)
+	public ResponseDto getPendingApprovals(@PathVariable String pendingWith) {
+		pendingWith= "AccountExecutive";
+		return ebillingStatusService.getPendingApprovals(pendingWith);
+	}
 //
 //	@RequestMapping(value = "/print", method = RequestMethod.POST)
 //	public ResponseDto getPrintSO(@RequestBody BillingPrintDto dto) throws FileNotFoundException {
