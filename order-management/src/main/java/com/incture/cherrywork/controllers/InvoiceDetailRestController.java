@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.BankNamesDto;
+import com.incture.cherrywork.dtos.BillingApprovalDto;
 import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.RejectionReasonDto;
 import com.incture.cherrywork.dtos.ResponseDto;
@@ -90,43 +91,43 @@ public class InvoiceDetailRestController {
 //		return transactionService.getTransactionsBySalesRepAndCustId(salesRep, customerId);
 //	}
 //
-//	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
-//	public ResponseDto updateStatus(@RequestBody BillingApprovalDto dto) {
-//		return ebillingStatusService.updateStatus(dto);
-//	}
-//
-//	@RequestMapping(value = "/updateStatusBulk", method = RequestMethod.POST)
-//	public ResponseDto updateStatusBulk(@RequestBody List<BillingApprovalDto> dtoList) {
-//
-//		ResponseDto responseDto = new ResponseDto();
-//
-//		responseDto.setStatus(Boolean.TRUE);
-//
-//		List<ResponseDto> list = new ArrayList<>();
-//
-//		for (BillingApprovalDto dto : dtoList) {
-//			
-//			
-//
-//			list.add(ebillingStatusService.updateStatus(dto));
-//		}
-//
-//		for (ResponseDto dto : list) {
-//
-//			if (!dto.isStatus()) {
-//				responseDto.setStatus(Boolean.FALSE);
-//				break;
-//			}
-//		}
-//
-//		return responseDto;
-//	}
-//
-//	@RequestMapping(value = "/getTrackingDetails/{transactionId}", method = RequestMethod.GET)
-//	public ResponseDto getTrackingDetails(@PathVariable String transactionId) {
-//		return ebillingStatusService.getTrackingDetails(transactionId);
-//	}
-//
+	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+	public ResponseDto updateStatus(@RequestBody BillingApprovalDto dto) {
+		return ebillingStatusService.updateStatus(dto);
+	}
+
+	@RequestMapping(value = "/updateStatusBulk", method = RequestMethod.POST)
+	public ResponseDto updateStatusBulk(@RequestBody List<BillingApprovalDto> dtoList) {
+
+		ResponseDto responseDto = new ResponseDto();
+
+		responseDto.setStatus(Boolean.TRUE);
+
+		List<ResponseDto> list = new ArrayList<>();
+
+		for (BillingApprovalDto dto : dtoList) {
+			
+			
+
+			list.add(ebillingStatusService.updateStatus(dto));
+		}
+
+		for (ResponseDto dto : list) {
+
+			if (!dto.isStatus()) {
+				responseDto.setStatus(Boolean.FALSE);
+				break;
+			}
+		}
+
+		return responseDto;
+	}
+
+	@RequestMapping(value = "/getTrackingDetails/{transactionId}", method = RequestMethod.GET)
+	public ResponseDto getTrackingDetails(@PathVariable String transactionId) {
+		return ebillingStatusService.getTrackingDetails(transactionId);
+	}
+
 	@RequestMapping(value = "/getPendingApprovals/{pendingWith}", method = RequestMethod.GET)
 	public ResponseDto getPendingApprovals(@PathVariable String pendingWith) {
 		pendingWith= "AccountExecutive";
@@ -163,20 +164,20 @@ public class InvoiceDetailRestController {
 //		return invoiceService.deleteBank(dto);
 //	}
 //
-//	@RequestMapping(value = "/rejectionReason", method = RequestMethod.GET)
-//	public ResponseDto getListOfReasonCode() {
-//		return invoiceService.getListOfReasonCode();
-//	}
-//
-//	@RequestMapping(value = "/saveRejectionReason", method = RequestMethod.POST)
-//	public ResponseDto saveRejectionReason(@RequestBody RejectionReasonDto dto) {
-//		return invoiceService.saveRejectionReason(dto);
-//	}
-//
-//	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
-//	public ResponseDto deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
-//		return invoiceService.deleteRejectionReason(dto);
-//	}
+	@RequestMapping(value = "/rejectionReason", method = RequestMethod.GET)
+	public ResponseDto getListOfReasonCode() {
+		return invoiceService.getListOfReasonCode();
+	}
+
+	@RequestMapping(value = "/saveRejectionReason", method = RequestMethod.POST)
+	public ResponseDto saveRejectionReason(@RequestBody RejectionReasonDto dto) {
+		return invoiceService.saveRejectionReason(dto);
+	}
+
+	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
+	public ResponseDto deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
+		return invoiceService.deleteRejectionReason(dto);
+	}
 
 //	@RequestMapping(path = "/downloadAttachment/{id}", method = RequestMethod.GET)
 //	public ResponseEntity<Resource> download(@PathVariable String id) throws IOException {

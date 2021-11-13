@@ -17,7 +17,7 @@ public interface StatusDaoLocal {
 
 	StatusDto getStatus(StatusDto dto);
 //
-//	List<StatusDto> getTrackingDetails(String transactionId);
+	List<StatusDto> getTrackingDetails(String transactionId);
 
 	List<BillingPendingTaskDto> getPendingApprovals(String pendingWith);
 	

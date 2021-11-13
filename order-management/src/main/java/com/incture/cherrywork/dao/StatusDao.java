@@ -93,30 +93,30 @@ public class StatusDao extends BaseDao<StatusDo, StatusDto> implements StatusDao
 		return exportDto(get(importDto(dto)));
 	}
 
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<StatusDto> getTrackingDetails(String transactionId) {
-//
-//		List<StatusDto> statusDtoList = new ArrayList<>();
-//
-//		if (transactionId != null) {
-//
-//			String hql = "from StatusDo where transaction.transactionId=:transactionId ";
-//
-//			Query q = getSession().createQuery(hql);
-//			q.setParameter("transactionId", transactionId);
-//
-//			List<StatusDo> statusDoList = q.list();
-//
-//			for (StatusDo status : statusDoList) {
-//
-//				statusDtoList.add(exportDto(status));
-//			}
-//
-//		}
-//		return statusDtoList;
-//
-//	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<StatusDto> getTrackingDetails(String transactionId) {
+
+		List<StatusDto> statusDtoList = new ArrayList<>();
+
+		if (transactionId != null) {
+
+			String hql = "from StatusDo where transaction.transactionId=:transactionId ";
+
+			Query q = getSession().createQuery(hql);
+			q.setParameter("transactionId", transactionId);
+
+			List<StatusDo> statusDoList = q.list();
+
+			for (StatusDo status : statusDoList) {
+
+				statusDtoList.add(exportDto(status));
+			}
+
+		}
+		return statusDtoList;
+
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
