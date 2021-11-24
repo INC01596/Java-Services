@@ -1828,8 +1828,11 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 		System.err.println(s);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!ServicesUtils.isEmpty(dto.getCustomerId())) {
 
 			for (int i = 0; i < dto.getCustomerId().size(); i++) {
@@ -2538,6 +2541,7 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 					mDto.setEntityName("Approvals");
 					List<String>mlist=new ArrayList<>();
 					mlist.add("Sandeep.k@incture.com");
+					mlist.add("nischal.jadhav@incture.com");
 					HashMap<String,Object>m=new HashMap();
 					m.put("Created_By",returnOrderDto.getLoggedInUserPid());
 					m.put("Request-Id", returnOrderDto.getReturnReqNum());
