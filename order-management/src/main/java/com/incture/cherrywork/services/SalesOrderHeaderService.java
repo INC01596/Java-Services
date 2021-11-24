@@ -1148,7 +1148,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// session.flush();
 				// session.clear();
 				// tx.commit();
-
+System.err.println(salesHeaderDto.toString());
 				// Notification for id and acknowledgement
 				try
 				{

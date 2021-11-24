@@ -4,12 +4,15 @@ package com.incture.cherrywork.services;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.incture.cherrywork.dtos.CustomerDto;
+import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.entities.CustomerDo;
 
 
 
-public interface CustomerDaoLocal {
+public interface CustomerServiceLocal {
 
 	public void updateCustomer(CustomerDto customerDto);
 
@@ -30,5 +33,11 @@ public interface CustomerDaoLocal {
 	public Boolean getCrFlag(String customerId);
 
 	public List<String> getAllSoldCustomer();
+
+	public ResponseEntity<Object> addCustomer(CustomerDto dto);
+
+	List<CustomerDo> getAllCustomerDetailsFromRFC(List<String> customerList);
+
+	ResponseDto saveAllCustomerFromRfcToHanaDb();
 
 }

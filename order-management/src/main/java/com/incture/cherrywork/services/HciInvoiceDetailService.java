@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.incture.cherrywork.dtos.CustomerDto;
 import com.incture.cherrywork.dtos.InvoiceDetailsDto;
 import com.incture.cherrywork.dtos.InvoiceHeaderDto;
 import com.incture.cherrywork.dtos.InvoiceItemDto;
@@ -40,8 +41,11 @@ import com.incture.cherrywork.dtos.ParkingDto;
 import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.PendingInvoiceItemDto;
 import com.incture.cherrywork.dtos.ResponseDto;
+import com.incture.cherrywork.entities.CustomerDo;
 import com.incture.cherrywork.entities.PendingInvoiceDo;
 import com.incture.cherrywork.entities.PendingInvoiceItemDo;
+import com.incture.cherrywork.repositories.CustomerRepo;
+import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.util.AuthCpi;
 import com.incture.cherrywork.util.HciApiConstants;
 import com.incture.cherrywork.util.RestInvoker;
@@ -55,11 +59,13 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	@Autowired
 	private RestInvoker restInvoker;
 
-	 @Autowired
-	 private CustomerDaoLocal customerDao;
+	 
 	 
 	 @Autowired
 	 private AuthCpi cpi;
+	 
+	 @Autowired
+	 private CustomerRepo crepo;
 
 	ResponseDto responseDto;
 
@@ -388,65 +394,7 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	}
 
 	
-	public String checkFunction(String dto, Map<String, Object> map) throws IOException {
-	System.err.println("checkFunction : dto " + dto + " map " + map.toString());
-	HttpResponse httpResponse = null;
-	HttpRequestBase httpRequestBase = null;
-	StringEntity data = null;
-	String barerToken = null;
-	String responseString = null;
-	try {
-	barerToken = cpi.getToken();
-	} catch (OAuthSystemException e) {
-	e.printStackTrace();
-	} catch (OAuthProblemException e) {
-	e.printStackTrace();
-	}
-	CloseableHttpClient httpClient = HttpClientBuilder.create().build(); if (!checkString(dto)) { if (map != null) {
-	// String authTokenDuplicate = "eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vaW5jY3BpZGV2LmF1dGhlbnRpY2F0aW9uLmV1MTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS04MjQ4OTI0NTIiLCJ0eXAiOiJKV1QifQ.eyJqdGkiOiJhMmY2MWIzZDdmYzk0YTc4OWI5YTA5NDE0YWY0NTI2OCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJiNGQzMmI2Yy05MThiLTQ4YzYtOWIxZi1lODhiMzQ4YWFlNTMiLCJ6ZG4iOiJpbmNjcGlkZXYiLCJzZXJ2aWNlaW5zdGFuY2VpZCI6ImEzYzJmOTg5LWQ5Y2UtNDczOC04YWMzLTJlODkzODBkNjBiZCJ9LCJzdWIiOiJzYi1hM2MyZjk4OS1kOWNlLTQ3MzgtOGFjMy0yZTg5MzgwZDYwYmQhYjYzNjI2fGl0LXJ0LWluY2NwaWRldiFiMTYwNzciLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiLCJpdC1ydC1pbmNjcGlkZXYhYjE2MDc3LkVTQk1lc3NhZ2luZy5zZW5kIl0sInNjb3BlIjpbIml0LXJ0LWluY2NwaWRldiFiMTYwNzcuRVNCTWVzc2FnaW5nLnNlbmQiLCJ1YWEucmVzb3VyY2UiXSwiY2xpZW50X2lkIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiY2lkIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiYXpwIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiZ3JhbnRfdHlwZSI6ImNsaWVudF9jcmVkZW50aWFscyIsInJldl9zaWciOiI2MTAwYzM3MyIsImlhdCI6MTYzNTIzMTI0OSwiZXhwIjoxNjM1MjM1NDQ5LCJpc3MiOiJodHRwczovL2luY2NwaWRldi5hdXRoZW50aWNhdGlvbi5ldTEwLmhhbmEub25kZW1hbmQuY29tL29hdXRoL3Rva2VuIiwiemlkIjoiYjRkMzJiNmMtOTE4Yi00OGM2LTliMWYtZTg4YjM0OGFhZTUzIiwiYXVkIjpbIml0LXJ0LWluY2NwaWRldiFiMTYwNzcuRVNCTWVzc2FnaW5nIiwidWFhIiwic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3Il19.HecXeAajlA7U_hFFAejUoYhlHvcE_pbpkyIVkp4nofEx7PRl1AxspWn47b3EbAFDYrP-B8YgozgSkNvZlYJGJtuDqRyigv54_ARwRSl_nVPJTiA_FZD2awNyXq17Yb-vYJKhKze0E9AiHJxEHMdGorqYIGJi96w3no2b07DfnsEzGcHfkSmpH0EmGp3q6K_wk8ebYb16H0PdPX_vUoiao2XH-7ewdcrtvJ95pHgKCazUwIxcX57SF175l7XPpLqYrXg5BlXRq44aJSF8Uy_7qrNSbpxZwiqTzOM9Pbs2ky-SZ_IO8gZ8D71dHqVhdCKQ9YZAtRAVO60DcXxL-j134w";
-	System.err.println("barerToken " + barerToken);
-	if (!checkString(barerToken)) {
-	String requestUrl = (String) map.get("URL") + (String) map.get("BP_CREATE");
-	System.err.println("requestUrl" + requestUrl);
-	httpRequestBase = new HttpPost(requestUrl);
-	// ObjectMapper mapper = new ObjectMapper();
-	// String json = mapper.writeValueAsString(dto);
-	// logger.info("MDG request payload " + dto);
-	// JSONObject jsonObject = new JSONObject(dto);
-	// data = new StringEntity(dto, "utf-8");
-	// data.setContentType("application/json");
-	StringEntity requestEntity = new StringEntity(
-	dto,
-	ContentType.APPLICATION_JSON);
-	((HttpPost) httpRequestBase).setEntity(requestEntity);
-	httpRequestBase.addHeader("accept", "*/*");
-	httpRequestBase.addHeader("Authorization", "Bearer "+barerToken);
-	httpRequestBase.addHeader("Accept-Encoding", "gzip,deflate,br");
-	httpRequestBase.addHeader("Connection", "keep-alive");
-	httpResponse = httpClient.execute(httpRequestBase);
-	System.err.println("httpResponse" + httpResponse);
-	HttpEntity entity = httpResponse.getEntity();
-	responseString = EntityUtils.toString(entity, "UTF-8");
-	System.err.println(responseString);
-	httpClient.close(); }
-	}
-	}
-	return responseString; 
-	}
-
-
-	public boolean checkString(String s) {
-		if (s == null || s.equals("") || s.trim().isEmpty() || s.matches(""))
-			return true;
-		else
-			return false;
-	}
-
-	public String encodeUsernameAndPassword(String username, String password) {
-		String encodeUsernamePassword = username + ":" + password;
-		String auth = "Basic " + DatatypeConverter.printBase64Binary(encodeUsernamePassword.getBytes());
-		return auth;
-	}
+	
 	//
 	// //
 	// **********************************************************************************************************
@@ -467,7 +415,13 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	 try {
 	
 	 // Getting Customers from customer table
-	 List<String> listOfCust = customerDao.getAllCustomer();
+		 List<CustomerDo>custDo=crepo.findAll();
+	 List<String> listOfCust=new ArrayList<>();
+	 for(CustomerDo d:custDo)
+	 {
+		listOfCust.add(d.getCustId()) ;
+	 }
+	
 	
 	 if (listOfCust != null && listOfCust.size() > 0) {
 	
@@ -760,7 +714,7 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	 // it is new service to get All open inovices
 	
 	 @Override
-	 public List<PendingInvoiceDo> getAllOpenInvocesFromRFC() {
+	 public List<PendingInvoiceDo> getAllOpenInvocesFromRFC() throws IOException {
 	
 	 List<PendingInvoiceDo> pendingInvoiceDoList = new ArrayList<>();
 	
@@ -769,9 +723,9 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	 List<String> shipCustList = new ArrayList<>();
 	
 	 Set<String> custSet = new HashSet<>();
-	
-	 shipCustList = customerDao.getAllCustomer();
-	 soldCustList = customerDao.getAllSoldCustomer();
+	//List<CustomerDo>custDo=ObjectMapperUtils.mapAll(crepo.findAllById(customerList),CustomerDto.class)
+	// shipCustList = customerDao.getAllCustomer();
+	 //soldCustList = customerDao.getAllSoldCustomer();
 	
 	 custSet.addAll(shipCustList);
 	 custSet.addAll(soldCustList);
@@ -803,11 +757,16 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	
 	 getMultipleInvoiceDetails.put("Record", record);
 	 inputObject.put("GetMultipleInvoiceDetails", getMultipleInvoiceDetails);
+	 Map<String, Object> map = new HashMap<>();
+		map.put("URL", "https://inccpidev.it-cpi001-rt.cfapps.eu10.hana.ondemand.com/");
+		map.put("BP_CREATE", HciApiConstants.INVOICE_DETAILS_OF_MULTIPLE_CUSTOMERS);
+
+		String response = checkFunction(inputObject.toString(), map);
 	
-	 String response =
-	 restInvoker.postDataToServer(HciApiConstants.INVOICE_DETAILS_OF_MULTIPLE_CUSTOMERS,
-	 inputObject.toString());
-	
+//	 String response =
+//	 restInvoker.postDataToServer(HciApiConstants.INVOICE_DETAILS_OF_MULTIPLE_CUSTOMERS,
+//	 inputObject.toString());
+//	
 	 if (response != null && !(response.equals(""))) {
 	
 	 Map<String, Object> invoiceMap = new HashMap<>();
@@ -1078,7 +1037,65 @@ public class HciInvoiceDetailService implements HciInvoiceDetailServiceLocal {
 	 return pendingInvoiceDoList;
 	 }
 
+	 public String checkFunction(String dto, Map<String, Object> map) throws IOException {
+			System.err.println("checkFunction : dto " + dto + " map " + map.toString());
+			HttpResponse httpResponse = null;
+			HttpRequestBase httpRequestBase = null;
+			StringEntity data = null;
+			String barerToken = null;
+			String responseString = null;
+			try {
+			barerToken = cpi.getToken();
+			} catch (OAuthSystemException e) {
+			e.printStackTrace();
+			} catch (OAuthProblemException e) {
+			e.printStackTrace();
+			}
+			CloseableHttpClient httpClient = HttpClientBuilder.create().build(); if (!checkString(dto)) { if (map != null) {
+			// String authTokenDuplicate = "eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vaW5jY3BpZGV2LmF1dGhlbnRpY2F0aW9uLmV1MTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS04MjQ4OTI0NTIiLCJ0eXAiOiJKV1QifQ.eyJqdGkiOiJhMmY2MWIzZDdmYzk0YTc4OWI5YTA5NDE0YWY0NTI2OCIsImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiJiNGQzMmI2Yy05MThiLTQ4YzYtOWIxZi1lODhiMzQ4YWFlNTMiLCJ6ZG4iOiJpbmNjcGlkZXYiLCJzZXJ2aWNlaW5zdGFuY2VpZCI6ImEzYzJmOTg5LWQ5Y2UtNDczOC04YWMzLTJlODkzODBkNjBiZCJ9LCJzdWIiOiJzYi1hM2MyZjk4OS1kOWNlLTQ3MzgtOGFjMy0yZTg5MzgwZDYwYmQhYjYzNjI2fGl0LXJ0LWluY2NwaWRldiFiMTYwNzciLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiLCJpdC1ydC1pbmNjcGlkZXYhYjE2MDc3LkVTQk1lc3NhZ2luZy5zZW5kIl0sInNjb3BlIjpbIml0LXJ0LWluY2NwaWRldiFiMTYwNzcuRVNCTWVzc2FnaW5nLnNlbmQiLCJ1YWEucmVzb3VyY2UiXSwiY2xpZW50X2lkIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiY2lkIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiYXpwIjoic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3IiwiZ3JhbnRfdHlwZSI6ImNsaWVudF9jcmVkZW50aWFscyIsInJldl9zaWciOiI2MTAwYzM3MyIsImlhdCI6MTYzNTIzMTI0OSwiZXhwIjoxNjM1MjM1NDQ5LCJpc3MiOiJodHRwczovL2luY2NwaWRldi5hdXRoZW50aWNhdGlvbi5ldTEwLmhhbmEub25kZW1hbmQuY29tL29hdXRoL3Rva2VuIiwiemlkIjoiYjRkMzJiNmMtOTE4Yi00OGM2LTliMWYtZTg4YjM0OGFhZTUzIiwiYXVkIjpbIml0LXJ0LWluY2NwaWRldiFiMTYwNzcuRVNCTWVzc2FnaW5nIiwidWFhIiwic2ItYTNjMmY5ODktZDljZS00NzM4LThhYzMtMmU4OTM4MGQ2MGJkIWI2MzYyNnxpdC1ydC1pbmNjcGlkZXYhYjE2MDc3Il19.HecXeAajlA7U_hFFAejUoYhlHvcE_pbpkyIVkp4nofEx7PRl1AxspWn47b3EbAFDYrP-B8YgozgSkNvZlYJGJtuDqRyigv54_ARwRSl_nVPJTiA_FZD2awNyXq17Yb-vYJKhKze0E9AiHJxEHMdGorqYIGJi96w3no2b07DfnsEzGcHfkSmpH0EmGp3q6K_wk8ebYb16H0PdPX_vUoiao2XH-7ewdcrtvJ95pHgKCazUwIxcX57SF175l7XPpLqYrXg5BlXRq44aJSF8Uy_7qrNSbpxZwiqTzOM9Pbs2ky-SZ_IO8gZ8D71dHqVhdCKQ9YZAtRAVO60DcXxL-j134w";
+			System.err.println("barerToken " + barerToken);
+			if (!checkString(barerToken)) {
+			String requestUrl = (String) map.get("URL") + (String) map.get("BP_CREATE");
+			System.err.println("requestUrl" + requestUrl);
+			httpRequestBase = new HttpPost(requestUrl);
+			// ObjectMapper mapper = new ObjectMapper();
+			// String json = mapper.writeValueAsString(dto);
+			// logger.info("MDG request payload " + dto);
+			// JSONObject jsonObject = new JSONObject(dto);
+			// data = new StringEntity(dto, "utf-8");
+			// data.setContentType("application/json");
+			StringEntity requestEntity = new StringEntity(
+			dto,
+			ContentType.APPLICATION_JSON);
+			((HttpPost) httpRequestBase).setEntity(requestEntity);
+			httpRequestBase.addHeader("accept", "*/*");
+			httpRequestBase.addHeader("Authorization", "Bearer "+barerToken);
+			httpRequestBase.addHeader("Accept-Encoding", "gzip,deflate,br");
+			httpRequestBase.addHeader("Connection", "keep-alive");
+			httpResponse = httpClient.execute(httpRequestBase);
+			System.err.println("httpResponse" + httpResponse);
+			HttpEntity entity = httpResponse.getEntity();
+			responseString = EntityUtils.toString(entity, "UTF-8");
+			System.err.println(responseString);
+			httpClient.close(); }
+			}
+			}
+			return responseString; 
+			}
 
+
+			public boolean checkString(String s) {
+				if (s == null || s.equals("") || s.trim().isEmpty() || s.matches(""))
+					return true;
+				else
+					return false;
+			}
+
+			public String encodeUsernameAndPassword(String username, String password) {
+				String encodeUsernamePassword = username + ":" + password;
+				String auth = "Basic " + DatatypeConverter.printBase64Binary(encodeUsernamePassword.getBytes());
+				return auth;
+			}
 	
 
 

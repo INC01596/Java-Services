@@ -16,20 +16,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.BankNamesDto;
+import com.incture.cherrywork.dtos.BillingApprovalDto;
+import com.incture.cherrywork.dtos.CustomerDto;
 import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.RejectionReasonDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.TransactionDto;
+import com.incture.cherrywork.services.CustomerServiceLocal;
+import com.incture.cherrywork.services.EbillingStatusServiceLocal;
 import com.incture.cherrywork.services.HciInvoiceDetailServiceLocal;
 import com.incture.cherrywork.services.InvoiceServicesLocal;
 import com.incture.cherrywork.services.TransactionServicesLocal;
 
 
 @RestController
-@RequestMapping(value = "rest/invoice", produces = "application/json")
+@RequestMapping(value = "api/v1/invoice", produces = "application/json")
 public class InvoiceDetailRestController {
 	@Autowired
 	private InvoiceServicesLocal invoiceService;
+	
+	@Autowired
+	private CustomerServiceLocal custService;
 //
 //	@Autowired
 //	private EcmDocumentServiceLocal ecmDocumentService;
@@ -45,7 +52,7 @@ public class InvoiceDetailRestController {
 //
 //	@Autowired
 //	private EbillingStatusServiceLocal ebillingStatusService;
-//
+
 //	@Autowired
 //	private PrintBillingServiceLocal printService;
 //
@@ -80,7 +87,14 @@ public class InvoiceDetailRestController {
 //
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Object> createTransaction(@RequestBody TransactionDto dto) {
+		System.err.println("heyController");
 		return transactionService.createTransaction(dto);
+	}
+	
+	@RequestMapping("/addCustomer")
+	public ResponseEntity<Object>addCustomer(@RequestBody CustomerDto dto)
+	{
+		return custService.addCustomer(dto);
 	}
 //
 //	@RequestMapping(value = "/getTransactionsBySalesRepAndCustId/{salesRep}/{customerId}", method = RequestMethod.GET)
@@ -120,7 +134,7 @@ public class InvoiceDetailRestController {
 //
 //		return responseDto;
 //	}
-//
+
 //	@RequestMapping(value = "/getTrackingDetails/{transactionId}", method = RequestMethod.GET)
 //	public ResponseDto getTrackingDetails(@PathVariable String transactionId) {
 //		return ebillingStatusService.getTrackingDetails(transactionId);
@@ -147,35 +161,36 @@ public class InvoiceDetailRestController {
 //		return invoiceService.getListOfBankNames();
 //	}
 //
-//	@RequestMapping(value = "/getBankDetails", method = RequestMethod.GET)
-//	public ResponseDto getBankDetails() {
-//		return invoiceService.getBankDetails();
-//	}
-//
-//	@RequestMapping(value = "/saveBankNames", method = RequestMethod.POST)
-//	public ResponseDto saveBankNames(@RequestBody BankNamesDto dto) {
-//		return invoiceService.saveBank(dto);
-//	}
-//
+	@RequestMapping(value = "/getBankDetails", method = RequestMethod.GET)
+	public ResponseEntity<Object> getBankDetails() {
+		return invoiceService.getBankDetails();
+	}
+
+	@RequestMapping(value = "/saveBankNames", method = RequestMethod.POST)
+	public ResponseEntity<Object> saveBankNames(@RequestBody BankNamesDto dto) {
+		System.err.println("hey "+dto);
+		return invoiceService.saveBank(dto);
+	}
+
 //	@RequestMapping(value = "/deleteBankNames", method = RequestMethod.POST)
 //	public ResponseDto deleteBankNames(@RequestBody BankNamesDto dto) {
 //		return invoiceService.deleteBank(dto);
 //	}
 //
-//	@RequestMapping(value = "/rejectionReason", method = RequestMethod.GET)
-//	public ResponseDto getListOfReasonCode() {
-//		return invoiceService.getListOfReasonCode();
-//	}
-//
-//	@RequestMapping(value = "/saveRejectionReason", method = RequestMethod.POST)
-//	public ResponseDto saveRejectionReason(@RequestBody RejectionReasonDto dto) {
-//		return invoiceService.saveRejectionReason(dto);
-//	}
-//
-//	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
-//	public ResponseDto deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
-//		return invoiceService.deleteRejectionReason(dto);
-//	}
+	@RequestMapping(value = "/rejectionReason", method = RequestMethod.GET)
+	public ResponseEntity<Object> getListOfReasonCode() {
+		return invoiceService.getListOfReasonCode();
+	}
+
+	@RequestMapping(value = "/saveRejectionReason", method = RequestMethod.POST)
+	public ResponseEntity<Object> saveRejectionReason(@RequestBody RejectionReasonDto dto) {
+		return invoiceService.saveRejectionReason(dto);
+	}
+
+	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
+	public ResponseEntity<Object> deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
+		return invoiceService.deleteRejectionReason(dto);
+	}
 
 //	@RequestMapping(path = "/downloadAttachment/{id}", method = RequestMethod.GET)
 //	public ResponseEntity<Resource> download(@PathVariable String id) throws IOException {

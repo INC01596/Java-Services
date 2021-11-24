@@ -53,7 +53,7 @@ public class InvoiceDo implements BaseDo {
 	private String customerId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "transactionId", nullable = false)
+	@JoinColumn(name = "transactionId", nullable = true)
 	private TransactionDo transaction;
 
 	@Column(name = "STATUS")

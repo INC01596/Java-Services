@@ -13,6 +13,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.incture.cherrywork.dao.BaseDao;
@@ -20,6 +21,8 @@ import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.PendingInvoiceItemDto;
 import com.incture.cherrywork.entities.PendingInvoiceDo;
 import com.incture.cherrywork.entities.PendingInvoiceItemDo;
+import com.incture.cherrywork.repositories.PendingInvoiceItemRepo;
+import com.incture.cherrywork.repositories.PendingInvoiceRepo;
 import com.incture.cherrywork.util.ServicesUtil;
 
 
@@ -28,6 +31,13 @@ public class PendingInvoiceDao extends BaseDao<PendingInvoiceDo, PendingInvoiceD
 
 	private static final Logger logger = LoggerFactory.getLogger(PendingInvoiceDao.class);
 
+	
+	@Autowired
+	private PendingInvoiceRepo  prepo;
+	
+	@Autowired
+	private PendingInvoiceItemRepo  pirepo;
+	
 	@Override
 	public PendingInvoiceDo importDto(PendingInvoiceDto dto) {
 
@@ -167,6 +177,7 @@ public class PendingInvoiceDao extends BaseDao<PendingInvoiceDo, PendingInvoiceD
 		return pendingInvoiceItemdto;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void savePendingInvoices(List<PendingInvoiceDo> pendingInvList) {
 
@@ -177,21 +188,15 @@ public class PendingInvoiceDao extends BaseDao<PendingInvoiceDo, PendingInvoiceD
 			int counter = 0;
 			int deletedRows = 0;
 			int deletedPendinginvRows = 0;
+			long counts=0;
 			try {
 
-				String hql = "delete from PendingInvoiceItemDo";
+				counts=pirepo.count();
+				pirepo.deleteAll();
 
-				Query query = getSession().createQuery(hql);
+				if (counts > 0) {
 
-				deletedRows = query.executeUpdate();
-
-				if (deletedRows > 0) {
-
-					String PendingInvhql = "delete from PendingInvoiceDo";
-
-					Query queryInv = getSession().createQuery(PendingInvhql);
-
-					deletedPendinginvRows = queryInv.executeUpdate();
+					prepo.deleteAll();
 				}
 
 				logger.error("[PendingInvoiceDao][savePendingInvoices]Flushed Invoices:" + deletedRows + " :items: "
@@ -199,15 +204,25 @@ public class PendingInvoiceDao extends BaseDao<PendingInvoiceDo, PendingInvoiceD
 
 				for (PendingInvoiceDo dto : pendingInvList) {
 
-					counter++;
-					getSession().save(dto);
-
-					if (counter > 0 && counter % 50 == 0) {
-
-						getSession().flush();
-						getSession().clear();
-
+					PendingInvoiceDo pDo=new PendingInvoiceDo();
+					pDo=prepo.save(dto);
+					
+					List<PendingInvoiceItemDo>lItem=dto.getInvoiceItemList();
+					for(PendingInvoiceItemDo piDto:lItem)
+					{
+						pirepo.save(piDto);
+						
 					}
+					
+//					counter++;
+//					getSession().save(dto);
+
+//					if (counter > 0 && counter % 50 == 0) {
+//
+//						getSession().flush();
+//						getSession().clear();
+//
+//					}
 
 				}
 

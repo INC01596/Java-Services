@@ -15,6 +15,7 @@ import com.incture.cherrywork.dtos.CreditLimitDto;
 import com.incture.cherrywork.dtos.CustomerDto;
 import com.incture.cherrywork.dtos.PaymentTermDo;
 import com.incture.cherrywork.dtos.PaymentTermsDto;
+import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.SalesRepCustDto;
 import com.incture.cherrywork.entities.CustomerDo;
@@ -26,17 +27,17 @@ import com.incture.cherrywork.util.ServicesUtil;
 @Transactional
 public class  ValueHelpService implements FTPServiceLocal {
 	
-	@Autowired
-	private CustomerDao customerDao;
-	
+//	@Autowired
+//	private CustomerDao customerDao;
+//	
 	@Autowired 
 	private CustomerRepo crepo;
 	
 	@Autowired
 	private SalesManCustRelDaoLocal salesManCusRelDao;
 	
-	@Autowired
-	private CustomerDaoLocal customerDaoLocal;
+//	@Autowired
+//	private CustomerDaoLocal customerDaoLocal;
 	
 	@Autowired
 	private HciGetCustomerDetailsServiceLocal hciGetCustomerDetails;
@@ -181,85 +182,100 @@ public class  ValueHelpService implements FTPServiceLocal {
 //
 //	}
 //
-//	@Override
-//	public ResponseDto getAllCustomerDetailsWithInvoices(String salesRep) {
-//
-//		ResponseDto responseDto = new ResponseDto();
-//
-//		List<CustomerDto> customerDtoList = new ArrayList<>();
-//
-//		List<CustomerDto> resultCustomerDto = new ArrayList<>();
-//
-//		List<PendingInvoiceDto> pendingInvoiceDtoList = new ArrayList<>();
-//		List<String> salesRepCustList = new ArrayList<>();
-//
-//		Map<String, List<PendingInvoiceDto>> map = new HashMap<>();
-//
-//		List<PendingInvoiceDto> pendingInvoiceList;
-//
-//		try {
-//
-//			// get customer list
-//			salesRepCustList = salesManCusRelDao.getAllPrimaryCustomer(salesRep);
-//
-//			if (salesRepCustList != null && !salesRepCustList.isEmpty()) {
-//
-//				pendingInvoiceDtoList = pendingInvoiceDaoLocal.getPendingInvoices(salesRepCustList);
-//
-//				customerDtoList = customerDaoLocal.getAllCustomerDetails(salesRepCustList);
-//
-//				if (pendingInvoiceDtoList != null && !pendingInvoiceDtoList.isEmpty() && customerDtoList != null
-//						&& !customerDtoList.isEmpty()) {
-//
-//					for (PendingInvoiceDto p : pendingInvoiceDtoList) {
-//
-//						if (map.containsKey(p.getCustId())) {
-//
-//							pendingInvoiceList = map.get(p.getCustId());
-//
-//							pendingInvoiceList.add(p);
-//
-//							map.put(p.getCustId(), pendingInvoiceList);
-//
-//						} else {
-//
-//							pendingInvoiceList = new ArrayList<>();
-//							pendingInvoiceList.add(p);
-//							map.put(p.getCustId(), pendingInvoiceList);
-//
-//						}
-//
-//					}
-//
-//					for (CustomerDto c : customerDtoList) {
-//
-//						c.setPendingInvoiceDtoList(map.get(c.getCustId()));
-//						c.setIsPrimary(Boolean.TRUE);
-//						resultCustomerDto.add(c);
-//					}
-//
-//				}
-//			}
-//			responseDto.setStatus(Boolean.TRUE);
-//			responseDto.setMessage(Message.SUCCESS.toString());
-//
-//		} catch (Exception e) {
-//
-//			logger.error("[ValueHelpService][getAllCustomerDetailsWithInvoices]:::" + e.getMessage());
-//			responseDto.setStatus(false);
-//			responseDto.setMessage(e.getMessage());
-//
-//		}
-//
-//		responseDto.setData(resultCustomerDto);
-//
-//		return responseDto;
-//
-//	}
+	@Override
+	public ResponseDto getAllCustomerDetailsWithInvoices(String salesRep) {
+System.err.println("Hey Service1");
+		ResponseDto responseDto = new ResponseDto();
+
+		List<CustomerDto> customerDtoList = new ArrayList<>();
+
+		List<CustomerDto> resultCustomerDto = new ArrayList<>();
+
+		List<PendingInvoiceDto> pendingInvoiceDtoList = new ArrayList<>();
+		List<String> salesRepCustList = new ArrayList<>();
+
+		Map<String, List<PendingInvoiceDto>> map = new HashMap<>();
+
+		List<PendingInvoiceDto> pendingInvoiceList;
+
+		try {
+
+			// get customer list
+			//salesRepCustList = salesManCusRelDao.getAllPrimaryCustomer(salesRep);
+			salesRepCustList.add("0000000046");
+			salesRepCustList.add("0000000047");
+			salesRepCustList.add("0000000076");
+			salesRepCustList.add("0000000077");
+			salesRepCustList.add("0000000061");
+			salesRepCustList.add("0000000062");
+			salesRepCustList.add("0000000063");
+			
+			
+			
+			
+			
+			
+			
+			System.err.println("Hey Service2");
+
+			if (salesRepCustList != null && !salesRepCustList.isEmpty()) {
+
+				pendingInvoiceDtoList = pendingInvoiceDaoLocal.getPendingInvoices(salesRepCustList);
+
+				//customerDtoList = customerDaoLocal.getAllCustomerDetails(salesRepCustList);
+
+				if (pendingInvoiceDtoList != null && !pendingInvoiceDtoList.isEmpty() && customerDtoList != null
+						&& !customerDtoList.isEmpty()) {
+
+					for (PendingInvoiceDto p : pendingInvoiceDtoList) {
+
+						if (map.containsKey(p.getCustId())) {
+
+							pendingInvoiceList = map.get(p.getCustId());
+
+							pendingInvoiceList.add(p);
+
+							map.put(p.getCustId(), pendingInvoiceList);
+
+						} else {
+
+							pendingInvoiceList = new ArrayList<>();
+							pendingInvoiceList.add(p);
+							map.put(p.getCustId(), pendingInvoiceList);
+
+						}
+
+					}
+
+					for (CustomerDto c : customerDtoList) {
+
+						c.setPendingInvoiceDtoList(map.get(c.getCustId()));
+						c.setIsPrimary(Boolean.TRUE);
+						resultCustomerDto.add(c);
+					}
+
+				}
+			}
+			responseDto.setStatus(Boolean.TRUE);
+			responseDto.setMessage("Message.SUCCESS.toString()");
+
+		} catch (Exception e) {
+
+			//logger.error("[ValueHelpService][getAllCustomerDetailsWithInvoices]:::" + e.getMessage());
+			responseDto.setStatus(false);
+			responseDto.setMessage(e.getMessage());
+
+		}
+
+		responseDto.setData(resultCustomerDto);
+
+		return responseDto;
+
+	}
 
 	@Override
 	public ResponseDto getAllCustDetailsBySalesRep(String salesRep) {
-
+		
 		List<PaymentTermDo> paymentTermDoList = new ArrayList<>();
 
 		List<CustomerDto> customerDtoList = new ArrayList<>();
@@ -322,11 +338,12 @@ public class  ValueHelpService implements FTPServiceLocal {
 				}
 
 			}
+			
 			System.err.println("All CustomersLis2"+customerList);
 
 			if (customerList != null && !customerList.isEmpty()) {
-
-				customerDtoFromDb = customerDaoLocal.getAllCustomerDetails(customerList);
+                //CustomerDo customerDo=
+				customerDtoFromDb = ObjectMapperUtils.mapAll(crepo.findAllById(customerList),CustomerDto.class);
 			}
 			System.err.println("All CustomersLis3"+customerDtoFromDb);
 
@@ -438,10 +455,6 @@ public class  ValueHelpService implements FTPServiceLocal {
 		return null;
 	}
 
-	@Override
-	public ResponseDto getAllCustomerDetailsWithInvoices(String salesRep) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }

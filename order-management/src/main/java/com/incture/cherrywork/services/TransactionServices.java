@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.message.Message;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import com.incture.cherrywork.dtos.TransactionDto;
 import com.incture.cherrywork.entities.TransactionDo;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.TransactionRepo;
+import com.incture.cherrywork.util.SequenceNumberGen;
 import com.incture.cherrywork.util.ServicesUtil;
 
 @Service("TransactionServices")
@@ -30,112 +34,66 @@ public class TransactionServices implements TransactionServicesLocal {
 
 	@Autowired
 	private TransactionRepo repo;
+	
+	private SequenceNumberGen sequenceNumberGen;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
-	@Autowired
-	private CustomerDaoLocal customerDaoLocal;
-
-	//@Autowired
-	//private UserServiceLocal userServiceLocal;
 
 	
 
-//	@Autowired
-//	private PrintBillingServiceLocal printBillingServiceLocal;
-
 	
-	//@Autowired
-	//private IdpServiceLocal idpServiceLocal;
-
-	//private static final Logger logger = LoggerFactory.getLogger(TransactionServices.class);
-	
-	/*
-	 * SequenceNumberGen sequenceNumberGen; String transactionId;
-	 */
 
 	@Override
 	public ResponseEntity<Object> createTransaction(TransactionDto dto) {
+		
 
-		//ResponseDto response = new ResponseDto();
+		List<InvoiceDto> invoiceDtos = new ArrayList<>();
+		List<StatusDto> statusList = new ArrayList<>();
+		
+		TransactionDo transactionDo=new TransactionDo();
 
-		Map<String, String> settingMap = new HashMap<>();
-
+ 
 		try {
 
-			/*
-			 * sequenceNumberGen = SequenceNumberGen.getInstance();
-			 * transactionId = sequenceNumberGen.getNextSeqNumber("T", 10,
-			 * sessionFactory.getCurrentSession());
-			 * 
-			 * Long count = dao.checkTransactionId(transactionId);
-			 * 
-			 * if (count != 0) {
-			 * 
-			 * while (true) {
-			 * 
-			 * transactionId = sequenceNumberGen.getNextSeqNumber("T", 10,
-			 * sessionFactory.getCurrentSession());
-			 * 
-			 * count = dao.checkTransactionId(transactionId);
-			 * 
-			 * if (count == 0) { break; }
-			 * 
-			 * }
-			 * 
-			 * }
-			 * 
-			 * dto.setTransactionId(transactionId);
-			 */
+			
+			sequenceNumberGen = SequenceNumberGen.getInstance();
+			Session session = entityManager.unwrap(Session.class);
+			String tranId = sequenceNumberGen.getNextSeqNumber("T", 8, session);
+			dto.setTransactionId(tranId);
 
-			// End
-
-			dto.setTransactionId("T" + ServicesUtil.getLoggedInUser(dto.getSalesRep()) + System.currentTimeMillis());
-
-			// Start
-
-			List<InvoiceDto> invoiceDtos = new ArrayList<>();
-			List<StatusDto> statusList = new ArrayList<>();
-
-			StatusDto statusDto = new StatusDto();
+			
+			statusList=dto.getStatusList();
+			if(statusList !=null){
+				for(StatusDto statusDto:statusList){
+				
 			statusDto.setPendingWith("AccountExecutive");
 			statusDto.setStatus("INPROGRESS");
 			statusDto.setTransaction(dto);
 			statusDto.setUpdateDate(new Date());
 			statusDto.setUpdatedBy(dto.getSalesRep());
-			statusList.add(statusDto);
-
+			statusDto.setTransaction(dto);
+			}
+			}
+			
+			
+			
 			invoiceDtos = dto.getInvoiceList();
 			if (invoiceDtos != null)
 				for (InvoiceDto invDto : invoiceDtos) {
 					invDto.setStatus("INPROGRESS");
+					invDto.setTransaction(dto);
+					
+
 				}
 
 			dto.setStatusList(statusList);
 			dto.setInvoiceList(invoiceDtos);
-			TransactionDo transactionDo=new TransactionDo();
+			
 			transactionDo=repo.save(ObjectMapperUtils.map(dto, TransactionDo.class));
              return ResponseEntity.ok().body(ObjectMapperUtils.map(transactionDo, TransactionDto.class));
-			//response.setData(dao.createTransaction(dto));
-
-//			CustomerDto customerDto = new CustomerDto();
-//
-//			customerDto.setCustId(dto.getCustomerId());
-//
-//			customerDto = customerDaoLocal.getCustomer(customerDto);
-
-//			settingMap = buildMail("pending with", "AccountExecutive", dto.getTransactionId(), "", customerDto, dto);
-//
-//			notifyMail.sendMailCloud(settingMap.get("recipient"), settingMap.get("subject"),
-//					settingMap.get("mailBody"));
-//
-//			sendMailToSalesRep(dto, customerDto);
-
-			//List<String> userList = idpServiceLocal.getUserIdListByRole("AccountExecutive");
-
 			
-
-//			response.setStatusCode(200);
-//			response.setStatus(true);
-//			response.setMessage("SUCCESS");
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.incture.cherrywork.services;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import com.incture.cherrywork.dtos.PendingInvoiceDto;
@@ -17,6 +18,6 @@ public interface HciInvoiceDetailServiceLocal {
 
 	List<PendingInvoiceDto> getAllOpenInvoices();
 
-	List<PendingInvoiceDo> getAllOpenInvocesFromRFC();
+	List<PendingInvoiceDo> getAllOpenInvocesFromRFC() throws IOException;
 
 }
