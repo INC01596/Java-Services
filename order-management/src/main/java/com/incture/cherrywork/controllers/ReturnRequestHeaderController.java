@@ -2,6 +2,9 @@ package com.incture.cherrywork.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -22,12 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
+import com.incture.cherrywork.dtos.MailTriggerDto;
+import com.incture.cherrywork.dtos.ResponseDto;
+import com.incture.cherrywork.dtos.ResponseDtoNew;
 import com.incture.cherrywork.dtos.ReturnFilterDto;
 import com.incture.cherrywork.dtos.ReturnOrderDto;
 import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
 import com.incture.cherrywork.entities.Attachment;
+import com.incture.cherrywork.services.EmailDefinitionService;
 import com.incture.cherrywork.services.IAttachmentService;
 import com.incture.cherrywork.services.IReturnRequestHeaderService;
+import com.incture.cherrywork.util.MailAlertUtil;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -40,6 +48,12 @@ public class ReturnRequestHeaderController {
 
 	@Autowired
 	private IAttachmentService dbFileStorageService;
+
+	@Autowired
+	private MailAlertUtil mailAlert;
+	
+	@Autowired
+	private EmailDefinitionService emailDefinitionService;
 
 	@PostMapping("/createReturnRequest/saveAsDraft")
 	@ApiOperation(value = "/createReturnRequest/saveAsDraft")
@@ -150,7 +164,6 @@ public class ReturnRequestHeaderController {
 
 	}
 
-
 	@PostMapping(path = "/onSubmitReturnApproval")
 	@ApiOperation(value = "/onSubmitReturnApproval")
 	public ResponseEntity<Object> returnApprovalOnSubmit(@RequestBody ReturnOrderDto returnOrderDto) {
@@ -158,8 +171,33 @@ public class ReturnRequestHeaderController {
 		return service.returnApprovalOnSubmit(returnOrderDto);
 	}
 
+	@GetMapping("/testMail")
+	public ResponseDto checkMail() {
+		MailTriggerDto mDto=new MailTriggerDto();
+		mDto.setApplication("COM");
+		mDto.setEntityName("COM_Approvals");
+		mDto.setProcess("Reject Request");
+		
+		List<String>mlist=new ArrayList<>();
+//		mlist.add("Sandeep.k@incture.com");
+		mlist.add("nischal.jadhav@incture.com");
+		mDto.setToList(mlist);
+		List<String>ccList=new ArrayList<>();
+		ccList.add("nischal.jadhav@gmail.com");
+		mDto.setCcList(ccList);
+		HashMap<String,Object>m=new HashMap();
+		m.put("Created_By","P000252");
+		m.put("Request_Id", "CR-003210");
+		m.put("Customer_Name","muchand trading");
+		m.put("Created_Date", new Date().toLocaleString());
+		m.put("status", "Approved");
+		mDto.setContentVariables(m);
+		return emailDefinitionService.triggerMailforApprovals(mDto);
+//		return mailAlert.sendMailAlert("nischal.jadhav@incture.com", "nischal.jadhav@gmail.com",
+//				"Checking mail service", "Checking mail service", "awadhesh.kumar@incture.com");
 
-	
+	}
+
 	@PostMapping("/list")
 	public ResponseEntity<?> listAllReturnRequestHeaders(@RequestBody ReturnFilterDto dto) {
 		System.err.println("Inside ReturnRequestHeaders List");

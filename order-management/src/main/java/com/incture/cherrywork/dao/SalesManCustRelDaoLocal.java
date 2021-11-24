@@ -1,11 +1,10 @@
-package com.incture.cherrywork.services;
-
-
+package com.incture.cherrywork.dao;
 
 import java.util.List;
 
+import com.incture.cherrywork.dtos.SalesOrgDetailsDto;
 import com.incture.cherrywork.dtos.SalesRepCustDto;
-
+import com.incture.cherrywork.entities.SalesManCustRelDo;
 
 
 public interface SalesManCustRelDaoLocal {
@@ -25,11 +24,11 @@ public interface SalesManCustRelDaoLocal {
 
 	public List<SalesRepCustDto> getControllingAreasByCustList(List<String> custList, String salesRep);
 
-	//public List<SalesManCustRelDo> getSalesPerson(String managerCode);
+	public List<SalesManCustRelDo> getSalesPerson(String managerCode);
 
-	//public SalesOrgDetailsDto getSalesOrgDetails(String salesRep, String customerId);
+	public SalesOrgDetailsDto getSalesOrgDetails(String salesRep, String customerId);
 
-	//public List<SalesManCustRelDo> getSalesCustRelDtoByCustList(List<String> custList);
+	public List<SalesManCustRelDo> getSalesCustRelDtoByCustList(List<String> custList);
 
 	public List<SalesRepCustDto> getSalesCustRelDtoByCustListAndSalesRep(String salesRep, List<String> custList);
 
@@ -43,6 +42,8 @@ public interface SalesManCustRelDaoLocal {
 
 	public void deleteExcelrows(List<String> primaryIdList);
 
-	//public SalesOrgDetailsDto getSalesOrgDetail(String customerNumber);
+	public SalesOrgDetailsDto getSalesOrgDetail(String customerNumber);
+
+//	public List<SalesRepCustDto> getCustList(String salesRep);
 
 }

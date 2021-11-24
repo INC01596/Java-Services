@@ -27,6 +27,7 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		
  
@@ -38,6 +39,9 @@
 			<version>1.4.200</version>
 			<scope>compile</scope>
 		</dependency>
+=======
+		
+>>>>>>> refs/remotes/origin/master
 		<dependency>
 			<groupId>org.apache.oltu.oauth2</groupId>
 			<artifactId>org.apache.oltu.oauth2.client</artifactId>
@@ -54,6 +58,7 @@
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-xml</artifactId>
+<<<<<<< HEAD
 		</dependency>
 <<<<<<< HEAD
 		
@@ -69,6 +74,8 @@
 			<version>1.4.200</version>
 			<scope>compile</scope>
 
+=======
+>>>>>>> refs/remotes/origin/master
 		</dependency>
 
 
@@ -220,8 +227,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
-			<version>2.2.2.RELEASE</version>
-		</dependency>
+			</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.sap.cloud/neo-java-web-api -->

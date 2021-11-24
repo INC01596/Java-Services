@@ -1,7 +1,10 @@
 package com.incture.cherrywork.dtos;
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

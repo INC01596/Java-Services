@@ -2538,15 +2538,19 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 
 					MailTriggerDto mDto=new MailTriggerDto();
 					mDto.setApplication("COM");
-					mDto.setEntityName("Approvals");
+					mDto.setEntityName("COM_Approvals");
 					List<String>mlist=new ArrayList<>();
-					mlist.add("Sandeep.k@incture.com");
+//					mlist.add("Sandeep.k@incture.com");
 					mlist.add("nischal.jadhav@incture.com");
+					mDto.setToList(mlist);
+					List<String>ccList=new ArrayList<>();
+					ccList.add("nischal.jadhav@gmail.com");
+					mDto.setCcList(ccList);
 					HashMap<String,Object>m=new HashMap();
 					m.put("Created_By",returnOrderDto.getLoggedInUserPid());
-					m.put("Request-Id", returnOrderDto.getReturnReqNum());
+					m.put("Request_Id", returnOrderDto.getReturnReqNum());
 					m.put("Customer_Name", returnOrderDto.getShipToPartyText());
-					m.put("CreatedDate", new Date());
+					m.put("Created_Date", "");
 					
 					
 						
@@ -2615,15 +2619,15 @@ public class ReturnRequestHeaderService implements IReturnRequestHeaderService {
 									item.getOrderItemNum(), item.getTaskId());
 						}
 //						mlist.add(item.get);
-						mDto.setToList(mlist);
+						
 				
-						DefDto defDto=new DefDto();
-					defDto.setApplication(mDto.getApplication());
-					defDto.setEntityName(mDto.getEntityName());
-						defDto.setProcess(mDto.getProcess());
-						mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
-				    mDto.setContentVariables(m);
-						emailDefinitionService.triggerMail(mDto); 
+//						DefDto defDto=new DefDto();
+//					defDto.setApplication(mDto.getApplication());
+//					defDto.setEntityName(mDto.getEntityName());
+//						defDto.setProcess(mDto.getProcess());
+//						mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
+						mDto.setContentVariables(m);
+						emailDefinitionService.triggerMailforApprovals(mDto); 
 
 					});
 

@@ -80,4 +80,9 @@ public interface EmailDefinitionRepo extends JpaRepository<EmailDefinitionDo, St
 	
 	@Query("select p from EmailDefinitionDo p  where  p.application =:application and p.process =:process and p.entity =:entity" )
 	public List<EmailDefinitionDo> getDef(@Param("application") String application,@Param("process") String process, @Param("entity") String entity);
+	
+	@Query("select p from EmailDefinitionDo p  where  p.application =:application and p.process =:process and p.entity =:entity and p.status = :status" )
+	public EmailDefinitionDo getInfo(@Param("application") String application,@Param("process") String process, @Param("entity") String entity,@Param("status") String status);
+	
+	
 }

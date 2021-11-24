@@ -59,12 +59,14 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.http.HttpStatus;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 import com.incture.cherrywork.dtos.SalesOrderHeaderItemDto;
 import com.incture.cherrywork.dtos.SalesOrderItemDto;
 import com.incture.cherrywork.exceptions.InvalidInputFault;
+
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -94,7 +96,10 @@ public class ServicesUtil {
 	public static DateFormat dateFormatForSalesPlanner = new SimpleDateFormat("yyyy-MM-dd");
 	public static Date formatedDate;
 	public static String stringDate;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ServicesUtil.class);
 
+	
 	public static void main(String[] args) {
 		System.out.println(isChange("PZ", "EA"));
 	}
@@ -1072,6 +1077,21 @@ public class ServicesUtil {
 		}
 
 		return sb.toString();
+	}
+
+	public static Date convertDate(Date date) {
+
+		try {
+
+			stringDate = dateFormat.format(date);
+			formatedDate = dateFormat.parse(stringDate);
+
+		} catch (Exception e) {
+
+			logger.error("ServicesUtil : " + e.getMessage());
+		}
+
+		return formatedDate;
 	}
 
 }

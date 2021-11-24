@@ -17,12 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.BankNamesDto;
 import com.incture.cherrywork.dtos.BillingApprovalDto;
+<<<<<<< HEAD
 import com.incture.cherrywork.dtos.CustomerDto;
+=======
+>>>>>>> refs/remotes/origin/master
 import com.incture.cherrywork.dtos.PendingInvoiceDto;
 import com.incture.cherrywork.dtos.RejectionReasonDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.TransactionDto;
+<<<<<<< HEAD
 import com.incture.cherrywork.services.CustomerServiceLocal;
+=======
+>>>>>>> refs/remotes/origin/master
 import com.incture.cherrywork.services.EbillingStatusServiceLocal;
 import com.incture.cherrywork.services.HciInvoiceDetailServiceLocal;
 import com.incture.cherrywork.services.InvoiceServicesLocal;
@@ -50,9 +56,15 @@ public class InvoiceDetailRestController {
 //	@Autowired
 //	private HciInvoicePrintDetailsServiceLocal hciPrintService;
 //
+<<<<<<< HEAD
 //	@Autowired
 //	private EbillingStatusServiceLocal ebillingStatusService;
 
+=======
+	@Autowired
+	private EbillingStatusServiceLocal ebillingStatusService;
+//
+>>>>>>> refs/remotes/origin/master
 //	@Autowired
 //	private PrintBillingServiceLocal printService;
 //
@@ -103,6 +115,7 @@ public class InvoiceDetailRestController {
 //		return transactionService.getTransactionsBySalesRepAndCustId(salesRep, customerId);
 //	}
 //
+<<<<<<< HEAD
 //	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
 //	public ResponseDto updateStatus(@RequestBody BillingApprovalDto dto) {
 //		return ebillingStatusService.updateStatus(dto);
@@ -145,6 +158,50 @@ public class InvoiceDetailRestController {
 //		pendingWith= "AccountExecutive";
 //		return ebillingStatusService.getPendingApprovals(pendingWith);
 //	}
+=======
+	@RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+	public ResponseDto updateStatus(@RequestBody BillingApprovalDto dto) {
+		return ebillingStatusService.updateStatus(dto);
+	}
+
+	@RequestMapping(value = "/updateStatusBulk", method = RequestMethod.POST)
+	public ResponseDto updateStatusBulk(@RequestBody List<BillingApprovalDto> dtoList) {
+
+		ResponseDto responseDto = new ResponseDto();
+
+		responseDto.setStatus(Boolean.TRUE);
+
+		List<ResponseDto> list = new ArrayList<>();
+
+		for (BillingApprovalDto dto : dtoList) {
+			
+			
+
+			list.add(ebillingStatusService.updateStatus(dto));
+		}
+
+		for (ResponseDto dto : list) {
+
+			if (!dto.isStatus()) {
+				responseDto.setStatus(Boolean.FALSE);
+				break;
+			}
+		}
+
+		return responseDto;
+	}
+
+	@RequestMapping(value = "/getTrackingDetails/{transactionId}", method = RequestMethod.GET)
+	public ResponseDto getTrackingDetails(@PathVariable String transactionId) {
+		return ebillingStatusService.getTrackingDetails(transactionId);
+	}
+
+	@RequestMapping(value = "/getPendingApprovals/{pendingWith}", method = RequestMethod.GET)
+	public ResponseDto getPendingApprovals(@PathVariable String pendingWith) {
+		pendingWith= "AccountExecutive";
+		return ebillingStatusService.getPendingApprovals(pendingWith);
+	}
+>>>>>>> refs/remotes/origin/master
 //
 //	@RequestMapping(value = "/print", method = RequestMethod.POST)
 //	public ResponseDto getPrintSO(@RequestBody BillingPrintDto dto) throws FileNotFoundException {
@@ -178,6 +235,7 @@ public class InvoiceDetailRestController {
 //	}
 //
 	@RequestMapping(value = "/rejectionReason", method = RequestMethod.GET)
+<<<<<<< HEAD
 	public ResponseEntity<Object> getListOfReasonCode() {
 		return invoiceService.getListOfReasonCode();
 	}
@@ -189,6 +247,19 @@ public class InvoiceDetailRestController {
 
 	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
 	public ResponseEntity<Object> deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
+=======
+	public ResponseDto getListOfReasonCode() {
+		return invoiceService.getListOfReasonCode();
+	}
+
+	@RequestMapping(value = "/saveRejectionReason", method = RequestMethod.POST)
+	public ResponseDto saveRejectionReason(@RequestBody RejectionReasonDto dto) {
+		return invoiceService.saveRejectionReason(dto);
+	}
+
+	@RequestMapping(value = "/deleteRejectionReason", method = RequestMethod.POST)
+	public ResponseDto deleteRejectionReason(@RequestBody RejectionReasonDto dto) {
+>>>>>>> refs/remotes/origin/master
 		return invoiceService.deleteRejectionReason(dto);
 	}
 
