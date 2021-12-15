@@ -1,16 +1,16 @@
 package com.incture.cherrywork.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
-import com.incture.cherrywork.dtos.BankNamesDto;
-=======
 import com.incture.cherrywork.dao.RejectionReasonDaoLocal;
->>>>>>> refs/remotes/origin/master
+import com.incture.cherrywork.dtos.BankNamesDto;
 import com.incture.cherrywork.dtos.RejectionReasonDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.entities.BankNamesDo;
@@ -36,8 +36,7 @@ public class InvoiceService implements InvoiceServicesLocal {
 	@Autowired
 	private RejectionRepo rejRepo;
 	
-	@Autowired
-	private RejectionReasonDaoLocal rejectionDao;
+	
 	
 	@Override
 	public ResponseDto savePendingInvoices() {
@@ -57,7 +56,7 @@ public class InvoiceService implements InvoiceServicesLocal {
 	}
 
 	@Override
-<<<<<<< HEAD
+
 	public ResponseEntity<Object> saveBank(BankNamesDto dto) {
 	try {
 		System.err.println("hey");
@@ -122,59 +121,65 @@ public class InvoiceService implements InvoiceServicesLocal {
 		return null;
 		
 }
-=======
-	public ResponseDto getListOfReasonCode() {
 
-		ResponseDto response = new ResponseDto();
-
-		try {
-			response.setData(rejectionDao.getListOfRejectionReason());
-			response.setMessage("success");
-			response.setStatus(true);
-
-		} catch (Exception e) {
-			response.setMessage(e.getMessage());
-			response.setStatus(false);
-		}
-
-		return response;
-	}
+//	public ResponseEntity<Object> getListOfReasonCode() {
+//
+//		
+//
+//		try {
+//			List<RejectionReasonDo> re=new ArrayList<>();
+//			re=rejRepo.findAll();
+//			return ResponseEntity.ok().body(re);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return  ResponseEntity.badRequest().body(e.getMessage());
+//		}
+//
+//		
+//	}
 	
-	@Override
-	public ResponseDto saveRejectionReason(RejectionReasonDto dto) {
+//	@Override
+//	public ResponseDto saveRejectionReason(RejectionReasonDto dto) {
+//
+//		ResponseDto response = new ResponseDto();
+//
+//		try {
+//
+//			rejectionDao.saveRejectionReason(dto);
+//			response.setMessage("Successfully saved ");
+//			response.setStatus(true);
+//
+//		} catch (Exception e) {
+//			response.setMessage(e.getMessage());
+//			response.setStatus(false);
+//		}
+//
+//		return response;
+//	}
+//	
+//	@Override
+//	public ResponseDto deleteRejectionReason(RejectionReasonDto dto) {
+//
+//		ResponseDto response = new ResponseDto();
+//
+//		try {
+//			rejectionDao.deleteRejectionReason(dto);
+//			response.setMessage("Successfully deleted ");
+//			response.setStatus(true);
+//
+//		} catch (Exception e) {
+//			response.setMessage(e.getMessage());
+//			response.setStatus(false);
+//		}
+//
+//		return response;
+//	}
+//
+//	@Override
+//	public ResponseEntity<Object> saveBank(BankNamesDto dto) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
-		ResponseDto response = new ResponseDto();
-
-		try {
-
-			rejectionDao.saveRejectionReason(dto);
-			response.setMessage("Successfully saved ");
-			response.setStatus(true);
-
-		} catch (Exception e) {
-			response.setMessage(e.getMessage());
-			response.setStatus(false);
-		}
-
-		return response;
-	}
-	
-	@Override
-	public ResponseDto deleteRejectionReason(RejectionReasonDto dto) {
-
-		ResponseDto response = new ResponseDto();
-
-		try {
-			rejectionDao.deleteRejectionReason(dto);
-			response.setMessage("Successfully deleted ");
-			response.setStatus(true);
-
-		} catch (Exception e) {
-			response.setMessage(e.getMessage());
-			response.setStatus(false);
-		}
-
-		return response;
-	}
->>>>>>> refs/remotes/origin/master
 }

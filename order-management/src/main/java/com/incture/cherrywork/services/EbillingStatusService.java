@@ -6,14 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import com.incture.cherrywork.WConstants.Message;
-import com.incture.cherrywork.dao.InvoiceDaoLocal;
+
 import com.incture.cherrywork.dao.StatusDaoLocal;
 import com.incture.cherrywork.dao.TransactionDaoLocal;
 import com.incture.cherrywork.dtos.BillingApprovalDto;
@@ -21,6 +25,7 @@ import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.StatusDto;
 import com.incture.cherrywork.dtos.TrackingDto;
 import com.incture.cherrywork.dtos.TransactionDto;
+import com.incture.cherrywork.repositories.InvoiceRepo;
 
 
 
@@ -28,35 +33,24 @@ import com.incture.cherrywork.dtos.TransactionDto;
 @Transactional
 public class EbillingStatusService implements EbillingStatusServiceLocal {
 
-	//private static final Logger logger = LoggerFactory.getLogger(EbillingStatusService.class);
-
+	
 	@Autowired
 	private StatusDaoLocal statusDaoLocal;
 
 	@Autowired
-	InvoiceDaoLocal invoiceDao;
-//
+	 private InvoiceRepo invRepo;
+
 	@Autowired
 	private TransactionDaoLocal transactionDaoLocal;
-//
-//	/*@Autowired
-//	private CustomerDaoLocal customerDaoLocal;*/
-//
-//	@Autowired
-//	private UserDaoLocal userDaoLocal;
-//
-//	@Autowired
-//	JavaMailSender notifyMail;
-
-//	@Autowired
-//	private PushNotificationUtil pushNotificationUtil;
 
 	ResponseDto responseDto;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public ResponseDto updateStatus(BillingApprovalDto approvalDto) {
-
-		Map<String, String> settingMap = new HashMap<>();
+		System.err.println("dto"+approvalDto);
 		responseDto = new ResponseDto();
 		try {
 			StatusDto statusDto = new StatusDto();
@@ -68,6 +62,7 @@ public class EbillingStatusService implements EbillingStatusServiceLocal {
 			} else {
 				statusDto.setPendingWith("");
 			}
+			System.err.println("statusDtodto"+statusDto.getPendingWith());
 			TransactionDto transactionDto = new TransactionDto();
 			transactionDto.setTransactionId(approvalDto.getTransactionId());
 			statusDto.setTransaction(transactionDto);
@@ -76,40 +71,31 @@ public class EbillingStatusService implements EbillingStatusServiceLocal {
 			statusDto.setRejectionReason(approvalDto.getRejectionReason());
 			statusDto.setApproverName(approvalDto.getApproverName());
 			statusDaoLocal.createStatus(statusDto);
+			
+			System.err.println("helloInvoicebefore");
+				String query = "Update InvoiceDo i set i.status=:status where i.transaction.transactionId=:transactionId";
+				Query q =entityManager.createQuery(query);
+				 q.setParameter("transactionId", approvalDto.getTransactionId());
+			    q.setParameter("status", approvalDto.getApprovalStatus());
 
-			invoiceDao.updateInvoiceStatus(approvalDto.getTransactionId(), approvalDto.getApprovalStatus());
+				int a= q.executeUpdate();
+				System.err.println("a "+a);
+				String query1 = "Update StatusDo i set i.status=:status where i.transaction.transactionId=:transactionId";
+				Query q1 =entityManager.createQuery(query1);
+				 q1.setParameter("transactionId", approvalDto.getTransactionId());
+			    q1.setParameter("status", approvalDto.getApprovalStatus());
+			    int b= q1.executeUpdate();
+			    System.err.println("b "+b);
 
-			TransactionDto transactionDtoForMail = new TransactionDto();
-			transactionDtoForMail = transactionDaoLocal.getTransactionById(approvalDto.getTransactionId());
-			/*
-			 * CustomerDto customerDto = new CustomerDto();
-			 * customerDto.setCustId(transactionDtoForMail.getCustomerId());
-			 * customerDto = customerDaoLocal.getCustomer(customerDto);
-			 */
+			
+			//invRepo.updateInvoiceStatus(approvalDto.getTransactionId(), approvalDto.getApprovalStatus());
+			System.err.println("helloInvoiceafter");
 
-//			settingMap = buildMail(approvalDto.getApprovalStatus(), approvalDto.getRequester(),
-//					approvalDto.getTransactionId(), approvalDto.getApproverId(), approvalDto.getComments(),
-//					approvalDto.getRejectionReason(), transactionDtoForMail);
-//
-//			notifyMail.sendMailCloud(settingMap.get("recipient"), settingMap.get("subject"),
-//					settingMap.get("mailBody"));
-          
-//			if (flag) {
-//
-//				logger.error("[EbillingStatusService][updateStatus]: Mail sent Successfully to :"
-//						+ approvalDto.getRequester());
-//			} else {
-//
-//				logger.error("[EbillingStatusService][updateStatus]: Mail send failed to :" + approvalDto.getRequester()
-//						+ "Transaction id:" + approvalDto.getTransactionId());
-//			}
-
-//			String mes = approvalDto.getTransactionId() + " is " + approvalDto.getApprovalStatus();
+		
 
 			List<String> userList = new ArrayList<>();
 			userList.add(approvalDto.getRequester());
-			//pushNotificationUtil.sendPushNotification(mes, userList);
-
+			
 			responseDto.setStatusCode(HttpStatus.SC_OK);
 			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setMessage(Message.SUCCESS.toString());
@@ -198,64 +184,5 @@ public class EbillingStatusService implements EbillingStatusServiceLocal {
 		return responseDto;
 	}
 
-//	private Map<String, String> buildMail(String status, String requester, String transactionId, String approverId,
-//			String comments, String rejectionReason, TransactionDto transactionDto) {
-//
-//		UserDto userDto = userDaoLocal.getUserById(approverId);
-//
-//		Map<String, String> mailMap = new HashMap<>();
-//		mailMap.put("subject", "Collections: Transaction with ID : " + transactionId + " of "
-//				+ transactionDto.getCustomerName() + " is " + status);
-//		mailMap.put("recipient", requester);
-//
-//		StringBuffer html = new StringBuffer();
-//
-//		html.append("<p>Dear Requestor,");
-//		html.append("<br><br>");
-//		html.append("Transaction with  ID: <b>");
-//		html.append(transactionId);
-//		html.append("</b> of Customer : <b> " + transactionDto.getCustomerName());
-//		html.append(" </b> is ");
-//		html.append(status);
-//		html.append(" by " + userDto.getUserName());
-//		html.append("<br><br> <b>Comments :</b>" + comments);
-//
-//		if (status != null & status.equalsIgnoreCase("REJECTED")) {
-//
-//			html.append("<br> <b> Rejection Reason : </b>" + rejectionReason);
-//		}
-//
-//		html.append("<br> <b> Mode of Payment : </b> " + transactionDto.getModeOfPayment());
-//		html.append("<br> <b> Paid Amount :</b>" + transactionDto.getAmount());
-//
-//		if (transactionDto.getModeOfPayment().equalsIgnoreCase("cheque")) {
-//
-//			html.append("<br> <b> Cheque Bank :</b> " + transactionDto.getBankName());
-//			html.append("<br> <b> Cheque Date :</b> " + ServicesUtil.convertDate(transactionDto.getChequeDate()));
-//
-//		}
-//
-//		if (transactionDto.getModeOfPayment().equalsIgnoreCase("wire transfer")) {
-//
-//			html.append("<br> <b> Bank Name :</b> " + transactionDto.getBankName());
-//			html.append("<br> <b> Payment Date :</b> " + ServicesUtil.convertDate(transactionDto.getChequeDate()));
-//
-//		}
-//
-//		html.append("<br><br> <a href=\"" + HciApiConstants.WEB_URL + "\">Visit Delfi Web</a>");
-//
-//		html.append("<br><br>");
-//		html.append("Best regards,");
-//		html.append("<br>");
-//		html.append("<font color='EE104C'><i><b>Delfi Team</b></i></font>");
-//		html.append("<br><br>");
-//		html.append("<font color='5D90AC'>");
-//		html.append("Note: This is auto generated email please do not reply.</font>");
-//		html.append("<br><br><br>");
-//		html.append("</p>");
-//
-//		mailMap.put("mailBody", new String(html));
-//		return mailMap;
-//	}
 
 }

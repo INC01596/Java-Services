@@ -2,22 +2,21 @@ package com.incture.cherrywork.services;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.apache.http.HttpStatus;
-import org.apache.logging.log4j.message.Message;
+
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.incture.cherrywork.dtos.CustomerDto;
+
 import com.incture.cherrywork.dtos.InvoiceDto;
 import com.incture.cherrywork.dtos.ResponseDto;
 import com.incture.cherrywork.dtos.StatusDto;
@@ -26,7 +25,6 @@ import com.incture.cherrywork.entities.TransactionDo;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.repositories.TransactionRepo;
 import com.incture.cherrywork.util.SequenceNumberGen;
-import com.incture.cherrywork.util.ServicesUtil;
 
 @Service("TransactionServices")
 @Transactional
@@ -105,8 +103,19 @@ public class TransactionServices implements TransactionServicesLocal {
 
 	@Override
 	public ResponseDto getTransaction(String transactionId) {
-		// TODO Auto-generated method stub
-		return null;
+		ResponseDto response = new ResponseDto();
+		try {
+		response.setData(repo.findById(transactionId));
+			response.setStatusCode(HttpStatus.SC_OK);			
+			response.setStatus(true);
+			response.setMessage("Success");
+		} catch (Exception e) {
+			response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			response.setStatus(false);
+	response.setMessage("FAILED" + " " + e.getMessage());
+		}
+		return response;
+		
 	}
 
 	@Override
@@ -127,22 +136,7 @@ public class TransactionServices implements TransactionServicesLocal {
 		
 	}
 
-//	@Override
-//	public ResponseDto getTransaction(String transactionId) {
-//		ResponseDto response = new ResponseDto();
-//
-//		try {
-//			response.setData(dao.getTransactionById(transactionId));
-//			response.setStatusCode(HttpStatus.SC_OK);
-//			response.setStatus(true);
-//			response.setMessage("Success");
-//		} catch (Exception e) {
-//			response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-//			response.setStatus(false);
-//			response.setMessage("FAILED" + " " + e.getMessage());
-//		}
-//		return response;
-//	}
+
 
 	
 

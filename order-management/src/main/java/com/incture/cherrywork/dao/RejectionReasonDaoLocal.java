@@ -8,7 +8,7 @@ import com.incture.cherrywork.dtos.RejectionReasonDto;
 
 public interface RejectionReasonDaoLocal {
 
-	List<String> getListOfRejectionReason();
+	
 
 	void saveRejectionReason(RejectionReasonDto dto);
 

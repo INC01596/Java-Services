@@ -26,22 +26,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-		
- 
-=======
->>>>>>> refs/remotes/origin/master
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
 			<scope>compile</scope>
 		</dependency>
-=======
-		
->>>>>>> refs/remotes/origin/master
+
 		<dependency>
 			<groupId>org.apache.oltu.oauth2</groupId>
 			<artifactId>org.apache.oltu.oauth2.client</artifactId>
@@ -58,13 +50,17 @@
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-xml</artifactId>
-<<<<<<< HEAD
-		</dependency>
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> refs/remotes/origin/master
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpmime</artifactId>
+    <version>4.3.1</version>
+</dependency>
+		
+
 
 
 		<dependency>
@@ -74,8 +70,7 @@
 			<version>1.4.200</version>
 			<scope>compile</scope>
 
-=======
->>>>>>> refs/remotes/origin/master
+
 		</dependency>
 
 
