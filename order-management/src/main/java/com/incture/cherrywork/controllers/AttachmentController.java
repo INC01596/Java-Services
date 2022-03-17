@@ -1,18 +1,13 @@
 package com.incture.cherrywork.controllers;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.net.URISyntaxException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +28,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.incture.cherrywork.entities.Attachment;
 import com.incture.cherrywork.services.AttachmentService;
-import com.incture.cherrywork.services.ReturnRequestHeaderService;
 
 
 
@@ -48,8 +42,7 @@ public class AttachmentController {
 	private AttachmentService dbFileStorageService;
 
 	
-	@Autowired
-	private ReturnRequestHeaderService sharePoint;
+	
  
 	@PostMapping("/uploadFile")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
@@ -102,20 +95,7 @@ public class AttachmentController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getDocName() + "\"")
 				.body(new ByteArrayResource(dbFile.getDocData()));
 
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		ZipOutputStream zos = new ZipOutputStream(baos);
-//		for (int i = 0; i < attachement.size(); i++) {
-//			ZipEntry entry = new ZipEntry(returnReqNum + "-" + attachement.get(i).getDocName());
-//			entry.setSize(attachement.get(i).getDocData().length);
-//			zos.putNextEntry(entry);
-//			zos.write(attachement.get(i).getDocData());
-//		}
-//		zos.closeEntry();
-//		zos.close();
-//		
-//		 
-//		 
-//		return zos;
+
 
 	}
 

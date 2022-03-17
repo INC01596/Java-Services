@@ -445,7 +445,7 @@ public class ISalesOrderHeaderCustomRepositoryImpl implements ISalesOrderHeaderC
 			headerDto.setDoc_Curr_SA(dto.getHeaderDto().getDocumentCurrencySA());
 		else
 			headerDto.setDoc_Curr_SA("");
-		headerDto.setOrdType("COM");
+		headerDto.setOrdType("");
 		if (!ServicesUtils.isEmpty(dto.getHeaderDto().getSoldToParty()))
 			headerDto.setSoldToParty(dto.getHeaderDto().getSoldToParty());
 		else

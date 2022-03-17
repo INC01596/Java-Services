@@ -1,14 +1,7 @@
 package com.incture.cherrywork.controllers;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -32,8 +25,6 @@ import com.incture.cherrywork.services.IOutBoundHeaderService;
 import com.incture.cherrywork.services.ISalesOrderHeaderService;
 import com.incture.cherrywork.services.SchedulerServices;
 import com.incture.cherrywork.util.ServicesUtil;
-import com.itextpdf.text.pdf.parser.clipper.Paths;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 

@@ -65,6 +65,25 @@ public class AttachmentService implements IAttachmentService {
 
 	}
 
+	
+	public byte[] getFileByReturnReqNum1(String returnReqNum) {
+
+		try {
+			List<Attachment> attachment = attachmentRepo.findByReturnReqNum(returnReqNum);
+
+			if (attachment != null && !attachment.isEmpty()) {
+				return attachment.get(0).getDocData();
+
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+
+		}
+
+	}
+
 	@Override
 	public Attachment getFileByDocId(String docId) {
 		Attachment attachment = null;

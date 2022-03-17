@@ -15,10 +15,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
 import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.math.BigDecimal;
 import javax.persistence.Id;
-
+@Data
 @Entity
 @Table(name = "SalesOrderHeader")
 public class SalesOrderHeader {

@@ -21,13 +21,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.FilterOnReturnHeaderDto;
 import com.incture.cherrywork.dtos.MailTriggerDto;
 import com.incture.cherrywork.dtos.ResponseDto;
-import com.incture.cherrywork.dtos.ResponseDtoNew;
 import com.incture.cherrywork.dtos.ReturnFilterDto;
 import com.incture.cherrywork.dtos.ReturnOrderDto;
 import com.incture.cherrywork.dtos.ReturnOrderRequestPojo;
@@ -35,8 +33,6 @@ import com.incture.cherrywork.entities.Attachment;
 import com.incture.cherrywork.services.EmailDefinitionService;
 import com.incture.cherrywork.services.IAttachmentService;
 import com.incture.cherrywork.services.IReturnRequestHeaderService;
-import com.incture.cherrywork.util.MailAlertUtil;
-
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -49,8 +45,7 @@ public class ReturnRequestHeaderController {
 	@Autowired
 	private IAttachmentService dbFileStorageService;
 
-	@Autowired
-	private MailAlertUtil mailAlert;
+	
 	
 	@Autowired
 	private EmailDefinitionService emailDefinitionService;
@@ -185,7 +180,7 @@ public class ReturnRequestHeaderController {
 		List<String>ccList=new ArrayList<>();
 		ccList.add("nischal.jadhav@gmail.com");
 		mDto.setCcList(ccList);
-		HashMap<String,Object>m=new HashMap();
+		HashMap<String,Object>m=new HashMap<String, Object>();
 		m.put("Created_By","P000252");
 		m.put("Request_Id", "CR-003210");
 		m.put("Customer_Name","muchand trading");

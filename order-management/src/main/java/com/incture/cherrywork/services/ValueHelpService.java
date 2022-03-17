@@ -428,9 +428,9 @@ System.err.println("Hey Service1");
 
 					String term = termsMap.get(d.getSpCustId());
 					d.setTerms(term != null ? term : "");
-   if(d.getCustCreditLimit()==null)
-	   d.setCustCreditLimit("25000");
-   if(d.getExposure()==null)
+                   if(d.getCustCreditLimit()==null)
+	               d.setCustCreditLimit("25000");
+                   if(d.getExposure()==null)
 	   d.setExposure(dec);
 					customerDtoList.add(d);
 

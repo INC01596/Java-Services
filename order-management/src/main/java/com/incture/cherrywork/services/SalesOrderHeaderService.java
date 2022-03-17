@@ -574,6 +574,8 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		System.out.println("header Do: " + header.toString());
 
 		System.out.println("Amount in Header Do: " + header.getAmount());
+		System.err.println("headerDto " +header);
+		
 
 		salesOrderHeaderRepository.save(header);
 
@@ -583,7 +585,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				String salesItemId = UUID.randomUUID().toString().replaceAll("-", "");
 				item.setSalesItemId(salesItemId);
 			}
-
+/*
 			if (item.getQualityTestList().contains("3.2 INSPECTION")) {
 				item.setInspection(true);
 			}
@@ -605,7 +607,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 			if (item.getQualityTestList().contains("BORON REQUIRED")) {
 				item.setIsElementBoronRequired(true);
 
-			}
+			}*/
 			double no = Double.parseDouble(item.getNetValue());
 			item.setNetValue(dec.format(no));
 			item.setSalesHeaderId(dto.getHeaderDto().getSalesHeaderId());
@@ -631,7 +633,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 		}
 		
 
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
+		//URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",
@@ -947,7 +949,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 
 				SalesOrderHeader header = ObjectMapperUtils.map(salesHeaderDto, SalesOrderHeader.class);
 				System.err.println("header.obdId in update Record: " + header.getObdId());
-
+System.err.println("submitOdata header"+header);
 				salesOrderHeaderRepository.save(header);
 				System.err.println("After Update statement");
 
@@ -1148,7 +1150,7 @@ public class SalesOrderHeaderService implements ISalesOrderHeaderService {
 				// session.flush();
 				// session.clear();
 				// tx.commit();
-System.err.println(salesHeaderDto.toString());
+                 System.err.println(salesHeaderDto.toString());
 				// Notification for id and acknowledgement
 				try
 				{
@@ -1337,6 +1339,7 @@ System.err.println(salesHeaderDto.toString());
 				String temp_id = null, DocID_2 = null, DocID_6 = null;
 				if (!d.isNull("temp_id"))
 					temp_id = d.getString("temp_id");
+				
 				if (!d.isNull("DocID_6"))
 					DocID_6 = d.getString("DocID_6");
 				if (!d.isNull("DocID_2"))

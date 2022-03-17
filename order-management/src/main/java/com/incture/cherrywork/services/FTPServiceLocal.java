@@ -13,7 +13,6 @@ public interface FTPServiceLocal {
 
 	ResponseDto getAllDetailsBySalesRep(String salesRep);
 
-	//List<ExcelRowDataDto> getAllDetailsBySalesRepAndCustomerId(String salesRep, String customerId);
 
 	ResponseDto getAllCustDetailsBySalesRep(String salesRep);
 

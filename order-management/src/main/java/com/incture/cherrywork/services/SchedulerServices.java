@@ -82,7 +82,16 @@ public class SchedulerServices {
 	private EntityManager entityManager;
 
 	private SequenceNumberGen sequenceNumberGen;
-
+	
+	@Autowired
+	private AbbyOcrService abbyOcrService;
+	
+	@Autowired
+	private AttachEmail email;
+	
+	
+	
+	
 	// @Scheduled(cron = "0 12 * * * ?")
 	public ResponseEntity<Object> headerScheduler() {
 		// logger.debug("[SalesHeaderDao][headerScheduler] Start : " + new
@@ -771,6 +780,25 @@ public class SchedulerServices {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void abbyScheduler() {
+		// TODO Auto-generated method stub
+		System.err.println("[AbbyServices][abbyyScheduler] Start : " + new Date());
+		
+		try
+		{
+			email.receiveEmail();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		
+		System.err.println("[AbbyServices][abbyyScheduler] Ended : " + new Date());
+		
 	}
 
 

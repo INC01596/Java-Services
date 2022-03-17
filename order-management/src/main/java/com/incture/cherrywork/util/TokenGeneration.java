@@ -51,10 +51,10 @@ public class TokenGeneration {
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 			builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 			builder.addPart("grant_type", new StringBody("password".toString(), ContentType.DEFAULT_TEXT));
-			builder.addPart("scope", new StringBody("openid permissions".toString(), ContentType.DEFAULT_TEXT));
+			//builder.addPart("scope", new StringBody("openid permissions".toString(), ContentType.DEFAULT_TEXT));
 			//abby username
-			builder.addPart("username", new StringBody("Laxmi.Baragukar@incture.com".toString(), ContentType.DEFAULT_TEXT));
-			builder.addPart("password", new StringBody("Incture@123".toString(), ContentType.DEFAULT_TEXT));
+			builder.addPart("username", new StringBody("Sandeep.k@incture.com".toString(), ContentType.DEFAULT_TEXT));
+			builder.addPart("password", new StringBody("Rhythmsk1#".toString(), ContentType.DEFAULT_TEXT));
 			
 			builder.addPart("client_id", new StringBody("ABBYY.Vantage".toString(), ContentType.DEFAULT_TEXT));
 			builder.addPart("client_secret", new StringBody("f3ec6136-6ccc-75a1-3780-caeef723e998".toString(), ContentType.DEFAULT_TEXT));

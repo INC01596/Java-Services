@@ -28,6 +28,9 @@ import com.incture.cherrywork.dtos.ResponseEntity;
 import com.incture.cherrywork.dtos.SalesDocHeaderDto;
 import com.incture.cherrywork.dtos.SchedulerTimeDto;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.services.AbbyOcrService;
+import com.incture.cherrywork.services.AbbyySchedulerService;
+import com.incture.cherrywork.services.AttachEmail;
 import com.incture.cherrywork.services.MaterialSchedulerService;
 import com.incture.cherrywork.services.SchedulerServices;
 import com.incture.cherrywork.workflow.services.ODataConsumingService;
@@ -48,6 +51,8 @@ public class SchedulerController {
 	static boolean schedulerSwitch = true;
 
 	static boolean materialSchedulerSwitch = true;
+	
+	static boolean abbyySchedulerSwitch = true;
 
 	static final int interval = 5;
 
@@ -67,6 +72,16 @@ public class SchedulerController {
 
 	@Autowired
 	private MaterialSchedulerService materialSchedulerService;
+
+	@Autowired
+	private AbbyOcrService abbyOcrService;
+	
+	@Autowired
+	private AbbyySchedulerService abbyySchedulerService;
+	
+	@Autowired
+	private AttachEmail email;
+
 
 	@GetMapping("/schedulerTrigger")
 	// @Scheduled(cron = "*/5 * * * * ?" )
@@ -184,12 +199,66 @@ public class SchedulerController {
 		}
 
 	}
+	
+//	
+	@SuppressWarnings({ "unchecked", "resource" })
+	@Scheduled(cron = "0 0/2 * * * ?")
+	@GetMapping("/triggerAbbyyScheduler")
+	public void abbyyScheduler() {
+		if (abbyySchedulerSwitch) {
+			schedulerServices.abbyScheduler();
+		} else {
+			System.err.println("Abbyy scheduler is switched OFF now ");
+		}
+
+	}
+	
+	@GetMapping("/abbyySchedulerRunningStatus")
+	@ApiOperation(value = "/abbyySchedulerRunningStatus")
+	public boolean abbyySchedulerRunningStatus() {
+		return abbyySchedulerSwitch;
+	}
+	
+	
+	@GetMapping("/abbyySchedulerSwitch/{parameter}")
+	@ApiOperation(value = "/abbyySchedulerSwitch/{parameter}")
+	public static ResponseEntity turnOffOnAbbyyScheduler(@PathVariable boolean parameter) {
+		if (!parameter) {
+			abbyySchedulerSwitch = parameter;
+			System.err.println("Abbyy Scheduler is switched OFF now ");
+			return new ResponseEntity("OFF ", HttpStatus.OK, "Abbyy Scheduler is switched OFF now ",
+					ResponseStatus.SUCCESS);
+			// return "NO" +" scheduler is switched OFF now ";
+		} else {
+
+			Duration between = Duration.between(LocalDateTime.now(ZoneId.of("GMT+05:30")), schedulerFutureTime);
+			abbyySchedulerSwitch = parameter;
+			System.err.println("Abbyy scheduler is switched ON now and will start in =  " + between);
+			return new ResponseEntity("ON ", HttpStatus.OK, "Scheduler is switched ON now and will start in =   "
+					+ between + "   ,on IST =  " + schedulerFutureTime, ResponseStatus.SUCCESS);
+			// return "YES " + " ,scheduler is switched ON now and will start in
+			// = " + between + " ,on Malaysian time =
+			// "+LocalDateTime.now(ZoneId.of("GMT+08:00"));
+		}
+	}
+
+	
+	
 
 	// nischal -- getAllLogsOfMaterialSchedulerWithDateRange Method
 	@GetMapping("/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	@ApiOperation(value = "/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	public ResponseEntity listAllMaterialSchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
 		return materialSchedulerService.listAllLogsInIst(
+				Instant.ofEpochMilli(Long.parseLong(startDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
+						.toLocalDateTime(),
+				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
+						.toLocalDateTime());
+	}
+	@GetMapping("/getAllLogsOfAbbyySchedulerWithDateRange/{startDate}&{endDate}")
+	@ApiOperation(value = "/getAllLogsOfAbbyySchedulerWithDateRange/{startDate}&{endDate}")
+	public ResponseEntity listAllAbbyySchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
+		return abbyySchedulerService.listAllLogsInIst(
 				Instant.ofEpochMilli(Long.parseLong(startDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
 						.toLocalDateTime(),
 				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))

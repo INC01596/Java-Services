@@ -1,10 +1,10 @@
 package com.incture.cherrywork.config;
 
-import java.util.Properties;
+
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.jdbc.DataSourceBuilder;
 
 import org.springframework.cloud.config.java.AbstractCloudConfig;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+
 
 import com.zaxxer.hikari.HikariDataSource;
 
