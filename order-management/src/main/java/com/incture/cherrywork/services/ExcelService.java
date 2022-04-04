@@ -1559,6 +1559,7 @@ public class ExcelService {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SalesOrderHeader> getManageServiceObd(ObdDto dto) {
 
 		String STP = null;
@@ -1643,6 +1644,7 @@ public class ExcelService {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SalesOrderHeader> getManageServiceInvo(InvoDto dto) {
 
 		String STP = null;
