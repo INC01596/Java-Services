@@ -1,239 +1,88 @@
 package com.incture.cherrywork.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.sales.constants.EnOrderActionStatus;
-import com.incture.cherrywork.sales.constants.EnPaymentChequeStatus;
 
-import java.util.Date;
-import java.math.BigDecimal;
-import javax.persistence.Id;
+import lombok.Data;
 
 @Entity
 @Table(name = "SalesOrderHeader")
+@Data
 public class SalesOrderHeader {
 
 	@Column(name = "ClientSpecific", precision = 3, scale = 0)
 	private Integer clientSpecific;
 
-	public Integer getClientSpecific() {
-		return clientSpecific;
-	}
-
-	public void setClientSpecific(Integer clientSpecific) {
-		this.clientSpecific = clientSpecific;
-	}
-
 	@Id
 	@Column(name = "S4DocumentId", length = 50)
 	private String s4DocumentId;
 
-	public String getS4DocumentId() {
-		return s4DocumentId;
-	}
-
-	public void setS4DocumentId(String s4DocumentId) {
-		this.s4DocumentId = s4DocumentId;
-	}
-
 	@Column(name = "DocumentCategory", length = 5)
 	private String documentCategory;
-
-	public String getDocumentCategory() {
-		return documentCategory;
-	}
-
-	public void setDocumentCategory(String documentCategory) {
-		this.documentCategory = documentCategory;
-	}
 
 	@Column(name = "DocumentType", length = 5)
 	private String documentType;
 
-	public String getDocumentType() {
-		return documentType;
-	}
-
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
-	}
-
 	@Column(name = "SalesOrg", length = 10)
 	private String salesOrg;
-
-	public String getSalesOrg() {
-		return salesOrg;
-	}
-
-	public void setSalesOrg(String salesOrg) {
-		this.salesOrg = salesOrg;
-	}
 
 	@Column(name = "DistributionChannel", length = 10)
 	private String distributionChannel;
 
-	public String getDistributionChannel() {
-		return distributionChannel;
-	}
-
-	public void setDistributionChannel(String distributionChannel) {
-		this.distributionChannel = distributionChannel;
-	}
-
 	@Column(name = "Division", length = 10)
 	private String division;
-
-	public String getDivision() {
-		return division;
-	}
-
-	public void setDivision(String division) {
-		this.division = division;
-	}
 
 	@Column(name = "SalesOffice", length = 10)
 	private String salesOffice;
 
-	public String getSalesOffice() {
-		return salesOffice;
-	}
-
-	public void setSalesOffice(String salesOffice) {
-		this.salesOffice = salesOffice;
-	}
-
 	@Column(name = "SalesGroup", length = 10)
 	private String salesGroup;
-
-	public String getSalesGroup() {
-		return salesGroup;
-	}
-
-	public void setSalesGroup(String salesGroup) {
-		this.salesGroup = salesGroup;
-	}
 
 	@Column(name = "SoldToParty", length = 10)
 	private String soldToParty;
 
-	public String getSoldToParty() {
-		return soldToParty;
-	}
-
-	public void setSoldToParty(String soldToParty) {
-		this.soldToParty = soldToParty;
-	}
-
 	@Column(name = "ShipToParty", length = 10)
 	private String shipToParty;
 
-	public String getShipToParty() {
-		return shipToParty;
-	}
-
-	public void setShipToParty(String shipToParty) {
-		this.shipToParty = shipToParty;
-	}
-
 	@Column(name = "CustomerPoNum", length = 10)
 	private String customerPoNum;
-
-	public String getCustomerPoNum() {
-		return customerPoNum;
-	}
-
-	public void setCustomerPoNum(String customerPoNum) {
-		this.customerPoNum = customerPoNum;
-	}
 
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "CustomerPoDate")
 	private Date customerPoDate;
 
-	public Date getCustomerPoDate() {
-		return customerPoDate;
-	}
-
-	public void setCustomerPoDate(Date customerPoDate) {
-		this.customerPoDate = customerPoDate;
-	}
-
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "RequestDeliveryDate")
 	private Date requestDeliveryDate;
 
-	public Date getRequestDeliveryDate() {
-		return requestDeliveryDate;
-	}
-
-	public void setRequestDeliveryDate(Date requestDeliveryDate) {
-		this.requestDeliveryDate = requestDeliveryDate;
-	}
-
 	@Column(name = "ShippingType", length = 5)
 	private String shippingType;
-
-	public String getShippingType() {
-		return shippingType;
-	}
-
-	public void setShippingType(String shippingType) {
-		this.shippingType = shippingType;
-	}
 
 	@Column(name = "TotalSoQuantity", precision = 13, scale = 2)
 	private BigDecimal totalSoQuantity;
 
-	public BigDecimal getTotalSoQuantity() {
-		return totalSoQuantity;
-	}
-
-	public void setTotalSoQuantity(BigDecimal totalSoQuantity) {
-		this.totalSoQuantity = totalSoQuantity;
-	}
-
 	@Column(name = "NetValue")
 	private String netValue;
-
-	public String getNetValue() {
-		return netValue;
-	}
-
-	public void setNetValue(String netValue) {
-		this.netValue = netValue;
-	}
 
 	@Column(name = "DeliveredQuantity", precision = 13, scale = 2)
 	private BigDecimal deliveredQuantity;
 
-	public BigDecimal getDeliveredQuantity() {
-		return deliveredQuantity;
-	}
-
-	public void setDeliveredQuantity(BigDecimal deliveredQuantity) {
-		this.deliveredQuantity = deliveredQuantity;
-	}
-
 	@Column(name = "OutstandingQuantity", length = 15)
 	private String outstandingQuantity;
-
-	public String getOutstandingQuantity() {
-		return outstandingQuantity;
-	}
-
-	public void setOutstandingQuantity(String outstandingQuantity) {
-		this.outstandingQuantity = outstandingQuantity;
-	}
 
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	@Column(name = "CreatedDate")
@@ -659,7 +508,6 @@ public class SalesOrderHeader {
 	@Column(name = "BLOCKED")
 	private Boolean blocked;
 
-	
 	public Boolean getBlocked() {
 		return blocked;
 	}
@@ -722,7 +570,7 @@ public class SalesOrderHeader {
 	public void setPgiId(String pgiId) {
 		this.pgiId = pgiId;
 	}
-	
+
 	@Column(name = "INV_ID", length = 30)
 	private String invId;
 
@@ -733,8 +581,8 @@ public class SalesOrderHeader {
 	public void setInvId(String invId) {
 		this.invId = invId;
 	}
-	
-	@Column(name="AMOUNT")
+
+	@Column(name = "AMOUNT")
 	private String amount;
 
 	public String getAmount() {
@@ -772,7 +620,5 @@ public class SalesOrderHeader {
 				+ ", pgiStatus=" + pgiStatus + ", invoiceStatus=" + invoiceStatus + ", obdId=" + obdId + ", pgiId="
 				+ pgiId + ", invId=" + invId + ", amount=" + amount + "]";
 	}
-	
-	
 
 }

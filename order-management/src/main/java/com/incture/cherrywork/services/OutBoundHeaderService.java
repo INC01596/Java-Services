@@ -147,7 +147,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 			}
 
 			String s4DocumentId = null;
-			if(dto.getHeaderDto().getS4DocumentId()!=null)
+			if (dto.getHeaderDto().getS4DocumentId() != null)
 				s4DocumentId = dto.getHeaderDto().getS4DocumentId();
 			if ((dto != null) && (dto.getHeaderDto().getS4DocumentId() == null)) {
 
@@ -195,21 +195,20 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				item.setS4DocumentId(dto.getHeaderDto().getS4DocumentId());
 				item.setSalesOrderHeader(header);
 				String str = itemNumber.toString();
-				if(str.length()==2)
-					str = "0000"+str;
-				else if(str.length()==3)
-					str = "000"+str;
-				else if(str.length()==4)
-					str = "00"+str;
-				else if(str.length()==5)
-					str = "0"+str;
+				if (str.length() == 2)
+					str = "0000" + str;
+				else if (str.length() == 3)
+					str = "000" + str;
+				else if (str.length() == 4)
+					str = "00" + str;
+				else if (str.length() == 5)
+					str = "0" + str;
 
 				item.setItemNumber(str);
 				// item.setObdStatus("Draft");
 				SalesOrderItem Item = ObjectMapperUtils.map(item, SalesOrderItem.class);
 				salesOrderItemRepository.save(Item);
-				itemNumber+=10;
-
+				itemNumber += 10;
 
 			}
 
@@ -240,8 +239,8 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 						Query q2 = entityManager.createQuery(query2);
 						q2.setParameter("s4doc", s4DocumentId);
 						List<String> obdID = q2.getResultList();
-						if(obdID != null)
-						dto.getHeaderDto().setObdId(obdID.get(0));
+						if (obdID != null)
+							dto.getHeaderDto().setObdId(obdID.get(0));
 
 						dto.getHeaderDto().setPgiStatus("PENDING");
 						dto.getHeaderDto().setInvoiceStatus("PENDING");
@@ -254,14 +253,14 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 						q3.setParameter("salesHeaderId", dto.getHeaderDto().getSalesOrderId());
 						q3.setParameter("dType", "OR");
 						List<SalesOrderHeader> list = q3.getResultList();
-						if(list.size()>0){
+						if (list.size() > 0) {
 
 							SalesOrderHeader header1 = list.get(0);
 							header1.setDocumentProcessStatus(EnOrderActionStatus.PROCESSING);
 						}
 					} else {
 						dto.getHeaderDto().setObdStatus("FAILED");
-						dto.getHeaderDto().setPostingError((String)res1.getBody());
+						dto.getHeaderDto().setPostingError((String) res1.getBody());
 
 						// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.OBDCREATED);
 						salesOrderHeaderRepository
@@ -274,85 +273,76 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
 		if (dto.getDraft()) {
-			if (res.getStatusCode().equals(HttpStatus.OK))
-			{
-				
-				try{
-					MailTriggerDto mDto=new MailTriggerDto();
+			if (res.getStatusCode().equals(HttpStatus.OK)) {
+
+				try {
+					MailTriggerDto mDto = new MailTriggerDto();
 					mDto.setApplication("COM");
-					List<String>mlist=new ArrayList<>();
-					HashMap<String,Object>m=new HashMap();
+					List<String> mlist = new ArrayList<>();
+					HashMap<String, Object> m = new HashMap();
 					mDto.setEntityName("COM_Obd");
 					mDto.setProcess("Create Obd");
-					m.put("Created_By",dto.getHeaderDto().getCreatedBy());	
-					
+					m.put("Created_By", dto.getHeaderDto().getCreatedBy());
+
 					m.put("Created_Date", dto.getHeaderDto().getCreatedDate());
-					
+
 					m.put("Customer_Name", dto.getHeaderDto().getCustomerName());
-					m.put("Obd_Id",dto.getHeaderDto().getObdId());
-					
+					m.put("Obd_Id", dto.getHeaderDto().getObdId());
+
 					mlist.add(dto.getHeaderDto().getEmailId());
-					
+
 					System.err.println(mDto.getToList());
-					DefDto defDto=new DefDto();
+					DefDto defDto = new DefDto();
 					defDto.setApplication(mDto.getApplication());
 					defDto.setEntityName(mDto.getEntityName());
 					defDto.setProcess(mDto.getProcess());
 					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
 					mDto.setContentVariables(m);
-					emailDefinitionService.triggerMail(mDto); 
-					
-					
-				}catch (Exception e) {
+					emailDefinitionService.triggerMail(mDto);
+
+				} catch (Exception e) {
 					System.err.println("Exception while saving as draft: " + e.getMessage());
 					e.printStackTrace();
 
-			}
+				}
 				return ResponseEntity.status(HttpStatus.OK).header("message", "Record submitted successfully as draft.")
 						.body(res.getBody());
-			}
-			else
+			} else
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 						.header("message", "Technical Error in Submitting").body(res.getBody());
 		}
 
-		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK))
-		{
-			try{
-				MailTriggerDto mDto=new MailTriggerDto();
+		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK)) {
+			try {
+				MailTriggerDto mDto = new MailTriggerDto();
 				mDto.setApplication("COM");
-				List<String>mlist=new ArrayList<>();
-				
-					
-						mDto.setEntityName("COM_Obd");
-						mDto.setProcess("Create Obd");
-					
-				
-				
+				List<String> mlist = new ArrayList<>();
+
+				mDto.setEntityName("COM_Obd");
+				mDto.setProcess("Create Obd");
+
 				mlist.add(dto.getHeaderDto().getEmailId());
 				mDto.setToList(mlist);
-				
-				DefDto defDto=new DefDto();
+
+				DefDto defDto = new DefDto();
 				defDto.setApplication(mDto.getApplication());
 				defDto.setEntityName(mDto.getEntityName());
 				defDto.setProcess(mDto.getProcess());
 				mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
-				
-				emailDefinitionService.triggerMail(mDto); 
-				
-				
-			}catch (Exception e) {
+
+				emailDefinitionService.triggerMail(mDto);
+
+			} catch (Exception e) {
 				System.err.println("Exception while saving as draft: " + e.getMessage());
 				e.printStackTrace();
 
-		}
-		
+			}
+
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",
 							"Record submitted successfully. This is under review and you should get notified on this soon.")
 					.body(res1.getBody());
-		}
-		else
+		} else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());
 
@@ -416,7 +406,6 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 
 		}
 
-		
 		ResponseEntity<Object> res = null;
 		ResponseEntity<Object> res1 = null;
 		// String s4DocumentId = null;
@@ -495,7 +484,7 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			} else {
 				dto.getHeaderDto().setPgiStatus("FAILED");
-				dto.getHeaderDto().setPostingError((String)res1.getBody());
+				dto.getHeaderDto().setPostingError((String) res1.getBody());
 
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
@@ -658,73 +647,63 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 				Query q2 = entityManager.createQuery(query2);
 				q2.setParameter("s4doc", dto.getHeaderDto().getS4DocumentId());
 				List<String> invID = q2.getResultList();
-				if(invID != null)
-				dto.getHeaderDto().setInvId(invID.get(0));
+				if (invID != null)
+					dto.getHeaderDto().setInvId(invID.get(0));
 				dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.INVCREATED);
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 				setStatusAsClosed(obdId);
 				ServicesUtil.mailZippedInv(dto);
-				try{
-					MailTriggerDto mDto=new MailTriggerDto();
+				try {
+					MailTriggerDto mDto = new MailTriggerDto();
 					mDto.setApplication("COM");
-					List<String>mlist=new ArrayList<>();
-					HashMap<String,Object>m=new HashMap();
-					
-						
-							mDto.setEntityName("COM_Invoice");
-							mDto.setProcess("Generate Invoice");
-		                  m.put("Created_By",dto.getHeaderDto().getCreatedBy());	
-							
-							m.put("Created_Date", dto.getHeaderDto().getCreatedDate());
-							
-							m.put("Customer_Name", dto.getHeaderDto().getCustomerName());
-							m.put("Invoice_Id",dto.getHeaderDto().getInvId());
-							
-					
-					
+					List<String> mlist = new ArrayList<>();
+					HashMap<String, Object> m = new HashMap();
+
+					mDto.setEntityName("COM_Invoice");
+					mDto.setProcess("Generate Invoice");
+					m.put("Created_By", dto.getHeaderDto().getCreatedBy());
+
+					m.put("Created_Date", dto.getHeaderDto().getCreatedDate());
+
+					m.put("Customer_Name", dto.getHeaderDto().getCustomerName());
+					m.put("Invoice_Id", dto.getHeaderDto().getInvId());
+
 					mlist.add(dto.getHeaderDto().getEmailId());
 					mDto.setToList(mlist);
 					System.err.println(mDto.getToList());
-					DefDto defDto=new DefDto();
+					DefDto defDto = new DefDto();
 					defDto.setApplication(mDto.getApplication());
 					defDto.setEntityName(mDto.getEntityName());
 					defDto.setProcess(mDto.getProcess());
 					mDto.setEmailDefinitionId(emailDefinitionService.getDefId(defDto));
 					mDto.setContentVariables(m);
-					
-					emailDefinitionService.triggerMail(mDto); 
-					
-					
-				}catch (Exception e) {
+
+					emailDefinitionService.triggerMail(mDto);
+
+				} catch (Exception e) {
 					System.err.println("Exception while saving as draft: " + e.getMessage());
 					e.printStackTrace();
 
-			}
+				}
 			} else {
 				dto.getHeaderDto().setInvoiceStatus("FAILED");
-				dto.getHeaderDto().setPostingError((String)res1.getBody());
+				dto.getHeaderDto().setPostingError((String) res1.getBody());
 				// dto.getHeaderDto().setDocumentProcessStatus(EnOrderActionStatus.PGICREATED);
-				
 
 				salesOrderHeaderRepository.save(ObjectMapperUtils.map(dto.getHeaderDto(), SalesOrderHeader.class));
 			}
-			
-			
+
 		}
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand("id").toUri();
-		
 
-		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK)){
-			
-			
-			
+		if (res.getStatusCode().equals(HttpStatus.OK) && res1.getStatusCode().equals(HttpStatus.OK)) {
+
 			return ResponseEntity.status(HttpStatus.OK)
 					.header("message",
 							"Record submitted successfully. This is under review and you should get notified on this soon.")
 					.body(res1.getBody());
-		}
-		else
+		} else
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.header("message", "Technical Error in Submitting").body(res1.getBody());
 
@@ -1012,16 +991,13 @@ public class OutBoundHeaderService implements IOutBoundHeaderService {
 		q2.setParameter("invId", invId);
 		List<SalesOrderItem> itemList = q2.getResultList();
 		List<SalesOrderItemDto> itemlist = new ArrayList<>();
-		for (SalesOrderItem item : itemList) {
-			itemlist.add(ObjectMapperUtils.map(item, SalesOrderItemDto.class));
-		}
+		itemlist = ObjectMapperUtils.mapAll(itemList, SalesOrderItemDto.class);
 		SalesOrderHeaderItemDto dto = new SalesOrderHeaderItemDto();
 		dto.setHeaderDto(header);
 		dto.setLineItemList(itemlist);
 		return ResponseEntity.status(HttpStatus.OK).header("Message", "Fetched Invoice detail").body(dto);
 
 	}
-
 
 	public void mailService(SalesOrderHeaderItemDto dto) {
 		ServicesUtil.mailZippedInv(dto);

@@ -84,7 +84,7 @@ public class OutBoundHeaderController {
 
 		ResponseEntity<Object> res = outBoundHeaderService.getInvDetail(invId);
 		if (res.getStatusCode().equals(HttpStatus.BAD_REQUEST))
-			ResponseEntity.badRequest().body(new InputStreamResource(null));
+			return ResponseEntity.badRequest().body(new InputStreamResource(null));
 		ByteArrayInputStream bis = ServicesUtil.generatePdf((SalesOrderHeaderItemDto) res.getBody());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", "inline; filename=Invoice_" + invId + ".pdf");
