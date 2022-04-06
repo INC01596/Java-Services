@@ -10,7 +10,7 @@ import com.incture.cherrywork.dtos.PaymentTermDo;
 import com.incture.cherrywork.repositories.PaymentRepo;
 
 @RestController
-public class Ptcontroller {
+public class Paymentcontroller {
 
 	@Autowired
 	private PaymentRepo prepo;

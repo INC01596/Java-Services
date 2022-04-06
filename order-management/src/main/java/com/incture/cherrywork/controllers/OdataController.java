@@ -4,12 +4,12 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 
 import com.incture.cherrywork.OdataS.OdataService;
 import com.incture.cherrywork.dto.new_workflow.OnSubmitTaskDto;

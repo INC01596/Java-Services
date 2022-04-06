@@ -23,10 +23,7 @@ public class ValueHelpController {
 	@Autowired
 	private FTPServiceLocal service;
 
-//	@RequestMapping(value = "/getMatDetails/{salesRep}/{customerName}", method = RequestMethod.GET)
-//	public List<ExcelRowDataDto> getMaterialDetails(@PathVariable String salesRep, @PathVariable String customerName) {
-//		return service.getAllDetailsBySalesRepAndCustomerId(salesRep, customerName);
-//	}
+
 
 	@RequestMapping(value = "/getAllCustomerDetails/{salesRep}", method = RequestMethod.GET)
 	public ResponseDto getAllCustomerDetails(@PathVariable String salesRep) {

@@ -84,7 +84,8 @@ public class SalesOrderOdataServices {
 			mapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
 			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 			String reqPayload = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(headerDto);
-			// logger.debug("[OdataServices][postData] reqPayload :
+			// logger.debug("[OdataServices][postData] reqPayload :\
+			
 			// "+reqPayload);
 			System.err.println("[OdataServices][postData] reqPayload : " + reqPayload);
 			response = SalesOrderOdataUtilService.callOdata(requestURL, "POST", reqPayload, null);

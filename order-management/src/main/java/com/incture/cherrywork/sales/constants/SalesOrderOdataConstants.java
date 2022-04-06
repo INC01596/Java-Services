@@ -11,11 +11,11 @@ public interface SalesOrderOdataConstants {
 //	String USER_ID = "BGRFC";
 //	String PASSWORD = "Nothing2017#";
 	String BASE_URL = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_CREATE_SALESORDER_COM_SRV/";
-	String USER_ID = "BOPF2";
-	String PASSWORD = "Welcome@1234";
+	String USER_ID = "COMTRAINEE1";
+	String PASSWORD = "Happy@2022";
 	String BASE_URL_OBD = "http://incturedec:8080/sap/opu/odata/sap/Z_SALESORDER_STATUS_COM_SRV/";
-	String USER_ID_OBD = "bopf2";
-	String PASSWORD_OBD = "Welcome@1234";
+	String USER_ID_OBD = "";
+	String PASSWORD_OBD = "";
 	String BASE_URL_SCH = "http://incturedec:8080/sap/opu/odata/sap/Z_SD_SO_CREATE_SRV/";
 	String BASE_URL_RETURN = "http://incturedec:8080/sap/opu/odata/sap/ZCOM_RETURNS_MANAGEMENT_SRV/";
 	
