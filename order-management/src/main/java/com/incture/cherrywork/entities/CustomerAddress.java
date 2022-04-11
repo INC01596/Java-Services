@@ -12,29 +12,34 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@Entity(name="CustomerContact")
-public class CustomerContact {
-	
+@Entity(name = "CustomerAddress")
+public class CustomerAddress {
+
 	@Id
-	@Column(name="id")
-	private String id;
-	
-	@Column(name="custName")
-	private String custName;
-	
-	@Column(name="custPhone")
-	private String custPhone;
-	
-	@Column(name="customerAddress")
-	private String customerAddress;
-	
-	@Column(name="custEmail")
-	private String custEmail;
+	@Column(name = "id")
+	private String customerAddressId;
+
+	@Column(name = "custCode", length = 2)
+	private String custCode;
+
+	@Column(name = "custDesc")
+	private String custDesc;
+
+	@Column(name = "country")
+	private String country;
+
+	@Column(name = "street1")
+	private String street1;
+
+	@Column(name = "street2")
+	private String street2;
 	
 	@ToString.Exclude
-	@JsonBackReference("sales-visit-customer")
+	@JsonBackReference("sales-visit-address")
 	@ManyToOne
 	@JoinColumn(name = "visitId", nullable = false, referencedColumnName = "visitId")
 	private SalesVisit salesVisit;
+	
+	
 
 }

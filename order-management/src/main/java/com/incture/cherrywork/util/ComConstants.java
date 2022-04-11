@@ -10,8 +10,8 @@ public final class ComConstants {
 	}
 
 	// Destination Service Key
-	public static final String DESTINATION_CLIENT_ID = "sb-cloned8d5fe79e99e4a9ab916e72948ddf02a!b19391|destination-xsappname!b404";
-	public static final String DESTINATION_CLIENT_SECRET = "887019a9-7545-45b0-ad73-54edfecdf2ea$EPvv_KflmeKJ0Dsn4e6bOnHeTCuegTUfuAPLmUb1CaU=";
+	public static final String DESTINATION_CLIENT_ID = "sb-cloned95c06f6b3f14ed1866b76fbd8a0cf06!b19391|destination-xsappname!b404";
+	public static final String DESTINATION_CLIENT_SECRET = "450f9cb3-ac10-4c4e-b8a9-775eb499e769$sGSJwCELf4rKcujpPmdLBs8uJDoRLmFne5DH6oBUxdo=";
 	public static final String DESTINATION_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
 	public static final String DESTINATION_BASE_URL = "https://destination-configuration.cfapps.eu10.hana.ondemand.com";
 	public static final String OAUTH_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
@@ -20,8 +20,8 @@ public final class ComConstants {
 	public static final String WORKFLOW_CLIENT_SECRETE = "0ed5a596-c2ee-44fc-aa2b-3ec56926c48c$JMRj5a6zHi8Hr2D051YjXMVCECnDL8lnhrbKWWut8N8=";
 	public static final String WORKFLOW_REST_BASE_URL = "https://api.workflow-sap.cfapps.eu10.hana.ondemand.com/workflow-service/rest";
 	// connectivity service key
-	public static final String CONECTIVITY_CLIENT_ID = "sb-clone90edf2c53da04e99a2d67a015e6be8e4!b19391|connectivity!b17";
-	public static final String CONECTIVITY_CLIENT_SECRET = "40afe54d-9895-4748-af49-d81bcfed3f66$xCzyLr3BY-zcKBXilEgj3zpeYEEZWXOr8fU44LdrKeM=";
+	public static final String CONECTIVITY_CLIENT_ID = "sb-clone85f1c7c75ce74ba2872efaa3d990f4a0!b19391|connectivity!b17";
+	public static final String CONECTIVITY_CLIENT_SECRET = "6e5f4771-ad79-4a7e-abc0-c34881d31d3a$v-Kz2lboLXLpqiuSh8qACE8N_zidEMwJSvuTChENebo=";
 	public static final String CONECTIVITY_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
 	public static final String CONECTIVITY_BASE_URL = "https://destination-configuration.cfapps.eu10.hana.ondemand.com";
 

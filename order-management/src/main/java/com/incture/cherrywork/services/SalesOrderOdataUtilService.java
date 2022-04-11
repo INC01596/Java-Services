@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +49,16 @@ public class SalesOrderOdataUtilService {
 	// private static Logger logger =
 	// LoggerFactory.getLogger(OdataUtilService.class);
 
-	public static String callOdata(String URL, String methodType, String body, String csrfToken) {
+	public static String callOdata(String URL, String methodType, String body, String csrfToken) throws URISyntaxException, IOException {
 		// logger.debug("[OdataUtilService][callOdata] Started");
+
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
+		Map<String, Object> destResp = DestinationReaderUtil.getDestination("COM_OdataServices");
+		System.err.println("[SalesOrderOdataUtilService][callOdata] destResp: " + destResp);
+
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
 			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
@@ -63,7 +68,7 @@ public class SalesOrderOdataUtilService {
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
-			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
+			String userPassword = destResp.get("User") + ":" + destResp.get("Password");
 			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
 					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
@@ -185,12 +190,17 @@ public class SalesOrderOdataUtilService {
 		return response.toString();
 	}
 
-	public static String callOdataObd(String URL, String methodType, String body, String csrfToken) {
+	public static String callOdataObd(String URL, String methodType, String body, String csrfToken)
+			throws URISyntaxException, IOException {
+		
 		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
+		Map<String, Object> destResp = DestinationReaderUtil.getDestination("COM_OdataServices");
+		System.err.println("[SalesOrderOdataUtilService][callOdata] destResp: " + destResp);
+
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
 			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
@@ -200,7 +210,7 @@ public class SalesOrderOdataUtilService {
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
-			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
+			String userPassword = destResp.get("User") + ":" + destResp.get("Password");
 			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
 					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
@@ -322,13 +332,16 @@ public class SalesOrderOdataUtilService {
 		return response.toString();
 	}
 
-	public static String callOdataSch(String URL, String methodType, String body, String csrfToken) {
+	public static String callOdataSch(String URL, String methodType, String body, String csrfToken) throws URISyntaxException, IOException {
 		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[SalesOrderOdataUtilService][callOdata] URL" + URL);
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
+		Map<String, Object> destResp = DestinationReaderUtil.getDestination("COM_OdataServices");
+		System.err.println("[SalesOrderOdataUtilService][callOdata] destResp: " + destResp);
+
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
 			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
@@ -338,7 +351,7 @@ public class SalesOrderOdataUtilService {
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
-			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
+			String userPassword = destResp.get("User") + ":" + destResp.get("Password");
 			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
 					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
@@ -461,12 +474,15 @@ public class SalesOrderOdataUtilService {
 	}
 
 	public static String callOdataReturnExchange(String URL, String methodType, String body, String csrfToken,
-			String batchGuId) {
+			String batchGuId) throws URISyntaxException, IOException {
 		// logger.debug("[OdataUtilService][callOdata] Started");
 		System.err.println("[OdataUtilService][callOdata] Started");
 		StringBuilder response = new StringBuilder();
 		String XCSRF = null;
 		String cookie = null;
+		Map<String, Object> destResp = DestinationReaderUtil.getDestination("COM_OdataServices");
+		System.err.println("[SalesOrderOdataUtilService][callOdata] destResp: " + destResp);
+
 		try {
 			URI xsuaaUrl = new URI(SalesOrderOdataConstants.XSUAA_URL);
 			UaaContextFactory factory = UaaContextFactory.factory(xsuaaUrl).authorizePath("/oauth/authorize")
@@ -476,7 +492,7 @@ public class SalesOrderOdataUtilService {
 			tokenRequest.setClientId(SalesOrderOdataConstants.CLIENT_ID);
 			tokenRequest.setClientSecret(SalesOrderOdataConstants.CLIENT_SECRET);
 			UaaContext xsuaaContext = factory.authenticate(tokenRequest);
-			String userPassword = SalesOrderOdataConstants.USER_ID + ":" + SalesOrderOdataConstants.PASSWORD;
+			String userPassword = destResp.get("User") + ":" + destResp.get("Password");
 			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
 					SalesOrderOdataConstants.ONPREMISE_PROXY_HOST, SalesOrderOdataConstants.ONPREMISE_PROXY_POST));
 			if (methodType.equals("POST")) {
@@ -745,7 +761,7 @@ public class SalesOrderOdataUtilService {
 
 		} catch (Exception e) {
 			System.err.println("failed due to Exception" + e);
-			
+
 		}
 		return responseFromECC;
 

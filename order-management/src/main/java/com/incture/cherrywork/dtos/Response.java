@@ -4,10 +4,11 @@ import org.springframework.http.HttpStatus;
 
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
-
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Response {
 
 	private Object data;

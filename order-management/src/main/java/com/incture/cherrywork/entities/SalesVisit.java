@@ -8,9 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -83,4 +81,8 @@ public class SalesVisit {
 	@JsonManagedReference("sales-visit-attachment")
 	@OneToMany(mappedBy = "attachmentId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<SalesVisitAttachment> attachment;
+	
+	@JsonManagedReference("sales-visit-address")
+	@OneToMany(mappedBy = "customerAddressId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
+	private List<CustomerAddress> custAddress;
 }
