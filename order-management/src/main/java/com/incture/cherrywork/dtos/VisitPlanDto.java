@@ -1,5 +1,6 @@
 package com.incture.cherrywork.dtos;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,14 @@ public class VisitPlanDto {
 
 	private Date closedAt;
 
+	private Date scheduledStartTime;
+
+	private Date scheduledEndTime;
+
+	private Date actualStartTime;
+
+	private Date actualEndTime;
+
 	private String custCode;
 
 	private String custDesc;
@@ -42,10 +51,10 @@ public class VisitPlanDto {
 
 	private String currentStock;
 
-	private List<CustomerAddressDto> custAddress;
+	private List<CustomerAddressDto> custAddress = new ArrayList<>();
 
-	private List<CustomerContactDto> customerContact;
+	private List<CustomerContactDto> customerContact = new ArrayList<>();
 
-	private List<SalesVisitAttachmentDto> attachment;
+	private List<SalesVisitAttachmentDto> attachment = new ArrayList<>();
 
 }

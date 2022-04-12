@@ -31,15 +31,28 @@ public class CustomerAddress {
 	@Column(name = "street1")
 	private String street1;
 
+	@Column(name = "houseNumber")
+	private String houseNumber;
+
+	@Column(name = "district")
+	private String district;
+
+	@Column(name = "postalCode")
+	private String postalCode;
+
+	@Column(name = "city")
+	private String city;
+
+	@Column(name = "region")
+	private String region;
+
 	@Column(name = "street2")
 	private String street2;
-	
+
 	@ToString.Exclude
 	@JsonBackReference("sales-visit-address")
 	@ManyToOne
 	@JoinColumn(name = "visitId", nullable = false, referencedColumnName = "visitId")
 	private SalesVisit salesVisit;
-	
-	
 
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
 
 @Service("SalesVisitPlannerServiceImpl")
+@Transactional
 public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 
 	@Autowired
@@ -78,8 +80,10 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 
 	public ResponseEntity<Response> getAllVisit() {
 
-		return ResponseEntity.status(HttpStatus.OK).body(Response.builder().data(salesVisitRepository.findAll())
-				.statusCode(HttpStatus.OK).status(ResponseStatus.SUCCESS).message("Visits fetched!").build());
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(Response.builder()
+						.data(ObjectMapperUtils.mapAll(salesVisitRepository.findAll(), VisitPlanDto.class))
+						.statusCode(HttpStatus.OK).status(ResponseStatus.SUCCESS).message("Visits fetched!").build());
 
 	}
 

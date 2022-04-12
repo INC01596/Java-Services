@@ -53,6 +53,22 @@ public class SalesVisit {
 	private Date completedAt;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "scheduledStartTime")
+	private Date scheduledStartTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "scheduledEndTime")
+	private Date scheduledEndTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "actualStartTime")
+	private Date actualStartTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "actualEndTime")
+	private Date actualEndTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "closedAt")
 	private Date closedAt;
 
@@ -75,14 +91,14 @@ public class SalesVisit {
 	private String visitSummary;
 
 	@JsonManagedReference("sales-visit-customer")
-	@OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
+	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerContact> customerContact;
 
 	@JsonManagedReference("sales-visit-attachment")
-	@OneToMany(mappedBy = "attachmentId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
+	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<SalesVisitAttachment> attachment;
-	
+
 	@JsonManagedReference("sales-visit-address")
-	@OneToMany(mappedBy = "customerAddressId", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
+	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerAddress> custAddress;
 }
