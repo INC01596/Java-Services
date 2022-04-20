@@ -45,8 +45,6 @@ public class SalesOrderHeaderController {
 	private ISalesOrderHeaderService salesOrderHeaderService;
 	@Autowired
 	private ISalesOrderItemService salesOrderItemService;
-	
-	
 
 	@GetMapping("/test")
 	public String test() {
@@ -84,22 +82,23 @@ public class SalesOrderHeaderController {
 		return salesOrderHeaderService.readAll(search);
 	}
 
-	// <-----------------------Sandeep Kumar---------------------------------------->
+	// <-----------------------Sandeep
+	// Kumar---------------------------------------->
 
-	@PostMapping("/getHeaderById")	
-	@ApiOperation(value="Get SalesOrder Header By ID")
+	@PostMapping("/getHeaderById")
+	@ApiOperation(value = "Get SalesOrder Header By ID")
 	public ResponseEntity<Object> getHeaderById(@RequestBody HeaderIdDto dto) {
 		return salesOrderHeaderService.getHeaderById(dto);
 	}
 
 	@PostMapping("/getDraftedVersion")
-	@ApiOperation(value="Get Drafted Version")
+	@ApiOperation(value = "Get Drafted Version")
 	public ResponseEntity<Object> getDraftedVersion(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getDraftedVersion(dto);
 	}
 
 	@PostMapping("/getManageService")
-	
+
 	public ResponseEntity<Object> getManageService(@RequestBody HeaderDetailUIDto dto) {
 		return salesOrderHeaderService.getManageService(dto);
 	}
@@ -128,32 +127,29 @@ public class SalesOrderHeaderController {
 	}
 
 	@PostMapping("/getObd")
-	@ApiOperation(value="Get All Obd List")
+	@ApiOperation(value = "Get All Obd List")
 	public ResponseEntity<Object> getManageServiceObd(@RequestBody ObdDto dto) {
 		return salesOrderHeaderService.getManageServiceObd(dto);
 	}
 
 	@PostMapping("/getInvo")
-	@ApiOperation(value="Get All Invoice List")
+	@ApiOperation(value = "Get All Invoice List")
 	public ResponseEntity<Object> getManageServiceInvo(@RequestBody InvoDto dto) {
 		return salesOrderHeaderService.getManageServiceInvo(dto);
 	}
-	
+
 	@PostMapping("/getByObd")
-	@ApiOperation(value="Get Obd By Obd ID")
+	@ApiOperation(value = "Get Obd By Obd ID")
 	public ResponseEntity<Object> getByObd(@RequestParam String obdId) {
 		return salesOrderHeaderService.getByObd(obdId);
 	}
-	
+
 	@PostMapping("/getSOData")
-	@ApiOperation(value="Get All data To trackSo")
-	public ResponseEntity<Object> getSOData(@RequestBody HeaderIdDto dto)
-	{
+	@ApiOperation(value = "Get All data To trackSo")
+	public ResponseEntity<Object> getSOData(@RequestBody HeaderIdDto dto) {
 		return salesOrderHeaderService.getSOData(dto);
 	}
 
-
-	
 	/*---------------AWADHESH KUMAR---------------------------*/
 
 	@PostMapping("/submit")
@@ -173,19 +169,19 @@ public class SalesOrderHeaderController {
 	public ResponseEntity<Object> getMannualSearchResult(@RequestBody SalesOrderSearchHeaderDto searchDto) {
 		return salesOrderHeaderService.getMannualSearch(searchDto);
 	}
-	
-	
+
 	@GetMapping("/getList")
-	public ResponseEntity<Object> getList(){
+	public ResponseEntity<Object> getList() {
 		return salesOrderHeaderService.getList();
 	}
+
 	@GetMapping("/getDetails/{salesHeaderId}")
-	public List<SalesOrderItemDto> getDetails(@PathVariable String salesHeaderId){
+	public List<SalesOrderItemDto> getDetails(@PathVariable String salesHeaderId) {
 		return salesOrderHeaderService.getDetails(salesHeaderId);
 	}
-	
+
 	@GetMapping("/createdDate/{orderNum}")
-	public SalesOrderHeader getCreatedDate(@PathVariable String orderNum){
+	public SalesOrderHeader getCreatedDate(@PathVariable String orderNum) {
 		return salesOrderHeaderService.getCreatedDate(orderNum);
 	}
 

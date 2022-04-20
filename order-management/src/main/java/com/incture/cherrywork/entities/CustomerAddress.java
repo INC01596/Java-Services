@@ -5,19 +5,33 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 @Data
-@Entity(name = "CustomerAddress")
+@Entity
+@Table(name = "CustomerAddress")
 public class CustomerAddress {
 
 	@Id
-	@Column(name = "id")
+	@Column(name = "customerAddressId")
 	private String customerAddressId;
+
+	@Getter(value = AccessLevel.NONE)
+	@JsonIgnore
+	@ToString.Exclude
+	@ManyToOne
+	@JoinColumn(name = "visit_Id", nullable = false, referencedColumnName = "visit_Id")
+	private SalesVisit salesVisit;
+
+	// @Id
+	// private CustomerAddressPk customerAddressKey;
 
 	@Column(name = "custCode", length = 2)
 	private String custCode;
@@ -48,11 +62,5 @@ public class CustomerAddress {
 
 	@Column(name = "street2")
 	private String street2;
-
-	@ToString.Exclude
-	@JsonBackReference("sales-visit-address")
-	@ManyToOne
-	@JoinColumn(name = "visitId", nullable = false, referencedColumnName = "visitId")
-	private SalesVisit salesVisit;
 
 }

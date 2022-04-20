@@ -9,19 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.Data;
 
-@Entity(name = "SALES_VISIT")
+@Entity
+@Table(name = "SALES_VISIT")
 @Data
 public class SalesVisit {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@Column(name = "visitId", length = 30)
+	@Column(name = "visit_Id", length = 30)
 	private String visitId;
 
 	@Column(name = "salesRepName")
@@ -90,15 +95,15 @@ public class SalesVisit {
 	@Column(name = "visitSummary")
 	private String visitSummary;
 
-	@JsonManagedReference("sales-visit-customer")
+	// @JsonManagedReference("customer-contact")
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerContact> customerContact;
 
-	@JsonManagedReference("sales-visit-attachment")
+	// @JsonManagedReference("attachment")
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<SalesVisitAttachment> attachment;
 
-	@JsonManagedReference("sales-visit-address")
+	// @JsonManagedReference("address")
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerAddress> custAddress;
 }

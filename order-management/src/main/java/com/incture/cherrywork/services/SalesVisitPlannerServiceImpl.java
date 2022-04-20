@@ -1,10 +1,13 @@
 package com.incture.cherrywork.services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -14,13 +17,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.incture.cherrywork.dtos.CustomerAddressDto;
+import com.incture.cherrywork.dtos.CustomerContactDto;
 import com.incture.cherrywork.dtos.Response;
+import com.incture.cherrywork.dtos.SalesVisitAttachmentDto;
+import com.incture.cherrywork.dtos.SalesVisitFilterDto;
 import com.incture.cherrywork.dtos.VisitPlanDto;
+import com.incture.cherrywork.entities.CustomerAddress;
+import com.incture.cherrywork.entities.CustomerContact;
 import com.incture.cherrywork.entities.SalesVisit;
+import com.incture.cherrywork.entities.SalesVisitAttachment;
 import com.incture.cherrywork.repositories.ISalesVisitPlannerRepository;
 import com.incture.cherrywork.repositories.JdbcRepository;
 import com.incture.cherrywork.repositories.ObjectMapperUtils;
 import com.incture.cherrywork.sales.constants.ResponseStatus;
+import com.incture.cherrywork.util.ServicesUtil;
 
 @Service("SalesVisitPlannerServiceImpl")
 @Transactional
@@ -44,16 +55,77 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		SimpleDateFormat monthYear = new SimpleDateFormat("MMyy");
 		Date dateNow = new Date();
 		logger.info("[SalesVisitPlannerServiceImpl][createVisit] tempVisitId: " + tempVisitId);
+		SalesVisit visit = new SalesVisit();
 		visitId.append("D-");
 		visitId.append(dto.getCustCode());
 		visitId.append(monthYear.format(dateNow));
 		visitId.append(tempVisitId);
-		dto.setVisitId(visitId.toString());
-		dto.setVisitCretedAt(dateNow);
-		SalesVisit visit = ObjectMapperUtils.map(dto, SalesVisit.class);
+		visit.setVisitId(visitId.toString());
+		visit.setVisitCretedAt(new Date());
+
+		// logger.info("[SalesVisitPlannerServiceImpl][createVisit] visit: " +
+		// visit);
+		visit.setAttachment(processAttachment(dto, visit));
+		// logger.info("[SalesVisitPlannerServiceImpl][createVisit] attachment:
+		// " + visit.getAttachment());
+		visit.setCustAddress(processCustomerAddress(dto, visit));
+		// logger.info("[SalesVisitPlannerServiceImpl][createVisit] address: " +
+		// visit.getCustAddress());
+		visit.setCustomerContact(processCustomerContact(dto, visit));
+		// logger.info("[SalesVisitPlannerServiceImpl][createVisit] contact: " +
+		// visit.getCustomerContact());
+		// logger.info("[SalesVisitPlannerServiceImpl][createVisit] visit after:
+		// " + visit);
 		salesVisitRepository.save(visit);
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("message", "Visit created and task triggered for further level approval.").body(null);
+
+	}
+
+	public List<SalesVisitAttachment> processAttachment(VisitPlanDto visit, SalesVisit visitDo) {
+		List<SalesVisitAttachment> attachList = new ArrayList<>();
+
+		for (SalesVisitAttachmentDto attachDto : visit.getAttachment()) {
+			SalesVisitAttachment attach = new SalesVisitAttachment();
+			// SalesVisitAttachmentPk key = new
+			// SalesVisitAttachmentPk(ServicesUtil.randomId(), visitDo);
+			// attach.setSalesVisitAttachmentKey(key);
+			attach.setSalesVisit(visitDo);
+			attach.setAttachmentId(ServicesUtil.randomId());
+			attachList.add(attach);
+		}
+		return attachList;
+	}
+
+	public List<CustomerAddress> processCustomerAddress(VisitPlanDto visit, SalesVisit visitDo) {
+		List<CustomerAddress> addList = new ArrayList<>();
+
+		for (CustomerAddressDto addressDto : visit.getCustAddress()) {
+			CustomerAddress address = new CustomerAddress();
+			// CustomerAddressPk key = new
+			// CustomerAddressPk(ServicesUtil.randomId(), visitDo);
+			// address.setCustomerAddressKey(key);
+			address.setSalesVisit(visitDo);
+			address.setCustomerAddressId(ServicesUtil.randomId());
+			addList.add(address);
+		}
+		return addList;
+
+	}
+
+	public List<CustomerContact> processCustomerContact(VisitPlanDto visit, SalesVisit visitDo) {
+		List<CustomerContact> contactList = new ArrayList<>();
+
+		for (CustomerContactDto contactDto : visit.getCustomerContact()) {
+			CustomerContact contact = new CustomerContact();
+			// CustomerContactPk key = new
+			// CustomerContactPk(ServicesUtil.randomId(), visitDo);
+			// contact.setCustomerContactKey(key);
+			contact.setSalesVisit(visitDo);
+			contact.setCustomerContactId(ServicesUtil.randomId());
+			contactList.add(contact);
+		}
+		return contactList;
 
 	}
 
@@ -95,6 +167,37 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		res.setMessage("Fetched successfully!");
 		res.setStatusCode(HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.OK).header("message", "Visit fetched.").body(res);
+
+	}
+
+	public ResponseEntity<Response> filter(SalesVisitFilterDto filterDto) {
+		StringBuilder query = new StringBuilder();
+		query.append("from SalesVisit where");
+		if (filterDto.getSalesRepId() != null && !ServicesUtil.isEmpty(filterDto.getSalesRepId()))
+			query.append(" salesRepId = '" + filterDto.getSalesRepId() + "' and");
+		if (filterDto.getVisitId() != null && !ServicesUtil.isEmpty(filterDto.getVisitId()))
+			query.append(" visitId='" + filterDto.getVisitId() + "' and");
+		if (filterDto.getVisitPlannedDateFrom() != null && !ServicesUtil.isEmpty(filterDto.getVisitPlannedDateFrom()))
+			query.append(" plannedFor >= '" + filterDto.getVisitPlannedDateFrom() + "' and");
+		if (filterDto.getVisitPlannedDateTo() != null && !ServicesUtil.isEmpty(filterDto.getVisitPlannedDateTo()))
+			query.append(" plannedFor <= '" + filterDto.getVisitPlannedDateTo() + "' and");
+		if (filterDto.getVisitCompletedAtFrom() != null && !ServicesUtil.isEmpty(filterDto.getVisitCompletedAtFrom()))
+			query.append(" completedAt >= '" + filterDto.getVisitCompletedAtFrom() + "' and");
+		if (filterDto.getVisitCompletedAtTo() != null && !ServicesUtil.isEmpty(filterDto.getVisitCompletedAtTo()))
+			query.append(" completedAt <= '" + filterDto.getVisitCompletedAtTo() + "' and");
+		if (filterDto.getVisitClosedAtFrom() != null && !ServicesUtil.isEmpty(filterDto.getVisitClosedAtFrom()))
+			query.append(" closedAt >= '" + filterDto.getVisitClosedAtFrom() + "' and");
+		if (filterDto.getVisitClosedAtTo() != null && !ServicesUtil.isEmpty(filterDto.getVisitClosedAtTo()))
+			query.append(" closedAt <= '" + filterDto.getVisitClosedAtTo() + "' and");
+		String query1 = query.toString();
+		query1 = query1.substring(0, query1.length() - 3);
+		Query q1 = entityManager.createQuery(query1);
+		List<SalesVisit> list = q1.getResultList();
+		List<VisitPlanDto> dtoList = new ArrayList<>();
+		if (!list.isEmpty())
+			dtoList = ObjectMapperUtils.mapAll(list, VisitPlanDto.class);
+		return ResponseEntity.status(HttpStatus.OK).body(Response.builder().data(dtoList).statusCode(HttpStatus.OK)
+				.status(ResponseStatus.SUCCESS).message("Visits fetched!").build());
 
 	}
 

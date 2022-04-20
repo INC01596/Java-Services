@@ -5,36 +5,41 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 @Data
-@Entity(name="CustomerContact")
+@Entity
+@Table(name = "CustomerContact")
 public class CustomerContact {
-	
+
 	@Id
-	@Column(name="id")
-	private String id;
-	
-	@Column(name="custName")
-	private String custName;
-	
-	@Column(name="custPhone")
-	private String custPhone;
-	
-	@Column(name="customerAddress")
-	private String customerAddress;
-	
-	@Column(name="custEmail")
-	private String custEmail;
-	
+	@Column(name = "customerContactId")
+	private String customerContactId;
+
+	@Getter(value = AccessLevel.NONE)
+	@JsonIgnore
 	@ToString.Exclude
-	@JsonBackReference("sales-visit-customer")
 	@ManyToOne
-	@JoinColumn(name = "visitId", nullable = false, referencedColumnName = "visitId")
+	@JoinColumn(name = "visit_Id", nullable = false, referencedColumnName = "visit_Id")
 	private SalesVisit salesVisit;
+
+	@Column(name = "custName")
+	private String custName;
+
+	@Column(name = "custPhone")
+	private String custPhone;
+
+	@Column(name = "customerAddress")
+	private String customerAddress;
+
+	@Column(name = "custEmail")
+	private String custEmail;
 
 }

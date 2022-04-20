@@ -7,21 +7,32 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 @Data
-@Entity(name = "SalesVisitAttachment")
+@Entity
+@Table(name = "SalesVisitAttachment")
 public class SalesVisitAttachment {
 
 	@Id
 	@Column(name = "attachmentId")
 	private String attachmentId;
+
+	@Getter(value = AccessLevel.NONE)
+	@JsonIgnore
+	@ToString.Exclude
+	@ManyToOne
+	@JoinColumn(name = "visit_Id", nullable = false, referencedColumnName = "visit_Id")
+	private SalesVisit salesVisit;
 
 	@Column(name = "attachmentType")
 	private String attachmentType;
@@ -35,11 +46,5 @@ public class SalesVisitAttachment {
 
 	@Column(name = "data")
 	private byte[] data;
-
-	@ToString.Exclude
-	@JsonBackReference("sales-visit-attachment")
-	@ManyToOne
-	@JoinColumn(name = "visitId", nullable = false, referencedColumnName = "visitId")
-	private SalesVisit salesVisit;
 
 }

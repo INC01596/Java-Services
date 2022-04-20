@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.incture.cherrywork.dtos.Response;
+import com.incture.cherrywork.dtos.SalesVisitFilterDto;
 import com.incture.cherrywork.dtos.VisitPlanDto;
 import com.incture.cherrywork.services.ISalesVisitPlannerService;
 
@@ -19,7 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "SalesVisitPlannerController", tags = { "Visit Planner" })
+@Api(value = "SalesVisitPlannerController", tags = { "Sales Visit Planner Controller" })
 @RequestMapping("/api/v1/salesVisitPlanner")
 public class SalesVisitPlannerController {
 
@@ -54,6 +55,14 @@ public class SalesVisitPlannerController {
 	@ApiOperation(value = "List all Visists ")
 	public ResponseEntity<Response> readAll() {
 		return salesVisitPlannerService.getAllVisit();
+	}
+
+	@PostMapping("/filterVisit")
+	@ApiOperation(value="Filter the visists on various param")
+	public ResponseEntity<Response> filter(@RequestBody SalesVisitFilterDto dto){
+		
+		return salesVisitPlannerService.filter(dto);
+		
 	}
 
 }

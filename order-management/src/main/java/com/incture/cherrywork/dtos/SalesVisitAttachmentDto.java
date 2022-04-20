@@ -9,8 +9,6 @@ public class SalesVisitAttachmentDto {
 
 	private String attachmentId;
 
-	private String visitId;
-
 	private String attachmentType;
 
 	private String uploadedBy;
