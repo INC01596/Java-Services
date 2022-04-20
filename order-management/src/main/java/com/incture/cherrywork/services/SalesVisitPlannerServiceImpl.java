@@ -55,7 +55,7 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		SimpleDateFormat monthYear = new SimpleDateFormat("MMyy");
 		Date dateNow = new Date();
 		logger.info("[SalesVisitPlannerServiceImpl][createVisit] tempVisitId: " + tempVisitId);
-		SalesVisit visit = new SalesVisit();
+		SalesVisit visit = ObjectMapperUtils.map(dto, SalesVisit.class);
 		visitId.append("D-");
 		visitId.append(dto.getCustCode());
 		visitId.append(monthYear.format(dateNow));
@@ -86,12 +86,13 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		List<SalesVisitAttachment> attachList = new ArrayList<>();
 
 		for (SalesVisitAttachmentDto attachDto : visit.getAttachment()) {
-			SalesVisitAttachment attach = new SalesVisitAttachment();
+			SalesVisitAttachment attach = ObjectMapperUtils.map(attachDto, SalesVisitAttachment.class);
 			// SalesVisitAttachmentPk key = new
 			// SalesVisitAttachmentPk(ServicesUtil.randomId(), visitDo);
 			// attach.setSalesVisitAttachmentKey(key);
 			attach.setSalesVisit(visitDo);
-			attach.setAttachmentId(ServicesUtil.randomId());
+			if (attach.getAttachmentId() == null || ServicesUtil.isEmpty(attach.getAttachmentId()))
+				attach.setAttachmentId(ServicesUtil.randomId());
 			attachList.add(attach);
 		}
 		return attachList;
@@ -101,12 +102,13 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		List<CustomerAddress> addList = new ArrayList<>();
 
 		for (CustomerAddressDto addressDto : visit.getCustAddress()) {
-			CustomerAddress address = new CustomerAddress();
+			CustomerAddress address = ObjectMapperUtils.map(addressDto, CustomerAddress.class);
 			// CustomerAddressPk key = new
 			// CustomerAddressPk(ServicesUtil.randomId(), visitDo);
 			// address.setCustomerAddressKey(key);
 			address.setSalesVisit(visitDo);
-			address.setCustomerAddressId(ServicesUtil.randomId());
+			if (address.getCustomerAddressId() == null || ServicesUtil.isEmpty(address.getCustomerAddressId()))
+				address.setCustomerAddressId(ServicesUtil.randomId());
 			addList.add(address);
 		}
 		return addList;
@@ -117,12 +119,13 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 		List<CustomerContact> contactList = new ArrayList<>();
 
 		for (CustomerContactDto contactDto : visit.getCustomerContact()) {
-			CustomerContact contact = new CustomerContact();
+			CustomerContact contact = ObjectMapperUtils.map(contactDto, CustomerContact.class);
 			// CustomerContactPk key = new
 			// CustomerContactPk(ServicesUtil.randomId(), visitDo);
 			// contact.setCustomerContactKey(key);
 			contact.setSalesVisit(visitDo);
-			contact.setCustomerContactId(ServicesUtil.randomId());
+			if (contact.getCustomerContactId() == null || ServicesUtil.isEmpty(contact.getCustomerContactId()))
+				contact.setCustomerContactId(ServicesUtil.randomId());
 			contactList.add(contact);
 		}
 		return contactList;
@@ -133,6 +136,15 @@ public class SalesVisitPlannerServiceImpl implements ISalesVisitPlannerService {
 
 		logger.info("[SalesVisitPlannerServiceImpl][createVisit] VisitId: " + dto.getVisitId());
 		SalesVisit visit = ObjectMapperUtils.map(dto, SalesVisit.class);
+		visit.setAttachment(processAttachment(dto, visit));
+		visit.setCustAddress(processCustomerAddress(dto, visit));
+		visit.setCustomerContact(processCustomerContact(dto, visit));
+		if (visit.getVisitId() == null || ServicesUtil.isEmpty(visit.getVisitId())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Response.builder().data(dto).statusCode(HttpStatus.BAD_REQUEST).status(ResponseStatus.FAILED)
+							.message("Visit Id is required").build());
+
+		}
 		salesVisitRepository.save(visit);
 
 		return ResponseEntity.status(HttpStatus.OK)
