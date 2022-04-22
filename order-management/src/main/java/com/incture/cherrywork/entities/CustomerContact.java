@@ -9,9 +9,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.ToString;
 
 @Data
@@ -23,7 +21,7 @@ public class CustomerContact {
 	@Column(name = "customerContactId")
 	private String customerContactId;
 
-	@Getter(value = AccessLevel.NONE)
+	//@Getter(value = AccessLevel.NONE)
 	@JsonIgnore
 	@ToString.Exclude
 	@ManyToOne
@@ -32,13 +30,13 @@ public class CustomerContact {
 
 	@Column(name = "custName")
 	private String custName;
-
-	@Column(name = "custPhone")
-	private String custPhone;
-
+	
 	@Column(name = "customerAddress")
 	private String customerAddress;
 
+	@Column(name = "custPhone")
+	private String custPhone;
+	
 	@Column(name = "custEmail")
 	private String custEmail;
 

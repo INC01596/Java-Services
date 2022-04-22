@@ -23,7 +23,7 @@ public class CustomerAddress {
 	@Column(name = "customerAddressId")
 	private String customerAddressId;
 
-	@Getter(value = AccessLevel.NONE)
+	// @Getter(value = AccessLevel.NONE)
 	@JsonIgnore
 	@ToString.Exclude
 	@ManyToOne

@@ -27,7 +27,7 @@ public class SalesVisitAttachment {
 	@Column(name = "attachmentId")
 	private String attachmentId;
 
-	@Getter(value = AccessLevel.NONE)
+	//@Getter(value = AccessLevel.NONE)
 	@JsonIgnore
 	@ToString.Exclude
 	@ManyToOne

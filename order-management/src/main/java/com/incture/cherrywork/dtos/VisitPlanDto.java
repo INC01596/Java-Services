@@ -51,6 +51,10 @@ public class VisitPlanDto {
 
 	private String currentStock;
 
+	private String custPhone;
+
+	private String custEmail;
+
 	private List<CustomerAddressDto> custAddress = new ArrayList<>();
 
 	private List<CustomerContactDto> customerContact = new ArrayList<>();

@@ -95,15 +95,18 @@ public class SalesVisit {
 	@Column(name = "visitSummary")
 	private String visitSummary;
 
-	// @JsonManagedReference("customer-contact")
+	@Column(name = "custPhone")
+	private String custPhone;
+
+	@Column(name = "custEmail")
+	private String custEmail;
+
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerContact> customerContact;
 
-	// @JsonManagedReference("attachment")
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<SalesVisitAttachment> attachment;
 
-	// @JsonManagedReference("address")
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerAddress> custAddress;
 }

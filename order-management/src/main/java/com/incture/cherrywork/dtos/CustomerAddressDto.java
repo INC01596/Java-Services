@@ -4,16 +4,18 @@ import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.incture.cherrywork.entities.SalesVisit;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 @Data
 public class CustomerAddressDto {
 
 	private String customerAddressId;
-
-	private SalesVisit salesVisit;
 
 	private String custCode;
 
