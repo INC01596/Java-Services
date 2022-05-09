@@ -55,6 +55,22 @@ public class VisitPlanDto {
 
 	private String custEmail;
 
+	private String custLocation;
+
+	private String taskStatus;
+
+	private String taskInstanceId;
+
+	private String level;
+
+	private String approvalStatus;
+
+	private String rejectionReason;
+
+	private String onHoldReason;
+
+	private String returnReqNum;
+
 	private List<CustomerAddressDto> custAddress = new ArrayList<>();
 
 	private List<CustomerContactDto> customerContact = new ArrayList<>();

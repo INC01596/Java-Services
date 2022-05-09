@@ -1,6 +1,8 @@
 package com.incture.cherrywork.services;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -61,9 +63,9 @@ public class NotificationDetailService {
 	public void saveNotification1(String email, String soldToParty, String s4DocumentId, String source, String target,
 			String notificationTypeId, String triggerPoint, Boolean emailRequired) {
 		// logger.debug("[NotificationDetailDao][saveNotification] Started");
-		System.out
-				.println("[NotificationDetailDao][saveNotification] Started with email: " + email + " source: " + source
-						+ " target: "+target + " notificationTypeId: " + notificationTypeId + " triggerPoint:" + triggerPoint);
+		System.out.println("[NotificationDetailDao][saveNotification] Started with email: " + email + " source: "
+				+ source + " target: " + target + " notificationTypeId: " + notificationTypeId + " triggerPoint:"
+				+ triggerPoint);
 		// Session session = sessionFactory.openSession();
 		// Transaction tx = null;
 		NotificationTextDto notificationTextDto = new NotificationTextDto();
@@ -90,11 +92,12 @@ public class NotificationDetailService {
 			}
 
 			if (notificationTextDto.getTriggerPoint().equals("Created")) {
-				message = notificationTextDto.getNotificationText()+ "with id "+s4DocumentId+" for (" + soldToParty + ")";
+				message = notificationTextDto.getNotificationText() + "with id " + s4DocumentId + " for (" + soldToParty
+						+ ")";
 			}
 
 			if (notificationTextDto.getTriggerPoint().equals("Acknowledge")) {
-				message = notificationTextDto.getNotificationText()+ "<Order Id> "+s4DocumentId;
+				message = notificationTextDto.getNotificationText() + "<Order Id> " + s4DocumentId;
 			}
 
 			notificationDetailDto.setNotificationId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -105,8 +108,12 @@ public class NotificationDetailService {
 			notificationDetailDto.setUserId(email.toLowerCase());
 			notificationDetailRepository.save(ObjectMapperUtils.map(notificationDetailDto, NotificationDetail.class));
 
-			if (emailRequired == true)
-				ServicesUtils.mail(email.toLowerCase(), "User", title, message);
+			if (emailRequired == true) {
+				List<String> toList = new ArrayList<>();
+				toList.add(email.toLowerCase());
+				List<String> ccList = new ArrayList<>();
+				ServicesUtils.mail(toList, ccList, "User", title, message);
+			}
 		} catch (Exception e) {
 
 			// logger.error("[NotificationDetailDao][saveNotification] Exception

@@ -1,7 +1,5 @@
 package com.incture.cherrywork.services;
 
-
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,7 +63,6 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	@Autowired
 	private SalesDocItemDao salesDocItemRepo;
 
-
 	@Autowired
 	private SalesOrderLevelStatusDao salesOrderLevelStatusDao;
 
@@ -75,16 +71,15 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 
 	@Autowired
 	private SalesOrderItemStatusDao salesOrderItemStatusDao;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	// @Autowired
+	// private WorkflowTrigger workflowtrigger;
 
-//	@Autowired
-//	private WorkflowTrigger workflowtrigger;
-
-//	@Autowired
-//	 private TriggerImeDestinationService triggerImeService;
+	// @Autowired
+	// private TriggerImeDestinationService triggerImeService;
 
 	@Autowired
 	private TriggerImeForWorkflowService triggerImeService;
@@ -121,7 +116,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -143,7 +139,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						Constants.SALES_HEADER_ITEM_ID_MANDATORY, ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -168,7 +165,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						Constants.SALES_HEADER_ITEM_ID_MANDATORY, ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -184,7 +182,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 				return new ResponseEntity("", HttpStatus.NO_CONTENT, Constants.EMPTY_LIST, ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -211,7 +210,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -233,7 +233,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -245,8 +246,7 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 			if (!!HelperClass.checkString(salesHeaderId)) {
 				List<SalesDocItemDto> list = salesDocItemRepo.listOfItemsInSalesOrder(salesHeaderId);
 				if (list != null && !list.isEmpty()) {
-					return new ResponseEntity(list, HttpStatus.ACCEPTED, Constants.DATA_FOUND,
-							ResponseStatus.SUCCESS);
+					return new ResponseEntity(list, HttpStatus.ACCEPTED, Constants.DATA_FOUND, ResponseStatus.SUCCESS);
 				} else {
 					return new ResponseEntity("", HttpStatus.NO_CONTENT,
 							"No Item Found on sales order header id : " + salesHeaderId, ResponseStatus.FAILED);
@@ -256,7 +256,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -266,8 +267,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	public ResponseEntity getSalesDocItemsFromSalesOrderInputs(SalesOrderHeaderInput soInput) {
 		try {
 			if (soInput == null || soInput.getSalesOrderItemIdList().isEmpty()) {
-				return new ResponseEntity(soInput, HttpStatus.BAD_REQUEST,
-						"Sales Order Item " + Constants.EMPTY_LIST, ResponseStatus.FAILED);
+				return new ResponseEntity(soInput, HttpStatus.BAD_REQUEST, "Sales Order Item " + Constants.EMPTY_LIST,
+						ResponseStatus.FAILED);
 			} else {
 				if (soInput.getSalesOrderHeaderId() != null) {
 					List<SalesDocItemDto> salesDocItemDtoList = salesDocItemRepo.listOfItemsFromMultiItemId(soInput);
@@ -284,7 +285,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 				}
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -375,13 +377,21 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 
 							System.err.print("decisionSet 306");
 
-//							response = workflowtrigger.DecisionSetWorkflowTrigger(soInput.getSalesOrderHeaderId(),
-//									soInput.getRequestId(), entry.getKey(), approverDtoList, threshold,
-//									decisionSetAmount, soInput.getHeaderBlocReas(), soInput.getSoCreatedECC(),
-//									soInput.getCountry(), soInput.getCustomerPo(), soInput.getRequestType(),
-//									soInput.getRequestCategory(), soInput.getSalesOrderType(), soInput.getSoldToParty(),
-//									soInput.getShipToParty(), soInput.getDivision(), soInput.getDistributionChannel(),
-//									soInput.getSalesOrg(), soInput.getReturnReason());
+							// response =
+							// workflowtrigger.DecisionSetWorkflowTrigger(soInput.getSalesOrderHeaderId(),
+							// soInput.getRequestId(), entry.getKey(),
+							// approverDtoList, threshold,
+							// decisionSetAmount, soInput.getHeaderBlocReas(),
+							// soInput.getSoCreatedECC(),
+							// soInput.getCountry(), soInput.getCustomerPo(),
+							// soInput.getRequestType(),
+							// soInput.getRequestCategory(),
+							// soInput.getSalesOrderType(),
+							// soInput.getSoldToParty(),
+							// soInput.getShipToParty(), soInput.getDivision(),
+							// soInput.getDistributionChannel(),
+							// soInput.getSalesOrg(),
+							// soInput.getReturnReason());
 
 							System.err.print("workflowtrigger.DecisionSetWorkflowTrigger =" + response);
 
@@ -397,7 +407,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 				}
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -409,7 +420,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	public ResponseEntity updateSalesDocItemWithDecisionSet(String decisionSet, String salesItemId,
 			String salesHeaderId) {
 		try {
-			if (!HelperClass.checkString(decisionSet) && !HelperClass.checkString(salesItemId) && !HelperClass.checkString(salesHeaderId)) {
+			if (!HelperClass.checkString(decisionSet) && !HelperClass.checkString(salesItemId)
+					&& !HelperClass.checkString(salesHeaderId)) {
 				String msg = salesDocItemRepo.updateSalesDocItemWithDecisionSet(decisionSet, salesItemId,
 						salesHeaderId);
 				if (msg == null) {
@@ -423,7 +435,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
@@ -520,29 +533,29 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	}
 
 	public SalesDocItemDo getSalesDocItemByIds(String salesItemId, String salesHeaderId) {
-		
+
 		String query = "from SalesDocItemDo where salesDocItemKey.salesItemOrderNo=:soNum";
-		Query q1= entityManager.createQuery(query);
+		Query q1 = entityManager.createQuery(query);
 		q1.setParameter("soNum", salesHeaderId);
 		return (SalesDocItemDo) q1.getSingleResult();
-		
-//		Session session = sessionfactory.openSession();
-//		Transaction tx = session.beginTransaction();
-//
-//		// Creating Sales Header Entity For inserting in Composite PK
-//		SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
-//		// Setting Sales Header Primary Key
-//		salesDocHeader.setSalesOrderNum(salesHeaderId);
-//
-//		SalesDocItemDo salesDocItemDo = session.get(SalesDocItemDo.class,
-//				new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
-//
-//		tx.commit();
-//
-//		session.clear();
-//		session.close();
-//
-//		return salesDocItemDo;
+
+		// Session session = sessionfactory.openSession();
+		// Transaction tx = session.beginTransaction();
+		//
+		// // Creating Sales Header Entity For inserting in Composite PK
+		// SalesDocHeaderDo salesDocHeader = new SalesDocHeaderDo();
+		// // Setting Sales Header Primary Key
+		// salesDocHeader.setSalesOrderNum(salesHeaderId);
+		//
+		// SalesDocItemDo salesDocItemDo = session.get(SalesDocItemDo.class,
+		// new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader));
+		//
+		// tx.commit();
+		//
+		// session.clear();
+		// session.close();
+		//
+		// return salesDocItemDo;
 
 	}
 
@@ -550,7 +563,7 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 	public ResponseEntity checkForNextLevelTrigger(String dataSet, String level) {
 
 		ResponseEntity responseEntity = new ResponseEntity("", HttpStatus.BAD_REQUEST,
-				"INVALID_INPUT "+ ", Check Next level Triggere failed ", ResponseStatus.FAILED);
+				"INVALID_INPUT " + ", Check Next level Triggere failed ", ResponseStatus.FAILED);
 
 		System.err.println("dataSet and level " + dataSet + level);
 
@@ -630,12 +643,12 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 					} else {
 						System.err.println("checkNext 1072");
 						return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-								"INVALID_INPUT "+ ",salesOrderItemStatusDtoList is null", ResponseStatus.FAILED);
+								"INVALID_INPUT " + ",salesOrderItemStatusDtoList is null", ResponseStatus.FAILED);
 					}
 				} else {
 					System.err.println("checkNext 1077");
 					return new ResponseEntity("", HttpStatus.BAD_REQUEST,
-							"INVALID_INPUT "+ ",salesOrderTaskStatusDto is null", ResponseStatus.FAILED);
+							"INVALID_INPUT " + ",salesOrderTaskStatusDto is null", ResponseStatus.FAILED);
 				}
 			}
 		} else {
@@ -678,8 +691,8 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 				}
 			}
 		} else {
-			return new ResponseEntity("", HttpStatus.BAD_REQUEST, "INVALID_INPUT "+ ", SalesOrderLevelStatusList is null",
-					ResponseStatus.FAILED);
+			return new ResponseEntity("", HttpStatus.BAD_REQUEST,
+					"INVALID_INPUT " + ", SalesOrderLevelStatusList is null", ResponseStatus.FAILED);
 		}
 		return responseEntity;
 
@@ -716,11 +729,11 @@ public class SalesDocItemServiceImpl implements SalesDocItemService {
 						ResponseStatus.FAILED);
 			}
 		} catch (Exception e) {
-			//HelperClass.getLogger(this.getClass().getName()).info(e + " on " + e.getStackTrace()[1]);
+			// HelperClass.getLogger(this.getClass().getName()).info(e + " on "
+			// + e.getStackTrace()[1]);
 			return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR, Constants.EXCEPTION_FAILED + e,
 					ResponseStatus.FAILED);
 		}
 	}
 
 }
-

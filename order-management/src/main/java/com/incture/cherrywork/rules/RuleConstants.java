@@ -4,6 +4,7 @@ public interface RuleConstants {
 
 	public static final String thIDBRuleService = "29668995e22d4f6ba678d0bdb366eb18";
 	public static final String thIDBRORuleService = "7c29453a52754c64870de86ea4480755";
+	public static final String Visit_Planner_Rule_Service = "bf15330e7efb47d5a216985e7e33cf2d";
 	public static final String OAUTH_TOKEN_URL = "https://hrapps.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials";
     public static final String RULE_BASE_URL = "https://bpmruleruntime.cfapps.eu10.hana.ondemand.com/rules-service/rest/v2/workingset-rule-services";
     public static final String WORKRULE_API_BASE_URL = "https://workrulesengineweb.cfapps.eu10.hana.ondemand.com/rest";

@@ -22,10 +22,12 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 
 	private String returnReqNum;
 	private String salesOrderNum;
+	private String visitId;
 
 	private String reqMasterId;
 
 	private BigInteger salesOrderDate;
+	private Date visitCreatedAt;
 
 	private String createdBy;
 
@@ -162,7 +164,7 @@ public @Data class SalesDocHeaderDto extends BaseDto {
 
 	public SalesDocHeaderDto(String salesOrderNum, String deliveryBlockCode) {
 		super();
-		//this.salesOrderNum = salesOrderNum;
+		// this.salesOrderNum = salesOrderNum;
 		this.deliveryBlockCode = deliveryBlockCode;
 	}
 

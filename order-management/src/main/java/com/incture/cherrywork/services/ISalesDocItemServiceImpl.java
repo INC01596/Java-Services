@@ -82,7 +82,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 
 	@Autowired
 	private IScheduleLineRepository scheduleLineRepository;
-	
+
 	@Autowired
 	private TriggerImeDestinationService triggerImeService;
 
@@ -236,27 +236,30 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		q1.setParameter("itemId", salesItemId);
 
 		SalesDocItemPrimaryKeyDo primaryKeyDO = new SalesDocItemPrimaryKeyDo(salesItemId, salesDocHeader);
-		
+
 		SalesDocItemDo itemDo = (SalesDocItemDo) q1.getSingleResult();
-		//itemDo.setSalesDocItemKey(primaryKeyDO);
+		// itemDo.setSalesDocItemKey(primaryKeyDO);
 		SalesDocItemDto itemDto = exportDto(itemDo);
-//		itemDto.setSalesItemOrderNo(salesItemId);
-//		itemDto.setSalesHeaderNo(salesHeaderId);
-//		List<ScheduleLineDto> schDtoList = exportDto(itemDo.getScheduleLineList());
-//		for (ScheduleLineDo schDo : itemDo.getScheduleLineList()) {
-//			schDo.setSa(salesItemId);
-//			schDo.setSalesHeaderNo(salesHeaderId);
-//			schDo.setScheduleLineNum(schDo.getScheduleLineNum());
-//			System.err.println("[ISalesDocItemService][getSalesDocItemById] schDto.getScheduleLineNum(): "+schDto.getScheduleLineNum());
-//		}
-//		String query2 = "delete from ScheduleLineDo where scheduleLineKey.soItem.salesDocItemKey.salesDocHeader.salesOrderNum=:soNum";
-//		Query q2 = entityManager.createQuery(query2);
-//		q2.setParameter("soNum", salesHeaderId);
-//		q2.executeUpdate();
-//		for(ScheduleLineDto schDto : itemDto.getScheduleLineList()){
-//			ScheduleLineDo sch = importDtoSch(schDto);
-//			scheduleLineRepository.save(sch);
-//		}
+		// itemDto.setSalesItemOrderNo(salesItemId);
+		// itemDto.setSalesHeaderNo(salesHeaderId);
+		// List<ScheduleLineDto> schDtoList =
+		// exportDto(itemDo.getScheduleLineList());
+		// for (ScheduleLineDo schDo : itemDo.getScheduleLineList()) {
+		// schDo.setSa(salesItemId);
+		// schDo.setSalesHeaderNo(salesHeaderId);
+		// schDo.setScheduleLineNum(schDo.getScheduleLineNum());
+		// System.err.println("[ISalesDocItemService][getSalesDocItemById]
+		// schDto.getScheduleLineNum(): "+schDto.getScheduleLineNum());
+		// }
+		// String query2 = "delete from ScheduleLineDo where
+		// scheduleLineKey.soItem.salesDocItemKey.salesDocHeader.salesOrderNum=:soNum";
+		// Query q2 = entityManager.createQuery(query2);
+		// q2.setParameter("soNum", salesHeaderId);
+		// q2.executeUpdate();
+		// for(ScheduleLineDto schDto : itemDto.getScheduleLineList()){
+		// ScheduleLineDo sch = importDtoSch(schDto);
+		// scheduleLineRepository.save(sch);
+		// }
 		return itemDto;
 
 	}
@@ -623,7 +626,8 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService
+					.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -728,7 +732,8 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService
+					.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -1078,9 +1083,10 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		}
 		return out.toString();
 	}
-	
+
 	@Override
-	public ResponseEntity triggerImePostSoDsCompletion(String salesOrderNumber, String decisionSetId) throws URISyntaxException, IOException {
+	public ResponseEntity triggerImePostSoDsCompletion(String salesOrderNumber, String decisionSetId)
+			throws URISyntaxException, IOException {
 
 		System.err.println("salesOrderNumber : " + salesOrderNumber);
 		System.err.println("decisionSetId : " + decisionSetId);
@@ -1124,10 +1130,12 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 				List<SalesOrderLevelStatusDo> salesOrderLevelStatusDoList = new ArrayList<>();
 				List<SalesOrderLevelStatusDto> salesOrderLevelStatusDtoList = new ArrayList<>();
 				try {
-					salesOrderLevelStatusDoList = salesOrderLevelStatusRepository.getSalesOrderLevelStatusByDecisionSet(dsId);
+					salesOrderLevelStatusDoList = salesOrderLevelStatusRepository
+							.getSalesOrderLevelStatusByDecisionSet(dsId);
 
-					for(SalesOrderLevelStatusDo levelDo:salesOrderLevelStatusDoList){
-						SalesOrderLevelStatusDto levelDto = ObjectMapperUtils.map(levelDo, SalesOrderLevelStatusDto.class);
+					for (SalesOrderLevelStatusDo levelDo : salesOrderLevelStatusDoList) {
+						SalesOrderLevelStatusDto levelDto = ObjectMapperUtils.map(levelDo,
+								SalesOrderLevelStatusDto.class);
 						if (levelDo.getLevelStatusSerialId() != null) {
 							levelDto.setLevelStatusSerialId(levelDo.getLevelStatusSerialId());
 						}
@@ -1135,7 +1143,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 					}
 					System.err.println("salesOrderLevelStatusDtoList" + salesOrderLevelStatusDtoList.toString());
 				} catch (NoResultException e) {
-					//logger.error(e.getMessage());
+					// logger.error(e.getMessage());
 					System.err.println(e.getMessage());
 					return new ResponseEntity(response, HttpStatus.BAD_REQUEST, ComConstants.CREATION_FAILED,
 							ResponseStatus.FAILED);
@@ -1148,7 +1156,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 				}
 			}
 		}
-		System.err.println("level Status: "+levelStatus);
+		System.err.println("level Status: " + levelStatus);
 
 		if (((levelStatus.size() == 1) && levelStatus.contains(ComConstants.LEVEL_COMPLETE))
 				|| (levelStatus.size() == 2 && levelStatus.contains(ComConstants.LEVEL_ABANDON))) {
@@ -1165,7 +1173,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 
 		return new ResponseEntity(response, HttpStatus.ACCEPTED, decisionSetId, ResponseStatus.SUCCESS);
 	}
-	
+
 	public List<String> getDSBySalesHeaderID(String salesHeaderId) {
 
 		return entityManager.createQuery(
@@ -1269,7 +1277,6 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 
 	}
 
-
 	public List<ScheduleLineDto> exportList(List<ScheduleLineDo> list) {
 		if (list != null && !list.isEmpty()) {
 			List<ScheduleLineDto> dtoList = new ArrayList<>();
@@ -1281,7 +1288,7 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		}
 		return Collections.emptyList();
 	}
-	
+
 	public ScheduleLineDto exportDtoSch(ScheduleLineDo entity) {
 		ScheduleLineDto scheduleLineDto = null;
 		if (entity != null) {
@@ -1307,6 +1314,5 @@ public class ISalesDocItemServiceImpl implements ISalesDocItemService {
 		}
 		return scheduleLineDto;
 	}
-
 
 }

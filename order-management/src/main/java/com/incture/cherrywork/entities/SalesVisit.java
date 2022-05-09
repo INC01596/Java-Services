@@ -20,11 +20,6 @@ import lombok.Data;
 @Data
 public class SalesVisit {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@Column(name = "visit_Id", length = 30)
 	private String visitId;
@@ -98,14 +93,35 @@ public class SalesVisit {
 	@Column(name = "custPhone")
 	private String custPhone;
 
+	@Column(name = "custLocation")
+	private String custLocation;
+
 	@Column(name = "custEmail")
 	private String custEmail;
 
-	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
-	private List<CustomerContact> customerContact;
+	@Column(name = "taskStatus")
+	private String taskStatus;
+
+	@Column(name = "returnReqNum")
+	private String returnReqNum;
+
+	@Column(name = "level")
+	private String level;
+
+	@Column(name = "rejectionReason")
+	private String rejectionReason;
+
+	@Column(name = "onHoldReason")
+	private String onHoldReason;
+
+	@Column(name = "approvalStatus")
+	private String approvalStatus;
+
+	@Column(name = "taskInstanceId")
+	private String taskInstanceId;
 
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
-	private List<SalesVisitAttachment> attachment;
+	private List<CustomerContact> customerContact;
 
 	@OneToMany(mappedBy = "salesVisit", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // mandatory
 	private List<CustomerAddress> custAddress;

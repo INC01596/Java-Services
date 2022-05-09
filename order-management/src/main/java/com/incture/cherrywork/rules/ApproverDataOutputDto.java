@@ -7,8 +7,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,11 +22,10 @@ public @Data class ApproverDataOutputDto implements RuleOutputDto, Serializable 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
 	private String approver;
 	private String level;
 	private String approvalType;
-	
+
 	public String getApprover() {
 		return approver;
 	}
@@ -63,19 +60,42 @@ public @Data class ApproverDataOutputDto implements RuleOutputDto, Serializable 
 		JSONObject jObj = new JSONObject(node);
 		JSONArray arr = jObj.getJSONArray("Result");
 		JSONArray innerArray = null;
-		if(!arr.isNull(0))
+		if (!arr.isNull(0))
 			innerArray = arr.getJSONObject(0).getJSONArray("Approval_Matrix_Output");
-		
-		if(innerArray!=null) {
-		for (int i = 0; i < innerArray.length(); i++) {
-			ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
-			approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
-			approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
-			approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproverType").toString());
-			approverList.add(approverDto);
 
+		if (innerArray != null) {
+			for (int i = 0; i < innerArray.length(); i++) {
+				ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
+				approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
+				approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
+				approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproverType").toString());
+				approverList.add(approverDto);
+
+			}
+			return approverList;
 		}
-		return approverList;
+		return null;
+
+	}
+
+	public List<ApproverDataOutputDto> convertFromJSonNodeVisitPlan(String node) {
+		List<ApproverDataOutputDto> approverList = new ArrayList<>();
+		JSONObject jObj = new JSONObject(node);
+		JSONArray arr = jObj.getJSONArray("Result");
+		JSONArray innerArray = null;
+		if (!arr.isNull(0))
+			innerArray = arr.getJSONObject(0).getJSONArray("SalesVisitPlannerOutputTable");
+
+		if (innerArray != null) {
+			for (int i = 0; i < innerArray.length(); i++) {
+				ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
+				approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
+				approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
+				approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproverType").toString());
+				approverList.add(approverDto);
+
+			}
+			return approverList;
 		}
 		return null;
 
@@ -87,72 +107,72 @@ public @Data class ApproverDataOutputDto implements RuleOutputDto, Serializable 
 		JSONObject jObj = new JSONObject(node);
 		JSONArray arr = jObj.getJSONArray("result");
 		JSONArray innerArray = null;
-		if(!arr.isNull(0))
+		if (!arr.isNull(0))
 			innerArray = arr.getJSONObject(0).getJSONArray("ReturnOrderRuleOuputStructure");
-		
-		if(innerArray!=null) {
-		for (int i = 0; i < innerArray.length(); i++) {
-			ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
-			approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
-			approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
-			approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproverType").toString());
-			approverList.add(approverDto);
 
-		}
-		return approverList;
+		if (innerArray != null) {
+			for (int i = 0; i < innerArray.length(); i++) {
+				ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
+				approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
+				approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
+				approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproverType").toString());
+				approverList.add(approverDto);
+
+			}
+			return approverList;
 		}
 		return null;
 
 	}
 
 	@Override
-	public List<ApproverDataOutputDto> convertFromJSonNodeRo(String node){
+	public List<ApproverDataOutputDto> convertFromJSonNodeRo(String node) {
 		List<ApproverDataOutputDto> approverList = new ArrayList<>();
 		JSONObject jObj = new JSONObject(node);
 		JSONArray arr = jObj.getJSONArray("Result");
 		JSONArray innerArray = null;
-		if(!arr.isNull(0))
+		if (!arr.isNull(0))
 			innerArray = arr.getJSONObject(0).getJSONArray("ReturnOrderRuleOutput");
-		
-		if(innerArray!=null) {
-		for (int i = 0; i < innerArray.length(); i++) {
-			ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
-			approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
-			approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
-			approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproveType").toString());
-			approverList.add(approverDto);
 
+		if (innerArray != null) {
+			for (int i = 0; i < innerArray.length(); i++) {
+				ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
+				approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
+				approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
+				approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproveType").toString());
+				approverList.add(approverDto);
+
+			}
+			System.err.println("[convertFromJSonNodeRo] approverList: " + approverList);
+			return approverList;
 		}
-		System.err.println("[convertFromJSonNodeRo] approverList: "+approverList);
-		return approverList;
-		}
-	
-	return null;
-}
-	public List<ApproverDataOutputDto> convertFromJSonNodeRoFromWorkRule(String node){
+
+		return null;
+	}
+
+	public List<ApproverDataOutputDto> convertFromJSonNodeRoFromWorkRule(String node) {
 		List<ApproverDataOutputDto> approverList = new ArrayList<>();
 		JSONObject jObj = new JSONObject(node);
 		JSONObject jObj2 = jObj.getJSONObject("data");
 		JSONArray arr = jObj2.getJSONArray("result");
 		JSONArray innerArray = null;
-		if(!arr.isNull(0))
+		if (!arr.isNull(0))
 			innerArray = arr.getJSONObject(0).getJSONArray("ReturnOrderRuleOuputStructure");
-		
-		if(innerArray!=null) {
-		for (int i = 0; i < innerArray.length(); i++) {
-			ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
-			approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
-			approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
-			approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproveType").toString());
-			approverList.add(approverDto);
 
+		if (innerArray != null) {
+			for (int i = 0; i < innerArray.length(); i++) {
+				ApproverDataOutputDto approverDto = new ApproverDataOutputDto();
+				approverDto.setApprover(innerArray.getJSONObject(i).get("Approver").toString());
+				approverDto.setLevel(innerArray.getJSONObject(i).get("Level").toString());
+				approverDto.setApprovalType(innerArray.getJSONObject(i).get("ApproveType").toString());
+				approverList.add(approverDto);
+
+			}
+			System.err.println("[convertFromJSonNodeRoFromWorkRule] approverList: " + approverList);
+			return approverList;
 		}
-		System.err.println("[convertFromJSonNodeRoFromWorkRule] approverList: "+approverList);
-		return approverList;
-		}
-	
-	return null;
-}
+
+		return null;
+	}
 
 }
-

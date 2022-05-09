@@ -33,6 +33,7 @@ public interface WorkflowConstants {
 	String RETURN_TYPE_VALUE = "05";
 	String STATUS_OF_APPROVAL_TASKS_VALUE = "READY";
 	String WORKFLOW_DEFINATION_ID_VALUE = "approval";
+	String WORKFLOW_DEFINATION_ID_VALUE_VISIT_PLANNER = "salesvisitworkflow.salesvisitworkflow";
 	String USER_TASK_SORTING_CREATED_AT_DESC_VALUE = "createdAt%20desc";
 
 }

@@ -9,22 +9,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-
 import org.hibernate.Session;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import org.springframework.stereotype.Service;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ser.SerializerFactory;
 
 import com.incture.cherrywork.WConstants.Constants;
 import com.incture.cherrywork.dao.SalesDocItemDao;
 import com.incture.cherrywork.dtos.SalesDocItemDto;
 import com.incture.cherrywork.dtos.TH_IDB_RO_RuleInputDto;
-import com.incture.cherrywork.entities.SalesDocItemDo;
 import com.incture.cherrywork.exceptions.ExecutionFault;
 import com.incture.cherrywork.repositories.ISalesDocItemRepository;
 import com.incture.cherrywork.rules.ApproverDataOutputDto;
@@ -32,32 +26,24 @@ import com.incture.cherrywork.rules.RuleInputDto;
 import com.incture.cherrywork.rules.THIDBRuleService;
 import com.incture.cherrywork.rules.TH_IDBRuleInputDto;
 import com.incture.cherrywork.sales.constants.StrategyConstants;
-import com.incture.cherrywork.util.ReturnExchangeConstants;
 import com.incture.cherrywork.util.SequenceNumberGen;
-
-
 
 @Service
 @Transactional
 public class DecisionSetCreationImpl implements DecisionSetCreation {
-	
-	
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private ISalesDocItemRepository salesDocItemRepository;
-
 
 	private SequenceNumberGen sequenceNumberGen;
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	
 	@Autowired
 	private SalesDocItemDao salesDocItemDao;
-
 
 	private Map<String, List<ApproverDataOutputDto>> createApprovalMapFromRules(String requestId, String salesOrderId,
 			List<SalesDocItemDto> salesDocItemDtolist, String strategy, String distributionChannel, String salesOrg,
@@ -93,7 +79,8 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService
+					.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -118,7 +105,8 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 		List<ApproverDataOutputDto> outputList = new ArrayList<>();
 
 		try {
-			outputList = (List<ApproverDataOutputDto>) rulesService.getResultListRuleService((RuleInputDto) entry.getKey());
+			outputList = (List<ApproverDataOutputDto>) rulesService
+					.getResultListRuleService((RuleInputDto) entry.getKey());
 		} catch (Exception e) {
 			return null;
 		}
@@ -188,8 +176,7 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 							itemDto.setDecisionSetId(decisionSetId);
 							System.err.println(
 									"[generateDecisionSetIdForROType][in for loop] itemDto: " + itemDto.toString());
-							
-							
+
 							String res = salesDocItemDao.saveOrUpdateSalesDocItemForDS(itemDto);
 							System.err.println("[generateDecisionSetIdForROType][in for loop] res: " + res);
 							// salesDocItemDao.updateSalesDocItemWithDecisionSet(decisionSetId,
@@ -357,7 +344,11 @@ public class DecisionSetCreationImpl implements DecisionSetCreation {
 			String country, String requestType, String requestCategory) {
 
 		Map<String, List<ApproverDataOutputDto>> outputMap = new HashMap<>();
-		System.err.println("[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] started with salesDocItemDtolist: "+salesDocItemDtolist.toString()+" strategy: "+strategy+" distributionChannel: "+distributionChannel+" salesOrg: "+salesOrg+" country:"+country+" requestType:"+requestType+" requestCategory: "+requestCategory);
+		System.err.println(
+				"[DecisionSetCreationImpl][generateApprovalMatFroReturnOrder] started with salesDocItemDtolist: "
+						+ salesDocItemDtolist.toString() + " strategy: " + strategy + " distributionChannel: "
+						+ distributionChannel + " salesOrg: " + salesOrg + " country:" + country + " requestType:"
+						+ requestType + " requestCategory: " + requestCategory);
 
 		switch (strategy) {
 		case StrategyConstants.TH_IDB_PROC:

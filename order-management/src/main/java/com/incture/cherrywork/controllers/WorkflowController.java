@@ -13,31 +13,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.incture.cherrywork.dtos.ApprovalWorkflowInputDto;
 import com.incture.cherrywork.dtos.CheckNextTriggerDto;
 import com.incture.cherrywork.dtos.DecisionSetWorkflow;
 import com.incture.cherrywork.dtos.DeletePayloadDto;
+import com.incture.cherrywork.dtos.Response;
 import com.incture.cherrywork.dtos.ResponseEntity;
+import com.incture.cherrywork.dtos.VisitPlanDto;
 import com.incture.cherrywork.dtos.WorkflowResponseDto;
 import com.incture.cherrywork.dtos.WorkflowResponseEntity;
+import com.incture.cherrywork.rules.VisitPlannerRuleService;
+import com.incture.cherrywork.services.ISalesVisitPlannerService;
 import com.incture.cherrywork.workflow.services.ApprovalworkflowTrigger;
 import com.incture.cherrywork.workflow.services.DeletionOfWorflowTaskId;
 import com.incture.cherrywork.workflow.services.ImeTrigger;
 import com.incture.cherrywork.workflow.services.WorkflowTrigger;
 
-
-
-
-
-
 @RestController
 @RequestMapping("/WorkflowController")
 public class WorkflowController {
 
-//	@Autowired
-//	private WorkflowTrigger workflowtrigger;
-
+	@Autowired
+	private ISalesVisitPlannerService salesVisitPlannerService;
 	@Autowired
 	private ApprovalworkflowTrigger approvalworkflowTrigger;
 
@@ -46,12 +43,11 @@ public class WorkflowController {
 
 	@Autowired
 	private DeletionOfWorflowTaskId deletionOfWorkflowtaskId;
-	
+
 	public WorkflowController() {
 		System.err.println("inside wkflow controller");
 	}
-	
-	
+
 	@PostMapping(path = "/triggerApproverWorkflow", consumes = "application/json", produces = "application/json")
 	public WorkflowResponseEntity triggerApprovalWorkflow(@RequestBody ApprovalWorkflowInputDto inputDto) {
 		System.err.println("inside workflow  aprrover controller");
@@ -60,7 +56,8 @@ public class WorkflowController {
 				inputDto.getThreshold(), inputDto.getDecisionSetAmount(), inputDto.getHeaderBlocReas(),
 				inputDto.getSoCreatedECC(), inputDto.getCountry(), inputDto.getCustomerPo(), inputDto.getRequestType(),
 				inputDto.getRequestCategory(), inputDto.getSalesOrderType(), inputDto.getSoldToParty(),
-				inputDto.getShipToParty(),inputDto.getDivision(),inputDto.getDistributionChannel(),inputDto.getSalesOrg(),inputDto.getReturnReason());
+				inputDto.getShipToParty(), inputDto.getDivision(), inputDto.getDistributionChannel(),
+				inputDto.getSalesOrg(), inputDto.getReturnReason());
 	}
 
 	@PutMapping(path = "/triggerApproverWorkflowAnd", consumes = "application/json", produces = "application/json")
@@ -72,20 +69,29 @@ public class WorkflowController {
 				inputDto.getThreshold(), inputDto.getDecisionSetAmount(), inputDto.getApprovalType(),
 				inputDto.getHeaderBlocReas(), inputDto.getSoCreatedECC(), inputDto.getCountry(),
 				inputDto.getCustomerPo(), inputDto.getRequestType(), inputDto.getRequestCategory(),
-				inputDto.getSalesOrderType(), inputDto.getSoldToParty(), inputDto.getShipToParty(),inputDto.getDivision(),inputDto.getDistributionChannel(),inputDto.getSalesOrg()
-				,inputDto.getReturnReason());
+				inputDto.getSalesOrderType(), inputDto.getSoldToParty(), inputDto.getShipToParty(),
+				inputDto.getDivision(), inputDto.getDistributionChannel(), inputDto.getSalesOrg(),
+				inputDto.getReturnReason());
 	}
 
-//	@PostMapping(path = "/triggerDecisionsetWorkflow", consumes = "application/json", produces = "application/json")
-//	public WorkflowResponseEntity triggerDecisionlWorkflow(@RequestBody DecisionSetWorkflow inputDto) {
-//		System.err.println("inside workflow decision set controller");
-//		return workflowtrigger.DecisionSetWorkflowTrigger(inputDto.getSalesOrderNo(), inputDto.getRequestId(),
-//				inputDto.getDataSetKey(), inputDto.getApproverDtoList(), inputDto.getThreshold(),
-//				inputDto.getDecisionSetAmount(), inputDto.getHeaderBlocReas(), inputDto.getSoCreatedECC(),
-//				inputDto.getCountry(), inputDto.getCustomerPo(), inputDto.getRequestType(),
-//				inputDto.getRequestCategory(), inputDto.getSalesOrderType(), inputDto.getSoldToParty(),
-//				inputDto.getShipToParty(),inputDto.getDivision(),inputDto.getDistributionChannel(),inputDto.getSalesOrg(),inputDto.getReturnReason());
-//	}
+	// @PostMapping(path = "/triggerDecisionsetWorkflow", consumes =
+	// "application/json", produces = "application/json")
+	// public WorkflowResponseEntity triggerDecisionlWorkflow(@RequestBody
+	// DecisionSetWorkflow inputDto) {
+	// System.err.println("inside workflow decision set controller");
+	// return
+	// workflowtrigger.DecisionSetWorkflowTrigger(inputDto.getSalesOrderNo(),
+	// inputDto.getRequestId(),
+	// inputDto.getDataSetKey(), inputDto.getApproverDtoList(),
+	// inputDto.getThreshold(),
+	// inputDto.getDecisionSetAmount(), inputDto.getHeaderBlocReas(),
+	// inputDto.getSoCreatedECC(),
+	// inputDto.getCountry(), inputDto.getCustomerPo(),
+	// inputDto.getRequestType(),
+	// inputDto.getRequestCategory(), inputDto.getSalesOrderType(),
+	// inputDto.getSoldToParty(),
+	// inputDto.getShipToParty(),inputDto.getDivision(),inputDto.getDistributionChannel(),inputDto.getSalesOrg(),inputDto.getReturnReason());
+	// }
 
 	@PostMapping(path = "/checkNextTriggerLevelOR", consumes = "application/json", produces = "application/json")
 	public ResponseEntity checkNextTriggerLevelOr(@RequestBody CheckNextTriggerDto checkNextTriggerDto) {
@@ -141,14 +147,13 @@ public class WorkflowController {
 		return deletionOfWorkflowtaskId.findAllTheRunningAndErrorenous();
 
 	}
-	
+
 	@PostMapping(path = "/cancelWorkflow", produces = "application/json")
-	public ResponseEntity cancelWorkflowByBussinesKey( @RequestBody WorkflowResponseDto  workflowRepsone) throws UnsupportedOperationException, IOException, URISyntaxException {
+	public ResponseEntity cancelWorkflowByBussinesKey(@RequestBody WorkflowResponseDto workflowRepsone)
+			throws UnsupportedOperationException, IOException, URISyntaxException {
 
 		return approvalworkflowTrigger.closeAllWorkflowsByBussinessKey(workflowRepsone.getBusinessKey());
 
-}
+	}
 
 }
-
-

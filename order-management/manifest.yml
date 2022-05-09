@@ -7,4 +7,10 @@ applications:
    - sap_java_buildpack
    services:
    - COM
+   - businessRules
+   - conn_MTA_COM
+   - dest_MTA_COM
+   - ObjectStore
+   - uaa_MTA_COM
+   - workflow_workflowtiles
    

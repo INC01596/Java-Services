@@ -5,18 +5,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
 
 @Data
 @Entity
@@ -27,15 +21,17 @@ public class SalesVisitAttachment {
 	@Column(name = "attachmentId")
 	private String attachmentId;
 
-	//@Getter(value = AccessLevel.NONE)
-	@JsonIgnore
-	@ToString.Exclude
-	@ManyToOne
-	@JoinColumn(name = "visit_Id", nullable = false, referencedColumnName = "visit_Id")
-	private SalesVisit salesVisit;
+	@Column(name = "viisitId")
+	private String visitId;
 
 	@Column(name = "attachmentType")
 	private String attachmentType;
+
+	@Column(name = "attachmentName")
+	private String attachmentName;
+
+	@Column(name = "attachmentSize")
+	private String attachmentSize;
 
 	@Column(name = "uploadedBy")
 	private String uploadedBy;
@@ -44,6 +40,7 @@ public class SalesVisitAttachment {
 	@Column(name = "uploadedOn")
 	private Date uploadedOn;
 
+	@Lob
 	@Column(name = "data")
 	private byte[] data;
 

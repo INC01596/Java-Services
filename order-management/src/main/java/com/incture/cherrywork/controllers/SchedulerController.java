@@ -48,11 +48,11 @@ public class SchedulerController {
 	// private final Logger logger =
 	// LoggerFactory.getLogger(SchedulerController.class);
 
-	static boolean schedulerSwitch = true;
+	static boolean schedulerSwitch = false;
 
-	static boolean materialSchedulerSwitch = true;
-	
-	static boolean abbyySchedulerSwitch = true;
+	static boolean materialSchedulerSwitch = false;
+
+	static boolean abbyySchedulerSwitch = false;
 
 	static final int interval = 5;
 
@@ -75,13 +75,12 @@ public class SchedulerController {
 
 	@Autowired
 	private AbbyOcrService abbyOcrService;
-	
+
 	@Autowired
 	private AbbyySchedulerService abbyySchedulerService;
-	
+
 	@Autowired
 	private AttachEmail email;
-
 
 	@GetMapping("/schedulerTrigger")
 	// @Scheduled(cron = "*/5 * * * * ?" )
@@ -187,7 +186,7 @@ public class SchedulerController {
 	public String test() {
 		return "successfully deployed";
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "resource" })
 	@Scheduled(cron = "0 0/2 * * * ?")
 	@GetMapping("/triggerMaterialScheduler")
@@ -199,8 +198,8 @@ public class SchedulerController {
 		}
 
 	}
-	
-//	
+
+	//
 	@SuppressWarnings({ "unchecked", "resource" })
 	@Scheduled(cron = "0 0/2 * * * ?")
 	@GetMapping("/triggerAbbyyScheduler")
@@ -212,14 +211,13 @@ public class SchedulerController {
 		}
 
 	}
-	
+
 	@GetMapping("/abbyySchedulerRunningStatus")
 	@ApiOperation(value = "/abbyySchedulerRunningStatus")
 	public boolean abbyySchedulerRunningStatus() {
 		return abbyySchedulerSwitch;
 	}
-	
-	
+
 	@GetMapping("/abbyySchedulerSwitch/{parameter}")
 	@ApiOperation(value = "/abbyySchedulerSwitch/{parameter}")
 	public static ResponseEntity turnOffOnAbbyyScheduler(@PathVariable boolean parameter) {
@@ -242,9 +240,6 @@ public class SchedulerController {
 		}
 	}
 
-	
-	
-
 	// nischal -- getAllLogsOfMaterialSchedulerWithDateRange Method
 	@GetMapping("/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
 	@ApiOperation(value = "/getAllLogsOfMaterialSchedulerWithDateRange/{startDate}&{endDate}")
@@ -255,6 +250,7 @@ public class SchedulerController {
 				Instant.ofEpochMilli(Long.parseLong(endDate)).atZone(ZoneId.of(ZoneId.SHORT_IDS.get("IST")))
 						.toLocalDateTime());
 	}
+
 	@GetMapping("/getAllLogsOfAbbyySchedulerWithDateRange/{startDate}&{endDate}")
 	@ApiOperation(value = "/getAllLogsOfAbbyySchedulerWithDateRange/{startDate}&{endDate}")
 	public ResponseEntity listAllAbbyySchedulerLogs(@PathVariable String startDate, @PathVariable String endDate) {
@@ -294,16 +290,16 @@ public class SchedulerController {
 			// "+LocalDateTime.now(ZoneId.of("GMT+08:00"));
 		}
 	}
-	
+
 	@GetMapping("/triggerCustomerMasterScheduler")
-	public void triggerCustomerMasterScheduler(){
+	public void triggerCustomerMasterScheduler() {
 		schedulerServices.customerMasterScheduler();
 	}
-	
+
 	@ApiOperation(value = "/getCustomerMasterDetails")
 	@PostMapping("/getCustomerMasterDetails")
-	public ResponseDtoNew getCustomerMasterDetails(@RequestBody CustomerMasterFilterDto filterData){
+	public ResponseDtoNew getCustomerMasterDetails(@RequestBody CustomerMasterFilterDto filterData) {
 		return schedulerServices.getCustomerMasterDetails(filterData);
-		 
+
 	}
 }

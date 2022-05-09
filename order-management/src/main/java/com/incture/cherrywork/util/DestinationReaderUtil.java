@@ -10,13 +10,20 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.incture.cherrywork.rules.RuleConstants;
 
+import io.pivotal.cfenv.core.CfCredentials;
+import io.pivotal.cfenv.jdbc.CfJdbcEnv;
+
 @Component
 public class DestinationReaderUtil {
+
+	static Logger logger = LoggerFactory.getLogger(DestinationReaderUtil.class);
 
 	public static Map<String, Object> getDestination(String destinationName) throws URISyntaxException, IOException {
 
@@ -122,14 +129,14 @@ public class DestinationReaderUtil {
 		}
 		return null;
 	}
-	
-	
-public static String getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow() throws URISyntaxException, IOException {
-		
+
+	public static String getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow()
+			throws URISyntaxException, IOException {
+
 		System.err.println("77 destination");
-		
+
 		HttpClient client = HttpClientBuilder.create().build();
-		
+
 		HttpPost httpPost = new HttpPost(RuleConstants.OAUTH_TOKEN_URL);
 		httpPost.addHeader("Content-Type", "application/json");
 		// Encoding username and password
@@ -137,13 +144,46 @@ public static String getJwtTokenForAuthenticationForSapApiDecisionSetWorkflow() 
 				RuleConstants.RULE_CLIENT_SECRETE);
 		httpPost.addHeader("Authorization", auth);
 		HttpResponse res = client.execute(httpPost);
-		System.err.println( " 92 rest" + res);
+		System.err.println(" 92 rest" + res);
 		String data = HelperClass.getDataFromStream(res.getEntity().getContent());
 		if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
 			String jwtToken = new JSONObject(data).getString("access_token");
-			System.err.println("jwtProxyToken "+jwtToken);
-				return jwtToken;
+			System.err.println("jwtProxyToken " + jwtToken);
+			return jwtToken;
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static String getJwtTokenForAuthenticationForSapApiRules() throws IOException {
+
+		try {
+			logger.info("[getJwtTokenForAuthenticationForSapApiRules] started");
+			CfJdbcEnv cfEnv = new CfJdbcEnv();
+			CfCredentials cfCredentialsWorkflow = cfEnv.findCredentialsByLabel("business-rules");
+			Map<String, Object> cfCredentialsMapWorkflowUaa = cfCredentialsWorkflow.getMap();
+
+			Map<String, Object> credentialMapWorkflow = (Map<String, Object>) cfCredentialsMapWorkflowUaa.get("uaa");
+
+			HttpClient client = HttpClientBuilder.create().build();
+
+			String oauthTokenUrl = (String) credentialMapWorkflow.get("url")
+					+ "/oauth/token?grant_type=client_credentials";
+			HttpPost httpPost = new HttpPost(oauthTokenUrl);
+			httpPost.addHeader("Content-Type", "application/json");
+
+			String auth = HelperClass.encodeUsernameAndPassword((String) credentialMapWorkflow.get("clientid"),
+					(String) credentialMapWorkflow.get("clientsecret"));
+			httpPost.addHeader("Authorization", auth);
+			HttpResponse res = client.execute(httpPost);
+			String data = HelperClass.getDataFromStream(res.getEntity().getContent());
+			logger.info("[DestinationReaderUtil][getJwtTokenForAuthenticationForSapApiRules] data: " + data);
+			if (res.getStatusLine().getStatusCode() == HttpStatus.OK.value()) {
+				return new JSONObject(data).getString("access_token");
 			}
+		} catch (Exception e) {
+			logger.error("[getJwtTokenForAuthenticationForSapApiRules] Exception: " + e);
+		}
 		return null;
 	}
 

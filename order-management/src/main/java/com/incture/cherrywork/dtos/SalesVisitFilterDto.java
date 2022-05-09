@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class SalesVisitFilterDto {
-	
+
 	private String salesRepId;
 	private String visitId;
 	private Date visitPlannedDateFrom;
@@ -17,5 +17,7 @@ public class SalesVisitFilterDto {
 	private Date visitCompletedAtTo;
 	private Date visitClosedAtFrom;
 	private Date visitClosedAtTo;
+	private String status;
+	private String custCode;
 
 }
